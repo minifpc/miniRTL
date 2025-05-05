@@ -1,0 +1,140 @@
+; ----------------------------------------------------------------------------
+; File:    RTLlib.DEF
+; Autor:   (c) 2025 by Jens Kallup - paule32 & fibonacci
+;
+; License: only for education and testing. Commercial us is not allowed.
+; ----------------------------------------------------------------------------
+LIBRARY RTLlib
+EXPORTS
+    ; -------------------------------
+    ; fibonacci's memory members ...
+    ; -------------------------------
+    GetBsr8bit
+    initExceptions_
+    fpcdynarraysetlength
+    
+    ; -------------------------------
+    ; compiler procedures ...
+    ; -------------------------------
+    fpcshortstrconcat
+    fpcshortstrtoansistr
+    fpcshortstrcopy
+    fpcansistrsetlength
+    fpcansistrcopy
+    fpcansistrcompareequal
+    fpcansistrdecrref
+    
+    fpcpchartoansistr
+    
+    fpcpwidechartoansistr
+    fpcpwidechartowidestr
+    fpcwidestrassign
+    fpcwidestrincrref
+    
+    newansistring
+    newwidestring
+    
+    makeuniqueansistring
+    itoa_exp
+    atoi_exp
+    
+    IndexByte
+    IndexWord
+    CompareByte
+    
+    ; -------------------------------
+    ; interface
+    ; -------------------------------
+    IsGUIDEqual
+    InitInterfacePointers
+    
+    ; -------------------------------
+    ; common dialogs
+    ; -------------------------------
+    ShowMessage
+    
+    ; -------------------------------
+    ; String routines
+    ; -------------------------------
+    StrAlloc
+    StrCopy
+    StrDispose
+    
+    StrCat
+    StrCopy_
+    
+    ; -------------------------------
+    ; String conversation ...
+    ; -------------------------------
+    IntToStrPC
+    IntToStrPC64
+    
+    IntToStr
+    UIntToStrA
+    UIntToStr
+    
+    ; -------------------------------
+    ; QApplication
+    ; -------------------------------
+    QApplication_Create
+    QApplication_Destroy
+    
+    ; -------------------------------
+    ; dynamic Array's
+    ; -------------------------------
+    Array_Helper
+    Array_Boolean
+    Array_Char
+    Array_Byte
+    Array_Word
+    Array_DWord
+    Array_Integer
+    Array_String
+    
+    ; -------------------------------
+    ; SetLength of dynamic Array ...
+    ; -------------------------------
+    SetLength_Array_Boolean
+    SetLength_Array_Char
+    SetLength_Array_Byte
+    SetLength_Array_Word
+    SetLength_Array_DWord
+    SetLength_Array_Integer
+    SetLength_Array_String
+
+    ; -------------------------------
+    ; SetLength of String types ...
+    ; -------------------------------
+    SetLength_String
+    SetLength_String_Ansi
+    SetLength_String_Wide
+    SetLength_String_Unicode
+
+    ; -------------------------------
+    ; StringReplace
+    ; -------------------------------
+    new_ansistring
+
+
+    ; -------------------------------
+    ; Abs
+    ; -------------------------------
+    ;Abs_Int
+    ;Abs_Int64
+    ;Abs_VR
+
+    ;Frac_VR
+    ;Int_VR
+    ;Round_VR
+    ;Trunc_VR
+    
+    ; -------------------------------
+    ; Error / Exceptions
+    ; -------------------------------
+    
+    
+    ; -------------------------------
+    ; TRTL class ...
+    ; -------------------------------
+    TRTL_Create
+    TRTL_Destroy
