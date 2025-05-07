@@ -10,7 +10,13 @@ interface
 
 uses Windows;
 
-function translate_windows_error(code: integer): string;
+{$ifdef DLLEXPORT}
+function translate_windows_error(code: integer): string; stdcall; export;
+{$endif DLLEXPORT}
+
+{$ifdef DLLIMPORT}
+function translate_windows_error(code: integer): string; stdcall; external RTLDLL;
+{$endif DLLIMPORT}
 
 type
   Exception = class(TObject)
@@ -42,7 +48,8 @@ const
 
 implementation
 
-function translate_windows_error(code: integer): string;
+{$ifdef DLLEXPORT}
+function translate_windows_error(code: integer): string; stdcall; export;
 var
   len: DWord;
   buf: PAnsiChar;
@@ -69,6 +76,7 @@ begin
   writeln('result = ', result);
   LocalFree(HLOCAL(buf));
 end;
+{$endif DLLEXPORT}
 
 constructor Exception.Create(const msg: string; const errcode: integer);
 begin
@@ -76,78 +84,65 @@ begin
   Code := errcode;
 end;
 
-function default_ExceptObjProc(code: LongInt; const rec: EXCEPTION_RECORD): Pointer;
+{$ifdef DLLIMPORT}
+function  default_ExceptObjProc(code: LongInt; const rec: EXCEPTION_RECORD): Pointer; stdcall; external RTLDLL;
+function  default_ExceptClsProc(code: LongInt): Pointer;                              stdcall; external RTLDLL;
+procedure default_ErrorProc    (code: Longint; addr: Pointer; frame: Pointer);        stdcall; external RTLDLL;
+{$endif DLLIMPORT}
+
+{$ifdef DLLEXPORT}
+function default_ExceptObjProc(code: LongInt; const rec: EXCEPTION_RECORD): Pointer; stdcall; export;
 begin
   result := TTestException.Create('@@todo');
 end;
+{$endif DLLEXPORT}
 
-function default_ExceptClsProc(code: LongInt): Pointer;
+{$ifdef DLLEXPORT}
+function default_ExceptClsProc(code: LongInt): Pointer; stdcall; export;
 begin
   if (code >= low(exception_classes)) and (code <= high(exception_classes)) then result := exception_classes[code] else result := nil;
 end;
+{$endif DLLEXPORT}
 
-procedure default_ErrorProc(code: Longint; addr: Pointer; frame: Pointer);
+{$ifdef DLLEXPORT}
+procedure default_ErrorProc(code: Longint; addr: Pointer; frame: Pointer); stdcall; export;
 begin
   raise TTestException.Create('@@todo');
 end;
+{$endif DLLEXPORT}
 
 {$ifdef DLLEXPORT}
-procedure initExceptions_; stdcall; export;
+procedure initExceptions; stdcall; export;
+var
+  i : Integer;
 begin
   exception_classes[200] := EDivByZero;
   exception_classes[201] := nil;
   exception_classes[202] := nil;
   exception_classes[203] := EOutOfMemory;
-  exception_classes[204] := nil;
-  exception_classes[205] := nil;
-  exception_classes[206] := nil;
-  exception_classes[207] := nil;
-  exception_classes[208] := nil;
-  exception_classes[209] := nil;
-  exception_classes[210] := nil;
-  exception_classes[211] := nil;
-  exception_classes[212] := nil;
-  exception_classes[213] := nil;
-  exception_classes[214] := nil;
-  exception_classes[215] := nil;
+  
+  for i := 204 to 215 do
+  exception_classes[i] := nil;
+
   exception_classes[216] := EAccessViolation;
-  exception_classes[217] := nil;
-  exception_classes[218] := nil;
-  exception_classes[219] := nil;
-  exception_classes[220] := nil;
-  exception_classes[221] := nil;
-  exception_classes[222] := nil;
-  exception_classes[223] := nil;
-  exception_classes[224] := nil; 
-  exception_classes[225] := nil;
-  exception_classes[226] := nil;
-  exception_classes[227] := nil;
-  exception_classes[228] := nil;
-  exception_classes[229] := nil;    
-  exception_classes[230] := nil;
-  exception_classes[231] := nil;
-  exception_classes[232] := nil;
-  exception_classes[233] := nil;
-  exception_classes[234] := nil;
-  exception_classes[235] := nil;
-  exception_classes[236] := nil;
-end;
-procedure initExceptions;
-begin
-  initExceptions_;
+  
+  for i := 217 to 236 do
+  exception_classes[i] := nil;
 end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
-procedure initExceptions_; stdcall; external RTLDLL;
-procedure initExceptions;
-begin
-  initExceptions_;
-end;
+procedure initExceptions; stdcall; external RTLDLL;
 {$endif DLLIMPORT}
 
 {$ifdef DLLEXPORT}
 exports
-  initExceptions_ name 'initExceptions_';
+  initExceptions name 'initExceptions',
+  translate_windows_error name 'translate_windows_error',
+  
+  default_ExceptObjProc name 'default_ExceptObjProc',
+  default_ExceptClsProc name 'default_ExceptClsProc',
+  default_ErrorProc     name 'default_ErrorProc'
+  ;
 {$endif DLLEXPORT}
 
 initialization
