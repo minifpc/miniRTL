@@ -71,9 +71,9 @@ end;
 {$endif DLLIMPORT}
 
 {$ifdef DLLEXPORT}
-//exports
-//  StringReplace  name 'StringReplace'
-//  ;
+exports
+  StringReplace  name 'StringReplace'
+  ;
 {$endif DLLEXPORT}
 
 end.

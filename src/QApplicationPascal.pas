@@ -5,10 +5,9 @@
 unit QApplicationPascal;
 
 interface
-uses Windows, SysUtils, QObjectPascalExport;
+uses Windows, Dialogs, SysUtils, QObjectPascalExport;
 
 function GetCommandLineA: LPSTR; stdcall; external kernel32;
-
 function StrAlloc(Size: Cardinal): PChar; stdcall; external RTLDLL;
 
 type
@@ -47,16 +46,28 @@ type
     destructor Destroy;
   end;
 
+implementation
+
 {$ifdef DLLEXPORT}
-function  QApplication_Create: QApplication; stdcall; export;  
-procedure QApplication_Destroy(P: QApplication); stdcall; export;
+function QApplication_Create(var p: QApplication): QApplication; export;
+begin
+  p := QApplication.Create;
+  if p = nil then
+  begin
+    ShowMessage('Error: could not create QApplication.');
+    ExitProcess(1)
+  end;
+  Exit(p);
+end;
+procedure QApplication_Destroy(p: QApplication); export;
+begin
+  p.Free;
+end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
-function  QApplication__Create: QApplication; stdcall; external RTLDLL;
-procedure QApplication__Destroy(P: QApplication); stdcall; external RTLDLL;
+function  QApplication_Create(var p: QApplication): QApplication; external RTLDLL;
+procedure QApplication_Destroy(P: QApplication); external RTLDLL;
 {$endif DLLIMPORT}
-
-implementation
 
 (**
  * \brief CTOR Create of QApplication
@@ -132,33 +143,13 @@ begin
   
   Exit(QApplication.Create(ArgsCount, Args));
 end;
-function QApplication_Create: QApplication; stdcall; export;
-begin
-  Exit(QApplication__Create);
-end;
 {$endif DLLEXPORT}
-{$ifdef DLLIMPORT}
-function QApplication_Create: QApplication; stdcall;
-begin
-  Exit(QApplication__Create);
-end;
-{$endif DLLIMPORT}
 
 {$ifdef DLLEXPORT}
-procedure QApplication__Destroy(P: QApplication); stdcall; export;
-begin
-  P.Free;
-end;
-procedure QApplication_Destroy(P: QApplication); stdcall;
-begin
-  QApplication__Destroy(P);
-end;
+exports
+  QApplication_Create  name 'QApplication_Create',
+  QApplication_Destroy name 'QApplication_Create'
+  ;
 {$endif DLLEXPORT}
-{$ifdef DLLIMPORT}
-procedure QApplication_Destroy(P: QApplication); stdcall;
-begin
-  QApplication__Destroy(P);
-end;
-{$endif DLLIMPORT}
 
 end.

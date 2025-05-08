@@ -225,7 +225,8 @@ uses xmm;
 
 procedure HandleError(errno: LongInt); external name 'FPC_HANDLEERROR';
 
-procedure wait_for_enter;
+{$ifdef DLLEXPORT}
+procedure wait_for_enter; export;
 var
   c: char;
   d: dword;
@@ -237,6 +238,10 @@ begin
     if c = #13 then break;
   end;
 end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+procedure wait_for_enter; external RTLDLL;
+{$endif DLLIMPORT}
 
 {$undef codeh} {$define codei} {$I objects.inc}
 {$undef codeh} {$define codei} {$I exceptions.inc}
@@ -1018,6 +1023,12 @@ end;
 //  decq       (%rcx)
 //  setzb      %al
 //end;
+
+{$ifdef DLLEXPORT}
+exports
+  wait_for_enter name 'wait_for_enter'
+  ;
+{$endif DLLEXPORT}
 
 initialization
   install_exception_handlers;

@@ -11,5 +11,5 @@ library RTLLib;
 uses global, RTLUnit;
 
 begin
-  QApplication_Counter := 0;
+
 end.

@@ -1,15 +1,20 @@
 // ---------------------------------------------------------------------------------------
 // Copyright(c) 2025 @paule32 and @fibonacci
 // ---------------------------------------------------------------------------------------
-
-{$mode delphi}
+{$mode objfpc}{$H+}
 {$define DLLIMPORT}
 program test;
 
-uses SysUtils, StrUtils, Exceptions, Dialogs, RtlLibImport, QApplicationPascal;
+uses
+  Windows, Dialogs, SysUtils, StrUtils, Exceptions,
+  Locales, global,
+  RtlLibImport, QApplicationPascal;
 
 {$ifdef DLLIMPORT}
-procedure ShowMessage(msg: PChar); stdcall; external 'rtllib.dll';
+var
+  sInformation: AnsiString; external RTLDLL;
+  sError: AnsiString; external RTLDLL;
+  sHello: AnsiString; external RTLDLL;
 {$endif DLLIMPORT}
 
 var
@@ -21,10 +26,11 @@ begin
   try
     s1 := 'hallo welt';
     s2 := StringReplace(s1, 'hallo', 'dudu', TReplaceFlags([rfReplaceAll]));
+    ShowMessage(PChar(sError));
     ShowMessage(LPCSTR(s2));
     raise Exception.Create('teker', 123);
   except
-    MessageBoxA(0, 'Error', 'Errr', 0);
+    MessageBoxA(0, PChar(sError), PChar(sError), 0);
   end;
   rtl := TRTL.Create;
   rtl.Free;

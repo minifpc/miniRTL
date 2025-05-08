@@ -264,7 +264,7 @@ end;
 {$endif DLLIMPORT}
 
 {$ifdef DLLEXPORT}
-procedure TranslateMxcsr_(mxcsr: longword; var code: longint); stdcall; export;
+procedure TranslateMxcsr(mxcsr: longword; var code: longint); stdcall; export;
 begin
   { we can return only one value, further one's are lost }
   { InvalidOp }
@@ -282,18 +282,16 @@ begin
   else { this should not happen }
     code := -255;
 end;
-procedure TranslateMxcsr(mxcsr: longword; var code: longint); stdcall;
-begin
-  TranslateMxcsr_(mxcsr, code);
-end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
-procedure TranslateMxcsr_(mxcsr: longword; var code: longint); stdcall; external RTLDLL;
-procedure TranslateMxcsr(mxcsr: longword; var code: longint); stdcall;
-begin
-  TranslateMxcsr_(mxcsr, code);
-end;
+procedure TranslateMxcsr(mxcsr: longword; var code: longint); stdcall; external RTLDLL;
 {$endif DLLIMPORT}
+
+{$ifdef DLLEXPORT}
+exports
+  TranslateMxcsr name 'TranslateMxcsr'
+  ;
+{$endif DLLEXPORT}
 
 {$endif}
 

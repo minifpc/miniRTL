@@ -142,7 +142,9 @@ var
   xmemchunks_init_done: boolean = false;
 
 // swaps target with val; returns the old value of target
-function _atomic32(var target: integer; val: integer): integer; assembler;
+
+{$ifdef DLLEXPORT}
+function _atomic32(var target: integer; val: integer): integer; assembler; export;
 asm
   {$ifdef CPU64}
   mov    eax, val
@@ -153,6 +155,10 @@ asm
   mov    eax, val
   {$endif}
 end;
+{$endif}
+{$ifdef DLLIMPORT}
+function _atomic32(var target: integer; val: integer): integer; external RTLDLL;
+{$endif DLLEXPORT}
 
 // enters a critical section; blocks other threads from accessing shared memory
 procedure _xmemchunksbegin; inline;
@@ -549,6 +555,8 @@ function xfillmem(p: pointer; len: ptruint; v: char): ptruint; stdcall; begin re
 
 {$ifdef DLLEXPORT}
 exports
+  _atomic32         name '_atomic32',
+  
   xreallocmem       name 'xreallocmem',
   xgetmem           name 'xgetmem',
   xallocmem         name 'xallocmem',

@@ -8,7 +8,7 @@ unit RTLUnit;
 
 interface
 
-uses Windows, global, Dialogs, SysUtils, StrUtils, Exceptions, QApplicationPascal;
+uses Windows, global, Dialogs, SysUtils, StrUtils, Exceptions, Locales;
 
 type
   TByteLookup = array[0..255] of Byte;
@@ -114,6 +114,10 @@ function IsGUIDEqual(const guid1, guid2: TGUID): boolean; stdcall; external RTLD
 
 {$ifdef DLLEXPORT}
 exports
+  sInformation name 'sInformation',
+  sError       name 'sError',
+  sHello       name 'sHello',
+  
   GetBsr8bit            name 'GetBsr8bit',
   
   fpchandleerror        name 'fpchandleerror',
@@ -148,8 +152,7 @@ exports
   fpcpchartoansistr     name 'fpcpchartoansistr',
   
 //  makeuniqueansistring  name 'makeuniqueansistring',
-  StringReplace name 'StringReplace',
-  
+    
   UIntToStrA            name 'UIntToStrA',
   
   itoa_exp              name 'itoa_exp',
@@ -160,9 +163,6 @@ exports
   fpc_popobjectstack_         name 'fpc_popobjectstack_',
   fpc_raiseexception_         name 'fpc_raiseexception_',
   
-  QApplication_Create   name 'QApplication_Create',
-  QApplication_Destroy  name 'QApplication_Destroy',
-
   TRTL_Create,
   TRTL_Destroy;
 {$endif DLLEXPORT}

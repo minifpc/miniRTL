@@ -85,27 +85,27 @@ begin
 end;
 
 {$ifdef DLLIMPORT}
-function  default_ExceptObjProc(code: LongInt; const rec: EXCEPTION_RECORD): Pointer; stdcall; external RTLDLL;
-function  default_ExceptClsProc(code: LongInt): Pointer;                              stdcall; external RTLDLL;
-procedure default_ErrorProc    (code: Longint; addr: Pointer; frame: Pointer);        stdcall; external RTLDLL;
+function  default_ExceptObjProc(code: LongInt; const rec: EXCEPTION_RECORD): Pointer; external RTLDLL;
+function  default_ExceptClsProc(code: LongInt): Pointer; external RTLDLL; external RTLDLL;
+procedure default_ErrorProc(code: Longint; addr: Pointer; frame: Pointer); external RTLDLL;
 {$endif DLLIMPORT}
 
 {$ifdef DLLEXPORT}
-function default_ExceptObjProc(code: LongInt; const rec: EXCEPTION_RECORD): Pointer; stdcall; export;
+function default_ExceptObjProc(code: LongInt; const rec: EXCEPTION_RECORD): Pointer; export;
 begin
   result := TTestException.Create('@@todo');
 end;
 {$endif DLLEXPORT}
 
 {$ifdef DLLEXPORT}
-function default_ExceptClsProc(code: LongInt): Pointer; stdcall; export;
+function default_ExceptClsProc(code: LongInt): Pointer; export;
 begin
   if (code >= low(exception_classes)) and (code <= high(exception_classes)) then result := exception_classes[code] else result := nil;
 end;
 {$endif DLLEXPORT}
 
 {$ifdef DLLEXPORT}
-procedure default_ErrorProc(code: Longint; addr: Pointer; frame: Pointer); stdcall; export;
+procedure default_ErrorProc(code: Longint; addr: Pointer; frame: Pointer); export;
 begin
   raise TTestException.Create('@@todo');
 end;
@@ -138,7 +138,7 @@ procedure initExceptions; stdcall; external RTLDLL;
 exports
   initExceptions name 'initExceptions',
   translate_windows_error name 'translate_windows_error',
-  
+
   default_ExceptObjProc name 'default_ExceptObjProc',
   default_ExceptClsProc name 'default_ExceptClsProc',
   default_ErrorProc     name 'default_ErrorProc'

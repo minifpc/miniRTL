@@ -1,7 +1,6 @@
 // ---------------------------------------------------------------------------------------
 // Copyright(c) 2025 @paule32 and @fibonacci
 // ---------------------------------------------------------------------------------------
-{$mode delphi}
 unit global;
 interface
 uses Windows;
@@ -14,9 +13,6 @@ const RTLLib_Version = 20250510;
 const
   KERNEL32 = 'kenrel32.dll';
   RTLDLL   = 'rtllib.dll';
-
-type
-  TArray<T> = Array of T;
 
 var
   QApplication_Counter: DWORD32;

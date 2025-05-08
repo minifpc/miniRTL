@@ -352,14 +352,15 @@ end;
 var
   vectored_exception_handler: pointer = nil;
 
-procedure install_exception_handlers;
+{$ifdef DLLEXPORT}
+procedure install_exception_handlers; export;
 begin
   // this thing doesnt work, find out why
   //SetUnhandledExceptionFilter(@syswin_x64_exception_handler);
   vectored_exception_handler := AddVectoredExceptionHandler(1{1 = higher priotity}, @syswin_x64_exception_handler);
 end;
 
-procedure remove_exception_handlers;
+procedure remove_exception_handlers; export;
 begin
   //SetUnhandledExceptionFilter(nil);
   if vectored_exception_handler <> nil then
@@ -368,13 +369,20 @@ begin
 end;
 
 // x64 only
-function RunErrorCodeSEH(const rec: EXCEPTION_RECORD; const context: TContext): longint;
+function RunErrorCodeSEH(const rec: EXCEPTION_RECORD; const context: TContext): longint; export;
 begin
   result := RunErrorCode(rec);
   if (result = -255) then TranslateMxcsr(context.MxCsr, result);
 end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+procedure install_exception_handlers; external RTLDLL;
+procedure remove_exception_handlers; external RTLDLL;
+function RunErrorCodeSEH(const rec: EXCEPTION_RECORD; const context: TContext): longint; external RTLDLL;
+{$endif DLLIMPORT}
 
-procedure SysResetFPU;
+{$ifdef DLLEXPORT}
+procedure SysResetFPU; export;
 var
   localmxcsr: dword;
   localfpucw: word;
@@ -388,6 +396,10 @@ begin
     ldmxcsr localmxcsr
   end;
 end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+procedure SysResetFPU; external RTLDLL;
+{$endif DLLIMPORT}
 
 { note: context must be passed by value, so modifications are made to a local copy }
 {$ifdef DLLEXPORT}
@@ -673,4 +685,13 @@ begin
 end;
 {$endif DLLIMPORT}
 
+{$ifdef DLLEXPORT}
+exports
+  install_exception_handlers name 'install_exception_handlers',
+  remove_exception_handlers name 'remove_exception_handlers',
+  RunErrorCodeSEH name 'RunErrorCodeSEH',
+  SysResetFPU name 'SysResetFPU'
+  ;
+{$endif DLLEXPORT}
+  
 {$endif}

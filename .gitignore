@@ -63,3 +63,5 @@ src/mfcFPC/x64/Release/mfcFPC.exp
 src/mfcFPC/x64/Release/mfcFPC.lib
 /src/mfcFPC/mfcFPC/x64/Release
 src/mfcFPC/pch.h
+src/QApplicationPascal.s
+src/xmm.s
