@@ -1,9 +1,9 @@
 This directory contains pascal source files to create a .dll and .exe for Microsoft Windows 10/11 64-Bit Operating Systems.<br>
 Fully based on pre-working tasks by @fibonacci.<br>
 
-Currently, it will be used for private use by @fibodev and @paule32 for minimize the code base of FPC Application's.
+Currently, it will be used for private use by **@fibodev** and @paule32 for minimize the code base of FPC Application's.
 
-1. to compile this test project part you would need to download, and install the Mingw64-Bit Environment System which comes with a wide range of **POSIX** like helper tools such as **SED**, and so on
+1. to compile this test project part you would need to download, and install the Microsoft Windows Software Mingw64-Bit Environment System which comes with a wide range of **POSIX** like helper tools such as **SED**, and so on
 2. you need a working copy of fpc.exe and nasm.exe
 3. clone this repro or download the zip package
 4. depack the zip package into your developer directory
@@ -21,4 +21,4 @@ Some notes:
 
 some Tools:
 
-![Alpha Tool preview](tools/img/screen000.png)
+![Alpha Tool preview](src/tools/img/screen000.png)
