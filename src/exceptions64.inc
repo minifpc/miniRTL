@@ -177,7 +177,7 @@ function PushException_(
   out obj     : TObject;
   AcceptNull  : boolean): boolean; stdcall; export;
   
-function signals_exception_handler_(
+function signals_exception_handler(
   exrec     : PEXCEPTION_RECORD;
   exframe   : PEXCEPTION_FRAME;
   excontext : PCONTEXT;
@@ -198,7 +198,7 @@ function PushException_(
   out obj     : TObject;
   AcceptNull  : boolean): boolean; stdcall; external RTLDLL;
   
-function signals_exception_handler_(
+function signals_exception_handler(
   exrec     : PEXCEPTION_RECORD;
   exframe   : PEXCEPTION_FRAME;
   excontext : PCONTEXT;
@@ -285,7 +285,7 @@ begin
 end;
 
 {$ifdef DLLEXPORT}
-function signals_exception_handler_(
+function signals_exception_handler(
   exrec     : PEXCEPTION_RECORD;
   exframe   : PEXCEPTION_FRAME;
   excontext : PCONTEXT;
@@ -310,8 +310,12 @@ begin
   { default: unhandled! }
   ret := 1;
 
+//writeln('paule32');
+    result := ret;
+    exit;
+    
   writeln('exrec^.ExceptionCode = ', exrec^.ExceptionCode);
-
+  
   //case exrec^.ExceptionCode of
   //  STATUS_ACCESS_VIOLATION: ret := CallSignal(SIGSEGV, frame, false);
   //  STATUS_INVALID_HANDLE: ret := 0;
@@ -320,25 +324,7 @@ begin
 
   result := ret;
 end;
-function signals_exception_handler(
-  exrec     : PEXCEPTION_RECORD;
-  exframe   : PEXCEPTION_FRAME;
-  excontext : PCONTEXT;
-  dispatch  : pointer): integer; stdcall;
-begin
-  Exit(signals_exception_handler_(exrec, exframe, excontext, dispatch));
-end;
 {$endif DLLEXPORT}
-{$ifdef DLLIMPORT}
-function signals_exception_handler(
-  exrec     : PEXCEPTION_RECORD;
-  exframe   : PEXCEPTION_FRAME;
-  excontext : PCONTEXT;
-  dispatch  : pointer): integer; stdcall;
-begin
-  Exit(signals_exception_handler_(exrec, exframe, excontext, dispatch));
-end;
-{$endif DLLIMPORT}
 
 function syswin_x64_exception_handler(ex: PEXCEPTION_POINTERS): integer; stdcall;
 begin
@@ -689,6 +675,7 @@ end;
 exports
   install_exception_handlers name 'install_exception_handlers',
   remove_exception_handlers name 'remove_exception_handlers',
+  signals_exception_handler name 'signals_exception_handler',
   RunErrorCodeSEH name 'RunErrorCodeSEH',
   SysResetFPU name 'SysResetFPU'
   ;

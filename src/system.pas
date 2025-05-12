@@ -170,7 +170,7 @@ procedure msgdebug(msg: ansistring);
 
 // -- various rountines -----------------------------
 
-procedure fpc_initializeunits; compilerproc;
+procedure fpc_initializeunits; compilerproc; export;
 procedure fpc_finalizeunits; compilerproc;
 procedure fpc_libinitializeunits; compilerproc;
 
@@ -222,6 +222,7 @@ procedure fpcdynarraysetlength(var p: pointer; pti: pointer; dimcount: sizeint; 
 implementation
 
 uses xmm;
+
 
 procedure HandleError(errno: LongInt); external name 'FPC_HANDLEERROR';
 
@@ -288,7 +289,8 @@ type
 var
   InitFinalTable: TInitFinalTable; external name 'INITFINAL';
 
-procedure fpc_initializeunits; [public, alias: 'FPC_INITIALIZEUNITS'];
+{$ifdef DLLEXPORT}
+procedure fpc_unitinit; export;
 var
   i: integer;
 begin
@@ -298,6 +300,18 @@ begin
     end;
   end;
 end;
+procedure fpc_initializeunits; [public, alias: 'FPC_INITIALIZEUNITS'];
+begin
+  fpc_unitinit;
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+procedure fpc_unitinit; external RTLDLL;
+procedure fpc_initializeunits; [public, alias: 'FPC_INITIALIZEUNITS'];
+begin
+  fpc_unitinit;
+end;
+{$endif DLLIMPORT}
 
 // for internal use
 procedure fpc_initializeunits; [external name 'FPC_INITIALIZEUNITS'];
@@ -1026,7 +1040,8 @@ end;
 
 {$ifdef DLLEXPORT}
 exports
-  wait_for_enter name 'wait_for_enter'
+  wait_for_enter name 'wait_for_enter',
+  fpc_unitinit name 'fpc_unitinit'
   ;
 {$endif DLLEXPORT}
 

@@ -128,17 +128,17 @@ end;
 
 procedure FillChar(var x; count: ptruint; value: ansichar);
 begin
-  xfillmem(@x, count, ord(value));
+  xfillmem_byte(@x, count, ord(value));
 end;
 
 procedure FillChar(var x; count: ptruint; value: byte);
 begin
-  xfillmem(@x, count, value);
+  xfillmem_byte(@x, count, value);
 end;
 
 procedure FillByte(var x; count: ptruint; value: byte);
 begin
-  xfillmem(@x, count, value);
+  xfillmem_byte(@x, count, value);
 end;
 
 {$ifdef DLLEXPORT}

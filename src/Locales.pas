@@ -10,27 +10,27 @@ uses global;
 {$ifdef DLLEXPORT}
   {$ifdef LANGENU}
   var
-    sInformation: AnsiString = 'Informations'; export;
-    sWarning: AnsiString = 'Warning'; export;
-    sError: AnsiString = 'Error'; export;
-    sHello: AnsiString = 'Hello World'; export;
+    sInformation: PChar = 'Informations'; export;
+    sWarning: PChar = 'Warning'; export;
+    sError: PChar = 'Error'; export;
+    sHello: PChar = 'Hello World'; export;
   {$endif LANGENU}
 
   // german
   {$ifdef LANGDEU}
   var
-    sInformation: AnsiString = 'Information'; export;
-    sError: AnsiString = 'Fehler'; export;
-    sHello: AnsiString = 'Hallo Welt'; export;
+    sInformation: PChar = 'Information'; export;
+    sError: PChar = 'Fehler'; export;
+    sHello: PChar = 'Hallo Welt'; export;
   {$endif LANGDEU}
 {$endif DLLEXPORT}
 
 {$ifdef DLLIMPORT}
 var
-  sInformation: AnsiString; external RTLDLL;
-  sWarning: AnsiString; external RTLDLL;
-  sError: AnsiString; external RTLDLL;
-  sHello: AnsiString; external RTLDLL;
+  sInformation: PChar; external RTLDLL;
+  sWarning: PChar; external RTLDLL;
+  sError: PChar; external RTLDLL;
+  sHello: PChar; external RTLDLL;
 {$endif DLLIMPORT}
 
 implementation

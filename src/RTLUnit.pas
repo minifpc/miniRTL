@@ -159,7 +159,6 @@ exports
   atoi_exp              name 'atoi_exp',
   
   PushException_              name 'PushException_',
-  signals_exception_handler_  name 'signals_exception_handler_',
   fpc_popobjectstack_         name 'fpc_popobjectstack_',
   fpc_raiseexception_         name 'fpc_raiseexception_',
   

@@ -11,40 +11,52 @@ function GetCommandLineA: LPSTR; stdcall; external kernel32;
 function StrAlloc(Size: Cardinal): PChar; stdcall; external RTLDLL;
 
 type
-  (**
-   * \class   QApplication
-   * \brief   The QApplication class manages the GUI application's control flow and main settings.
-   * \details QApplication specializes QGuiApplication with some functionality needed for
-   *          QWidget-based applications. It handles widget specific initialization, and
-   *          finalization.
-   *
-   *          For any GUI application using Qt, there is precisely one QApplication object,
-   *          no matter whether the application has 0, 1, 2 or more windows at any given
-   *          time.
-   *          For non-QWidget based Qt applications, use QGuiApplication instead, as it does
-   *          not depend on the QtWidgets library.
-   *
-   *          Some GUI applications provide a special batch mode ie. provide command line
-   *          arguments for executing tasks without manual intervention. In such non-GUI mode,
-   *          it is often sufficient to instantiate a plain QCoreApplication to avoid unnecessarily
-   *          initializing resources needed for a graphical user interface.
-   *
-   *          The following example shows how to dynamically create an appropriate type of
-   *          application instance:
-   *)
-  QApplication = class(QObject)
+  ///
+  /// <class>
+  /// <name>QApplication</name>
+  /// <parent>
+  ///   QObject
+  /// </parent>
+  /// <brief>
+  ///   The QApplication class manages the GUI application's control flow and main settings.
+  /// </brief>
+  /// <details>
+  ///   QApplication specializes QGuiApplication with some functionality needed for
+  ///   QWidget-based applications. It handles widget specific initialization, and
+  ///   finalization.
+  ///
+  ///   For any GUI application using Qt, there is precisely one QApplication object,
+  ///   no matter whether the application has 0, 1, 2 or more windows at any given
+  ///   time.
+  ///   For non-QWidget based Qt applications, use QGuiApplication instead, as it does
+  ///   not depend on the QtWidgets library.
+  ///
+  ///   Some GUI applications provide a special batch mode ie. provide command line
+  ///   arguments for executing tasks without manual intervention. In such non-GUI mode,
+  ///   it is often sufficient to instantiate a plain QCoreApplication to avoid unnecessarily
+  ///   initializing resources needed for a graphical user interface.
+  ///
+  ///   The following example shows how to dynamically create an appropriate type of
+  ///   application instance:
+  /// </details>
+  QApplication = class
   public
-    (**
-     * \brief This is the Pascal constructor for class QApplication.
-     *)
+    /// <constructor>
+    /// <brief>
+    ///   This is the Pascal constructor for class QApplication.
+    /// </brief>
+    /// </constructor>
     constructor Create(ArgCount: Integer; Args: PPChar); overload;
     constructor Create; overload;
     
-    (**
-     * \brief This ist the Pascal destructor for class QApplication.
-     *)
+    /// <destructor>
+    /// <brief>
+    ///   This ist the Pascal destructor for class QApplication.
+    /// </brief>
+    /// </destructor>
     destructor Destroy;
   end;
+  /// </class>
 
 implementation
 
@@ -79,7 +91,8 @@ constructor QApplication.Create(
   ArgCount: Integer;
   Args: PPChar);
 begin
-  inherited Create;
+  writeln('app create');
+  //inherited Create;
 end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
@@ -92,12 +105,13 @@ end;
 
 constructor QApplication.Create;
 begin
-  inherited Create;
+writeln('cccccc');
+  //inherited Create;
 end;
 
 destructor QApplication.Destroy;
 begin
-  inherited Destroy;
+  //inherited Destroy;
 end;
 
 {$ifdef DLLEXPORT}
@@ -148,7 +162,7 @@ end;
 {$ifdef DLLEXPORT}
 exports
   QApplication_Create  name 'QApplication_Create',
-  QApplication_Destroy name 'QApplication_Create'
+  QApplication_Destroy name 'QApplication_Destroy'
   ;
 {$endif DLLEXPORT}
 
