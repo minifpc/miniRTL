@@ -1,0 +1,5 @@
+/^QAPPLICATIONPASCAL\$_\$_QAPPLICATION_\$_\$\$\$_CREATE\$\$QAPPLICATION:/,/^[ 	]*ALIGN 4$/ {
+  /^QAPPLICATIONPASCAL/!{
+    /^[ 	]*ALIGN 4$/!d
+  }
+}

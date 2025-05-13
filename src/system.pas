@@ -6,7 +6,7 @@ unit system;
 
 {$mode objfpc}{$H+}
 {$modeswitch advancedrecords}
-{$macro on}
+{$macro off}
 
 // @@todo: reorder functions; interface vs implementation mismatch
 

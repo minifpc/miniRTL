@@ -2,142 +2,150 @@ BITS 64
 default rel
 CPU x64
 
-EXTERN	fpc_ansistr_decr_ref
+EXTERN	fpc_ansistr_assign
 ; Begin asmlist al_procedures
 
 SECTION .text
-	GLOBAL INIT$_$LOCALES
-INIT$_$LOCALES:
-	GLOBAL LOCALES_$$_init_implicit$
-LOCALES_$$_init_implicit$:
+	ALIGN 16
+	GLOBAL LOCALES_$$_SINFORMATION$$ANSISTRING
+LOCALES_$$_SINFORMATION$$ANSISTRING:
 ..@c1:
-%LINE 0+0
-		lea	rsp,[rsp-40]
-..@c3:
-		nop
-		lea	rsp,[rsp+40]
-		ret
-..@c2:
-
-SECTION .text
-	GLOBAL FINALIZE$_$LOCALES
-FINALIZE$_$LOCALES:
-	GLOBAL LOCALES_$$_finalize_implicit$
-LOCALES_$$_finalize_implicit$:
-..@c4:
+; [locales.pas]
+; [38] function sInformation: AnsiString; export; begin Exit('Information'); end;
 		push	rbp
-..@c6:
-..@c7:
+..@c3:
+..@c4:
 		mov	rbp,rsp
-..@c8:
-		lea	rsp,[rsp-32]
-		lea	rcx,[sInformation]
-		call	fpc_ansistr_decr_ref
-		lea	rcx,[sError]
-		call	fpc_ansistr_decr_ref
-		lea	rcx,[sHello]
-		call	fpc_ansistr_decr_ref
+..@c5:
+		lea	rsp,[rsp-48]
+; Var $result located at rbp-8, size=OS_64
+		mov	qword [rbp-8],rcx
+		mov	rax,qword [rbp-8]
+		mov	rcx,rax
+		lea	rdx,[..@d1]
+		call	fpc_ansistr_assign
+		jmp	..@j3
+..@j3:
 		nop
 		lea	rsp,[rbp]
 		pop	rbp
 		ret
-..@c5:
+..@c2:
+
+SECTION .text
+	ALIGN 16
+	GLOBAL LOCALES_$$_SWARNING$$ANSISTRING
+LOCALES_$$_SWARNING$$ANSISTRING:
+..@c6:
+; [39] function sWarning    : AnsiString; export; begin Exit('Warnung'    ); end;
+		push	rbp
+..@c8:
+..@c9:
+		mov	rbp,rsp
+..@c10:
+		lea	rsp,[rsp-48]
+; Var $result located at rbp-8, size=OS_64
+		mov	qword [rbp-8],rcx
+		mov	rax,qword [rbp-8]
+		mov	rcx,rax
+		lea	rdx,[..@d2]
+		call	fpc_ansistr_assign
+		jmp	..@j5
+..@j5:
+		nop
+		lea	rsp,[rbp]
+		pop	rbp
+		ret
+..@c7:
+
+SECTION .text
+	ALIGN 16
+	GLOBAL LOCALES_$$_SERROR$$ANSISTRING
+LOCALES_$$_SERROR$$ANSISTRING:
+..@c11:
+; [40] function sError      : AnsiString; export; begin Exit('Fehler'     ); end;
+		push	rbp
+..@c13:
+..@c14:
+		mov	rbp,rsp
+..@c15:
+		lea	rsp,[rsp-48]
+; Var $result located at rbp-8, size=OS_64
+		mov	qword [rbp-8],rcx
+		mov	rax,qword [rbp-8]
+		mov	rcx,rax
+		lea	rdx,[..@d3]
+		call	fpc_ansistr_assign
+		jmp	..@j7
+..@j7:
+		nop
+		lea	rsp,[rbp]
+		pop	rbp
+		ret
+..@c12:
+
+SECTION .text
+	ALIGN 16
+	GLOBAL LOCALES_$$_SHELLO$$ANSISTRING
+LOCALES_$$_SHELLO$$ANSISTRING:
+..@c16:
+; [41] function sHello      : AnsiString; export; begin Exit('Hallo'      ); end;
+		push	rbp
+..@c18:
+..@c19:
+		mov	rbp,rsp
+..@c20:
+		lea	rsp,[rsp-48]
+; Var $result located at rbp-8, size=OS_64
+		mov	qword [rbp-8],rcx
+		mov	rax,qword [rbp-8]
+		mov	rcx,rax
+		lea	rdx,[..@d4]
+		call	fpc_ansistr_assign
+		jmp	..@j9
+..@j9:
+		nop
+		lea	rsp,[rbp]
+		pop	rbp
+		ret
+..@c17:
 ; End asmlist al_procedures
-; Begin asmlist al_const
+; Begin asmlist al_typedconsts
 
 SECTION .rodata
+	ALIGN 8,DB 0
 ..@d1$strlab:
 	DW	0,1
 	DD	0
 	DQ	-1,11
 ..@d1:
-; [Locales.pas]
-; [22] sInformation: AnsiString = 'Information'; export;
-%LINE 22+0 Locales.pas
 		DB	"Information",0
 
 SECTION .rodata
+	ALIGN 8,DB 0
 ..@d2$strlab:
 	DW	0,1
 	DD	0
-	DQ	-1,6
+	DQ	-1,7
 ..@d2:
-; [23] sError: AnsiString = 'Fehler'; export;
-%LINE 23+0
-		DB	"Fehler",0
+		DB	"Warnung",0
 
 SECTION .rodata
+	ALIGN 8,DB 0
 ..@d3$strlab:
 	DW	0,1
 	DD	0
-	DQ	-1,10
+	DQ	-1,6
 ..@d3:
-; [24] sHello: AnsiString = 'Hallo Welt'; export;
-%LINE 24+0
-		DB	"Hallo Welt",0
-; End asmlist al_const
-; Begin asmlist al_typedconsts
+		DB	"Fehler",0
 
-SECTION .data
-	GLOBAL sInformation
-sInformation	DQ	..@d1
-%LINE 23+0 Locales.pas
-
-SECTION .data
-	GLOBAL sError
-sError	DQ	..@d2
-%LINE 24+0
-
-SECTION .data
-	GLOBAL sHello
-sHello	DQ	..@d3
-; [36] implementation
-%LINE 36+0
+SECTION .rodata
+	ALIGN 8,DB 0
+..@d4$strlab:
+	DW	0,1
+	DD	0
+	DQ	-1,5
+..@d4:
+		DB	"Hallo",0
 ; End asmlist al_typedconsts
-; Begin asmlist al_dwarf_frame
-
-SECTION .debug_frame
-..@c9:
-	DD	..@c11-..@c10
-..@c10:
-	DD	-1
-	DB	1,0
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_SLEB128BIT	
-	DB	16,12
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	5
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c11:
-	DD	..@c13-..@c12
-..@c12:
-	DQ	..@c1,..@c2-..@c1
-	DB	4
-	DD	..@c3-..@c1
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c13:
-	DD	..@c15-..@c14
-..@c14:
-	DQ	..@c4,..@c5-..@c4
-	DB	4
-	DD	..@c6-..@c4
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c7-..@c6
-	DB	5
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c8-..@c7
-	DB	13
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c15:
-; End asmlist al_dwarf_frame
 

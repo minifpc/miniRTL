@@ -2,40 +2,47 @@
 // Copyright(c) 2025 @paule32 and @fibonacci
 // ---------------------------------------------------------------------------------------
 unit Locales;
+{$mode delphi}
 
 interface
 uses global;
 
-// english
 {$ifdef DLLEXPORT}
-  {$ifdef LANGENU}
-  var
-    sInformation: PChar = 'Informations'; export;
-    sWarning: PChar = 'Warning'; export;
-    sError: PChar = 'Error'; export;
-    sHello: PChar = 'Hello World'; export;
-  {$endif LANGENU}
 
-  // german
-  {$ifdef LANGDEU}
-  var
-    sInformation: PChar = 'Information'; export;
-    sError: PChar = 'Fehler'; export;
-    sHello: PChar = 'Hallo Welt'; export;
-  {$endif LANGDEU}
+  function sInformation: AnsiString;
+  function sWarning: AnsiString; export;
+  function sError: AnsiString; export;
+  function sHello: AnsiString; export;
 {$endif DLLEXPORT}
 
 {$ifdef DLLIMPORT}
-var
-  sInformation: PChar; external RTLDLL;
-  sWarning: PChar; external RTLDLL;
-  sError: PChar; external RTLDLL;
-  sHello: PChar; external RTLDLL;
+  function sInformation: AnsiString; external RTLDLL;
+  function sWarning: AnsiString; external RTLDLL;
+  function sError: AnsiString; external RTLDLL;
+  function sHello: AnsiString; external RTLDLL;
 {$endif DLLIMPORT}
 
 implementation
 
-{$ifdef DLLEXPORTss}
+{$ifdef DLLEXPORT}
+  // english
+  {$ifdef LANGENU}
+  function sInformation: AnsiString; export; begin Exit('Information'); end;
+  function sWarning    : AnsiString; export; begin Exit('Warning'    ); end;
+  function sError      : AnsiString; export; begin Exit('Error'      ); end;
+  function sHello      : AnsiString; export; begin Exit('Hello'      ); end;
+  {$endif LANGENU}
+  
+  // german
+  {$ifdef LANGDEU}
+  function sInformation: AnsiString; export; begin Exit('Information'); end;
+  function sWarning    : AnsiString; export; begin Exit('Warnung'    ); end;
+  function sError      : AnsiString; export; begin Exit('Fehler'     ); end;
+  function sHello      : AnsiString; export; begin Exit('Hallo'      ); end;
+  {$endif LANGDEU}
+{$endif DLLEXPORT}
+
+{$ifdef DLLEXPORT}
 exports
   sInformation name 'sInformation',
   sWarning     name 'sWarning',

@@ -114,10 +114,6 @@ function IsGUIDEqual(const guid1, guid2: TGUID): boolean; stdcall; external RTLD
 
 {$ifdef DLLEXPORT}
 exports
-  sInformation name 'sInformation',
-  sError       name 'sError',
-  sHello       name 'sHello',
-  
   GetBsr8bit            name 'GetBsr8bit',
   
   fpchandleerror        name 'fpchandleerror',

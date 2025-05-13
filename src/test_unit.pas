@@ -16,23 +16,21 @@ procedure ExeStart;
 implementation
 
 function StringReplace(const S, OldPattern, NewPattern: string; Flags: TReplaceFlags): string; external RTLDLL;
-procedure ShowMessage(msg: PChar); stdcall; external RTLDLL;
+procedure ShowMessage(msg: AnsiString); stdcall; external RTLDLL;
+function sError: AnsiString; external RTLDLL name 'sError';
 
-var
-  sError: PChar; external RTLDLL;
-  
 procedure ExeStart; [public, alias: 'EXESTART'];
 var
-  s1, s2 : PChar;
+  s1, s2 : AnsiString;
   app    : QApplication;
 begin
-  //app := QApplication.Create;
+  app := QApplication.Create;
   try
-    s1 := PChar('hallo welt');
-    s2 := PChar(StringReplace(s1, 'hallo', 'dudu', TReplaceFlags([rfReplaceAll])));
-    ShowMessage(PChar('mutti'));
+    s1 := 'hallo welt';
+    s2 := StringReplace(s1, 'hallo', 'dudu', TReplaceFlags([rfReplaceAll]));
+    ShowMessage('mutti');
     ShowMessage(s2);
-    ShowMessage(PChar(sError));
+    ShowMessage(sError);
   finally
     //app.Free;
   end;

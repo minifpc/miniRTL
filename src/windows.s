@@ -591,22 +591,4 @@ SECTION .data
 	GLOBAL RTTI_$WINDOWS_$$_PFILETIME$indirect
 RTTI_$WINDOWS_$$_PFILETIME$indirect	DQ	RTTI_$WINDOWS_$$_PFILETIME
 ; End asmlist al_indirectglobals
-; Begin asmlist al_dwarf_frame
-
-SECTION .debug_frame
-	DD	..@c3-..@c2
-..@c2:
-	DD	-1
-	DB	1,0
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_SLEB128BIT	
-	DB	16,12
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	5
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c3:
-; End asmlist al_dwarf_frame
 

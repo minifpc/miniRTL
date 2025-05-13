@@ -1,28 +1,12 @@
 @echo off
-SET THEFILE=windows
-echo Assembling %THEFILE%
-T:\msys64\mingw64\bin\nasm.exe -f win64 -o windows.o -w-orphan-labels  windows.s
-if errorlevel 1 goto asmend
-SET THEFILE=xmm
-echo Assembling %THEFILE%
-T:\msys64\mingw64\bin\nasm.exe -f win64 -o xmm.o -w-orphan-labels  xmm.s
-if errorlevel 1 goto asmend
-SET THEFILE=rtllibimport
-echo Assembling %THEFILE%
-T:\msys64\mingw64\bin\nasm.exe -f win64 -o RTLLibImport.o -w-orphan-labels  RTLLibImport.s
-if errorlevel 1 goto asmend
-SET THEFILE=qobjectpascalexport
-echo Assembling %THEFILE%
-T:\msys64\mingw64\bin\nasm.exe -f win64 -o QObjectPascalExport.o -w-orphan-labels  QObjectPascalExport.s
-if errorlevel 1 goto asmend
-SET THEFILE=qapplicationpascal
-echo Assembling %THEFILE%
-T:\msys64\mingw64\bin\nasm.exe -f win64 -o QApplicationPascal.o -w-orphan-labels  QApplicationPascal.s
-if errorlevel 1 goto asmend
-SET THEFILE=test_unit
-echo Assembling %THEFILE%
-T:\msys64\mingw64\bin\nasm.exe -f win64 -o test_unit.o -w-orphan-labels  test_unit.s
-if errorlevel 1 goto asmend
+SET THEFILE=RTLLib.dll
+echo Linking %THEFILE%
+C:\fpcupdeluxe\fpc\bin\x86_64-win64\ld.exe -b pei-x86-64    -s --dll  --entry _DLLMainCRTStartup   --base-file base.$$$ -o RTLLib.dll link17976.res
+if errorlevel 1 goto linkend
+C:\fpcupdeluxe\fpc\bin\x86_64-win64\dlltool.exe -S C:\fpcupdeluxe\fpc\bin\x86_64-win64\as.exe -D RTLLib.dll -e exp.$$$ --base-file base.$$$ 
+if errorlevel 1 goto linkend
+C:\fpcupdeluxe\fpc\bin\x86_64-win64\ld.exe -b pei-x86-64  -s --dll  --entry _DLLMainCRTStartup   -o RTLLib.dll link17976.res exp.$$$
+if errorlevel 1 goto linkend
 goto end
 :asmend
 echo An error occurred while assembling %THEFILE%

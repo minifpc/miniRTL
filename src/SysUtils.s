@@ -18,35 +18,37 @@ EXTERN	_$dll$kernel32$GlobalAlloc
 ; Begin asmlist al_procedures
 
 SECTION .text
+	ALIGN 16
 SYSUTILS_$$_FPC_PCHAR_ANSISTR_INTERN_CHARMOVE$PCHAR$INT64$RAWBYTESTRING$INT64$INT64:
 ..@c1:
-; [SysUtils.pas]
+; [sysutils.pas]
 ; [77] begin
-%LINE 77+0 SysUtils.pas
 		push	rbp
 ..@c3:
 ..@c4:
 		mov	rbp,rsp
 ..@c5:
-		lea	rsp,[rsp-32]
-		mov	rax,rcx
-; Var src located in register rax
-		mov	rcx,rdx
-; Var srcindex located in register rcx
-		mov	rdx,r8
-; Var dst located in register rdx
-; Var dstindex located in register r9
-		mov	r8,qword [rbp+48]
-; Var len located in register r8
+		lea	rsp,[rsp-64]
+; Var src located at rbp-8, size=OS_64
+; Var srcindex located at rbp-16, size=OS_S64
+; Var dst located at rbp-24, size=OS_64
+; Var dstindex located at rbp-32, size=OS_S64
+; Var len located at rbp+48, size=OS_S64
+		mov	qword [rbp-8],rcx
+		mov	qword [rbp-16],rdx
+		mov	qword [rbp-24],r8
+		mov	qword [rbp-32],r9
 ; [78] move(src[srcindex],pbyte(pointer(dst))[dstindex],len);
-%LINE 78+0
-		mov	rdx,qword [rdx]
-		add	rdx,r9
-		add	rcx,rax
-; Var len located in register r8
+		mov	rax,qword [rbp-24]
+		mov	rax,qword [rax]
+		mov	rdx,qword [rbp-32]
+		lea	rdx,[rax+rdx*1]
+		mov	rax,qword [rbp-8]
+		mov	rcx,qword [rbp-16]
+		lea	rcx,[rax+rcx*1]
+		mov	r8,qword [rbp+48]
 		call	SYSTEM_$$_MOVE$formal$formal$QWORD
 ; [79] end;
-%LINE 79+0
 		nop
 		lea	rsp,[rbp]
 		pop	rbp
@@ -54,33 +56,35 @@ SYSUTILS_$$_FPC_PCHAR_ANSISTR_INTERN_CHARMOVE$PCHAR$INT64$RAWBYTESTRING$INT64$IN
 ..@c2:
 
 SECTION .text
+	ALIGN 16
 SYSUTILS_$$_FPC_PCHAR_PCHAR_INTERN_CHARMOVE$PCHAR$INT64$PCHAR$INT64$INT64:
 ..@c6:
 ; [82] begin
-%LINE 82+0
 		push	rbp
 ..@c8:
 ..@c9:
 		mov	rbp,rsp
 ..@c10:
-		lea	rsp,[rsp-32]
-		mov	rax,rcx
-; Var src located in register rax
-		mov	rcx,rdx
-; Var srcindex located in register rcx
-		mov	rdx,r8
-; Var dst located in register rdx
-; Var dstindex located in register r9
-		mov	r8,qword [rbp+48]
-; Var len located in register r8
+		lea	rsp,[rsp-64]
+; Var src located at rbp-8, size=OS_64
+; Var srcindex located at rbp-16, size=OS_S64
+; Var dst located at rbp-24, size=OS_64
+; Var dstindex located at rbp-32, size=OS_S64
+; Var len located at rbp+48, size=OS_S64
+		mov	qword [rbp-8],rcx
+		mov	qword [rbp-16],rdx
+		mov	qword [rbp-24],r8
+		mov	qword [rbp-32],r9
 ; [83] move(src[srcindex],dst[dstindex],len);
-%LINE 83+0
-		add	rdx,r9
-		add	rcx,rax
-; Var len located in register r8
+		mov	rdx,qword [rbp-24]
+		mov	rax,qword [rbp-32]
+		lea	rdx,[rdx+rax*1]
+		mov	rax,qword [rbp-8]
+		mov	rcx,qword [rbp-16]
+		lea	rcx,[rax+rcx*1]
+		mov	r8,qword [rbp+48]
 		call	SYSTEM_$$_MOVE$formal$formal$QWORD
 ; [84] end;
-%LINE 84+0
 		nop
 		lea	rsp,[rbp]
 		pop	rbp
@@ -88,1412 +92,1211 @@ SYSUTILS_$$_FPC_PCHAR_PCHAR_INTERN_CHARMOVE$PCHAR$INT64$PCHAR$INT64$INT64:
 ..@c7:
 
 SECTION .text
+	ALIGN 16
 	GLOBAL SYSUTILS_$$_SETSTRING$ANSISTRING$PANSICHAR$INT64
 SYSUTILS_$$_SETSTRING$ANSISTRING$PANSICHAR$INT64:
 ..@c11:
 ; [88] begin
-%LINE 88+0
-		push	rbx
-		push	rdi
-		push	rsi
-		lea	rsp,[rsp-48]
+		push	rbp
 ..@c13:
-		mov	rbx,rcx
-; Var S located in register rbx
-		mov	rsi,rdx
-; Var Buf located in register rsi
-		mov	rdi,r8
-; Var Len located in register rdi
-		mov	qword [rbx],0
+..@c14:
+		mov	rbp,rsp
+..@c15:
+		lea	rsp,[rsp-80]
+; Var S located at rbp-8, size=OS_64
+; Var Buf located at rbp-16, size=OS_64
+; Var Len located at rbp-24, size=OS_S64
+		mov	qword [rbp-8],rcx
+		mov	qword [rbp-16],rdx
+		mov	qword [rbp-24],r8
+		mov	rax,qword [rbp-8]
+		mov	qword [rax],0
 ; [89] SetLength(S,Len);
-%LINE 89+0
-		mov	rcx,rbx
-; Var Len located in register rdi
-		mov	rdx,rdi
-		xor	r8d,r8d
+		mov	rcx,qword [rbp-8]
+		mov	rdx,qword [rbp-24]
+		mov	r8d,0
 		call	fpc_ansistr_setlength
 ; [90] If (Buf<>Nil) then
-%LINE 90+0
-		test	rsi,rsi
-		je	..@j10
+		cmp	qword [rbp-16],0
+		jne	..@j9
+		jmp	..@j10
+..@j9:
 ; [91] fpc_pchar_ansistr_intern_charmove(Buf,0,S,0,Len);
-%LINE 91+0
-		mov	qword [rsp+32],rdi
-		mov	r8,rbx
-		mov	rcx,rsi
-		xor	r9,r9
-		xor	edx,edx
+		mov	rax,qword [rbp-24]
+		mov	qword [rsp+32],rax
+		mov	r8,qword [rbp-8]
+		mov	rcx,qword [rbp-16]
+		mov	r9,0
+		mov	rdx,0
 		call	SYSUTILS_$$_FPC_PCHAR_ANSISTR_INTERN_CHARMOVE$PCHAR$INT64$RAWBYTESTRING$INT64$INT64
+	ALIGN 4
 ..@j10:
 ; [92] end;
-%LINE 92+0
 		nop
-		lea	rsp,[rsp+48]
-		pop	rsi
-		pop	rdi
-		pop	rbx
+		lea	rsp,[rbp]
+		pop	rbp
 		ret
 ..@c12:
 
 SECTION .text
+	ALIGN 16
 	GLOBAL SYSUTILS_$$_STRPAS$PANSICHAR$$ANSISTRING
 SYSUTILS_$$_STRPAS$PANSICHAR$$ANSISTRING:
-..@c14:
-; [100] begin
-%LINE 100+0
-		push	rbx
-		push	rdi
-		push	rsi
-		lea	rsp,[rsp-32]
 ..@c16:
-; Var Start located in register rax
-; Var Len located in register eax
-		mov	rbx,rcx
-; Var $result located in register rbx
-		mov	rsi,rdx
-; Var P located in register rsi
+; Temps allocated between rbp-40 and rbp-28
+; [100] begin
+		push	rbp
+..@c18:
+..@c19:
+		mov	rbp,rsp
+..@c20:
+		lea	rsp,[rsp-80]
+		mov	qword [rbp-40],rbx
+; Var P located at rbp-8, size=OS_64
+; Var $result located at rbp-16, size=OS_64
+; Var Start located at rbp-24, size=OS_64
+; Var Len located at rbp-28, size=OS_S32
+		mov	qword [rbp-16],rcx
+		mov	qword [rbp-8],rdx
 ; [101] if P = nil then
-%LINE 101+0
-		test	rdx,rdx
-		jne	..@j14
+		cmp	qword [rbp-8],0
+		je	..@j13
+		jmp	..@j14
+..@j13:
 ; [102] Exit('');
-%LINE 102+0
-		mov	rcx,rbx
-		xor	edx,edx
+		mov	rax,qword [rbp-16]
+		mov	rcx,rax
+		mov	rdx,0
 		call	fpc_ansistr_assign
 		jmp	..@j11
+	ALIGN 4
 ..@j14:
-; Var Start located in register rdi
-; Var P located in register rsi
 ; [103] Start := P;
-%LINE 103+0
-		mov	rdi,rsi
+		mov	rax,qword [rbp-8]
+		mov	qword [rbp-24],rax
 ; [105] while P^ <> #0 do
-%LINE 105+0
 		jmp	..@j16
+	ALIGN 8
 ..@j15:
 ; [106] Inc(P);
-%LINE 106+0
-		inc	rsi
+		add	qword [rbp-8],1
 ..@j16:
-%LINE 105+0
-		cmp	byte [rsi],0
+		mov	rax,qword [rbp-8]
+		cmp	byte [rax],0
 		jne	..@j15
+		jmp	..@j17
+..@j17:
 ; [107] Len := P - Start;
-%LINE 107+0
-		sub	rsi,rdi
-; Var Len located in register esi
+		mov	rax,qword [rbp-8]
+		mov	rdx,qword [rbp-24]
+		sub	rax,rdx
+		mov	dword [rbp-28],eax
 ; [109] SetString(Result, Start, Len);
-%LINE 109+0
+		mov	rbx,qword [rbp-16]
 		mov	rcx,rbx
 		call	fpc_ansistr_decr_ref
 		mov	rcx,rbx
-		movsxd	r8,esi
-		mov	rdx,rdi
-; Var Start located in register rdx
+		movsxd	r8,dword [rbp-28]
+		mov	rdx,qword [rbp-24]
 		call	SYSUTILS_$$_SETSTRING$ANSISTRING$PANSICHAR$INT64
 ..@j11:
 ; [110] end;
-%LINE 110+0
-		nop
-		lea	rsp,[rsp+32]
-		pop	rsi
-		pop	rdi
-		pop	rbx
+		mov	rbx,qword [rbp-40]
+		lea	rsp,[rbp]
+		pop	rbp
 		ret
-..@c15:
+..@c17:
 
 SECTION .text
+	ALIGN 16
 SYSUTILS$_$CHATASTR1$array_of_CHAR$$ANSISTRING_$$_fin$0000001E:
-..@c17:
-; [132] end;
-%LINE 132+0
-		push	rbp
-..@c19:
-..@c20:
-		mov	rbp,rcx
 ..@c21:
+; [132] end;
+		push	rbp
+..@c23:
+..@c24:
+		mov	rbp,rcx
+..@c25:
 		lea	rsp,[rsp-32]
 ; [118] begin
-%LINE 118+0
-		lea	rcx,[rbp-8]
+		lea	rcx,[rbp-40]
 		call	fpc_ansistr_decr_ref
 		nop
 		lea	rsp,[rsp+32]
 		pop	rbp
 		ret
-..@c18:
+..@c22:
 
 SECTION .text
+	ALIGN 16
 	GLOBAL SYSUTILS_$$_CHATASTR1$array_of_CHAR$$ANSISTRING
 SYSUTILS_$$_CHATASTR1$array_of_CHAR$$ANSISTRING:
-..@c22:
-; Temps allocated between rbp-40 and rbp+0
-		push	rbp
-..@c24:
-..@c25:
-		mov	rbp,rsp
 ..@c26:
+; Temps allocated between rbp-40 and rbp-28
+		push	rbp
+..@c28:
+..@c29:
+		mov	rbp,rsp
+..@c30:
 		lea	rsp,[rsp-80]
-		mov	qword [rbp-40],rbx
-		mov	qword [rbp-32],rdi
-		mov	qword [rbp-24],rsi
-		mov	qword [rbp-16],r12
-; Var len located in register r12d
-		mov	rbx,rcx
-; Var $result located in register rbx
-		mov	rsi,rdx
-; Var A located in register rsi
-		mov	rdi,r8
-; Var $highA located in register rdi
-		mov	qword [rbp-8],0
+; Var A located at rbp-8, size=OS_64
+; Var $highA located at rbp-16, size=OS_S64
+; Var $result located at rbp-24, size=OS_64
+; Var len located at rbp-28, size=OS_S32
+		mov	qword [rbp-24],rcx
+		mov	qword [rbp-8],rdx
+		mov	qword [rbp-16],r8
+		mov	qword [rbp-40],0
 ..@j26:
 		nop
 ..@j22:
 ; [119] result := '';
-%LINE 119+0
-		mov	rcx,rbx
-		xor	edx,edx
+		mov	rax,qword [rbp-24]
+		mov	rcx,rax
+		mov	rdx,0
 		call	fpc_ansistr_assign
 ; [120] if Length(A) = 0 then
-%LINE 120+0
-		lea	rax,[rdi+1]
+		mov	rax,qword [rbp-16]
+		lea	rax,[rax+1]
 		test	rax,rax
-		jne	..@j28
+		je	..@j27
+		jmp	..@j28
+..@j27:
 ; [122] MessageBoxA(0,'Error: Char Array empty.', 'Error', 0);
-%LINE 122+0
-		xor	r9d,r9d
+		mov	r9d,0
 		lea	r8,[_$SYSUTILS$_Ld1]
 		lea	rdx,[_$SYSUTILS$_Ld2]
-		xor	ecx,ecx
+		mov	rcx,0
 		call	_$dll$user32$MessageBoxA
 ; [123] Exit('');
-%LINE 123+0
-		mov	rcx,rbx
-		xor	edx,edx
+		mov	rcx,qword [rbp-24]
+		mov	rdx,0
 		call	fpc_ansistr_assign
 		jmp	..@j24
+	ALIGN 4
 ..@j28:
 ; [125] len := 0;
-%LINE 125+0
-		xor	r12d,r12d
+		mov	dword [rbp-28],0
+	ALIGN 8
 ..@j29:
 ; [127] result := result + A[len];
-%LINE 127+0
-		movsxd	rax,r12d
-		movzx	edx,byte [rsi+rax*1]
-		xor	r8d,r8d
-		lea	rcx,[rbp-8]
+		mov	rax,qword [rbp-8]
+		movsxd	rdx,dword [rbp-28]
+		movzx	edx,byte [rax+rdx*1]
+		mov	r8d,0
+		lea	rcx,[rbp-40]
 		call	fpc_char_to_ansistr
-		mov	r8,qword [rbp-8]
-		mov	rdx,qword [rbx]
-		mov	rcx,rbx
-		xor	r9d,r9d
+		mov	r8,qword [rbp-40]
+		mov	rax,qword [rbp-24]
+		mov	rdx,qword [rax]
+		mov	rcx,qword [rbp-24]
+		mov	r9d,0
 		call	fpc_ansistr_concat
 ; [128] inc(len);
-%LINE 128+0
-		inc	r12d
+		add	dword [rbp-28],1
 ; [129] until len = Length(A);
-%LINE 129+0
-		movsxd	rax,r12d
-		lea	rdx,[rdi+1]
-		cmp	rax,rdx
-		jne	..@j29
+		movsxd	rdx,dword [rbp-28]
+		mov	rax,qword [rbp-16]
+		lea	rax,[rax+1]
+		cmp	rdx,rax
+		je	..@j31
+		jmp	..@j29
+..@j31:
 ; [131] Exit(StrPas(PAnsiChar(@A[0])));
-%LINE 131+0
-		mov	rdx,rsi
-		mov	rcx,rbx
+		mov	rdx,qword [rbp-8]
+		mov	rcx,qword [rbp-24]
 		call	SYSUTILS_$$_STRPAS$PANSICHAR$$ANSISTRING
+		jmp	..@j24
 ..@j24:
-%LINE 118+0
 		nop
 ..@j23:
 		mov	rcx,rbp
 		call	SYSUTILS$_$CHATASTR1$array_of_CHAR$$ANSISTRING_$$_fin$0000001E
-%LINE 132+0
-		mov	rbx,qword [rbp-40]
-		mov	rdi,qword [rbp-32]
-		mov	rsi,qword [rbp-24]
-		mov	r12,qword [rbp-16]
+		nop
 		lea	rsp,[rbp]
 		pop	rbp
 		ret
 	DD	1,0
 
 SECTION .text
-..@c23:
+..@c27:
 
 SECTION .text
+	ALIGN 16
 	GLOBAL SYSUTILS_$$_CHATASTR2$array_of_CHAR$LONGINT$$ANSISTRING
 SYSUTILS_$$_CHATASTR2$array_of_CHAR$LONGINT$$ANSISTRING:
-..@c27:
-; Temps allocated between rbp-32 and rbp+0
-; [138] begin
-%LINE 138+0
-		push	rbp
-..@c29:
-..@c30:
-		mov	rbp,rsp
 ..@c31:
-		lea	rsp,[rsp-64]
-		mov	qword [rbp-32],rbx
-		mov	qword [rbp-24],rdi
-		mov	qword [rbp-16],rsi
-		mov	qword [rbp-8],r12
-		mov	rbx,rcx
-; Var $result located in register rbx
-		mov	rsi,rdx
-; Var A located in register rsi
-		mov	rdi,r8
-; Var $highA located in register rdi
-		mov	r12d,r9d
-; Var BufLen located in register r12d
+; Temps allocated between rbp-40 and rbp-32
+; [138] begin
+		push	rbp
+..@c33:
+..@c34:
+		mov	rbp,rsp
+..@c35:
+		lea	rsp,[rsp-80]
+		mov	qword [rbp-40],rbx
+; Var A located at rbp-8, size=OS_64
+; Var BufLen located at rbp-16, size=OS_S32
+; Var $highA located at rbp-24, size=OS_S64
+; Var $result located at rbp-32, size=OS_64
+		mov	qword [rbp-32],rcx
+		mov	qword [rbp-8],rdx
+		mov	qword [rbp-24],r8
+		mov	dword [rbp-16],r9d
 ; [139] if (BufLen <= 0) or (Length(A) = 0) then
-%LINE 139+0
-		test	r12d,r12d
+		cmp	dword [rbp-16],0
 		jle	..@j34
-		lea	rax,[rdi+1]
+		jmp	..@j35
+..@j35:
+		mov	rax,qword [rbp-24]
+		lea	rax,[rax+1]
 		test	rax,rax
-		jne	..@j36
+		je	..@j34
+		jmp	..@j36
 ..@j34:
 ; [140] Exit('');
-%LINE 140+0
-		mov	rcx,rbx
-		xor	edx,edx
+		mov	rcx,qword [rbp-32]
+		mov	rdx,0
 		call	fpc_ansistr_assign
 		jmp	..@j32
+	ALIGN 4
 ..@j36:
 ; [141] if BufLen > Length(A) then
-%LINE 141+0
-		movsxd	rax,r12d
-		lea	rdx,[rdi+1]
-		cmp	rax,rdx
-		jng	..@j38
+		movsxd	rdx,dword [rbp-16]
+		mov	rax,qword [rbp-24]
+		lea	rax,[rax+1]
+		cmp	rdx,rax
+		jg	..@j37
+		jmp	..@j38
+..@j37:
 ; [142] BufLen := Length(A);
-%LINE 142+0
-		lea	rax,[rdi+1]
-		mov	r12d,eax
+		mov	rax,qword [rbp-24]
+		lea	rax,[rax+1]
+		mov	dword [rbp-16],eax
+	ALIGN 4
 ..@j38:
 ; [143] SetString(Result, PAnsiChar(@A[0]), BufLen);
-%LINE 143+0
+		mov	rbx,qword [rbp-32]
 		mov	rcx,rbx
 		call	fpc_ansistr_decr_ref
 		mov	rcx,rbx
-		mov	rdx,rsi
-		movsxd	r8,r12d
+		mov	rdx,qword [rbp-8]
+		movsxd	r8,dword [rbp-16]
 		call	SYSUTILS_$$_SETSTRING$ANSISTRING$PANSICHAR$INT64
 ..@j32:
 ; [144] end;
-%LINE 144+0
-		mov	rbx,qword [rbp-32]
-		mov	rdi,qword [rbp-24]
-		mov	rsi,qword [rbp-16]
-		mov	r12,qword [rbp-8]
+		mov	rbx,qword [rbp-40]
 		lea	rsp,[rbp]
 		pop	rbp
 		ret
-..@c28:
+..@c32:
 
 SECTION .text
+	ALIGN 16
 	GLOBAL SYSUTILS_$$_CHATASTR3$PANSICHAR$LONGINT$$ANSISTRING
 SYSUTILS_$$_CHATASTR3$PANSICHAR$LONGINT$$ANSISTRING:
-..@c32:
+..@c36:
+; Temps allocated between rbp-32 and rbp-24
 ; [150] begin
-%LINE 150+0
-		push	rbx
-		push	rdi
-		push	rsi
-		lea	rsp,[rsp-32]
-..@c34:
-		mov	rbx,rcx
-; Var $result located in register rbx
-		mov	rsi,rdx
-; Var P located in register rsi
-		mov	edi,r8d
-; Var BufLen located in register edi
+		push	rbp
+..@c38:
+..@c39:
+		mov	rbp,rsp
+..@c40:
+		lea	rsp,[rsp-64]
+		mov	qword [rbp-32],rbx
+; Var P located at rbp-8, size=OS_64
+; Var BufLen located at rbp-16, size=OS_S32
+; Var $result located at rbp-24, size=OS_64
+		mov	qword [rbp-24],rcx
+		mov	qword [rbp-8],rdx
+		mov	dword [rbp-16],r8d
 ; [151] if (P = nil) or (BufLen <= 0) then
-%LINE 151+0
-		test	rsi,rsi
+		cmp	qword [rbp-8],0
 		je	..@j41
-		test	edi,edi
-		jnle	..@j43
+		jmp	..@j42
+..@j42:
+		cmp	dword [rbp-16],0
+		jle	..@j41
+		jmp	..@j43
 ..@j41:
 ; [152] Exit('');
-%LINE 152+0
-		mov	rcx,rbx
-		xor	edx,edx
+		mov	rax,qword [rbp-24]
+		mov	rcx,rax
+		mov	rdx,0
 		call	fpc_ansistr_assign
 		jmp	..@j39
+	ALIGN 4
 ..@j43:
 ; [153] SetString(Result, P, BufLen);
-%LINE 153+0
+		mov	rbx,qword [rbp-24]
 		mov	rcx,rbx
 		call	fpc_ansistr_decr_ref
 		mov	rcx,rbx
-		movsxd	r8,edi
-		mov	rdx,rsi
-; Var P located in register rdx
+		movsxd	r8,dword [rbp-16]
+		mov	rdx,qword [rbp-8]
 		call	SYSUTILS_$$_SETSTRING$ANSISTRING$PANSICHAR$INT64
 ..@j39:
 ; [154] end;
-%LINE 154+0
-		nop
-		lea	rsp,[rsp+32]
-		pop	rsi
-		pop	rdi
-		pop	rbx
+		mov	rbx,qword [rbp-32]
+		lea	rsp,[rbp]
+		pop	rbp
 		ret
-..@c33:
+..@c37:
 
 SECTION .text
+	ALIGN 16
 	GLOBAL SYSUTILS_$$_STRALLOC$CARDINAL$$PCHAR
 SYSUTILS_$$_STRALLOC$CARDINAL$$PCHAR:
-..@c35:
+..@c41:
 ; [158] begin
-%LINE 158+0
-		lea	rsp,[rsp-40]
-..@c37:
-; Var $result located at rsp+32, size=OS_64
-		mov	eax,ecx
-; Var Size located in register eax
+		push	rbp
+..@c43:
+..@c44:
+		mov	rbp,rsp
+..@c45:
+		lea	rsp,[rsp-48]
+; Var Size located at rbp-8, size=OS_32
+; Var $result located at rbp-16, size=OS_64
+		mov	dword [rbp-8],ecx
 ; [159] GetMem(result, Size + 1); // +1 f..r Nullterminator
-%LINE 159+0
+		mov	eax,dword [rbp-8]
 		lea	rdx,[rax+1]
-		lea	rcx,[rsp+32]
+		lea	rcx,[rbp-16]
 		call	SYSTEM_$$_GETMEM$POINTER$QWORD$$POINTER
 ; [160] result[0] := #0;          // sicherstellen, dass String leer initialisiert ist
-%LINE 160+0
-		mov	rax,qword [rsp+32]
+		mov	rax,qword [rbp-16]
 		mov	byte [rax],0
 ; [161] end;
-%LINE 161+0
-		mov	rax,qword [rsp+32]
+		mov	rax,qword [rbp-16]
 		nop
-		lea	rsp,[rsp+40]
-		ret
-..@c36:
-
-SECTION .text
-	GLOBAL SYSUTILS_$$_STRDISPOSE$PCHAR
-SYSUTILS_$$_STRDISPOSE$PCHAR:
-..@c38:
-; [164] begin
-%LINE 164+0
-		lea	rsp,[rsp-40]
-..@c40:
-		mov	rax,rcx
-; Var P located in register rax
-; [165] if P <> nil then
-%LINE 165+0
-		test	rcx,rcx
-		je	..@j49
-; [166] FreeMem(P);
-%LINE 166+0
-		mov	rcx,rax
-		call	SYSTEM_$$_FREEMEM$POINTER$$QWORD
-..@j49:
-; [167] end;
-%LINE 167+0
-		nop
-		lea	rsp,[rsp+40]
-		ret
-..@c39:
-
-SECTION .text
-	GLOBAL SYSUTILS_$$_STRCOPY_$PCHAR$PCHAR$$PCHAR
-SYSUTILS_$$_STRCOPY_$PCHAR$PCHAR$$PCHAR:
-..@c41:
-; [174] begin
-%LINE 174+0
-		push	rbx
-		push	rdi
-		push	rsi
-		lea	rsp,[rsp-32]
-..@c43:
-; Var $result located in register rax
-; Var I located in register edx
-; Var L located in register eax
-		mov	rbx,rcx
-; Var Dest located in register rbx
-		mov	rsi,rdx
-; Var Source located in register rsi
-; Var Source located in register rsi
-; [175] L      := StrLen(Source);
-%LINE 175+0
-		mov	rcx,rsi
-		call	SYSTEM_$$_STRLEN$PCHAR$$LONGWORD
-		mov	edi,eax
-; Var L located in register edi
-; [176] Dest   := StrAlloc(L + 1);
-%LINE 176+0
-		lea	ecx,[edi+1]
-		call	SYSUTILS_$$_STRALLOC$CARDINAL$$PCHAR
-		mov	qword [rbx],rax
-; [178] for I := 0 to L - 1 do
-%LINE 178+0
-		lea	eax,[edi-1]
-		test	eax,eax
-		jnge	..@j53
-		mov	edx,-1
-..@j54:
-		inc	edx
-; [179] Dest  [i] := Source[i];
-%LINE 179+0
-		mov	r9,qword [rbx]
-		movsxd	rcx,edx
-		mov	r8b,byte [rsi+rcx*1]
-		mov	byte [r9+rcx*1],r8b
-%LINE 178+0
-		cmp	eax,edx
-		jnle	..@j54
-..@j53:
-; [180] Dest  [L] := #0;
-%LINE 180+0
-		mov	rax,qword [rbx]
-		movsxd	rdi,edi
-		mov	byte [rax+rdi*1],0
-; Var $result located in register rax
-; [182] Exit(Dest);
-%LINE 182+0
-		mov	rax,qword [rbx]
-; [183] end;
-%LINE 183+0
-		nop
-		lea	rsp,[rsp+32]
-		pop	rsi
-		pop	rdi
-		pop	rbx
+		lea	rsp,[rbp]
+		pop	rbp
 		ret
 ..@c42:
 
 SECTION .text
+	ALIGN 16
+	GLOBAL SYSUTILS_$$_STRDISPOSE$PCHAR
+SYSUTILS_$$_STRDISPOSE$PCHAR:
+..@c46:
+; [164] begin
+		push	rbp
+..@c48:
+..@c49:
+		mov	rbp,rsp
+..@c50:
+		lea	rsp,[rsp-48]
+; Var P located at rbp-8, size=OS_64
+		mov	qword [rbp-8],rcx
+; [165] if P <> nil then
+		cmp	qword [rbp-8],0
+		jne	..@j48
+		jmp	..@j49
+..@j48:
+; [166] FreeMem(P);
+		mov	rax,qword [rbp-8]
+		mov	rcx,rax
+		call	SYSTEM_$$_FREEMEM$POINTER$$QWORD
+	ALIGN 4
+..@j49:
+; [167] end;
+		nop
+		lea	rsp,[rbp]
+		pop	rbp
+		ret
+..@c47:
+
+SECTION .text
+	ALIGN 16
+	GLOBAL SYSUTILS_$$_STRCOPY_$PCHAR$PCHAR$$PCHAR
+SYSUTILS_$$_STRCOPY_$PCHAR$PCHAR$$PCHAR:
+..@c51:
+; [174] begin
+		push	rbp
+..@c53:
+..@c54:
+		mov	rbp,rsp
+..@c55:
+		lea	rsp,[rsp-64]
+; Var Dest located at rbp-8, size=OS_64
+; Var Source located at rbp-16, size=OS_64
+; Var $result located at rbp-24, size=OS_64
+; Var I located at rbp-28, size=OS_S32
+; Var L located at rbp-32, size=OS_S32
+		mov	qword [rbp-8],rcx
+		mov	qword [rbp-16],rdx
+; [175] L      := StrLen(Source);
+		mov	rax,qword [rbp-16]
+		mov	rcx,rax
+		call	SYSTEM_$$_STRLEN$PCHAR$$LONGWORD
+		mov	dword [rbp-32],eax
+; [176] Dest   := StrAlloc(L + 1);
+		mov	eax,dword [rbp-32]
+		lea	ecx,[eax+1]
+		call	SYSUTILS_$$_STRALLOC$CARDINAL$$PCHAR
+		mov	rdx,qword [rbp-8]
+		mov	qword [rdx],rax
+; [178] for I := 0 to L - 1 do
+		mov	eax,dword [rbp-32]
+		lea	eax,[eax-1]
+		cmp	eax,0
+		jge	..@j52
+		jmp	..@j53
+..@j52:
+		mov	dword [rbp-28],-1
+	ALIGN 8
+..@j54:
+		mov	edx,dword [rbp-28]
+		lea	edx,[edx+1]
+		mov	dword [rbp-28],edx
+; [179] Dest  [i] := Source[i];
+		mov	rdx,qword [rbp-8]
+		mov	r8,qword [rdx]
+		movsxd	r9,dword [rbp-28]
+		mov	rdx,qword [rbp-16]
+		movsxd	rcx,dword [rbp-28]
+		mov	dl,byte [rdx+rcx*1]
+		mov	byte [r8+r9*1],dl
+		cmp	eax,dword [rbp-28]
+		jle	..@j56
+		jmp	..@j54
+..@j56:
+	ALIGN 4
+..@j53:
+; [180] Dest  [L] := #0;
+		mov	rax,qword [rbp-8]
+		mov	rax,qword [rax]
+		movsxd	rdx,dword [rbp-32]
+		mov	byte [rax+rdx*1],0
+; [182] Exit(Dest);
+		mov	rax,qword [rbp-8]
+		mov	rax,qword [rax]
+		mov	qword [rbp-24],rax
+		jmp	..@j50
+..@j50:
+; [183] end;
+		mov	rax,qword [rbp-24]
+		nop
+		lea	rsp,[rbp]
+		pop	rbp
+		ret
+..@c52:
+
+SECTION .text
+	ALIGN 16
 	GLOBAL SYSUTILS_$$_STRCOPY$PCHAR$PCHAR$$PCHAR
 SYSUTILS_$$_STRCOPY$PCHAR$PCHAR$$PCHAR:
-..@c44:
+..@c56:
 ; [185] begin
-%LINE 185+0
-		push	rbx
-		push	rsi
-		lea	rsp,[rsp-40]
-..@c46:
-; Var $result located in register rax
-		mov	rbx,rcx
-; Var Dest located in register rbx
-		mov	rsi,rdx
-; Var Source located in register rsi
+		push	rbp
+..@c58:
+..@c59:
+		mov	rbp,rsp
+..@c60:
+		lea	rsp,[rsp-64]
+; Var Dest located at rbp-8, size=OS_64
+; Var Source located at rbp-16, size=OS_64
+; Var $result located at rbp-24, size=OS_64
+		mov	qword [rbp-8],rcx
+		mov	qword [rbp-16],rdx
 ; [186] if Dest = nil then
-%LINE 186+0
-		cmp	qword [rbx],0
-		jne	..@j60
+		mov	rax,qword [rbp-8]
+		cmp	qword [rax],0
+		je	..@j59
+		jmp	..@j60
+..@j59:
 ; [187] Dest := StrAlloc(StrLen(Source) + 1);
-%LINE 187+0
-		mov	rcx,rsi
+		mov	rcx,qword [rbp-16]
 		call	SYSTEM_$$_STRLEN$PCHAR$$LONGWORD
 		lea	ecx,[eax+1]
 		call	SYSUTILS_$$_STRALLOC$CARDINAL$$PCHAR
-		mov	qword [rbx],rax
+		mov	rdx,qword [rbp-8]
+		mov	qword [rdx],rax
+	ALIGN 4
 ..@j60:
 ; [188] StrCopy_(Dest, Source);
-%LINE 188+0
-		mov	rcx,rbx
-		mov	rdx,rsi
-; Var Source located in register rdx
+		mov	rcx,qword [rbp-8]
+		mov	rdx,qword [rbp-16]
 		call	SYSUTILS_$$_STRCOPY_$PCHAR$PCHAR$$PCHAR
-; Var $result located in register rax
 ; [189] Exit(Dest);
-%LINE 189+0
-		mov	rax,qword [rbx]
+		mov	rax,qword [rbp-8]
+		mov	rax,qword [rax]
+		mov	qword [rbp-24],rax
+		jmp	..@j57
+..@j57:
 ; [190] end;
-%LINE 190+0
+		mov	rax,qword [rbp-24]
 		nop
-		lea	rsp,[rsp+40]
-		pop	rsi
-		pop	rbx
-		ret
-..@c45:
-
-SECTION .text
-	GLOBAL SYSUTILS_$$_STRCAT_$PCHAR$PCHAR$$PCHAR
-SYSUTILS_$$_STRCAT_$PCHAR$PCHAR$$PCHAR:
-..@c47:
-; [205] begin
-%LINE 205+0
-		push	rbx
-		push	rdi
-		push	rsi
-		push	r12
-		lea	rsp,[rsp-40]
-..@c49:
-; Var $result located in register rax
-; Var D located in register rax
-; Var L located in register eax
-; Var I located in register r12d
-; Var J located in register edx
-		mov	rbx,rcx
-; Var Dest located in register rbx
-		mov	rsi,rdx
-; Var Source located in register rsi
-; [206] L := StrLen(Dest) + StrLen(Source) + 1;
-%LINE 206+0
-		mov	rcx,qword [rbx]
-		call	SYSTEM_$$_STRLEN$PCHAR$$LONGWORD
-		mov	edi,eax
-; Var Source located in register rsi
-		mov	rcx,rsi
-		call	SYSTEM_$$_STRLEN$PCHAR$$LONGWORD
-		add	eax,edi
-		lea	ecx,[eax+1]
-; Var L located in register ecx
-; [207] D := StrAlloc(L);
-%LINE 207+0
-		call	SYSUTILS_$$_STRALLOC$CARDINAL$$PCHAR
-		mov	rdi,rax
-; Var D located in register rdi
-; [209] for i := 0 to StrLen(Dest) - 1 do
-%LINE 209+0
-		mov	rcx,qword [rbx]
-		call	SYSTEM_$$_STRLEN$PCHAR$$LONGWORD
-		dec	eax
-		test	eax,eax
-		jnge	..@j64
-		mov	r12d,-1
-..@j65:
-		inc	r12d
-; [210] D[i] := Dest[i];
-%LINE 210+0
-		movsxd	rdx,r12d
-		mov	rcx,qword [rbx]
-		mov	cl,byte [rcx+rdx*1]
-		mov	byte [rdi+rdx*1],cl
-%LINE 209+0
-		cmp	eax,r12d
-		jnle	..@j65
-..@j64:
-; Var Source located in register rsi
-; [212] for J := 0 to StrLen(Source) - 1 do
-%LINE 212+0
-		mov	rcx,rsi
-		call	SYSTEM_$$_STRLEN$PCHAR$$LONGWORD
-		dec	eax
-		test	eax,eax
-		jnge	..@j69
-		mov	edx,-1
-..@j70:
-		inc	edx
-; [213] D[i + j + 1] := Source[J];
-%LINE 213+0
-		movsxd	rcx,r12d
-		movsxd	r8,edx
-		lea	r9,[rcx+r8]
-		mov	cl,byte [rsi+r8*1]
-		mov	byte [rdi+r9*1+1],cl
-%LINE 212+0
-		cmp	eax,edx
-		jnle	..@j70
-..@j69:
-; [214] D[i + J + 2] := #0;
-%LINE 214+0
-		movsxd	r12,r12d
-		movsxd	rdx,edx
-		lea	rax,[r12+rdx]
-		mov	byte [rdi+rax*1+2],0
-; [216] Dest := D;
-%LINE 216+0
-		mov	rax,rdi
-; Var D located in register rax
-		mov	qword [rbx],rax
-; Var $result located in register rax
-; Var D located in register rax
-; [218] end;
-%LINE 218+0
-		nop
-		lea	rsp,[rsp+40]
-		pop	r12
-		pop	rsi
-		pop	rdi
-		pop	rbx
-		ret
-..@c48:
-
-SECTION .text
-	GLOBAL SYSUTILS_$$_STRCAT$PCHAR$PCHAR$$PCHAR
-SYSUTILS_$$_STRCAT$PCHAR$PCHAR$$PCHAR:
-..@c50:
-; [220] begin
-%LINE 220+0
-		push	rbx
-		lea	rsp,[rsp-32]
-..@c52:
-; Var $result located in register rax
-		mov	rbx,rcx
-; Var Dest located in register rbx
-; Var Source located in register rdx
-; Var Source located in register rdx
-; [221] StrCat_(Dest, Source);
-%LINE 221+0
-		call	SYSUTILS_$$_STRCAT_$PCHAR$PCHAR$$PCHAR
-; Var $result located in register rax
-; [222] Exit(Dest);
-%LINE 222+0
-		mov	rax,qword [rbx]
-; [223] end;
-%LINE 223+0
-		nop
-		lea	rsp,[rsp+32]
-		pop	rbx
-		ret
-..@c51:
-
-SECTION .text
-	GLOBAL SYSUTILS_$$_INTTOSTRCRT32$LONGINT$$PCHAR
-SYSUTILS_$$_INTTOSTRCRT32$LONGINT$$PCHAR:
-..@c53:
-; [243] begin
-%LINE 243+0
-		push	rbx
-		push	rsi
-		lea	rsp,[rsp-56]
-..@c55:
-; Var $result located in register rax
-; Var Buffer located at rsp+32, size=OS_NO
-; Var I located in register eax
-		mov	ebx,ecx
-; Var Value located in register ebx
-; [244] result := StrAlloc(16);
-%LINE 244+0
-		mov	ecx,16
-		call	SYSUTILS_$$_STRALLOC$CARDINAL$$PCHAR
-		mov	rsi,rax
-; Var $result located in register rsi
-; [245] _itoa(Value, Buffer, 10);
-%LINE 245+0
-		lea	rdx,[rsp+32]
-		mov	ecx,ebx
-; Var Value located in register ecx
-		mov	r8d,10
-		call	_$dll$msvcrt$_itoa
-; Var I located in register edx
-; [246] i := 0;
-%LINE 246+0
-		xor	edx,edx
-..@j77:
-; [248] result[i] := Buffer[i];
-%LINE 248+0
-		movsxd	rax,edx
-		mov	ecx,edx
-		mov	cl,byte [rsp+rcx*1+32]
-		mov	byte [rsi+rax*1],cl
-; [249] inc(i);
-%LINE 249+0
-		inc	edx
-; [250] until i = Length(Buffer);
-%LINE 250+0
-		movsxd	rax,edx
-		cmp	rax,17
-		jne	..@j77
-; [251] result[16] := #0;
-%LINE 251+0
-		mov	byte [rsi+16],0
-; [252] end;
-%LINE 252+0
-		mov	rax,rsi
-		nop
-		lea	rsp,[rsp+56]
-		pop	rsi
-		pop	rbx
-		ret
-..@c54:
-
-SECTION .text
-	GLOBAL SYSUTILS_$$_INTTOSTRCRT64$INT64$$PCHAR
-SYSUTILS_$$_INTTOSTRCRT64$INT64$$PCHAR:
-..@c56:
-; [257] begin
-%LINE 257+0
-		push	rbx
-		push	rsi
-		lea	rsp,[rsp-72]
-..@c58:
-; Var $result located in register rax
-; Var Buffer located at rsp+32, size=OS_NO
-; Var I located in register eax
-		mov	rbx,rcx
-; Var Value located in register rbx
-; [258] result := StrAlloc(32);
-%LINE 258+0
-		mov	ecx,32
-		call	SYSUTILS_$$_STRALLOC$CARDINAL$$PCHAR
-		mov	rsi,rax
-; Var $result located in register rsi
-; [259] _i64toa(Value, Buffer, 10);
-%LINE 259+0
-		lea	rdx,[rsp+32]
-		mov	rcx,rbx
-; Var Value located in register rcx
-		mov	r8d,10
-		call	_$dll$msvcrt$_i64toa
-; Var I located in register edx
-; [260] i := 0;
-%LINE 260+0
-		xor	edx,edx
-..@j82:
-; [262] result[i] := Buffer[i];
-%LINE 262+0
-		movsxd	rax,edx
-		mov	ecx,edx
-		mov	cl,byte [rsp+rcx*1+32]
-		mov	byte [rsi+rax*1],cl
-; [263] inc(i);
-%LINE 263+0
-		inc	edx
-; [264] until i = Length(Buffer);
-%LINE 264+0
-		movsxd	rax,edx
-		cmp	rax,33
-		jne	..@j82
-; [265] result[32] := #0;
-%LINE 265+0
-		mov	byte [rsi+32],0
-; [266] end;
-%LINE 266+0
-		mov	rax,rsi
-		nop
-		lea	rsp,[rsp+72]
-		pop	rsi
-		pop	rbx
+		lea	rsp,[rbp]
+		pop	rbp
 		ret
 ..@c57:
 
 SECTION .text
+	ALIGN 16
+	GLOBAL SYSUTILS_$$_STRCAT_$PCHAR$PCHAR$$PCHAR
+SYSUTILS_$$_STRCAT_$PCHAR$PCHAR$$PCHAR:
+..@c61:
+; Temps allocated between rbp-56 and rbp-44
+; [205] begin
+		push	rbp
+..@c63:
+..@c64:
+		mov	rbp,rsp
+..@c65:
+		lea	rsp,[rsp-96]
+		mov	qword [rbp-56],rbx
+; Var Dest located at rbp-8, size=OS_64
+; Var Source located at rbp-16, size=OS_64
+; Var $result located at rbp-24, size=OS_64
+; Var D located at rbp-32, size=OS_64
+; Var L located at rbp-36, size=OS_S32
+; Var I located at rbp-40, size=OS_S32
+; Var J located at rbp-44, size=OS_S32
+		mov	qword [rbp-8],rcx
+		mov	qword [rbp-16],rdx
+; [206] L := StrLen(Dest) + StrLen(Source) + 1;
+		mov	rax,qword [rbp-8]
+		mov	rcx,qword [rax]
+		call	SYSTEM_$$_STRLEN$PCHAR$$LONGWORD
+		mov	ebx,eax
+		mov	rcx,qword [rbp-16]
+		call	SYSTEM_$$_STRLEN$PCHAR$$LONGWORD
+		lea	eax,[ebx+eax]
+		lea	eax,[eax+1]
+		mov	dword [rbp-36],eax
+; [207] D := StrAlloc(L);
+		mov	ecx,dword [rbp-36]
+		call	SYSUTILS_$$_STRALLOC$CARDINAL$$PCHAR
+		mov	qword [rbp-32],rax
+; [209] for i := 0 to StrLen(Dest) - 1 do
+		mov	rax,qword [rbp-8]
+		mov	rcx,qword [rax]
+		call	SYSTEM_$$_STRLEN$PCHAR$$LONGWORD
+		sub	eax,1
+		cmp	eax,0
+		jge	..@j63
+		jmp	..@j64
+..@j63:
+		mov	dword [rbp-40],-1
+	ALIGN 8
+..@j65:
+		mov	edx,dword [rbp-40]
+		lea	edx,[edx+1]
+		mov	dword [rbp-40],edx
+; [210] D[i] := Dest[i];
+		mov	rdx,qword [rbp-8]
+		mov	rdx,qword [rdx]
+		movsxd	rcx,dword [rbp-40]
+		mov	r8,qword [rbp-32]
+		movsxd	r9,dword [rbp-40]
+		mov	dl,byte [rdx+rcx*1]
+		mov	byte [r8+r9*1],dl
+		cmp	eax,dword [rbp-40]
+		jle	..@j67
+		jmp	..@j65
+..@j67:
+	ALIGN 4
+..@j64:
+; [212] for J := 0 to StrLen(Source) - 1 do
+		mov	rcx,qword [rbp-16]
+		call	SYSTEM_$$_STRLEN$PCHAR$$LONGWORD
+		sub	eax,1
+		cmp	eax,0
+		jge	..@j68
+		jmp	..@j69
+..@j68:
+		mov	dword [rbp-44],-1
+	ALIGN 8
+..@j70:
+		mov	edx,dword [rbp-44]
+		lea	edx,[edx+1]
+		mov	dword [rbp-44],edx
+; [213] D[i + j + 1] := Source[J];
+		mov	r9,qword [rbp-32]
+		movsxd	rcx,dword [rbp-40]
+		movsxd	rdx,dword [rbp-44]
+		lea	rdx,[rcx+rdx]
+		lea	r8,[rdx+1]
+		mov	rcx,qword [rbp-16]
+		movsxd	rdx,dword [rbp-44]
+		mov	dl,byte [rcx+rdx*1]
+		mov	byte [r9+r8*1],dl
+		cmp	eax,dword [rbp-44]
+		jle	..@j72
+		jmp	..@j70
+..@j72:
+	ALIGN 4
+..@j69:
+; [214] D[i + J + 2] := #0;
+		mov	rcx,qword [rbp-32]
+		movsxd	rdx,dword [rbp-40]
+		movsxd	rax,dword [rbp-44]
+		lea	rax,[rdx+rax]
+		lea	rax,[rax+2]
+		mov	byte [rcx+rax*1],0
+; [216] Dest := D;
+		mov	rdx,qword [rbp-8]
+		mov	rax,qword [rbp-32]
+		mov	qword [rdx],rax
+; [217] Exit(D);
+		mov	rax,qword [rbp-32]
+		mov	qword [rbp-24],rax
+		jmp	..@j61
+..@j61:
+; [218] end;
+		mov	rax,qword [rbp-24]
+		mov	rbx,qword [rbp-56]
+		lea	rsp,[rbp]
+		pop	rbp
+		ret
+..@c62:
+
+SECTION .text
+	ALIGN 16
+	GLOBAL SYSUTILS_$$_STRCAT$PCHAR$PCHAR$$PCHAR
+SYSUTILS_$$_STRCAT$PCHAR$PCHAR$$PCHAR:
+..@c66:
+; [220] begin
+		push	rbp
+..@c68:
+..@c69:
+		mov	rbp,rsp
+..@c70:
+		lea	rsp,[rsp-64]
+; Var Dest located at rbp-8, size=OS_64
+; Var Source located at rbp-16, size=OS_64
+; Var $result located at rbp-24, size=OS_64
+		mov	qword [rbp-8],rcx
+		mov	qword [rbp-16],rdx
+; [221] StrCat_(Dest, Source);
+		mov	rax,qword [rbp-8]
+		mov	rcx,rax
+		mov	rdx,qword [rbp-16]
+		call	SYSUTILS_$$_STRCAT_$PCHAR$PCHAR$$PCHAR
+; [222] Exit(Dest);
+		mov	rax,qword [rbp-8]
+		mov	rax,qword [rax]
+		mov	qword [rbp-24],rax
+		jmp	..@j73
+..@j73:
+; [223] end;
+		mov	rax,qword [rbp-24]
+		nop
+		lea	rsp,[rbp]
+		pop	rbp
+		ret
+..@c67:
+
+SECTION .text
+	ALIGN 16
+	GLOBAL SYSUTILS_$$_INTTOSTRCRT32$LONGINT$$PCHAR
+SYSUTILS_$$_INTTOSTRCRT32$LONGINT$$PCHAR:
+..@c71:
+; [243] begin
+		push	rbp
+..@c73:
+..@c74:
+		mov	rbp,rsp
+..@c75:
+		lea	rsp,[rsp-80]
+; Var Value located at rbp-8, size=OS_S32
+; Var $result located at rbp-16, size=OS_64
+; Var Buffer located at rbp-36, size=OS_NO
+; Var I located at rbp-40, size=OS_S32
+		mov	dword [rbp-8],ecx
+; [244] result := StrAlloc(16);
+		mov	eax,16
+		mov	ecx,eax
+		call	SYSUTILS_$$_STRALLOC$CARDINAL$$PCHAR
+		mov	qword [rbp-16],rax
+; [245] _itoa(Value, Buffer, 10);
+		lea	rdx,[rbp-36]
+		mov	ecx,dword [rbp-8]
+		mov	r8d,10
+		call	_$dll$msvcrt$_itoa
+; [246] i := 0;
+		mov	dword [rbp-40],0
+	ALIGN 8
+..@j77:
+; [248] result[i] := Buffer[i];
+		mov	rdx,qword [rbp-16]
+		movsxd	rcx,dword [rbp-40]
+		mov	eax,dword [rbp-40]
+		mov	al,byte [rbp+rax*1-36]
+		mov	byte [rdx+rcx*1],al
+; [249] inc(i);
+		add	dword [rbp-40],1
+; [250] until i = Length(Buffer);
+		movsxd	rax,dword [rbp-40]
+		cmp	rax,17
+		je	..@j79
+		jmp	..@j77
+..@j79:
+; [251] result[16] := #0;
+		mov	rax,qword [rbp-16]
+		mov	byte [rax+16],0
+; [252] end;
+		mov	rax,qword [rbp-16]
+		nop
+		lea	rsp,[rbp]
+		pop	rbp
+		ret
+..@c72:
+
+SECTION .text
+	ALIGN 16
+	GLOBAL SYSUTILS_$$_INTTOSTRCRT64$INT64$$PCHAR
+SYSUTILS_$$_INTTOSTRCRT64$INT64$$PCHAR:
+..@c76:
+; [257] begin
+		push	rbp
+..@c78:
+..@c79:
+		mov	rbp,rsp
+..@c80:
+		lea	rsp,[rsp-96]
+; Var Value located at rbp-8, size=OS_S64
+; Var $result located at rbp-16, size=OS_64
+; Var Buffer located at rbp-52, size=OS_NO
+; Var I located at rbp-56, size=OS_S32
+		mov	qword [rbp-8],rcx
+; [258] result := StrAlloc(32);
+		mov	eax,32
+		mov	ecx,eax
+		call	SYSUTILS_$$_STRALLOC$CARDINAL$$PCHAR
+		mov	qword [rbp-16],rax
+; [259] _i64toa(Value, Buffer, 10);
+		lea	rdx,[rbp-52]
+		mov	rcx,qword [rbp-8]
+		mov	r8d,10
+		call	_$dll$msvcrt$_i64toa
+; [260] i := 0;
+		mov	dword [rbp-56],0
+	ALIGN 8
+..@j82:
+; [262] result[i] := Buffer[i];
+		mov	rdx,qword [rbp-16]
+		movsxd	rcx,dword [rbp-56]
+		mov	eax,dword [rbp-56]
+		mov	al,byte [rbp+rax*1-52]
+		mov	byte [rdx+rcx*1],al
+; [263] inc(i);
+		add	dword [rbp-56],1
+; [264] until i = Length(Buffer);
+		movsxd	rax,dword [rbp-56]
+		cmp	rax,33
+		je	..@j84
+		jmp	..@j82
+..@j84:
+; [265] result[32] := #0;
+		mov	rax,qword [rbp-16]
+		mov	byte [rax+32],0
+; [266] end;
+		mov	rax,qword [rbp-16]
+		nop
+		lea	rsp,[rbp]
+		pop	rbp
+		ret
+..@c77:
+
+SECTION .text
+	ALIGN 16
 	GLOBAL SYSUTILS_$$_INTTOSTR$LONGINT$$PCHAR
 SYSUTILS_$$_INTTOSTR$LONGINT$$PCHAR:
-..@c59:
+..@c81:
 ; [268] function IntToStr(Value: Integer): PChar; stdcall; overload; begin result := IntToStrCRT32(Value); end;
-%LINE 268+0
-		lea	rsp,[rsp-40]
-..@c61:
-; Var $result located in register rax
-; Var Value located in register ecx
-; Var Value located in register ecx
+		push	rbp
+..@c83:
+..@c84:
+		mov	rbp,rsp
+..@c85:
+		lea	rsp,[rsp-48]
+; Var Value located at rbp-8, size=OS_S32
+; Var $result located at rbp-16, size=OS_64
+		mov	dword [rbp-8],ecx
+		mov	eax,dword [rbp-8]
+		mov	ecx,eax
 		call	SYSUTILS_$$_INTTOSTRCRT32$LONGINT$$PCHAR
-; Var $result located in register rax
+		mov	qword [rbp-16],rax
+		mov	rax,qword [rbp-16]
 		nop
-		lea	rsp,[rsp+40]
+		lea	rsp,[rbp]
+		pop	rbp
 		ret
-..@c60:
+..@c82:
 
 SECTION .text
+	ALIGN 16
 	GLOBAL SYSUTILS_$$_INTTOSTR$INT64$$PCHAR
 SYSUTILS_$$_INTTOSTR$INT64$$PCHAR:
-..@c62:
+..@c86:
 ; [269] function IntToStr(Value:   Int64): PChar; stdcall; overload; begin result := IntToStrCRT64(Value); end;
-%LINE 269+0
-		lea	rsp,[rsp-40]
-..@c64:
-; Var $result located in register rax
-; Var Value located in register rcx
-; Var Value located in register rcx
+		push	rbp
+..@c88:
+..@c89:
+		mov	rbp,rsp
+..@c90:
+		lea	rsp,[rsp-48]
+; Var Value located at rbp-8, size=OS_S64
+; Var $result located at rbp-16, size=OS_64
+		mov	qword [rbp-8],rcx
+		mov	rax,qword [rbp-8]
+		mov	rcx,rax
 		call	SYSUTILS_$$_INTTOSTRCRT64$INT64$$PCHAR
-; Var $result located in register rax
+		mov	qword [rbp-16],rax
+		mov	rax,qword [rbp-16]
 		nop
-		lea	rsp,[rsp+40]
+		lea	rsp,[rbp]
+		pop	rbp
 		ret
-..@c63:
+..@c87:
 
 SECTION .text
+	ALIGN 16
 	GLOBAL SYSUTILS_$$_UINTTOSTRA$QWORD$$ANSISTRING
 SYSUTILS_$$_UINTTOSTRA$QWORD$$ANSISTRING:
-..@c65:
+..@c91:
 ; [285] begin
-%LINE 285+0
-		lea	rsp,[rsp-72]
-..@c67:
-; Var temp located at rsp+32, size=OS_NO
-; Var i located in register eax
-; Var $result located in register rcx
-		mov	r8,rdx
-; Var Value located in register r8
-; Var i located in register eax
+		push	rbp
+..@c93:
+..@c94:
+		mov	rbp,rsp
+..@c95:
+		lea	rsp,[rsp-96]
+; Var Value located at rbp-8, size=OS_64
+; Var $result located at rbp-16, size=OS_64
+; Var temp located at rbp-48, size=OS_NO
+; Var i located at rbp-52, size=OS_S32
+		mov	qword [rbp-16],rcx
+		mov	qword [rbp-8],rdx
 ; [286] i := High(temp);
-%LINE 286+0
-		mov	eax,31
+		mov	dword [rbp-52],31
 ; [287] temp[i] := #0;
-%LINE 287+0
-		mov	byte [rsp+63],0
-; Var i located in register r10d
-%LINE 285+0
-		mov	r10d,30
+		mov	eax,dword [rbp-52]
+		mov	byte [rbp+rax*1-48],0
+; [288] Dec(i);
+		sub	dword [rbp-52],1
+	ALIGN 8
 ..@j91:
 ; [291] temp[i] := Char(Ord('0') + (Value mod 10));
-%LINE 291+0
-		mov	r9,r8
+		mov	rcx,qword [rbp-8]
 		mov	rax,-858993459
-		mul	r9
+		mul	rcx
 		shr	rdx,3
-		mov	eax,10
+		mov	rax,10
 		imul	rdx,rax
-		sub	r9,rdx
-		lea	rax,[r9+48]
-		mov	edx,r10d
-		mov	byte [rsp+rdx*1+32],al
+		sub	rcx,rdx
+		lea	rax,[rcx+48]
+		mov	edx,dword [rbp-52]
+		mov	byte [rbp+rdx*1-48],al
 ; [292] Value := Value div 10;
-%LINE 292+0
-		mov	rdx,r8
+		mov	rdx,qword [rbp-8]
 		mov	rax,-858993459
 		mul	rdx
 		shr	rdx,3
-		mov	r8,rdx
+		mov	qword [rbp-8],rdx
 ; [293] Dec(i);
-%LINE 293+0
-		dec	r10d
+		sub	dword [rbp-52],1
 ; [294] until Value = 0;
-%LINE 294+0
-		test	r8,r8
-		jne	..@j91
+		cmp	qword [rbp-8],0
+		je	..@j93
+		jmp	..@j91
+..@j93:
 ; [296] Result := AnsiString(@temp[i + 1]);
-%LINE 296+0
-		movsxd	r10,r10d
-		lea	rdx,[rsp+r10*1+33]
+		movsxd	rax,dword [rbp-52]
+		lea	rax,[rax+1]
+		lea	rdx,[rbp+rax*1-48]
+		mov	rcx,qword [rbp-16]
 		call	fpc_ansistr_assign
 ; [297] end;
-%LINE 297+0
 		nop
-		lea	rsp,[rsp+72]
+		lea	rsp,[rbp]
+		pop	rbp
 		ret
-..@c66:
+..@c92:
 
 SECTION .text
+	ALIGN 16
 	GLOBAL SYSUTILS_$$_UINTTOSTR$QWORD$$ANSISTRING
 SYSUTILS_$$_UINTTOSTR$QWORD$$ANSISTRING:
-..@c68:
+..@c96:
 ; [299] begin
-%LINE 299+0
-		lea	rsp,[rsp-40]
-..@c70:
-; Var $result located in register rax
-; Var Value located in register rdx
-; Var Value located in register rdx
+		push	rbp
+..@c98:
+..@c99:
+		mov	rbp,rsp
+..@c100:
+		lea	rsp,[rsp-48]
+; Var Value located at rbp-8, size=OS_64
+; Var $result located at rbp-16, size=OS_64
+		mov	qword [rbp-16],rcx
+		mov	qword [rbp-8],rdx
 ; [300] result := UIntToStrA(Value);
-%LINE 300+0
+		mov	rax,qword [rbp-16]
+		mov	rcx,rax
+		mov	rdx,qword [rbp-8]
 		call	SYSUTILS_$$_UINTTOSTRA$QWORD$$ANSISTRING
 ; [301] end;
-%LINE 301+0
 		nop
-		lea	rsp,[rsp+40]
+		lea	rsp,[rbp]
+		pop	rbp
 		ret
-..@c69:
+..@c97:
 
 SECTION .text
+	ALIGN 16
 	GLOBAL SYSUTILS_$$_COMMANDLINETOARGVA$PANSICHAR$LONGINT$$PPANSICHAR
 SYSUTILS_$$_COMMANDLINETOARGVA$PANSICHAR$LONGINT$$PPANSICHAR:
-..@c71:
+..@c101:
 ; [323] begin
-%LINE 323+0
-		push	rbx
-		push	rdi
-		push	rsi
-		push	r12
-		push	r13
-		push	r14
-		lea	rsp,[rsp-40]
-..@c73:
-; Var $result located in register rdx
-; Var argv located in register rax
-; Var _argv located in register rax
-; Var len located in register eax
-; Var i located in register eax
-; Var j located in register eax
-; Var a located in register r12b
-; Var in_QM located in register al
-; Var in_TEXT located in register al
-; Var in_SPACE located in register al
-; Var allocSize located in register eax
-		mov	rbx,rcx
-; Var CmdLine located in register rbx
-		mov	rsi,rdx
-; Var argc located in register rsi
-; Var CmdLine located in register rbx
+		push	rbp
+..@c103:
+..@c104:
+		mov	rbp,rsp
+..@c105:
+		lea	rsp,[rsp-112]
+; Var CmdLine located at rbp-8, size=OS_64
+; Var argc located at rbp-16, size=OS_64
+; Var $result located at rbp-24, size=OS_64
+; Var argv located at rbp-32, size=OS_64
+; Var _argv located at rbp-40, size=OS_64
+; Var len located at rbp-44, size=OS_32
+; Var i located at rbp-48, size=OS_32
+; Var j located at rbp-52, size=OS_32
+; Var a located at rbp-56, size=OS_8
+; Var in_QM located at rbp-60, size=OS_8
+; Var in_TEXT located at rbp-64, size=OS_8
+; Var in_SPACE located at rbp-68, size=OS_8
+; Var allocSize located at rbp-72, size=OS_32
+		mov	qword [rbp-8],rcx
+		mov	qword [rbp-16],rdx
 ; [324] len := StrLen(CmdLine);
-%LINE 324+0
-		mov	rcx,rbx
+		mov	rax,qword [rbp-8]
+		mov	rcx,rax
 		call	SYSTEM_$$_STRLEN$PCHAR$$LONGWORD
-; Var len located in register eax
+		mov	dword [rbp-44],eax
 ; [326] allocSize := ((len + 2) div 2) * SizeOf(Pointer) + SizeOf(Pointer);
-%LINE 326+0
-		lea	edx,[eax+2]
-		shr	edx,1
-		shl	edx,3
-		lea	edi,[edx+8]
-; Var allocSize located in register edi
+		mov	eax,dword [rbp-44]
+		lea	eax,[eax+2]
+		shr	eax,1
+		shl	eax,3
+		lea	eax,[eax+8]
+		mov	dword [rbp-72],eax
 ; [328] argv := PPAnsiChar(GlobalAlloc(GMEM_FIXED, allocSize + (len + 2) * SizeOf(AnsiChar)));
-%LINE 328+0
-		and	eax,eax
-		lea	rdx,[rax+2]
-		mov	eax,edi
-		add	rdx,rax
-		xor	ecx,ecx
+		mov	eax,dword [rbp-44]
+		lea	rax,[rax+2]
+		mov	edx,dword [rbp-72]
+		lea	rdx,[rax+rdx]
+		mov	ecx,0
 		call	_$dll$kernel32$GlobalAlloc
-; Var argv located in register rax
+		mov	qword [rbp-32],rax
 ; [329] if argv = nil then
-%LINE 329+0
-		test	rax,rax
-		jne	..@j99
+		cmp	qword [rbp-32],0
+		je	..@j98
+		jmp	..@j99
+..@j98:
 ; [331] argc := 0;
-%LINE 331+0
-		mov	dword [rsi],0
+		mov	rax,qword [rbp-16]
+		mov	dword [rax],0
 ; [332] Result := nil;
-%LINE 332+0
-		xor	edx,edx
+		mov	qword [rbp-24],0
 ; [333] Exit;
-%LINE 333+0
 		jmp	..@j96
+	ALIGN 4
 ..@j99:
 ; [336] _argv := PAnsiChar(PByte(argv) + allocSize);
-%LINE 336+0
-		and	edi,edi
-		lea	rcx,[rdi+rax]
-; Var _argv located in register rcx
+		mov	eax,dword [rbp-72]
+		add	rax,qword [rbp-32]
+		mov	qword [rbp-40],rax
 ; [338] argc := 0;
-%LINE 338+0
-		mov	dword [rsi],0
-; Var _argv located in register rcx
+		mov	rax,qword [rbp-16]
+		mov	dword [rax],0
 ; [339] argv[argc] := _argv;
-%LINE 339+0
-		mov	qword [rax],rcx
-; Var in_QM located in register r13b
+		mov	rcx,qword [rbp-32]
+		mov	rax,qword [rbp-16]
+		movsxd	rax,dword [rax]
+		mov	rdx,qword [rbp-40]
+		mov	qword [rcx+rax*8],rdx
 ; [341] in_QM := False;
-%LINE 341+0
-		xor	r13b,r13b
-; Var in_TEXT located in register r11b
+		mov	byte [rbp-60],0
 ; [342] in_TEXT := False;
-%LINE 342+0
-		xor	r11b,r11b
-; Var in_SPACE located in register dil
+		mov	byte [rbp-64],0
 ; [343] in_SPACE := True;
-%LINE 343+0
-		mov	dil,1
-; Var i located in register r9d
+		mov	byte [rbp-68],1
 ; [344] i := 0;
-%LINE 344+0
-		xor	r9d,r9d
-; Var j located in register r10d
+		mov	dword [rbp-48],0
 ; [345] j := 0;
-%LINE 345+0
-		xor	r10d,r10d
+		mov	dword [rbp-52],0
 ; [347] while CmdLine[i] <> #0 do
-%LINE 347+0
 		jmp	..@j101
+	ALIGN 8
 ..@j100:
 ; [349] a := CmdLine[i];
-%LINE 349+0
-		mov	r8d,r9d
-		mov	r12b,byte [rbx+r8*1]
+		mov	rax,qword [rbp-8]
+		mov	edx,dword [rbp-48]
+		mov	al,byte [rax+rdx*1]
+		mov	byte [rbp-56],al
 ; [350] if in_QM then
-%LINE 350+0
-		test	r13b,r13b
-		je	..@j104
+		cmp	byte [rbp-60],0
+		jne	..@j103
+		jmp	..@j104
+..@j103:
 ; [352] if a = '"' then
-%LINE 352+0
-		cmp	r12b,34
-		jne	..@j106
+		cmp	byte [rbp-56],34
+		je	..@j105
+		jmp	..@j106
+..@j105:
 ; [353] in_QM := False
-%LINE 353+0
-		xor	r13b,r13b
-		jmp	..@j108
+		mov	byte [rbp-60],0
+		jmp	..@j107
 ..@j106:
 ; [356] _argv[j] := a;
-%LINE 356+0
-		mov	r8d,r10d
-		mov	byte [rcx+r8*1],r12b
+		mov	rdx,qword [rbp-40]
+		mov	eax,dword [rbp-52]
+		mov	cl,byte [rbp-56]
+		mov	byte [rdx+rax*1],cl
 ; [357] Inc(j);
-%LINE 357+0
-		inc	r10d
+		add	dword [rbp-52],1
+..@j107:
 		jmp	..@j108
 ..@j104:
 ; [362] case a of
-%LINE 362+0
-		mov	r8b,r12b
-		cmp	r8b,9
+		mov	al,byte [rbp-56]
+		cmp	al,9
 		jb	..@j110
-		sub	r8b,10
+		sub	al,9
+		sub	al,1
 		jbe	..@j112
-		sub	r8b,3
+		sub	al,3
 		je	..@j112
-		sub	r8b,19
+		sub	al,19
 		je	..@j112
-		sub	r8b,2
-		jne	..@j110
+		sub	al,2
+		je	..@j111
+		jmp	..@j110
+	ALIGN 4
+..@j111:
 ; [365] in_QM := True;
-%LINE 365+0
-		mov	r13b,1
+		mov	byte [rbp-60],1
 ; [366] in_TEXT := True;
-%LINE 366+0
-		mov	r11b,1
+		mov	byte [rbp-64],1
 ; [367] if in_SPACE then
-%LINE 367+0
-		test	dil,dil
-		je	..@j114
+		cmp	byte [rbp-68],0
+		jne	..@j113
+		jmp	..@j114
+..@j113:
 ; [369] argv[argc] := @_argv[j];
-%LINE 369+0
-		movsxd	r14,dword [rsi]
-		mov	r8d,r10d
-		add	r8,rcx
-		mov	qword [rax+r14*8],r8
+		mov	r8,qword [rbp-32]
+		mov	rax,qword [rbp-16]
+		movsxd	rcx,dword [rax]
+		mov	rax,qword [rbp-40]
+		mov	edx,dword [rbp-52]
+		lea	rax,[rax+rdx*1]
+		mov	qword [r8+rcx*8],rax
 ; [370] Inc(argc);
-%LINE 370+0
-		inc	dword [rsi]
+		mov	rax,qword [rbp-16]
+		add	dword [rax],1
+	ALIGN 4
 ..@j114:
 ; [372] in_SPACE := False;
-%LINE 372+0
-		xor	dil,dil
+		mov	byte [rbp-68],0
 		jmp	..@j109
+	ALIGN 4
 ..@j112:
 ; [376] if in_TEXT then
-%LINE 376+0
-		test	r11b,r11b
-		je	..@j116
+		cmp	byte [rbp-64],0
+		jne	..@j115
+		jmp	..@j116
+..@j115:
 ; [378] _argv[j] := #0;
-%LINE 378+0
-		mov	r8d,r10d
-		mov	byte [rcx+r8*1],0
+		mov	rdx,qword [rbp-40]
+		mov	eax,dword [rbp-52]
+		mov	byte [rdx+rax*1],0
 ; [379] Inc(j);
-%LINE 379+0
-		inc	r10d
+		add	dword [rbp-52],1
+	ALIGN 4
 ..@j116:
 ; [381] in_TEXT := False;
-%LINE 381+0
-		xor	r11b,r11b
+		mov	byte [rbp-64],0
 ; [382] in_SPACE := True;
-%LINE 382+0
-		mov	dil,1
+		mov	byte [rbp-68],1
 		jmp	..@j109
+	ALIGN 4
 ..@j110:
 ; [385] in_TEXT := True;
-%LINE 385+0
-		mov	r11b,1
+		mov	byte [rbp-64],1
 ; [386] if in_SPACE then
-%LINE 386+0
-		test	dil,dil
-		je	..@j118
+		cmp	byte [rbp-68],0
+		jne	..@j117
+		jmp	..@j118
+..@j117:
 ; [388] argv[argc] := @_argv[j];
-%LINE 388+0
-		movsxd	r14,dword [rsi]
-		mov	r8d,r10d
-		add	r8,rcx
-		mov	qword [rax+r14*8],r8
+		mov	r8,qword [rbp-32]
+		mov	rax,qword [rbp-16]
+		movsxd	rcx,dword [rax]
+		mov	rdx,qword [rbp-40]
+		mov	eax,dword [rbp-52]
+		lea	rax,[rdx+rax*1]
+		mov	qword [r8+rcx*8],rax
 ; [389] Inc(argc);
-%LINE 389+0
-		inc	dword [rsi]
+		mov	rax,qword [rbp-16]
+		add	dword [rax],1
+	ALIGN 4
 ..@j118:
 ; [391] _argv[j] := a;
-%LINE 391+0
-		mov	r8d,r10d
-		mov	byte [rcx+r8*1],r12b
+		mov	rax,qword [rbp-40]
+		mov	edx,dword [rbp-52]
+		mov	cl,byte [rbp-56]
+		mov	byte [rax+rdx*1],cl
 ; [392] Inc(j);
-%LINE 392+0
-		inc	r10d
+		add	dword [rbp-52],1
 ; [393] in_SPACE := False;
-%LINE 393+0
-		xor	dil,dil
+		mov	byte [rbp-68],0
+	ALIGN 4
 ..@j109:
 ..@j108:
 ; [396] Inc(i);
-%LINE 396+0
-		inc	r9d
+		add	dword [rbp-48],1
 ..@j101:
-%LINE 347+0
-		mov	r8d,r9d
-		cmp	byte [rbx+r8*1],0
+		mov	rdx,qword [rbp-8]
+		mov	eax,dword [rbp-48]
+		cmp	byte [rdx+rax*1],0
 		jne	..@j100
+		jmp	..@j102
+..@j102:
 ; [399] _argv[j] := #0;
-%LINE 399+0
-		and	r10d,r10d
-		mov	byte [rcx+r10*1],0
+		mov	rax,qword [rbp-40]
+		mov	edx,dword [rbp-52]
+		mov	byte [rax+rdx*1],0
 ; [400] argv[argc] := nil;
-%LINE 400+0
-		movsxd	rcx,dword [rsi]
-		mov	qword [rax+rcx*8],0
-; Var argv located in register rax
+		mov	rdx,qword [rbp-32]
+		mov	rax,qword [rbp-16]
+		movsxd	rax,dword [rax]
+		mov	qword [rdx+rax*8],0
 ; [402] Result := argv;
-%LINE 402+0
-		mov	rdx,rax
+		mov	rax,qword [rbp-32]
+		mov	qword [rbp-24],rax
 ..@j96:
 ; [403] end;
-%LINE 403+0
-		mov	rax,rdx
+		mov	rax,qword [rbp-24]
 		nop
-		lea	rsp,[rsp+40]
-		pop	r14
-		pop	r13
-		pop	r12
-		pop	rsi
-		pop	rdi
-		pop	rbx
+		lea	rsp,[rbp]
+		pop	rbp
 		ret
-..@c72:
+..@c102:
 ; End asmlist al_procedures
 ; Begin asmlist al_typedconsts
 
 SECTION .rodata
+	ALIGN 8,DB 0
 _$SYSUTILS$_Ld1:
-%LINE 122+0 SysUtils.pas
 		DB	"Error",0
 
 SECTION .rodata
+	ALIGN 8,DB 0
 _$SYSUTILS$_Ld2:
 		DB	"Error: Char Array empty.",0
 ; End asmlist al_typedconsts
-; Begin asmlist al_dwarf_frame
-
-SECTION .debug_frame
-..@c74:
-	DD	..@c76-..@c75
-..@c75:
-	DD	-1
-	DB	1,0
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_SLEB128BIT	
-	DB	16,12
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	5
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c76:
-	DD	..@c78-..@c77
-..@c77:
-	DQ	..@c1,..@c2-..@c1
-	DB	4
-	DD	..@c3-..@c1
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c4-..@c3
-	DB	5
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c5-..@c4
-	DB	13
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c78:
-	DD	..@c80-..@c79
-..@c79:
-	DQ	..@c6,..@c7-..@c6
-	DB	4
-	DD	..@c8-..@c6
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c9-..@c8
-	DB	5
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c10-..@c9
-	DB	13
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c80:
-	DD	..@c82-..@c81
-..@c81:
-	DQ	..@c11,..@c12-..@c11
-	DB	4
-	DD	..@c13-..@c11
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c82:
-	DD	..@c84-..@c83
-..@c83:
-	DQ	..@c14,..@c15-..@c14
-	DB	4
-	DD	..@c16-..@c14
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c84:
-	DD	..@c86-..@c85
-..@c85:
-	DQ	..@c17,..@c18-..@c17
-	DB	4
-	DD	..@c19-..@c17
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c20-..@c19
-	DB	5
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c21-..@c20
-	DB	13
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c86:
-	DD	..@c88-..@c87
-..@c87:
-	DQ	..@c22,..@c23-..@c22
-	DB	4
-	DD	..@c24-..@c22
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c25-..@c24
-	DB	5
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c26-..@c25
-	DB	13
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c88:
-	DD	..@c90-..@c89
-..@c89:
-	DQ	..@c27,..@c28-..@c27
-	DB	4
-	DD	..@c29-..@c27
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c30-..@c29
-	DB	5
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c31-..@c30
-	DB	13
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c90:
-	DD	..@c92-..@c91
-..@c91:
-	DQ	..@c32,..@c33-..@c32
-	DB	4
-	DD	..@c34-..@c32
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c92:
-	DD	..@c94-..@c93
-..@c93:
-	DQ	..@c35,..@c36-..@c35
-	DB	4
-	DD	..@c37-..@c35
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c94:
-	DD	..@c96-..@c95
-..@c95:
-	DQ	..@c38,..@c39-..@c38
-	DB	4
-	DD	..@c40-..@c38
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c96:
-	DD	..@c98-..@c97
-..@c97:
-	DQ	..@c41,..@c42-..@c41
-	DB	4
-	DD	..@c43-..@c41
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c98:
-	DD	..@c100-..@c99
-..@c99:
-	DQ	..@c44,..@c45-..@c44
-	DB	4
-	DD	..@c46-..@c44
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c100:
-	DD	..@c102-..@c101
-..@c101:
-	DQ	..@c47,..@c48-..@c47
-	DB	4
-	DD	..@c49-..@c47
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c102:
-	DD	..@c104-..@c103
-..@c103:
-	DQ	..@c50,..@c51-..@c50
-	DB	4
-	DD	..@c52-..@c50
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c104:
-	DD	..@c106-..@c105
-..@c105:
-	DQ	..@c53,..@c54-..@c53
-	DB	4
-	DD	..@c55-..@c53
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c106:
-	DD	..@c108-..@c107
-..@c107:
-	DQ	..@c56,..@c57-..@c56
-	DB	4
-	DD	..@c58-..@c56
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c108:
-	DD	..@c110-..@c109
-..@c109:
-	DQ	..@c59,..@c60-..@c59
-	DB	4
-	DD	..@c61-..@c59
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c110:
-	DD	..@c112-..@c111
-..@c111:
-	DQ	..@c62,..@c63-..@c62
-	DB	4
-	DD	..@c64-..@c62
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c112:
-	DD	..@c114-..@c113
-..@c113:
-	DQ	..@c65,..@c66-..@c65
-	DB	4
-	DD	..@c67-..@c65
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c114:
-	DD	..@c116-..@c115
-..@c115:
-	DQ	..@c68,..@c69-..@c68
-	DB	4
-	DD	..@c70-..@c68
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c116:
-	DD	..@c118-..@c117
-..@c117:
-	DQ	..@c71,..@c72-..@c71
-	DB	4
-	DD	..@c73-..@c71
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c118:
-; End asmlist al_dwarf_frame
 

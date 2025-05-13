@@ -2,7 +2,10 @@ BITS 64
 default rel
 CPU x64
 
-EXTERN	fpc_libinitializeunits
+EXTERN	_$dll$rtllib$ShowMessage
+EXTERN	EXESTART
+EXTERN	fpc_initializeunits
+EXTERN	fpc_do_exit
 EXTERN	XMM_$$_XMMINIT
 EXTERN	XMM_$$_XGETFREECHUNKS$$LONGINT
 EXTERN	XMM_$$_XMEMCOMPARE$POINTER$POINTER$QWORD$$BOOLEAN
@@ -28,19 +31,26 @@ SECTION .text
 	ALIGN 16
 	GLOBAL PASCALMAIN
 PASCALMAIN:
-	GLOBAL P$RTLLIB_$$_main
-P$RTLLIB_$$_main:
+	GLOBAL main
+main:
 ..@c1:
-; [RTLLib.pas]
-; [13] begin
+; [test.pas]
+; [20] begin
 		push	rbp
 ..@c3:
 ..@c4:
 		mov	rbp,rsp
 ..@c5:
 		lea	rsp,[rsp-32]
-		call	fpc_libinitializeunits
-; [15] end.
+		call	fpc_initializeunits
+; [21] ShowMessage('sError');
+		lea	rax,[_$TEST$_Ld1]
+		mov	rcx,rax
+		call	_$dll$rtllib$ShowMessage
+; [22] ExeStart;
+		call	EXESTART
+; [23] end.
+		call	fpc_do_exit
 		nop
 		lea	rsp,[rbp]
 		pop	rbp
@@ -88,15 +98,22 @@ SECTION .data
 	GLOBAL __fpc_valgrind
 __fpc_valgrind	DB	0
 ; End asmlist al_globals
+; Begin asmlist al_typedconsts
+
+SECTION .rodata
+	ALIGN 8,DB 0
+_$TEST$_Ld1:
+		DB	"sError",0
+; End asmlist al_typedconsts
 ; Begin asmlist al_exports
 
 SECTION .edata
-	GLOBAL EDATA_$P$RTLLIB
-EDATA_$P$RTLLIB	DD	0,0
+	GLOBAL EDATA_$P$TEST
+EDATA_$P$TEST	DD	0,0
 	DW	0,0
 	DD	1,16,16
 ..@j3:
-		DB	"RTLLIB.dll",0
+		DB	"TEST.dll",0
 	ALIGN 4,DB 0
 ..@j4:
 	ALIGN 4,DB 0

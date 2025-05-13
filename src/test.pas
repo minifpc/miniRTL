@@ -11,7 +11,11 @@ uses
   Locales, global,
   RtlLibImport, QApplicationPascal;
 
+function StringReplace(const S, OldPattern, NewPattern: string; Flags: TReplaceFlags): string; external RTLDLL;
+procedure ShowMessage(msg: PChar); stdcall; external RTLDLL;
+
 procedure ExeStart; external name 'EXESTART';
+function sError: AnsiString; external RTLDLL;
 
 begin
   ShowMessage('sError');

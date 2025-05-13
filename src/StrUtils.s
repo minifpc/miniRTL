@@ -10,22 +10,22 @@ EXTERN	fpc_ansistr_decr_ref
 ; Begin asmlist al_procedures
 
 SECTION .text
+	ALIGN 16
 STRUTILS$_$STRINGREPLACE$ANSISTRING$ANSISTRING$ANSISTRING$TREPLACEFLAGS$$ANSISTRING_$$_fin$00000004:
 ..@c1:
-; [StrUtils.pas]
+; [strutils.pas]
 ; [68] end;
-%LINE 68+0 StrUtils.pas
 		push	rbp
 ..@c3:
 ..@c4:
 		mov	rbp,rcx
 ..@c5:
 		lea	rsp,[rsp-32]
-		lea	rcx,[rbp-8]
+		lea	rax,[rbp-56]
+		mov	rcx,rax
 		call	fpc_ansistr_decr_ref
 ; [35] begin
-%LINE 35+0
-		lea	rcx,[rbp-16]
+		lea	rcx,[rbp-64]
 		call	fpc_ansistr_decr_ref
 		nop
 		lea	rsp,[rsp+32]
@@ -34,175 +34,160 @@ STRUTILS$_$STRINGREPLACE$ANSISTRING$ANSISTRING$ANSISTRING$TREPLACEFLAGS$$ANSISTR
 ..@c2:
 
 SECTION .text
+	ALIGN 16
 	GLOBAL STRUTILS_$$_STRINGREPLACE$ANSISTRING$ANSISTRING$ANSISTRING$TREPLACEFLAGS$$ANSISTRING
 STRUTILS_$$_STRINGREPLACE$ANSISTRING$ANSISTRING$ANSISTRING$TREPLACEFLAGS$$ANSISTRING:
 ..@c6:
-; Temps allocated between rbp-72 and rbp-8
+; Temps allocated between rbp-64 and rbp-56
 		push	rbp
 ..@c8:
 ..@c9:
 		mov	rbp,rsp
 ..@c10:
-		lea	rsp,[rsp-112]
-		mov	qword [rbp-72],rbx
-		mov	qword [rbp-64],rdi
-		mov	qword [rbp-56],rsi
-		mov	qword [rbp-48],r12
-		mov	qword [rbp-40],r13
-		mov	qword [rbp-32],r14
-		mov	qword [rbp-24],r15
-; Var i located in register r13d
-; Var StartPos located in register edi
-; Var OldLen located in register r12d
-; Var ResultStr located at rbp-8, size=OS_64
-		mov	r15,rcx
-; Var $result located in register r15
-		mov	r14,rdx
-; Var S located in register r14
-		mov	rbx,r8
-; Var OldPattern located in register rbx
-		mov	rsi,r9
-; Var NewPattern located in register rsi
-		mov	al,byte [rbp+48]
-; Var Flags located in register al
-		mov	qword [rbp-8],0
-		mov	qword [rbp-16],0
+		lea	rsp,[rsp-96]
+; Var S located at rbp-8, size=OS_64
+; Var OldPattern located at rbp-16, size=OS_64
+; Var NewPattern located at rbp-24, size=OS_64
+; Var Flags located at rbp+48, size=OS_8
+; Var $result located at rbp-32, size=OS_64
+; Var i located at rbp-36, size=OS_S32
+; Var StartPos located at rbp-40, size=OS_S32
+; Var OldLen located at rbp-44, size=OS_S32
+; Var ResultStr located at rbp-56, size=OS_64
+		mov	qword [rbp-32],rcx
+		mov	qword [rbp-8],rdx
+		mov	qword [rbp-16],r8
+		mov	qword [rbp-24],r9
+		mov	qword [rbp-56],0
+		mov	qword [rbp-64],0
 ..@j11:
 		nop
 ..@j7:
 ; [36] ResultStr := '';
-%LINE 36+0
-		lea	rcx,[rbp-8]
-		xor	edx,edx
+		lea	rax,[rbp-56]
+		mov	rdx,0
+		mov	rcx,rax
 		call	fpc_ansistr_assign
 ; [37] StartPos := 1;
-%LINE 37+0
-		mov	edi,1
+		mov	dword [rbp-40],1
 ; [38] OldLen := Length(OldPattern);
-%LINE 38+0
-		mov	rax,rbx
-		test	rbx,rbx
+		mov	rax,qword [rbp-16]
+		test	rax,rax
 		je	..@j12
 		mov	rax,qword [rax-8]
 ..@j12:
-		mov	r12d,eax
+		mov	dword [rbp-44],eax
 ; [40] if OldLen = 0 then
-%LINE 40+0
-		test	eax,eax
-		jne	..@j14
+		cmp	dword [rbp-44],0
+		je	..@j13
+		jmp	..@j14
+..@j13:
 ; [42] Exit(S);
-%LINE 42+0
-		mov	rcx,r15
-		mov	rdx,r14
+		mov	rcx,qword [rbp-32]
+		mov	rdx,qword [rbp-8]
 		call	fpc_ansistr_assign
 		jmp	..@j9
+	ALIGN 4
 ..@j14:
 ; [45] i := Pos(OldPattern, S);
-%LINE 45+0
-		mov	rdx,r14
-		mov	rcx,rbx
-		mov	r8d,1
+		mov	rdx,qword [rbp-8]
+		mov	rcx,qword [rbp-16]
+		mov	r8,1
 		call	SYSTEM_$$_POS$ANSISTRING$ANSISTRING$INT64$$INT64
-		mov	r13d,eax
+		mov	dword [rbp-36],eax
 ; [47] while i > 0 do
-%LINE 47+0
 		jmp	..@j16
+	ALIGN 8
 ..@j15:
 ; [50] ResultStr := ResultStr + Copy(S, StartPos, i - StartPos);
-%LINE 50+0
-		movsxd	r9,r13d
-		movsxd	rax,edi
+		movsxd	r9,dword [rbp-36]
+		movsxd	rax,dword [rbp-40]
 		sub	r9,rax
-		movsxd	r8,edi
-		mov	rdx,r14
-		lea	rcx,[rbp-16]
-		call	fpc_ansistr_copy
-		mov	r8,qword [rbp-16]
+		movsxd	r8,dword [rbp-40]
 		mov	rdx,qword [rbp-8]
-		lea	rcx,[rbp-8]
-		xor	r9d,r9d
+		lea	rcx,[rbp-64]
+		call	fpc_ansistr_copy
+		mov	r8,qword [rbp-64]
+		mov	rdx,qword [rbp-56]
+		lea	rcx,[rbp-56]
+		mov	r9d,0
 		call	fpc_ansistr_concat
 ; [53] ResultStr := ResultStr + NewPattern;
-%LINE 53+0
-		mov	r8,rsi
-		mov	rdx,qword [rbp-8]
-		lea	rcx,[rbp-8]
-		xor	r9d,r9d
+		mov	r8,qword [rbp-24]
+		mov	rdx,qword [rbp-56]
+		lea	rcx,[rbp-56]
+		mov	r9d,0
 		call	fpc_ansistr_concat
 ; [56] StartPos := i + OldLen;
-%LINE 56+0
-		lea	edi,[r12d+r13d]
+		mov	edx,dword [rbp-36]
+		mov	eax,dword [rbp-44]
+		lea	eax,[edx+eax]
+		mov	dword [rbp-40],eax
 ; [59] i := Pos(OldPattern, Copy(S, StartPos, Length(S) - StartPos + 1));
-%LINE 59+0
-		mov	rax,r14
-		test	r14,r14
+		mov	rax,qword [rbp-8]
+		test	rax,rax
 		je	..@j18
 		mov	rax,qword [rax-8]
 ..@j18:
-		movsxd	rdx,edi
+		movsxd	rdx,dword [rbp-40]
 		sub	rax,rdx
 		lea	r9,[rax+1]
-		movsxd	r8,edi
-		mov	rdx,r14
-		lea	rcx,[rbp-16]
+		movsxd	r8,dword [rbp-40]
+		mov	rdx,qword [rbp-8]
+		lea	rcx,[rbp-64]
 		call	fpc_ansistr_copy
-		mov	rdx,qword [rbp-16]
-		mov	rcx,rbx
-		mov	r8d,1
+		mov	rdx,qword [rbp-64]
+		mov	rcx,qword [rbp-16]
+		mov	r8,1
 		call	SYSTEM_$$_POS$ANSISTRING$ANSISTRING$INT64$$INT64
-		mov	r13d,eax
+		mov	dword [rbp-36],eax
 ; [60] if i > 0 then
-%LINE 60+0
-		test	r13d,r13d
-		jng	..@j20
+		cmp	dword [rbp-36],0
+		jg	..@j19
+		jmp	..@j20
+..@j19:
 ; [61] i := i + StartPos - 1;
-%LINE 61+0
-		lea	eax,[edi+r13d]
-		dec	eax
-		mov	r13d,eax
+		mov	eax,dword [rbp-36]
+		mov	edx,dword [rbp-40]
+		lea	eax,[eax+edx]
+		sub	eax,1
+		mov	dword [rbp-36],eax
+	ALIGN 4
 ..@j20:
 ..@j16:
-%LINE 47+0
-		test	r13d,r13d
+		cmp	dword [rbp-36],0
 		jg	..@j15
+		jmp	..@j17
+..@j17:
 ; [65] ResultStr := ResultStr + Copy(S, StartPos, Length(S) - StartPos + 1);
-%LINE 65+0
-		mov	rax,r14
-		test	r14,r14
+		mov	rax,qword [rbp-8]
+		test	rax,rax
 		je	..@j21
 		mov	rax,qword [rax-8]
 ..@j21:
-		movsxd	rdx,edi
+		movsxd	rdx,dword [rbp-40]
 		sub	rax,rdx
 		lea	r9,[rax+1]
-		movsxd	r8,edi
-		mov	rdx,r14
-		lea	rcx,[rbp-16]
-		call	fpc_ansistr_copy
-		mov	r8,qword [rbp-16]
+		movsxd	r8,dword [rbp-40]
 		mov	rdx,qword [rbp-8]
-		lea	rcx,[rbp-8]
-		xor	r9d,r9d
+		lea	rcx,[rbp-64]
+		call	fpc_ansistr_copy
+		mov	r8,qword [rbp-64]
+		mov	rdx,qword [rbp-56]
+		lea	rcx,[rbp-56]
+		mov	r9d,0
 		call	fpc_ansistr_concat
 ; [67] Exit(ResultStr);
-%LINE 67+0
-		mov	rcx,r15
-		mov	rdx,qword [rbp-8]
+		mov	rcx,qword [rbp-32]
+		mov	rdx,qword [rbp-56]
 		call	fpc_ansistr_assign
+		jmp	..@j9
 ..@j9:
-%LINE 35+0
 		nop
 ..@j8:
 		mov	rcx,rbp
 		call	STRUTILS$_$STRINGREPLACE$ANSISTRING$ANSISTRING$ANSISTRING$TREPLACEFLAGS$$ANSISTRING_$$_fin$00000004
-%LINE 68+0
-		mov	rbx,qword [rbp-72]
-		mov	rdi,qword [rbp-64]
-		mov	rsi,qword [rbp-56]
-		mov	r12,qword [rbp-48]
-		mov	r13,qword [rbp-40]
-		mov	r14,qword [rbp-32]
-		mov	r15,qword [rbp-24]
+		nop
 		lea	rsp,[rbp]
 		pop	rbp
 		ret
@@ -218,7 +203,6 @@ SECTION .data
 	GLOBAL RTTI_$STRUTILS_$$_TREPLACEFLAG
 RTTI_$STRUTILS_$$_TREPLACEFLAG	DB	3,12
 ; [80] 
-%LINE 80+0 StrUtils.pas
 		DB	"TReplaceFlag"
 	DB	1
 	DD	0,1
@@ -275,59 +259,4 @@ SECTION .data
 	GLOBAL RTTI_$STRUTILS_$$_TREPLACEFLAGS$indirect
 RTTI_$STRUTILS_$$_TREPLACEFLAGS$indirect	DQ	RTTI_$STRUTILS_$$_TREPLACEFLAGS
 ; End asmlist al_indirectglobals
-; Begin asmlist al_dwarf_frame
-
-SECTION .debug_frame
-..@c11:
-	DD	..@c13-..@c12
-..@c12:
-	DD	-1
-	DB	1,0
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_SLEB128BIT	
-	DB	16,12
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	5
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c13:
-	DD	..@c15-..@c14
-..@c14:
-	DQ	..@c1,..@c2-..@c1
-	DB	4
-	DD	..@c3-..@c1
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c4-..@c3
-	DB	5
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c5-..@c4
-	DB	13
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c15:
-	DD	..@c17-..@c16
-..@c16:
-	DQ	..@c6,..@c7-..@c6
-	DB	4
-	DD	..@c8-..@c6
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c9-..@c8
-	DB	5
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c10-..@c9
-	DB	13
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c17:
-; End asmlist al_dwarf_frame
 

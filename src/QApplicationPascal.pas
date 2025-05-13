@@ -5,7 +5,7 @@
 unit QApplicationPascal;
 
 interface
-uses Windows, Dialogs, SysUtils, QObjectPascalExport;
+uses Windows, Dialogs, SysUtils; //, QObjectPascalExport;
 
 function GetCommandLineA: LPSTR; stdcall; external kernel32;
 function StrAlloc(Size: Cardinal): PChar; stdcall; external RTLDLL;
@@ -46,8 +46,8 @@ type
     ///   This is the Pascal constructor for class QApplication.
     /// </brief>
     /// </constructor>
-    constructor Create(ArgCount: Integer; Args: PPChar); overload;
-    constructor Create; overload;
+    //constructor Create(ArgCount: Integer; Args: PPChar); overload;
+    constructor Create;
     
     /// <destructor>
     /// <brief>
@@ -87,7 +87,7 @@ procedure QApplication_Destroy(P: QApplication); external RTLDLL;
  * \param Args     - Array of String
  *)
 {$ifdef DLLEXPORT}
-constructor QApplication.Create(
+(*constructor QApplication.Create(
   ArgCount: Integer;
   Args: PPChar);
 begin
@@ -100,7 +100,7 @@ constructor QApplication.Create(
   ArgCount: Integer;
   Args: PPChar);
 begin
-end;
+end;*)
 {$endif DLLIMPORT}
 
 constructor QApplication.Create;
@@ -155,14 +155,14 @@ begin
   
   StrDispose(R);
   
-  Exit(QApplication.Create(ArgsCount, Args));
+  //Exit(QApplication.Create(ArgsCount, Args));
 end;
 {$endif DLLEXPORT}
 
 {$ifdef DLLEXPORT}
 exports
-  QApplication_Create  name 'QApplication_Create',
-  QApplication_Destroy name 'QApplication_Destroy'
+  QApplication__Create  name 'QApplication_Create'
+  //QApplication_Destroy name 'QApplication_Destroy'
   ;
 {$endif DLLEXPORT}
 

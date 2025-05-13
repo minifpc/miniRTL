@@ -29,7 +29,6 @@ RTLLIBIMPORT$_$TRTL_$__$$_CREATE$$TRTL:
 ..@c1:
 ; [RTLLibImport.pas]
 ; [211] begin
-%LINE 211+0 RTLLibImport.pas
 		push	rbp
 ..@c3:
 ..@c4:
@@ -64,12 +63,10 @@ RTLLIBIMPORT$_$TRTL_$__$$_CREATE$$TRTL:
 ..@j27:
 		mov	qword [rbp-24],-1
 ; [212] FOwner := TRTL_Create;
-%LINE 212+0
 		call	_$dll$rtllib$TRTL_Create
 		mov	rdx,qword [rbp-16]
 		mov	qword [rdx+8],rax
 ; [214] end;
-%LINE 214+0
 		mov	qword [rbp-24],1
 		cmp	qword [rbp-16],0
 		jne	..@j30
@@ -85,10 +82,8 @@ RTLLIBIMPORT$_$TRTL_$__$$_CREATE$$TRTL:
 		call	[rax+128]
 	ALIGN 4
 ..@j31:
-%LINE 211+0
 		jmp	..@j25
 ..@j24:
-%LINE 214+0
 		cmp	qword [rbp-8],0
 		jne	..@j33
 		jmp	..@j34
@@ -101,13 +96,11 @@ RTLLIBIMPORT$_$TRTL_$__$$_CREATE$$TRTL:
 	ALIGN 4
 ..@j34:
 		call	fpc_reraise
-%LINE 211+0
 		call	FPC_DONEEXCEPTION
 ..@j35:
 		nop
 ..@j25:
 ..@j17:
-%LINE 214+0
 		mov	rax,qword [rbp-16]
 		nop
 		lea	rsp,[rbp]
@@ -124,7 +117,6 @@ SECTION .text
 RTLLIBIMPORT$_$TRTL_$__$$_DESTROY:
 ..@c6:
 ; [217] begin
-%LINE 217+0
 		push	rbp
 ..@c8:
 ..@c9:
@@ -147,12 +139,10 @@ RTLLIBIMPORT$_$TRTL_$__$$_DESTROY:
 	ALIGN 4
 ..@j39:
 ; [218] TRTL_Destroy(FOwner);
-%LINE 218+0
 		mov	rax,qword [rbp-16]
 		mov	rcx,qword [rax+8]
 		call	_$dll$rtllib$TRTL_Destroy
 ; [219] end;
-%LINE 219+0
 		cmp	qword [rbp-16],0
 		jne	..@j40
 		jmp	..@j41
@@ -184,7 +174,6 @@ VMT_$RTLLIBIMPORT_$$_TRTL	DQ	16,-16,VMT_$SYSTEM_$$_TOBJECT$indirect,..@d1,0,0,0,
 	DQ	SYSTEM$_$TOBJECT_$__$$_AFTERCONSTRUCTION,SYSTEM$_$TOBJECT_$__$$_BEFOREDESTRUCTION
 	DQ	0
 ; [222] end.
-%LINE 222+0 RTLLibImport.pas
 ; End asmlist al_globals
 ; Begin asmlist al_const
 
@@ -201,7 +190,6 @@ SECTION .data
 	GLOBAL INIT_$RTLLIBIMPORT_$$_TRTL
 INIT_$RTLLIBIMPORT_$$_TRTL	DB	15,4
 ; [223] 
-%LINE 223+0 RTLLibImport.pas
 		DB	"TRTL"
 	DQ	0
 	DD	8
@@ -302,13 +290,11 @@ SECTION .data
 	ALIGN 8,DB 0
 	GLOBAL VMT_$RTLLIBIMPORT_$$_TRTL$indirect
 VMT_$RTLLIBIMPORT_$$_TRTL$indirect	DQ	VMT_$RTLLIBIMPORT_$$_TRTL
-%LINE 222+0 RTLLibImport.pas
 
 SECTION .data
 	ALIGN 8,DB 0
 	GLOBAL INIT_$RTLLIBIMPORT_$$_TRTL$indirect
 INIT_$RTLLIBIMPORT_$$_TRTL$indirect	DQ	INIT_$RTLLIBIMPORT_$$_TRTL
-%LINE 223+0
 
 SECTION .data
 	ALIGN 8,DB 0
@@ -350,59 +336,4 @@ SECTION .data
 	GLOBAL RTTI_$RTLLIBIMPORT_$$_T_ARRAY_STRING$indirect
 RTTI_$RTLLIBIMPORT_$$_T_ARRAY_STRING$indirect	DQ	RTTI_$RTLLIBIMPORT_$$_T_ARRAY_STRING
 ; End asmlist al_indirectglobals
-; Begin asmlist al_dwarf_frame
-
-SECTION .debug_frame
-..@c11:
-	DD	..@c13-..@c12
-..@c12:
-	DD	-1
-	DB	1,0
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_SLEB128BIT	
-	DB	16,12
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	5
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c13:
-	DD	..@c15-..@c14
-..@c14:
-	DQ	..@c1,..@c2-..@c1
-	DB	4
-	DD	..@c3-..@c1
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c4-..@c3
-	DB	5
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c5-..@c4
-	DB	13
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c15:
-	DD	..@c17-..@c16
-..@c16:
-	DQ	..@c6,..@c7-..@c6
-	DB	4
-	DD	..@c8-..@c6
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c9-..@c8
-	DB	5
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c10-..@c9
-	DB	13
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c17:
-; End asmlist al_dwarf_frame
 

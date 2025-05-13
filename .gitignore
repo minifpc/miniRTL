@@ -56,3 +56,4 @@ src/dd
 /src/mfcFPC/mfcFPC
 /src/mfcFPC/x64
 src/mfcFPC/pch.h
+*.res
