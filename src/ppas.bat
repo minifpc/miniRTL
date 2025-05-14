@@ -1,11 +1,11 @@
 @echo off
 SET THEFILE=RTLLib.dll
 echo Linking %THEFILE%
-C:\fpcupdeluxe\fpc\bin\x86_64-win64\ld.exe -b pei-x86-64    -s --dll  --entry _DLLMainCRTStartup   --base-file base.$$$ -o RTLLib.dll link17976.res
+C:\fpcupdeluxe\fpc\bin\x86_64-win64\ld.exe -b pei-x86-64    -s --dll  --entry _DLLMainCRTStartup   --base-file base.$$$ -o RTLLib.dll link7132.res
 if errorlevel 1 goto linkend
 C:\fpcupdeluxe\fpc\bin\x86_64-win64\dlltool.exe -S C:\fpcupdeluxe\fpc\bin\x86_64-win64\as.exe -D RTLLib.dll -e exp.$$$ --base-file base.$$$ 
 if errorlevel 1 goto linkend
-C:\fpcupdeluxe\fpc\bin\x86_64-win64\ld.exe -b pei-x86-64  -s --dll  --entry _DLLMainCRTStartup   -o RTLLib.dll link17976.res exp.$$$
+C:\fpcupdeluxe\fpc\bin\x86_64-win64\ld.exe -b pei-x86-64  -s --dll  --entry _DLLMainCRTStartup   -o RTLLib.dll link7132.res exp.$$$
 if errorlevel 1 goto linkend
 goto end
 :asmend

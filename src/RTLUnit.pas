@@ -120,9 +120,6 @@ exports
   fpcdivint64           name 'fpcdivint64',
   fpcdivqword           name 'fpcdivqword',
   
-  fpcsetjmp          name 'fpcsetjmp',
-  fpclongjmp         name 'fpclongjmp',
-  
   fpcdynarraysetlength    name 'fpcdynarraysetlength',
   
   newansistring           name 'newansistring',
@@ -153,10 +150,6 @@ exports
   
   itoa_exp              name 'itoa_exp',
   atoi_exp              name 'atoi_exp',
-  
-  PushException_              name 'PushException_',
-  fpc_popobjectstack_         name 'fpc_popobjectstack_',
-  fpc_raiseexception_         name 'fpc_raiseexception_',
   
   TRTL_Create,
   TRTL_Destroy;

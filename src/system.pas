@@ -6,7 +6,7 @@ unit system;
 
 {$mode objfpc}{$H+}
 {$modeswitch advancedrecords}
-{$macro off}
+{$macro on}
 
 // @@todo: reorder functions; interface vs implementation mismatch
 
@@ -206,9 +206,6 @@ var
   IsMultithread: boolean = false;
 
 Procedure fpc_Copy_proc (Src, Dest, TypeInfo : Pointer); compilerproc; inline;
-
-function  fpcsetjmp(var s: jmp_buf): longint; stdcall; export;
-procedure fpclongjmp(var s: jmp_buf; value: LongInt); stdcall; export;
 
 procedure fpchandleerror(errno: longint); stdcall; export;
 function  fpcdivint64(n, z: int64): int64; stdcall; export;
@@ -594,8 +591,7 @@ end;
 
 {$asmmode att}
 {$ifdef CPU86}
-  {$ifdef DLLEXPORT}
-function fpc__setjmp(var s: jmp_buf): longint; assembler; nostackframe; export;
+function fpc_setjmp(var s: jmp_buf): longint; assembler; nostackframe; [public, alias: 'FPC_SETJMP']; compilerproc;
 asm
   movl %ebx,jmp_buf.ebx(%eax)
   movl %esi,jmp_buf.esi(%eax)
@@ -606,88 +602,53 @@ asm
   movl (%esp),%edi
   movl %edi,jmp_buf.pc(%eax)
   {$ifdef FPC_USE_WIN32_SEH}
-    movl %fs:(0),%edi
-    movl %edi,jmp_buf.exhead(%eax)
+  movl %fs:(0),%edi
+  movl %edi,jmp_buf.exhead(%eax)
   {$endif FPC_USE_WIN32_SEH}
   movl jmp_buf.edi(%eax),%edi
   xorl %eax,%eax
 end;
-function fpc_setjmp(var s: jmp_buf): longint; assembler; nostackframe; [public, alias: 'FPC_SETJMP']; compilerproc;
-begin
-  Exit(fpc__setjmp(s));
-end;
-  {$endif DLLEXPORT}
-  {$ifdef DLLIMPORT}
-function fpc__setjmp(var s: jmp_buf): longint; assembler; nostackframe; external RTLDLL;
-function fpc_setjmp(var s: jmp_buf): longint; assembler; nostackframe; [public, alias: 'FPC_SETJMP']; compilerproc;
-begin
-  Exit(fpc__setjmp(s));
-end;
-  {$endif DLLIMPORT}
 {$else}
-  {$ifdef DLLEXPORT}
-  function fpcsetjmp(var s: jmp_buf): longint; stdcall; assembler; nostackframe; export;
-  asm
-    movq     %rbx,jmp_buf.rbx(%rcx)
-    movq     %rbp,jmp_buf.rbp(%rcx)
-    movq     %r12,jmp_buf.r12(%rcx)
-    movq     %r13,jmp_buf.r13(%rcx)
-    movq     %r14,jmp_buf.r14(%rcx)
-    movq     %r15,jmp_buf.r15(%rcx)
-    movq     %rsi,jmp_buf.rsi(%rcx)
-    movq     %rdi,jmp_buf.rdi(%rcx)
-    leaq     8(%rsp),%rax
-    movq     %rax,jmp_buf.rsp(%rcx)
-    movq     (%rsp),%rax
-    movq     %rax,jmp_buf.rip(%rcx)
-    movdqu   %xmm6,jmp_buf.xmm6(%rcx)
-    movdqu   %xmm7,jmp_buf.xmm7(%rcx)
-    movdqu   %xmm8,jmp_buf.xmm8(%rcx)
-    movdqu   %xmm9,jmp_buf.xmm9(%rcx)
-    movdqu   %xmm10,jmp_buf.xmm10(%rcx)
-    movdqu   %xmm11,jmp_buf.xmm11(%rcx)
-    movdqu   %xmm12,jmp_buf.xmm12(%rcx)
-    movdqu   %xmm13,jmp_buf.xmm13(%rcx)
-    movdqu   %xmm14,jmp_buf.xmm14(%rcx)
-    movdqu   %xmm15,jmp_buf.xmm15(%rcx)
-    stmxcsr  jmp_buf.mxcsr(%rcx)
-    fnstcw   jmp_buf.fpucw(%rcx)
-    xorl     %eax,%eax
-  end;
-  {$asmmode intel}
-  function fpc_setjmp(var s: jmp_buf): longint; assembler; nostackframe; [public, alias: 'FPC_SETJMP']; compilerproc;
-  asm
-    sub rsp, 32          // Shadow space für call
-    call fpcsetjmp       // bar erwartet s in rcx
-    add rsp, 32          // Stack wieder freigeben
-    // Rückgabewert ist bereits in RAX
-  end;
-  {$endif DLLEXPORT}
-  {$ifdef DLLIMPORT}
-  {$asmmode intel}
-  function fpcsetjmp(var s: jmp_buf): longint; stdcall; external RTLDLL;
-  function fpc_setjmp(var s: jmp_buf): longint; assembler; nostackframe; [public, alias: 'FPC_SETJMP']; compilerproc;
-  asm
-    sub rsp, 32          // Shadow space für call
-    call fpcsetjmp       // bar erwartet s in rcx
-    add rsp, 32          // Stack wieder freigeben
-    // Rückgabewert ist bereits in RAX
-  end;
-  {$endif DLLIMPORT}
-{$endif CPU86}
+function fpc_setjmp(var s: jmp_buf): longint; assembler; nostackframe; [public, alias: 'FPC_SETJMP']; compilerproc;
+asm
+  movq     %rbx,jmp_buf.rbx(%rcx)
+  movq     %rbp,jmp_buf.rbp(%rcx)
+  movq     %r12,jmp_buf.r12(%rcx)
+  movq     %r13,jmp_buf.r13(%rcx)
+  movq     %r14,jmp_buf.r14(%rcx)
+  movq     %r15,jmp_buf.r15(%rcx)
+  movq     %rsi,jmp_buf.rsi(%rcx)
+  movq     %rdi,jmp_buf.rdi(%rcx)
+  leaq     8(%rsp),%rax
+  movq     %rax,jmp_buf.rsp(%rcx)
+  movq     (%rsp),%rax
+  movq     %rax,jmp_buf.rip(%rcx)
+  movdqu   %xmm6,jmp_buf.xmm6(%rcx)
+  movdqu   %xmm7,jmp_buf.xmm7(%rcx)
+  movdqu   %xmm8,jmp_buf.xmm8(%rcx)
+  movdqu   %xmm9,jmp_buf.xmm9(%rcx)
+  movdqu   %xmm10,jmp_buf.xmm10(%rcx)
+  movdqu   %xmm11,jmp_buf.xmm11(%rcx)
+  movdqu   %xmm12,jmp_buf.xmm12(%rcx)
+  movdqu   %xmm13,jmp_buf.xmm13(%rcx)
+  movdqu   %xmm14,jmp_buf.xmm14(%rcx)
+  movdqu   %xmm15,jmp_buf.xmm15(%rcx)
+  stmxcsr  jmp_buf.mxcsr(%rcx)
+  fnstcw   jmp_buf.fpucw(%rcx)
+  xorl     %eax,%eax
+end;
+{$endif}
 
-{$ifdef DLLEXPORT}
-{$asmmode att}
-procedure fpclongjmp(var s: jmp_buf; value: LongInt); assembler; nostackframe; stdcall; export;
+procedure fpc_longjmp(var s: jmp_buf; value: LongInt); assembler; nostackframe; compilerproc; [public, alias: 'FPC_LONGJMP'];
 asm
   {$ifdef CPU86}
   xchgl %edx,%eax
   cmpl  $1,%eax
   adcl  $0,%eax
-  {$ifdef FPC_USE_WIN32_SEH}
-  movl  Jmp_buf.exhead(%edx),%edi
-  movl  %edi,%fs:(0)
-  {$endif FPC_USE_WIN32_SEH}
+    {$ifdef FPC_USE_WIN32_SEH}
+    movl  Jmp_buf.exhead(%edx),%edi
+    movl  %edi,%fs:(0)
+    {$endif FPC_USE_WIN32_SEH}
   movl Jmp_buf.ebx(%edx),%ebx
   movl Jmp_buf.esi(%edx),%esi
   movl Jmp_buf.edi(%edx),%edi
@@ -695,7 +656,6 @@ asm
   movl Jmp_buf.sp(%edx),%esp
   jmp Jmp_buf.pc(%edx)
   {$else}
-  {$asmmode intel}
   cmpl     $1,%edx
   adcl     $0,%edx
   movl     %edx,%eax
@@ -722,24 +682,8 @@ asm
   fnclex
   fldcw    jmp_buf.fpucw(%rcx)
   jmpq     jmp_buf.rip(%rcx)
-  {$endif}
+  {$endif CPU86}
 end;
-procedure fpc_longjmp(var s: jmp_buf; value: LongInt); assembler; nostackframe; compilerproc; [public, alias: 'FPC_LONGJMP'];
-asm
-  sub rsp, 64          // Shadow space für call
-  call fpclongjmp      // bar erwartet s in rcx
-  add rsp, 64          // Stack wieder freigeben
-end;
-{$endif DLLEXPORT}
-{$ifdef DLLIMPORT}
-procedure fpclongjmp(var s: jmp_buf; value: LongInt); stdcall; external RTLDLL;
-procedure fpc_longjmp(var s: jmp_buf; value: LongInt); assembler; nostackframe; compilerproc; [public, alias: 'FPC_LONGJMP'];
-asm
-  sub rsp, 64          // Shadow space für call
-  call fpclongjmp      // bar erwartet s in rcx
-  add rsp, 64          // Stack wieder freigeben
-end;
-{$endif DLLIMPORT}
 
 procedure HandleErrorAddrFrame(Errno: longint; addr: CodePointer; frame: Pointer); [public, alias: 'FPC_BREAK_ERROR']; {$ifdef CPUI386} register; {$endif}
 begin

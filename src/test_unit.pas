@@ -8,7 +8,7 @@ unit test_unit;
 interface
 uses
   Windows, Dialogs, SysUtils, StrUtils, Exceptions,
-  Locales, global,
+  Locales, global, xmm,
   RtlLibImport, QApplicationPascal;
 
 procedure ExeStart;
