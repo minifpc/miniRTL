@@ -1,12 +1,16 @@
 // ---------------------------------------------------------------------------------------
 // Copyright(c) 2025 @paule32 and @fibonacci
 // ---------------------------------------------------------------------------------------
-{$mode delphi}
+{$mode objfpc}{$H+}
 unit SysUtils;
 
 interface
-uses Windows, global;
+uses
+  Windows, global;
 
+type
+  PPAnsiChar = ^PAnsiChar;
+  
 {$ifdef DLLEXPORT}
 function CommandLineToArgvA(CmdLine: PAnsiChar; var argc: Integer): PPAnsiChar; stdcall; export;
 
@@ -14,7 +18,7 @@ function  IntToStr(Value: Integer): PChar; stdcall; export; overload;
 function  IntToStr(Value:  Int64): PChar; stdcall; export; overload;
 
 function  UIntToStr(Value: UInt64): AnsiString; stdcall; export;
-//function  StrAlloc(Size: Cardinal): PChar; stdcall; export;
+function  StrAlloc(Size: Cardinal): PChar; stdcall; export;
 procedure StrDispose(P: PChar); stdcall; export;
 
 function  StrCopy(var Dest: PChar; Source: PChar): PChar; stdcall; export;
@@ -26,7 +30,7 @@ function StrCopy_(var Dest: PChar; Source: PChar): PChar; stdcall; export;
 function StrCat_ (var Dest: PChar; Source: PChar): PChar; stdcall; export;
 
 { Ansi-Version }
-function StrPas(P: PAnsiChar): AnsiString; overload;
+function StrPas(P: PAnsiChar): AnsiString; stdcall; export;
 
 function ChATAStr1(const A: array of AnsiChar): AnsiString;                  overload; stdcall; export;
 function ChATAStr2(const A: array of AnsiChar; BufLen: Integer): AnsiString; overload; stdcall; export;
@@ -40,7 +44,7 @@ function _i64toa(Value:   Int64; Buffer: PAnsiChar; Radix: Integer): PAnsiChar; 
 function _i64tow(Value:   Int64; Buffer: PWideChar; Radix: Integer): PWideChar; cdecl; external 'msvcrt.dll' name '_i64tow';
 
 //Function fpc_chararray_to_ansistr(const arr: array of char; zerobased: boolean = true): ansistring; compilerproc;
-
+//Procedure SetString(out S : AnsiString; Buf : PAnsiChar; Len : SizeInt);
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
 function CommandLineToArgvA(CmdLine: PAnsiChar; var argc: Integer): PPAnsiChar; stdcall; external RTLDLL;
@@ -49,7 +53,7 @@ function _itoa  (Value: Integer; Buffer: PAnsiChar; Radix: Integer): PAnsiChar; 
 function _i64toa(Value:   Int64; Buffer: PAnsiChar; Radix: Integer): PAnsiChar; cdecl; external 'msvcrt.dll' name '_i64toa';
 function _i64tow(Value:   Int64; Buffer: PWideChar; Radix: Integer): PWideChar; cdecl; external 'msvcrt.dll' name '_i64tow';
 
-Procedure SetString(out S : AnsiString; Buf : PAnsiChar; Len : SizeInt); stdcall; external RTLDLL;
+//Procedure SetString(out S : AnsiString; Buf : PAnsiChar; Len : SizeInt);
 function  StrPas(P: PAnsiChar): AnsiString; stdcall; external RTLDLL;
 
 function  CharArrToAnsiStr(const A: array of AnsiChar): AnsiString;                  overload; stdcall; external RTLDLL name 'ChATAStr1';
@@ -71,6 +75,7 @@ function  CharArrToAnsiStr(P: PAnsiChar; BufLen: Integer): AnsiString;          
 
 //Function fpc_chararray_to_ansistr(const arr: array of char; zerobased: boolean = true): ansistring; compilerproc;
 {$endif DLLIMPORT}
+
 implementation
 
 procedure fpc_pchar_ansistr_intern_charmove(const src: pchar; const srcindex: sizeint; var dst: rawbytestring; const dstindex, len: sizeint); {$ifdef FPC_HAS_CPSTRING}rtlproc;{$endif} {$ifdef SYSTEMINLINE}inline;{$endif}
@@ -83,14 +88,12 @@ begin
   move(src[srcindex],dst[dstindex],len);
 end;
 
-{$ifdef DLLEXPORT}
-Procedure SetString(out S : AnsiString; Buf : PAnsiChar; Len : SizeInt); stdcall; export;
+(*Procedure SetString(out S : AnsiString; Buf : PAnsiChar; Len : SizeInt); compilerproc;
 begin
   SetLength(S,Len);
   If (Buf<>Nil) then
     fpc_pchar_ansistr_intern_charmove(Buf,0,S,0,Len);
-end;
-{$endif DLLEXPORT}
+end;*)
 
 {$ifdef DLLEXPORT}
 function StrPas(P: PAnsiChar): AnsiString; stdcall; export;
@@ -105,8 +108,13 @@ begin
   while P^ <> #0 do
     Inc(P);
   Len := P - Start;
+  
+  SetLength(result, Len);
+  if Start <> nil then
+  fpc_pchar_ansistr_intern_charmove(Start,0,result,0,Len);
+  
   { AnsiString mit genau Len Zeichen anlegen }
-  SetString(Result, Start, Len);
+  //SetString(Result, Start, Len);
 end;
 {$endif DLLEXPORT}
 
@@ -140,7 +148,12 @@ begin
     Exit('');
   if BufLen > Length(A) then
     BufLen := Length(A);
-  SetString(Result, PAnsiChar(@A[0]), BufLen);
+//  SetString(Result, PAnsiChar(@A[0]), BufLen);
+
+  SetLength(result, BufLen);
+  if PAnsiChar(@A[0]) <> nil then
+  fpc_pchar_ansistr_intern_charmove(PAnsiChar(@A[0]),0,result,0,BufLen);
+
 end;
 {$endif DLLEXPORT}
 
@@ -150,7 +163,20 @@ function ChATAStr3(P: PAnsiChar; BufLen: Integer): AnsiString; overload; stdcall
 begin
   if (P = nil) or (BufLen <= 0) then
     Exit('');
-  SetString(Result, P, BufLen);
+//  SetString(Result, P, BufLen);
+
+  (*Procedure SetString(out S : AnsiString; Buf : PAnsiChar; Len : SizeInt); compilerproc;
+begin
+  SetLength(S,Len);
+  If (Buf<>Nil) then
+    fpc_pchar_ansistr_intern_charmove(Buf,0,S,0,Len);
+end;*)
+  //SetString(Result, Start, Len);
+
+  SetLength(result, BufLen);
+  if P <> nil then
+  fpc_pchar_ansistr_intern_charmove(P,0,result,0,BufLen);
+
 end;
 {$endif DLLEXPORT}
 

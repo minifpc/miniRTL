@@ -1,0 +1,2030 @@
+Archive member included to satisfy reference by file (symbol)
+
+libimpexceptions.a(impexceptions1s2.o)
+                              exceptions.o (_$dll$kernel32$FormatMessageA)
+libimpexceptions.a(impexceptions1h1.o)
+                              libimpexceptions.a(impexceptions1s2.o) (impexceptions_head_kernel32.dll)
+libimpexceptions.a(impexceptions1t4.o)
+                              libimpexceptions.a(impexceptions1h1.o) (impexceptions_dll_kernel32.dll)
+libimpQApplicationPascal.a(impqapplicationpascal1s2.o)
+                              QApplicationPascal.o (_$dll$kernel32$GetCommandLineA)
+libimpQApplicationPascal.a(impqapplicationpascal2s5.o)
+                              QApplicationPascal.o (_$dll$rtllib$StrAlloc)
+libimpQApplicationPascal.a(impqapplicationpascal1h1.o)
+                              libimpQApplicationPascal.a(impqapplicationpascal1s2.o) (impqapplicationpascal_head_kernel32.dll)
+libimpQApplicationPascal.a(impqapplicationpascal1t3.o)
+                              libimpQApplicationPascal.a(impqapplicationpascal1h1.o) (impqapplicationpascal_dll_kernel32.dll)
+libimpQApplicationPascal.a(impqapplicationpascal2h4.o)
+                              libimpQApplicationPascal.a(impqapplicationpascal2s5.o) (impqapplicationpascal_head_rtllib.dll)
+libimpQApplicationPascal.a(impqapplicationpascal2t6.o)
+                              libimpQApplicationPascal.a(impqapplicationpascal2h4.o) (impqapplicationpascal_dll_rtllib.dll)
+libimpsystem.a(impsystem1s2.o)
+                              Dialogs.o (_$dll$user32$MessageBoxA)
+libimpsystem.a(impsystem2s5.o)
+                              system.o (_$dll$kernel32$ExitProcess)
+libimpsystem.a(impsystem2s6.o)
+                              system.o (_$dll$kernel32$RtlMoveMemory)
+libimpsystem.a(impsystem2s7.o)
+                              xmm.o (_$dll$kernel32$VirtualAlloc)
+libimpsystem.a(impsystem2s8.o)
+                              xmm.o (_$dll$kernel32$VirtualFree)
+libimpsystem.a(impsystem2s10.o)
+                              system.o (_$dll$kernel32$RtlUnwindEx)
+libimpsystem.a(impsystem2s11.o)
+                              system.o (_$dll$kernel32$AddVectoredExceptionHandler)
+libimpsystem.a(impsystem2s12.o)
+                              system.o (_$dll$kernel32$RemoveVectoredExceptionHandler)
+libimpsystem.a(impsystem2s13.o)
+                              system.o (_$dll$kernel32$RtlLookupFunctionEntry)
+libimpsystem.a(impsystem2s14.o)
+                              system.o (_$dll$kernel32$RtlVirtualUnwind)
+libimpsystem.a(impsystem2s15.o)
+                              sysinitpas.o (_$dll$kernel32$GetStdHandle)
+libimpsystem.a(impsystem2s16.o)
+                              sysinitpas.o (_$dll$kernel32$SetConsoleMode)
+libimpsystem.a(impsystem2s17.o)
+                              system.o (_$dll$kernel32$WriteConsoleA)
+libimpsystem.a(impsystem2s18.o)
+                              system.o (_$dll$kernel32$WriteConsoleW)
+libimpsystem.a(impsystem2s19.o)
+                              system.o (_$dll$kernel32$ReadConsoleA)
+libimpsystem.a(impsystem4s26.o)
+                              system.o (_$dll$rtllib$xfreemem)
+libimpsystem.a(impsystem1h1.o)
+                              libimpsystem.a(impsystem1s2.o) (impsystem_head_user32.dll)
+libimpsystem.a(impsystem1t3.o)
+                              libimpsystem.a(impsystem1h1.o) (impsystem_dll_user32.dll)
+libimpsystem.a(impsystem2h4.o)
+                              libimpsystem.a(impsystem2s5.o) (impsystem_head_kernel32.dll)
+libimpsystem.a(impsystem2t21.o)
+                              libimpsystem.a(impsystem2h4.o) (impsystem_dll_kernel32.dll)
+libimpsystem.a(impsystem4h25.o)
+                              libimpsystem.a(impsystem4s26.o) (impsystem_head_rtllib.dll)
+libimpsystem.a(impsystem4t27.o)
+                              libimpsystem.a(impsystem4h25.o) (impsystem_dll_rtllib.dll)
+libimpSysUtils.a(impsysutils1s2.o)
+                              sysutils.o (_$dll$msvcrt$_itoa)
+libimpSysUtils.a(impsysutils1s3.o)
+                              sysutils.o (_$dll$msvcrt$_i64toa)
+libimpSysUtils.a(impsysutils1h1.o)
+                              libimpSysUtils.a(impsysutils1s2.o) (impsysutils_head_msvcrt.dll)
+libimpSysUtils.a(impsysutils1t5.o)
+                              libimpSysUtils.a(impsysutils1h1.o) (impsysutils_dll_msvcrt.dll)
+libimpwindows.a(impwindows1s38.o)
+                              sysutils.o (_$dll$kernel32$GlobalAlloc)
+libimpwindows.a(impwindows1s65.o)
+                              exceptions.o (_$dll$kernel32$LocalFree)
+libimpwindows.a(impwindows1h1.o)
+                              libimpwindows.a(impwindows1s38.o) (impwindows_head_kernel32.dll)
+libimpwindows.a(impwindows1t75.o)
+                              libimpwindows.a(impwindows1h1.o) (impwindows_dll_kernel32.dll)
+libimpxmm.a(impxmm1s4.o)      system.o (_$dll$kernel32$RtlFillMemory)
+libimpxmm.a(impxmm2s9.o)      system.o (_$dll$ntdll$RtlCompareMemory)
+libimpxmm.a(impxmm1h1.o)      libimpxmm.a(impxmm1s4.o) (impxmm_head_kernel32.dll)
+libimpxmm.a(impxmm1t7.o)      libimpxmm.a(impxmm1h1.o) (impxmm_dll_kernel32.dll)
+libimpxmm.a(impxmm2h8.o)      libimpxmm.a(impxmm2s9.o) (impxmm_head_ntdll.dll)
+libimpxmm.a(impxmm2t10.o)     libimpxmm.a(impxmm2h8.o) (impxmm_dll_ntdll.dll)
+
+There are no discarded input sections
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+                0x0000000180000000                __image_base__ = 0x180000000
+                0x0000000000000000                __dll__ = 0x0
+                0x0000000180000000                __ImageBase = 0x180000000
+                0x0000000000001000                __section_alignment__ = 0x1000
+                0x0000000000000200                __file_alignment__ = 0x200
+                0x0000000000000004                __major_os_version__ = 0x4
+                0x0000000000000000                __minor_os_version__ = 0x0
+                0x0000000000000000                __major_image_version__ = 0x0
+                0x0000000000000000                __minor_image_version__ = 0x0
+                0x0000000000000005                __major_subsystem_version__ = 0x5
+                0x0000000000000002                __minor_subsystem_version__ = 0x2
+                0x0000000000000003                __subsystem__ = 0x3
+                0x0000000000200000                __size_of_stack_reserve__ = 0x200000
+                0x0000000000001000                __size_of_stack_commit__ = 0x1000
+                0x0000000000100000                __size_of_heap_reserve__ = 0x100000
+                0x0000000000001000                __size_of_heap_commit__ = 0x1000
+                0x0000000000000000                __loader_flags__ = 0x0
+                0x0000000000000160                __dll_characteristics__ = 0x160
+LOAD test.o
+LOAD rtllib.o
+LOAD Dialogs.o
+LOAD exceptions.o
+LOAD global.o
+LOAD locales.o
+LOAD rtlunit.o
+LOAD strutils.o
+LOAD sysinitpas.o
+LOAD system.o
+LOAD sysutils.o
+LOAD windows.o
+LOAD xmm.o
+LOAD QApplicationPascal.o
+START GROUP
+LOAD libimpDialogs.a
+LOAD libimpexceptions.a
+LOAD libimpQApplicationPascal.a
+LOAD libimpRTLUnit.a
+LOAD libimpStrUtils.a
+LOAD libimpsystem.a
+LOAD libimpSysUtils.a
+LOAD libimpwindows.a
+LOAD libimpxmm.a
+END GROUP
+                0x00000000000004a8                . = SIZEOF_HEADERS
+                0x0000000000001000                . = ALIGN (__section_alignment__)
+
+.text           0x0000000180001000     0x6e00
+                0x0000000180001000                __text_start__ = .
+ *(.init)
+ *(.text .stub .text.* .gnu.linkonce.t.*)
+ .text          0x0000000180001000       0x70 test.o
+                0x000000018000101d                PASCALMAIN
+                0x000000018000101d                main
+ .text          0x0000000180001070        0x0 rtllib.o
+ .text.n_p$rtllib_$$_main
+                0x0000000180001070       0x20 rtllib.o
+                0x0000000180001070                P$RTLLIB_$$_main
+ .text          0x0000000180001090       0x20 Dialogs.o
+                0x0000000180001090                DIALOGS_$$_SHOWMESSAGE$PCHAR
+ .text          0x00000001800010b0        0x0 exceptions.o
+ .text.n_exceptions$_$translate_windows_error$longint$$ansistring_$$_fin$00000017
+                0x00000001800010b0       0x20 exceptions.o
+ .text.n_exceptions_$$_translate_windows_error$longint$$ansistring
+                0x00000001800010d0      0x130 exceptions.o
+                0x00000001800010d0                EXCEPTIONS_$$_TRANSLATE_WINDOWS_ERROR$LONGINT$$ANSISTRING
+ .text.n_exceptions$_$exception_$__$$_create$ansistring$longint$$exception
+                0x0000000180001200       0xc0 exceptions.o
+                0x0000000180001200                EXCEPTIONS$_$EXCEPTION_$__$$_CREATE$ANSISTRING$LONGINT$$EXCEPTION
+ .text.n_exceptions_$$_default_exceptobjproc$longint$exception_record$$pointer
+                0x00000001800012c0       0x30 exceptions.o
+ .text.n_exceptions_$$_default_exceptclsproc$longint$$pointer
+                0x00000001800012f0       0x30 exceptions.o
+ .text.n_exceptions_$$_default_errorproc$longint$pointer$pointer
+                0x0000000180001320       0x60 exceptions.o
+ .text.n_exceptions_$$_initexceptions
+                0x0000000180001380       0x90 exceptions.o
+ .text.n_exceptions_$$_init$
+                0x0000000180001410       0x40 exceptions.o
+                0x0000000180001410                INIT$_$EXCEPTIONS
+                0x0000000180001410                EXCEPTIONS_$$_init$
+ .text          0x0000000180001450        0x0 locales.o
+ .text.n_locales_$$_sinformation$$ansistring
+                0x0000000180001450       0x20 locales.o
+                0x0000000180001450                LOCALES_$$_SINFORMATION$$ANSISTRING
+ .text.n_locales_$$_swarning$$ansistring
+                0x0000000180001470       0x20 locales.o
+                0x0000000180001470                LOCALES_$$_SWARNING$$ANSISTRING
+ .text.n_locales_$$_serror$$ansistring
+                0x0000000180001490       0x20 locales.o
+                0x0000000180001490                LOCALES_$$_SERROR$$ANSISTRING
+ .text.n_locales_$$_shello$$ansistring
+                0x00000001800014b0       0x20 locales.o
+                0x00000001800014b0                LOCALES_$$_SHELLO$$ANSISTRING
+ .text          0x00000001800014d0        0x0 rtlunit.o
+ .text.n_rtlunit_$$_getbsr8bit$$pbytelookup
+                0x00000001800014d0       0x10 rtlunit.o
+                0x00000001800014d0                RTLUNIT_$$_GETBSR8BIT$$PBYTELOOKUP
+ .text.n_rtlunit$_$twidgetset_$__$$_create$$twidgetset
+                0x00000001800014e0       0xa0 rtlunit.o
+                0x00000001800014e0                RTLUNIT$_$TWIDGETSET_$__$$_CREATE$$TWIDGETSET
+ .text.n_rtlunit$_$twidgetset_$__$$_destroy
+                0x0000000180001580       0x50 rtlunit.o
+                0x0000000180001580                RTLUNIT$_$TWIDGETSET_$__$$_DESTROY
+ .text.n_rtlunit$_$trtl_$__$$_create$$trtl
+                0x00000001800015d0       0xa0 rtlunit.o
+                0x00000001800015d0                RTLUNIT$_$TRTL_$__$$_CREATE$$TRTL
+ .text.n_rtlunit$_$trtl_$__$$_destroy
+                0x0000000180001670       0x50 rtlunit.o
+                0x0000000180001670                RTLUNIT$_$TRTL_$__$$_DESTROY
+ .text.n_rtlunit_$$_trtl_create$$trtl
+                0x00000001800016c0       0x40 rtlunit.o
+                0x00000001800016c0                RTLUNIT_$$_TRTL_CREATE$$TRTL
+ .text.n_rtlunit_$$_trtl_destroy$trtl
+                0x0000000180001700       0x20 rtlunit.o
+                0x0000000180001700                RTLUNIT_$$_TRTL_DESTROY$TRTL
+ .text          0x0000000180001720      0x1c2 strutils.o
+                0x0000000180001743                STRUTILS_$$_STRINGREPLACE$ANSISTRING$ANSISTRING$ANSISTRING$TREPLACEFLAGS$$ANSISTRING
+ *fill*         0x00000001800018e2        0xe 
+ .text          0x00000001800018f0      0x147 sysinitpas.o
+                0x00000001800018f0                _FPC_DLL_Entry
+                0x00000001800018f0                SYSINITPAS_$$_DLL_ENTRY$TENTRYINFORMATION$$LONGBOOL
+                0x000000018000192e                _mainCRTStartup
+                0x000000018000192e                SYSINITPAS_$$__FPC_MAINCRTSTARTUP
+                0x000000018000198f                SYSINITPAS_$$__WINMAINCRTSTARTUP
+                0x000000018000198f                _WinMainCRTStartup
+                0x00000001800019a5                SYSINITPAS_$$__FPC_DLLMAINCRTSTARTUP$LONGINT$LONGWORD$POINTER
+                0x00000001800019a5                _DLLMainCRTStartup
+                0x0000000180001a0c                _DLLWinMainCRTStartup
+                0x0000000180001a0c                SYSINITPAS_$$__FPC_DLLWINMAINCRTSTARTUP$LONGINT$LONGWORD$POINTER
+ *fill*         0x0000000180001a37        0x9 
+ .text          0x0000000180001a40     0x4dea system.o
+                0x0000000180001a40                SYSTEM_$$_ATOMICEXCHANGE$LONGINT$LONGINT$$LONGINT
+                0x0000000180001a53                SYSTEM_$$_ATOMICEXCHANGE$INT64$INT64$$INT64
+                0x0000000180001a68                SYSTEM_$$_ATOMICINCREMENT$LONGINT$$LONGINT
+                0x0000000180001a82                SYSTEM_$$_ATOMICINCREMENT$INT64$$INT64
+                0x0000000180001a9e                SYSTEM_$$_ATOMICDECREMENT$LONGINT$$LONGINT
+                0x0000000180001ab8                SYSTEM_$$_ATOMICDECREMENT$INT64$$INT64
+                0x0000000180001ad6                _fpc_leave
+                0x0000000180001ad6                _FPC_leave
+                0x0000000180001aeb                fpc_setjmp
+                0x0000000180001aeb                FPC_SETJMP
+                0x0000000180001b7a                fpc_longjmp
+                0x0000000180001b7a                FPC_LONGJMP
+                0x0000000180001ca0                SYSTEM$_$TINTERFACEENTRY_$__$$_GETIID$$PGUID
+                0x0000000180001cb0                SYSTEM$_$TINTERFACEENTRY_$__$$_GETIIDSTR$$PSHORTSTRING
+                0x0000000180001cc2                SYSTEM$_$TVMT_$__$$_GETVPARENT$$PVMT
+                0x0000000180001cd4                SYSTEM$_$TOBJECT_$__$$_CREATE$$TOBJECT
+                0x0000000180001d6d                SYSTEM$_$TOBJECT_$__$$_DESTROY
+                0x0000000180001da7                SYSTEM$_$TOBJECT_$__$$_NEWINSTANCE$$TOBJECT
+                0x0000000180001de4                SYSTEM$_$TOBJECT_$__$$_FREEINSTANCE
+                0x0000000180001df5                SYSTEM$_$TOBJECT_$__$$_SAFECALLEXCEPTION$TOBJECT$POINTER$$HRESULT
+                0x0000000180001dfb                SYSTEM$_$TOBJECT_$__$$_FREE
+                0x0000000180001e1d                SYSTEM_$$_INITINTERFACEPOINTERS$TCLASS$POINTER
+                0x0000000180001e72                SYSTEM$_$TOBJECT_$__$$_INITINSTANCE$POINTER$$TOBJECT
+                0x0000000180001eb6                SYSTEM$_$TOBJECT_$__$$_CLASSTYPE$$TCLASS
+                0x0000000180001eba                SYSTEM$_$TOBJECT_$__$$_CLASSINFO$$POINTER
+                0x0000000180001ebf                SYSTEM$_$TOBJECT_$__$$_CLASSNAME$$SHORTSTRING
+                0x0000000180001eda                SYSTEM$_$TOBJECT_$__$$_CLASSPARENT$$TCLASS
+                0x0000000180001eec                SYSTEM$_$TOBJECT_$__$$_INSTANCESIZE$$INT64
+                0x0000000180001ef0                SYSTEM$_$TOBJECT_$__$$_INHERITSFROM$TCLASS$$BOOLEAN
+                0x0000000180001f21                SYSTEM$_$TOBJECT_$__$$_AFTERCONSTRUCTION
+                0x0000000180001f25                SYSTEM$_$TOBJECT_$__$$_BEFOREDESTRUCTION
+                0x0000000180001f29                SYSTEM_$$_ISGUIDEQUAL$TGUID$TGUID$$BOOLEAN
+                0x0000000180001f67                SYSTEM_$$_GETINTERFACEBYENTRY$POINTER$PINTERFACEENTRY$formal$$BOOLEAN
+                0x0000000180002041                SYSTEM_$$_GETINTERFACE_$TOBJECT$TGUID$formal$$BOOLEAN
+                0x00000001800020d3                SYSTEM$_$TOBJECT_$__$$_GETINTERFACE$TGUID$formal$$BOOLEAN
+                0x00000001800020e4                SYSTEM_$$_GETINTERFACEWEAK_$TOBJECT$TGUID$formal$$BOOLEAN
+                0x0000000180002176                SYSTEM$_$TOBJECT_$__$$_GETINTERFACEWEAK$TGUID$formal$$BOOLEAN
+                0x0000000180002187                SYSTEM_$$_GETINTERFACEENTRY_$TOBJECT$TGUID$$PINTERFACEENTRY
+                0x0000000180002230                SYSTEM$_$TOBJECT_$__$$_GETINTERFACEENTRY$TGUID$$PINTERFACEENTRY
+                0x0000000180002241                SYSTEM$_$TINTERFACEDOBJECT_$__$$_QUERYINTERFACE$TGUID$formal$$LONGINT
+                0x000000018000225f                SYSTEM$_$TINTERFACEDOBJECT_$__$$__ADDREF$$LONGINT
+                0x0000000180002280                SYSTEM$_$TINTERFACEDOBJECT_$__$$__RELEASE$$LONGINT
+                0x0000000180002344                SYSTEM$_$TINTERFACEDOBJECT_$__$$_DESTROY
+                0x0000000180002396                SYSTEM$_$TINTERFACEDOBJECT_$__$$_AFTERCONSTRUCTION
+                0x000000018000239d                SYSTEM$_$TINTERFACEDOBJECT_$__$$_BEFOREDESTRUCTION
+                0x00000001800023bc                SYSTEM$_$TINTERFACEDOBJECT_$__$$_NEWINSTANCE$$TOBJECT
+                0x00000001800023d9                SYSTEM$_$TMETHOD_$__$$_$equal$TMETHOD$TMETHOD$$BOOLEAN
+                0x00000001800023f1                SYSTEM$_$TMETHOD_$__$$_$not_equal$TMETHOD$TMETHOD$$BOOLEAN
+                0x0000000180002409                SYSTEM$_$TMETHOD_$__$$_$greater$TMETHOD$TMETHOD$$BOOLEAN
+                0x0000000180002429                SYSTEM$_$TMETHOD_$__$$_$greater_or_equal$TMETHOD$TMETHOD$$BOOLEAN
+                0x000000018000246f                SYSTEM$_$TMETHOD_$__$$_$lower$TMETHOD$TMETHOD$$BOOLEAN
+                0x000000018000248f                SYSTEM$_$TMETHOD_$__$$_$lower_or_equal$TMETHOD$TMETHOD$$BOOLEAN
+                0x00000001800024d5                fpc_intf_assign
+                0x00000001800024d5                FPC_INTF_ASSIGN
+                0x000000018000250e                SYSTEM_$$_FPCCLASSASINTF$POINTER$TGUID$$IUNKNOWN
+                0x00000001800025af                fpc_class_as_intf
+                0x00000001800025b3                SYSTEM_$$_FPCINTFASCLASS$POINTER$TCLASS$$POINTER
+                0x0000000180002610                fpc_intf_as_class
+                0x0000000180002610                FPC_INTF_AS_CLASS
+                0x0000000180002621                fpc_intf_cast
+                0x0000000180002621                FPC_INTF_CAST
+                0x000000018000263c                SYSTEM_$$_FPCINTFDECRREF$POINTER
+                0x0000000180002666                FPC_INTF_DECR_REF
+                0x0000000180002666                fpc_intf_decr_ref
+                0x0000000180002677                fpc_intf_incr_ref
+                0x0000000180002677                FPC_INTF_INCR_REF
+                0x00000001800029fe                SYSTEM_$$_INSTALL_EXCEPTION_HANDLERS
+                0x0000000180002a22                SYSTEM_$$_REMOVE_EXCEPTION_HANDLERS
+                0x0000000180002cf1                FPC_POPOBJECTSTACK
+                0x0000000180002cf1                fpc_popobjectstack
+                0x0000000180002d57                SYSTEM_$$___FPC_SPECIFIC_HANDLER$crc71B92073
+                0x0000000180002d57                __FPC_specific_handler
+                0x0000000180002f59                FPC_DONEEXCEPTION
+                0x0000000180002f59                fpc_doneexception
+                0x0000000180002f72                fpc_reraise
+                0x0000000180002f72                FPC_RERAISE
+                0x0000000180002f73                fpc_raise_nested
+                0x0000000180002f73                FPC_RAISE_NESTED
+                0x0000000180002f74                FPC_RAISEEXCEPTION
+                0x0000000180002f74                fpc_raiseexception
+                0x000000018000305a                fpc_initialize
+                0x000000018000305a                FPC_INITIALIZE
+                0x000000018000308c                FPC_FINALIZE
+                0x000000018000308c                fpc_finalize
+                0x00000001800030f0                fpc_addref
+                0x00000001800030f0                FPC_ADDREF
+                0x0000000180003122                fpc_decref
+                0x0000000180003122                FPC_DECREF
+                0x0000000180003154                fpc_get_input
+                0x0000000180003157                fpc_get_output
+                0x000000018000315a                fpc_write_end
+                0x0000000180003178                fpc_writeln_end
+                0x00000001800031de                FPC_WRITE_TEXT_CHAR
+                0x00000001800031de                fpc_write_text_char
+                0x0000000180003214                fpc_write_text_widechar
+                0x000000018000324b                FPC_WRITE_TEXT_SHORTSTR
+                0x000000018000324b                fpc_write_text_shortstr
+                0x000000018000327c                FPC_WRITE_TEXT_ANSISTR
+                0x000000018000327c                fpc_write_text_ansistr
+                0x00000001800032b1                fpc_write_text_widestr
+                0x00000001800032ee                fpc_write_text_unicodestr
+                0x0000000180003328                fpc_read_end
+                0x0000000180003328                FPC_READ_END
+                0x0000000180003476                fpc_readln_end
+                0x0000000180003476                FPC_READLN_END
+                0x0000000180003494                FPC_READ_TEXT_SHORTSTR
+                0x0000000180003494                fpc_read_text_shortstr
+                0x000000018000350d                fpc_read_text_ansistr
+                0x000000018000350d                FPC_READ_TEXT_ANSISTR
+                0x000000018000358d                fpc_write_text_sint
+                0x0000000180003618                fpc_write_text_uint
+                0x00000001800036a3                fpc_write_text_qword
+                0x000000018000372e                fpc_write_text_boolean
+                0x00000001800037aa                fpc_shortstr_setlength
+                0x00000001800037aa                FPC_SHORTSTR_SETLENGTH
+                0x00000001800037be                SYSTEM_$$_FPCSHORTSTRTOANSISTR$SHORTSTRING$LONGWORD$$RAWBYTESTRING
+                0x00000001800037fe                fpc_shortstr_to_ansistr
+                0x000000018000380f                SYSTEM_$$_FPC_SHORTSTR_TOSHORTSTR$SHORTSTRING$SHORTSTRING
+                0x0000000180003847                fpc_shortstr_to_shortstr
+                0x0000000180003847                FPC_SHORTSTR_TO_SHORTSTR
+                0x0000000180003858                FPC_VAL_SINT_SHORTSTR
+                0x0000000180003858                fpc_val_sint_shortstr
+                0x000000018000388a                FPC_SHORTSTR_SINT
+                0x000000018000388a                fpc_shortstr_sint
+                0x00000001800038bc                FPC_ANSISTR_TO_SHORTSTR
+                0x00000001800038bc                fpc_ansistr_to_shortstr
+                0x00000001800038fb                SYSTEM_$$_FPCSHORTSTRCONCAT$SHORTSTRING$SHORTSTRING$SHORTSTRING
+                0x0000000180003973                fpc_shortstr_concat
+                0x0000000180003984                SYSTEM_$$_FPCSHORTSTRCOPY$SHORTSTRING$INT64$INT64$$SHORTSTRING
+                0x00000001800039e7                fpc_shortstr_copy
+                0x00000001800039f8                SYSTEM_$$_FPCANSISTRASSIGN$POINTER$POINTER
+                0x0000000180003a2e                FPC_ANSISTR_ASSIGN
+                0x0000000180003a2e                fpc_ansistr_assign
+                0x0000000180003a3f                SYSTEM_$$_FPCANSISTRSETLENGTH$RAWBYTESTRING$INT64$LONGWORD
+                0x0000000180003b30                fpc_ansistr_setlength
+                0x0000000180003b30                FPC_ANSISTR_SETLENGTH
+                0x0000000180003b41                SYSTEM_$$_FPCANSISTRDECRREF$POINTER
+                0x0000000180003b7b                fpc_ansistr_decr_ref
+                0x0000000180003b7b                FPC_ANSISTR_DECR_REF
+                0x0000000180003b8c                SYSTEM_$$_FPCANSISTRINCRREF$POINTER
+                0x0000000180003ba0                FPC_ANSISTR_INCR_REF
+                0x0000000180003ba0                fpc_ansistr_incr_ref
+                0x0000000180003bb1                SYSTEM_$$_FPCANSISTRCONCAT$RAWBYTESTRING$RAWBYTESTRING$RAWBYTESTRING$LONGWORD
+                0x0000000180003c3d                fpc_ansistr_concat
+                0x0000000180003c4e                fpc_ansistr_concat_multi
+                0x0000000180003c89                SYSTEM_$$_FPCTRUELYANSISTRUNIQUE$POINTER$$POINTER
+                0x0000000180003ce3                fpc_ansistr_unique
+                0x0000000180003ce3                FPC_ANSISTR_UNIQUE
+                0x0000000180003d0b                FPC_ANSISTR_VALSINT
+                0x0000000180003d0b                fpc_ansistr_sint
+                0x0000000180003d44                SYSTEM_$$_FPCCHARTOANSISTR$CHAR$LONGWORD$$RAWBYTESTRING
+                0x0000000180003d81                fpc_char_to_ansistr
+                0x0000000180003d95                SYSTEM_$$_FPCANSISTRCOMPAREEQUAL$RAWBYTESTRING$RAWBYTESTRING$$INT64
+                0x0000000180003dfc                fpc_ansistr_compare_equal
+                0x0000000180003dfc                FPC_ANSISTR_COMPARE_EQUAL
+                0x0000000180003e0d                SYSTEM_$$_FPCANSISTRCOPY$RAWBYTESTRING$INT64$INT64$$RAWBYTESTRING
+                0x0000000180003ead                fpc_ansistr_copy
+                0x0000000180003ebe                SYSTEM_$$_FPCWIDESTRASSIGN$POINTER$POINTER
+                0x0000000180003f1b                fpc_widestr_assign
+                0x0000000180003f1b                FPC_WIDESTR_ASSIGN
+                0x0000000180003f2c                FPC_WIDESTR_SETLENGTH
+                0x0000000180003f2c                fpc_widestr_setlength
+                0x0000000180003f48                SYSTEM_$$_FPCWIDESTRDECRREF$POINTER
+                0x0000000180003f72                fpc_widestr_decr_ref
+                0x0000000180003f72                FPC_WIDESTR_DECR_REF
+                0x0000000180003f83                SYSTEM_$$_FPCWIDESTRINCRREF$POINTER
+                0x0000000180003fd5                fpc_widestr_incr_ref
+                0x0000000180003fd5                FPC_WIDESTR_INCR_REF
+                0x0000000180003fe6                FPC_PCHAR_TO_SHORTSTR
+                0x0000000180003fe6                fpc_pchar_to_shortstr
+                0x0000000180004018                SYSTEM_$$_FPCPCHARTOANSISTR$PANSICHAR$LONGWORD$$RAWBYTESTRING
+                0x000000018000405a                fpc_pchar_to_ansistr
+                0x000000018000406b                SYSTEM_$$_FPCPWIDECHARTOWIDESTR$PWIDECHAR$$WIDESTRING
+                0x00000001800040c8                fpc_pwidechar_to_widestr
+                0x00000001800040d9                SYSTEM_$$_FPCPWIDECHARTOANSISTR$PWIDECHAR$LONGWORD$$ANSISTRING
+                0x000000018000415f                fpc_pwidechar_to_ansistr
+                0x0000000180004170                fpc_uchar_to_ansistr
+                0x00000001800041a2                SYSTEM_$$_STRLEN_$PCHAR$$LONGWORD
+                0x00000001800041bc                SYSTEM_$$_STRLEN$PCHAR$$LONGWORD
+                0x00000001800041e7                SYSTEM_$$_STRLEN$ANSISTRING$$LONGWORD
+                0x000000018000422a                SYSTEM_$$_NEWANSISTRING$INT64$$POINTER
+                0x0000000180004268                SYSTEM_$$_NEW_ANSISTRING$INT64$$POINTER
+                0x0000000180004279                SYSTEM_$$_NEWWIDESTRING$INT64$$POINTER
+                0x00000001800042ad                SYSTEM_$$_NEW_WIDESTRING$INT64$$POINTER
+                0x00000001800042d8                SYSTEM_$$_MAKEUNIQUEANSISTRING$ANSISTRING$$ANSISTRING
+                0x0000000180004381                SYSTEM_$$_MAKE_UNIQUE_ANSISTRING$ANSISTRING$$ANSISTRING
+                0x00000001800043ea                SYSTEM_$$_MAKEUNIQUEANSISTRING$POINTER$$POINTER
+                0x000000018000445d                SYSTEM_$$_MAKE_UNIQUE_ANSISTRING$POINTER$$POINTER
+                0x000000018000446e                SYSTEM_$$_ATOI_EXP$PANSICHAR$$LONGINT
+                0x0000000180004497                SYSTEM_$$_ATOI$PANSICHAR$$LONGINT
+                0x00000001800044a8                SYSTEM_$$_ITOA_EXP$LONGINT$LONGINT$$PANSICHAR
+                0x00000001800045dc                SYSTEM_$$_ITOA$LONGINT$LONGINT$$PANSICHAR
+                0x00000001800045ed                SYSTEM_$$_UTF8DECODE$PANSICHAR$PANSICHAR$LONGWORD$BYTE$$BOOLEAN
+                0x0000000180004780                SYSTEM_$$_UTF8ENCODE$LONGWORD$$ANSISTRING
+                0x000000018000494d                SYSTEM_$$_UTF16DECODE$PWIDECHAR$PWIDECHAR$LONGWORD$BYTE$$BOOLEAN
+                0x0000000180004a08                SYSTEM_$$_UTF16ENCODE$LONGWORD$$UNICODESTRING
+                0x0000000180004ad3                SYSTEM_$$_UTF8TOUTF16$ANSISTRING$$UNICODESTRING
+                0x0000000180004db5                SYSTEM_$$_UTF8TOUTF16$PANSICHAR$$UNICODESTRING
+                0x0000000180004fd3                SYSTEM_$$_UTF16TOUTF8$UNICODESTRING$$ANSISTRING
+                0x0000000180005342                SYSTEM_$$_UTF16TOUTF8$PWIDECHAR$$ANSISTRING
+                0x00000001800055d3                SYSTEM_$$_IS_CODEPOINT_NEWLINE$LONGWORD$$BOOLEAN
+                0x0000000180005600                SYSTEM_$$_UTF8LEN$PANSICHAR$$INT64
+                0x00000001800057a4                FPC_UNICODESTR_ASSIGN
+                0x00000001800057a4                fpc_unicodestr_assign
+                0x00000001800057ef                fpc_unicodestr_setlength
+                0x00000001800057ef                FPC_UNICODESTR_SETLENGTH
+                0x00000001800058a5                fpc_unicodestr_concat
+                0x000000018000598b                fpc_unicodestr_concat_multi
+                0x0000000180005a6d                fpc_unicodestr_incr_ref
+                0x0000000180005a6d                FPC_UNICODESTR_INCR_REF
+                0x0000000180005a81                FPC_UNICODESTR_DECR_REF
+                0x0000000180005a81                fpc_unicodestr_decr_ref
+                0x0000000180005adf                fpc_unicodestr_unique
+                0x0000000180005adf                FPC_UNICODESTR_UNIQUE
+                0x0000000180005b40                fpc_unicodestr_copy
+                0x0000000180005bb8                fpc_uchar_to_unicodestr
+                0x0000000180005be1                fpc_unicodestr_to_ansistr
+                0x0000000180005bf2                fpc_pwidechar_to_unicodestr
+                0x0000000180005c50                fpc_widestr_to_unicodestr
+                0x0000000180005c96                SYSTEM_$$_INCLOCKED$LONGINT
+                0x0000000180005cbc                SYSTEM_$$_INCLOCKED$INT64
+                0x0000000180005ce3                SYSTEM_$$_DECLOCKED$LONGINT$$BOOLEAN
+                0x0000000180005d14                SYSTEM_$$_DECLOCKED$INT64$$BOOLEAN
+                0x0000000180005d48                SYSTEM_$$_MAKELANGID$WORD$WORD$$WORD
+                0x0000000180005d5c                SYSTEM_$$_POS$ANSISTRING$ANSISTRING$INT64$$INT64
+                0x0000000180005dd9                SYSTEM_$$_POS$UNICODESTRING$UNICODESTRING$INT64$$INT64
+                0x0000000180005e79                SYSTEM_$$_POS$WIDESTRING$WIDESTRING$INT64$$INT64
+                0x0000000180005f51                SYSTEM_$$_GETMEM$QWORD$$POINTER
+                0x0000000180005f62                SYSTEM_$$_GETMEM$POINTER$QWORD$$POINTER
+                0x0000000180005f7e                SYSTEM_$$_FREEMEM$POINTER$$QWORD
+                0x0000000180005f8f                SYSTEM_$$_FREEMEMSIZE$POINTER$QWORD$$QWORD
+                0x0000000180005fa0                SYSTEM_$$_ALLOCMEM$QWORD$$POINTER
+                0x0000000180005fd1                SYSTEM_$$_REALLOCMEM$POINTER$QWORD$$POINTER
+                0x0000000180005fe2                SYSTEM_$$_MEMSIZE$POINTER$$QWORD
+                0x0000000180005ff3                SYSTEM_$$_MOVE$formal$formal$QWORD
+                0x0000000180006018                SYSTEM_$$_FILLCHAR$formal$QWORD$CHAR
+                0x000000018000603e                SYSTEM_$$_FILLCHAR$formal$QWORD$BYTE
+                0x0000000180006064                SYSTEM_$$_FILLBYTE$formal$QWORD$BYTE
+                0x000000018000608a                SYSTEM_$$_INDEXBYTE$formal$INT64$BYTE$$INT64
+                0x00000001800060b4                SYSTEM_$$_INDEXCHAR$formal$INT64$CHAR$$INT64
+                0x00000001800060de                SYSTEM_$$_INDEXWORD$formal$INT64$WORD$$INT64
+                0x000000018000611a                SYSTEM_$$_COMPAREBYTE$formal$formal$QWORD$$INT64
+                0x0000000180006162                SYSTEM_$$_COMPARECHAR$formal$formal$QWORD$$INT64
+                0x0000000180006173                FPC_GETMEM
+                0x0000000180006173                fpc_getmem
+                0x0000000180006184                FPC_FREEMEM
+                0x0000000180006184                fpc_freemem
+                0x00000001800061af                SYSTEM_$$_MSGDEBUG$ANSISTRING
+                0x00000001800061ef                FPC_INITIALIZEUNITS
+                0x00000001800061ef                fpc_initializeunits
+                0x0000000180006236                FPC_FINALIZEUNITS
+                0x0000000180006236                fpc_finalizeunits
+                0x000000018000627f                FPC_LIBINITIALIZEUNITS
+                0x000000018000627f                fpc_libinitializeunits
+                0x0000000180006297                SYSTEM_$$_HALT$LONGINT
+                0x00000001800062aa                fpc_do_exit
+                0x00000001800062aa                FPC_DO_EXIT
+                0x00000001800062c6                FPC_EMPTYMETHOD
+                0x00000001800062c6                SYSTEM_$$_FPC_EMPTYMETHOD
+                0x00000001800062c7                SYSTEM_$$_BSRBYTE$BYTE$$BYTE
+                0x00000001800062d8                SYSTEM_$$_BSRDWORD$LONGWORD$$CARDINAL
+                0x0000000180006322                SYSTEM_$$_BSRQWORD$QWORD$$CARDINAL
+                0x000000018000634e                fpc_div_qword
+                0x000000018000634e                FPC_DIV_QWORD
+                0x00000001800063dd                fpc_div_int64
+                0x00000001800063dd                FPC_DIV_INT64
+                0x0000000180006429                fpc_handleerror
+                0x0000000180006429                FPC_HANDLEERROR
+                0x0000000180006495                fpc_popaddrstack
+                0x0000000180006495                FPC_POPADDRSTACK
+                0x00000001800064c4                fpc_pushexceptaddr
+                0x00000001800064c4                FPC_PUSHEXCEPTADDR
+                0x00000001800064f6                FPC_BREAK_ERROR
+                0x00000001800064f6                SYSTEM_$$_HANDLEERRORADDRFRAME$LONGINT$POINTER$POINTER
+                0x000000018000655f                fpc_overflow
+                0x000000018000655f                FPC_OVERFLOW
+                0x000000018000658f                SYSTEM$_$TTESTEXCEPTION_$__$$_CREATE$ANSISTRING$$TTESTEXCEPTION
+                0x0000000180006654                FPC_DYNARR_SETLENGTH
+                0x0000000180006654                fpc_dynarray_setlength
+                0x000000018000674b                FPC_DYNARRAY_LENGTH
+                0x000000018000674b                fpc_dynarray_length
+                0x000000018000675e                fpc_dynarray_high
+                0x000000018000675e                FPC_DYNARRAY_HIGH
+                0x000000018000676b                FPC_DYNARRAY_INCR_REF
+                0x000000018000676b                fpc_dynarray_incr_ref
+                0x000000018000679d                fpc_dynarray_clear
+                0x000000018000679d                FPC_DYNARRAY_CLEAR
+                0x00000001800067f0                WRPR_$SYSTEM_$$_TINTERFACEDOBJECT_$_IUNKNOWN_$_0_$_SYSTEM$_$TINTERFACEDOBJECT_$__$$_QUERYINTERFACE$TGUID$formal$$LON$CRC5A30FEB1
+                0x0000000180006800                WRPR_$SYSTEM_$$_TINTERFACEDOBJECT_$_IUNKNOWN_$_1_$_SYSTEM$_$TINTERFACEDOBJECT_$__$$__ADDREF$$LONGINT
+                0x0000000180006810                WRPR_$SYSTEM_$$_TINTERFACEDOBJECT_$_IUNKNOWN_$_2_$_SYSTEM$_$TINTERFACEDOBJECT_$__$$__RELEASE$$LONGINT
+                0x0000000180006819                INIT$_$SYSTEM
+                0x0000000180006819                SYSTEM_$$_init$
+ *fill*         0x000000018000682a        0x6 
+ .text          0x0000000180006830      0x6c5 sysutils.o
+                0x0000000180006883                SYSUTILS_$$_SETSTRING$ANSISTRING$PANSICHAR$INT64
+                0x00000001800068cd                SYSUTILS_$$_STRPAS$PANSICHAR$$ANSISTRING
+                0x0000000180006936                SYSUTILS_$$_CHATASTR1$array_of_CHAR$$ANSISTRING
+                0x0000000180006a01                SYSUTILS_$$_CHATASTR2$array_of_CHAR$LONGINT$$ANSISTRING
+                0x0000000180006a7f                SYSUTILS_$$_CHATASTR3$PANSICHAR$LONGINT$$ANSISTRING
+                0x0000000180006ac5                SYSUTILS_$$_STRALLOC$CARDINAL$$PCHAR
+                0x0000000180006aee                SYSUTILS_$$_STRDISPOSE$PCHAR
+                0x0000000180006b0a                SYSUTILS_$$_STRCOPY_$PCHAR$PCHAR$$PCHAR
+                0x0000000180006b66                SYSUTILS_$$_STRCOPY$PCHAR$PCHAR$$PCHAR
+                0x0000000180006ba4                SYSUTILS_$$_STRCAT_$PCHAR$PCHAR$$PCHAR
+                0x0000000180006c49                SYSUTILS_$$_STRCAT$PCHAR$PCHAR$$PCHAR
+                0x0000000180006c62                SYSUTILS_$$_INTTOSTRCRT32$LONGINT$$PCHAR
+                0x0000000180006cb3                SYSUTILS_$$_INTTOSTRCRT64$INT64$$PCHAR
+                0x0000000180006d06                SYSUTILS_$$_INTTOSTR$LONGINT$$PCHAR
+                0x0000000180006d17                SYSUTILS_$$_INTTOSTR$INT64$$PCHAR
+                0x0000000180006d28                SYSUTILS_$$_UINTTOSTRA$QWORD$$ANSISTRING
+                0x0000000180006d98                SYSUTILS_$$_UINTTOSTR$QWORD$$ANSISTRING
+                0x0000000180006da9                SYSUTILS_$$_COMMANDLINETOARGVA$PANSICHAR$LONGINT$$PPANSICHAR
+ *fill*         0x0000000180006ef5        0xb 
+ .text          0x0000000180006f00      0x977 xmm.o
+                0x0000000180006fdb                XMM_$$_XGETMEM$QWORD$$POINTER
+                0x00000001800070eb                XMM_$$_XALLOCMEM$QWORD$$POINTER
+                0x0000000180007211                XMM_$$_XREALLOCMEM$POINTER$QWORD$$POINTER
+                0x00000001800074ea                XMM_$$_XCLONE$POINTER$$POINTER
+                0x0000000180007614                XMM_$$_XMEMSIZE$POINTER$$QWORD
+                0x0000000180007619                XMM_$$_XMEMREALSIZE$POINTER$$QWORD
+                0x0000000180007622                XMM_$$_XMEMAVAILSIZE$POINTER$$QWORD
+                0x0000000180007627                XMM_$$_XFREEMEM$POINTER$$QWORD
+                0x0000000180007690                XMM_$$_XZEROMEM$POINTER$QWORD$$QWORD
+                0x00000001800076a4                XMM_$$_XMOVEMEM$POINTER$POINTER$QWORD$$QWORD
+                0x00000001800076c6                XMM_$$_XFILLMEM$POINTER$QWORD$BYTE$$QWORD
+                0x0000000180007706                XMM_$$_XMEMDIFFAT$POINTER$POINTER$QWORD$$QWORD
+                0x0000000180007717                XMM_$$_XMEMCOMPARE$POINTER$POINTER$QWORD$$BOOLEAN
+                0x0000000180007733                XMM_$$_XGETFREECHUNKS$$LONGINT
+                0x0000000180007790                XMM_$$_XMMINIT
+                0x0000000180007866                XMM_$$_init$
+                0x0000000180007866                INIT$_$XMM
+ *fill*         0x0000000180007877        0x9 
+ .text          0x0000000180007880      0x268 QApplicationPascal.o
+                0x0000000180007880                TApplication_Create
+                0x0000000180007880                QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE$TAPPLICATION$$TAPPLICATION
+                0x00000001800078af                TApplication_Destroy
+                0x00000001800078af                QAPPLICATIONPASCAL_$$_TAPPLICATION_DESTROY$TAPPLICATION$$TAPPLICATION
+                0x00000001800078ed                QAPPLICATIONPASCAL$_$TAPPLICATION_$__$$_CREATE$$TAPPLICATION
+                0x00000001800079b8                QAPPLICATIONPASCAL$_$TAPPLICATION_$__$$_DESTROY
+                0x00000001800079fc                QAPPLICATIONPASCAL_$$_TAPPLICATION__CREATE$$TAPPLICATION
+ *fill*         0x0000000180007ae8        0x8 
+ .text          0x0000000180007af0        0x6 libimpexceptions.a(impexceptions1s2.o)
+                0x0000000180007af0                _$dll$kernel32$FormatMessageA
+ *fill*         0x0000000180007af6        0xa 
+ .text          0x0000000180007b00        0x6 libimpQApplicationPascal.a(impqapplicationpascal1s2.o)
+                0x0000000180007b00                _$dll$kernel32$GetCommandLineA
+ *fill*         0x0000000180007b06        0xa 
+ .text          0x0000000180007b10        0x6 libimpQApplicationPascal.a(impqapplicationpascal2s5.o)
+                0x0000000180007b10                _$dll$rtllib$StrAlloc
+ *fill*         0x0000000180007b16        0xa 
+ .text          0x0000000180007b20        0x6 libimpsystem.a(impsystem1s2.o)
+                0x0000000180007b20                _$dll$user32$MessageBoxA
+ *fill*         0x0000000180007b26        0xa 
+ .text          0x0000000180007b30        0x6 libimpsystem.a(impsystem2s5.o)
+                0x0000000180007b30                _$dll$kernel32$ExitProcess
+ *fill*         0x0000000180007b36        0xa 
+ .text          0x0000000180007b40        0x6 libimpsystem.a(impsystem2s6.o)
+                0x0000000180007b40                _$dll$kernel32$RtlMoveMemory
+ *fill*         0x0000000180007b46        0xa 
+ .text          0x0000000180007b50        0x6 libimpsystem.a(impsystem2s7.o)
+                0x0000000180007b50                _$dll$kernel32$VirtualAlloc
+ *fill*         0x0000000180007b56        0xa 
+ .text          0x0000000180007b60        0x6 libimpsystem.a(impsystem2s8.o)
+                0x0000000180007b60                _$dll$kernel32$VirtualFree
+ *fill*         0x0000000180007b66        0xa 
+ .text          0x0000000180007b70        0x6 libimpsystem.a(impsystem2s10.o)
+                0x0000000180007b70                _$dll$kernel32$RtlUnwindEx
+ *fill*         0x0000000180007b76        0xa 
+ .text          0x0000000180007b80        0x6 libimpsystem.a(impsystem2s11.o)
+                0x0000000180007b80                _$dll$kernel32$AddVectoredExceptionHandler
+ *fill*         0x0000000180007b86        0xa 
+ .text          0x0000000180007b90        0x6 libimpsystem.a(impsystem2s12.o)
+                0x0000000180007b90                _$dll$kernel32$RemoveVectoredExceptionHandler
+ *fill*         0x0000000180007b96        0xa 
+ .text          0x0000000180007ba0        0x6 libimpsystem.a(impsystem2s13.o)
+                0x0000000180007ba0                _$dll$kernel32$RtlLookupFunctionEntry
+ *fill*         0x0000000180007ba6        0xa 
+ .text          0x0000000180007bb0        0x6 libimpsystem.a(impsystem2s14.o)
+                0x0000000180007bb0                _$dll$kernel32$RtlVirtualUnwind
+ *fill*         0x0000000180007bb6        0xa 
+ .text          0x0000000180007bc0        0x6 libimpsystem.a(impsystem2s15.o)
+                0x0000000180007bc0                _$dll$kernel32$GetStdHandle
+ *fill*         0x0000000180007bc6        0xa 
+ .text          0x0000000180007bd0        0x6 libimpsystem.a(impsystem2s16.o)
+                0x0000000180007bd0                _$dll$kernel32$SetConsoleMode
+ *fill*         0x0000000180007bd6        0xa 
+ .text          0x0000000180007be0        0x6 libimpsystem.a(impsystem2s17.o)
+                0x0000000180007be0                _$dll$kernel32$WriteConsoleA
+ *fill*         0x0000000180007be6        0xa 
+ .text          0x0000000180007bf0        0x6 libimpsystem.a(impsystem2s18.o)
+                0x0000000180007bf0                _$dll$kernel32$WriteConsoleW
+ *fill*         0x0000000180007bf6        0xa 
+ .text          0x0000000180007c00        0x6 libimpsystem.a(impsystem2s19.o)
+                0x0000000180007c00                _$dll$kernel32$ReadConsoleA
+ *fill*         0x0000000180007c06        0xa 
+ .text          0x0000000180007c10        0x6 libimpsystem.a(impsystem4s26.o)
+                0x0000000180007c10                _$dll$rtllib$xfreemem
+ *fill*         0x0000000180007c16        0xa 
+ .text          0x0000000180007c20        0x6 libimpSysUtils.a(impsysutils1s2.o)
+                0x0000000180007c20                _$dll$msvcrt$_itoa
+ *fill*         0x0000000180007c26        0xa 
+ .text          0x0000000180007c30        0x6 libimpSysUtils.a(impsysutils1s3.o)
+                0x0000000180007c30                _$dll$msvcrt$_i64toa
+ *fill*         0x0000000180007c36        0xa 
+ .text          0x0000000180007c40        0x6 libimpwindows.a(impwindows1s38.o)
+                0x0000000180007c40                _$dll$kernel32$GlobalAlloc
+ *fill*         0x0000000180007c46        0xa 
+ .text          0x0000000180007c50        0x6 libimpwindows.a(impwindows1s65.o)
+                0x0000000180007c50                _$dll$kernel32$LocalFree
+ *fill*         0x0000000180007c56        0xa 
+ .text          0x0000000180007c60        0x6 libimpxmm.a(impxmm1s4.o)
+                0x0000000180007c60                _$dll$kernel32$RtlFillMemory
+ *fill*         0x0000000180007c66        0xa 
+ .text          0x0000000180007c70        0x6 libimpxmm.a(impxmm2s9.o)
+                0x0000000180007c70                _$dll$ntdll$RtlCompareMemory
+ *(SORT_BY_NAME(.text$*))
+ *(.glue_7t)
+ *(.glue_7)
+                0x0000000180007c78                . = ALIGN (0x8)
+ *fill*         0x0000000180007c76        0x2 
+                0x0000000180007c78                ___CTOR_LIST__ = .
+                0x0000000180007c78                __CTOR_LIST__ = .
+                0x0000000180007c78        0x4 LONG 0xffffffffffffffff
+                0x0000000180007c7c        0x4 LONG 0xffffffffffffffff
+ *(.ctors)
+ *(.ctor)
+ *(SORT_BY_NAME(.ctors.*))
+                0x0000000180007c80        0x4 LONG 0x0
+                0x0000000180007c84        0x4 LONG 0x0
+                0x0000000180007c88                ___DTOR_LIST__ = .
+                0x0000000180007c88                __DTOR_LIST__ = .
+                0x0000000180007c88        0x4 LONG 0xffffffffffffffff
+                0x0000000180007c8c        0x4 LONG 0xffffffffffffffff
+ *(.dtors)
+ *(.dtor)
+ *(SORT_BY_NAME(.dtors.*))
+                0x0000000180007c90        0x4 LONG 0x0
+                0x0000000180007c94        0x4 LONG 0x0
+ *(.fini)
+                [!provide]                        PROVIDE (etext = .)
+ *(.gcc_except_table)
+
+.data           0x0000000180008000     0x5800
+                0x0000000180008000                __data_start__ = .
+ *(.data .data.* .gnu.linkonce.d.* .fpc*)
+ .data          0x0000000180008000       0x59 test.o
+                0x0000000180008000                INITFINAL
+                0x0000000180008030                FPC_THREADVARTABLES
+                0x0000000180008038                FPC_RESOURCESTRINGTABLES
+                0x0000000180008040                FPC_WIDEINITTABLES
+                0x0000000180008048                FPC_RESSTRINITTABLES
+                0x0000000180008050                __heapsize
+                0x0000000180008058                __fpc_valgrind
+ *fill*         0x0000000180008059        0x7 
+ .fpc           0x0000000180008060       0x33 test.o
+ *fill*         0x0000000180008093        0xd 
+ .data.n_INITFINAL
+                0x00000001800080a0       0x40 rtllib.o
+ .data.n_FPC_THREADVARTABLES
+                0x00000001800080e0       0x10 rtllib.o
+ .data.n_FPC_WIDEINITTABLES
+                0x00000001800080f0       0x10 rtllib.o
+ .data.n_FPC_RESSTRINITTABLES
+                0x0000000180008100       0x10 rtllib.o
+ .fpc.n_version
+                0x0000000180008110       0x38 rtllib.o
+ *fill*         0x0000000180008148        0x8 
+ .data.n___heapsize
+                0x0000000180008150       0x10 rtllib.o
+ .data.n___fpc_valgrind
+                0x0000000180008160       0x10 rtllib.o
+ .data          0x0000000180008170      0x3d0 global.o
+                0x0000000180008170                INIT_$GLOBAL_$$_TDLLERROR
+                0x00000001800081a0                RTTI_$GLOBAL_$$_def00000006
+                0x00000001800081c8                RTTI_$GLOBAL_$$_TDLLERROR
+                0x0000000180008258                RTTI_$GLOBAL_$$_PDLLERROR
+                0x0000000180008270                INIT_$GLOBAL_$$_TDLLARGUMENTS
+                0x00000001800082a0                RTTI_$GLOBAL_$$_def00000009
+                0x00000001800082c8                RTTI_$GLOBAL_$$_TDLLARGUMENTS
+                0x0000000180008318                RTTI_$GLOBAL_$$_PDLLARGUMENTS
+                0x0000000180008330                INIT_$GLOBAL_$$_def0000000C
+                0x0000000180008358                INIT_$GLOBAL_$$_TDLLARGS
+                0x0000000180008398                RTTI_$GLOBAL_$$_def0000000C
+                0x00000001800083c0                RTTI_$GLOBAL_$$_TDLLARGS
+                0x0000000180008400                RTTI_$GLOBAL_$$_PDLLARGS
+                0x0000000180008418                INIT_$GLOBAL_$$_TDLLREQUEST
+                0x0000000180008458                RTTI_$GLOBAL_$$_TDLLREQUEST
+                0x00000001800084a8                RTTI_$GLOBAL_$$_PDLLREQUEST
+                0x00000001800084c0                INIT_$GLOBAL_$$_TDLLERROR$indirect
+                0x00000001800084c8                RTTI_$GLOBAL_$$_def00000006$indirect
+                0x00000001800084d0                RTTI_$GLOBAL_$$_TDLLERROR$indirect
+                0x00000001800084d8                RTTI_$GLOBAL_$$_PDLLERROR$indirect
+                0x00000001800084e0                INIT_$GLOBAL_$$_TDLLARGUMENTS$indirect
+                0x00000001800084e8                RTTI_$GLOBAL_$$_def00000009$indirect
+                0x00000001800084f0                RTTI_$GLOBAL_$$_TDLLARGUMENTS$indirect
+                0x00000001800084f8                RTTI_$GLOBAL_$$_PDLLARGUMENTS$indirect
+                0x0000000180008500                INIT_$GLOBAL_$$_def0000000C$indirect
+                0x0000000180008508                INIT_$GLOBAL_$$_TDLLARGS$indirect
+                0x0000000180008510                RTTI_$GLOBAL_$$_def0000000C$indirect
+                0x0000000180008518                RTTI_$GLOBAL_$$_TDLLARGS$indirect
+                0x0000000180008520                RTTI_$GLOBAL_$$_PDLLARGS$indirect
+                0x0000000180008528                INIT_$GLOBAL_$$_TDLLREQUEST$indirect
+                0x0000000180008530                RTTI_$GLOBAL_$$_TDLLREQUEST$indirect
+                0x0000000180008538                RTTI_$GLOBAL_$$_PDLLREQUEST$indirect
+ .data.n_TC_$RTLUNIT_$$_BSR8BIT
+                0x0000000180008540      0x100 rtlunit.o
+                0x0000000180008540                TC_$RTLUNIT_$$_BSR8BIT
+ .data          0x0000000180008640       0xc0 strutils.o
+                0x0000000180008640                RTTI_$STRUTILS_$$_TREPLACEFLAG
+                0x0000000180008688                RTTI_$STRUTILS_$$_TREPLACEFLAG_s2o
+                0x00000001800086a8                RTTI_$STRUTILS_$$_TREPLACEFLAG_o2s
+                0x00000001800086c0                RTTI_$STRUTILS_$$_TREPLACEFLAGS
+                0x00000001800086e0                RTTI_$STRUTILS_$$_TREPLACEFLAG$indirect
+                0x00000001800086e8                RTTI_$STRUTILS_$$_TREPLACEFLAG_s2o$indirect
+                0x00000001800086f0                RTTI_$STRUTILS_$$_TREPLACEFLAG_o2s$indirect
+                0x00000001800086f8                RTTI_$STRUTILS_$$_TREPLACEFLAGS$indirect
+ .data          0x0000000180008700      0x140 sysinitpas.o
+                0x0000000180008748                INIT_$SYSINITPAS_$$_TENTRYINFORMATION
+                0x0000000180008780                RTTI_$SYSINITPAS_$$_def00000001
+                0x0000000180008790                RTTI_$SYSINITPAS_$$_TENTRYINFORMATION
+                0x0000000180008828                INIT_$SYSINITPAS_$$_TENTRYINFORMATION$indirect
+                0x0000000180008830                RTTI_$SYSINITPAS_$$_def00000001$indirect
+                0x0000000180008838                RTTI_$SYSINITPAS_$$_TENTRYINFORMATION$indirect
+ .data          0x0000000180008840     0x42c0 system.o
+                0x0000000180008860                VMT_$SYSTEM_$$_TOBJECT
+                0x00000001800088f8                IID_$SYSTEM_$$_IUNKNOWN
+                0x0000000180008908                IIDSTR_$SYSTEM_$$_IUNKNOWN
+                0x0000000180008930                VMT_$SYSTEM_$$_TINTERFACEDOBJECT
+                0x00000001800089c8                VMT_$SYSTEM_$$_TTESTEXCEPTION
+                0x0000000180008ad7                TC_$SYSTEM_$$_EXITPROC
+                0x0000000180008adf                TC_$SYSTEM_$$_ERRORADDR
+                0x0000000180008ae7                TC_$SYSTEM_$$_ERRORCODE
+                0x0000000180008ae9                FPC_ERRORBASE
+                0x0000000180008af1                TC_$SYSTEM_$$_IOBJECTINSTANCE
+                0x0000000180008b01                TC_$SYSTEM_$$_DEFAULT8087CW
+                0x0000000180008b03                TC_$SYSTEM_$$_DEFAULTMXCSR
+                0x0000000180008b07                TC_$SYSTEM_$$_EXCEPTOBJPROC
+                0x0000000180008b0f                TC_$SYSTEM_$$_EXCEPTCLSPROC
+                0x0000000180008b17                TC_$SYSTEM_$$_ERRORPROC
+                0x0000000180008b1f                TC_$SYSTEM_$$_RAISEMAXFRAMECOUNT
+                0x0000000180008b23                operatingsystem_islibrary
+                0x0000000180008b24                operatingsystem_isconsole
+                0x0000000180008b25                TC_$SYSTEM_$$_ISMULTITHREAD
+                0x0000000180008d58                RTTI_$SYSTEM_$$_formal
+                0x0000000180008d68                RTTI_$SYSTEM_$$_typedformal
+                0x0000000180008d78                RTTI_$SYSTEM_$$_void
+                0x0000000180008d88                RTTI_$SYSTEM_$$_POINTER
+                0x0000000180008da0                RTTI_$SYSTEM_$$_BYTE
+                0x0000000180008db0                RTTI_$SYSTEM_$$_SHORTINT
+                0x0000000180008dc8                RTTI_$SYSTEM_$$_WORD
+                0x0000000180008dd8                RTTI_$SYSTEM_$$_SMALLINT
+                0x0000000180008df0                RTTI_$SYSTEM_$$_LONGWORD
+                0x0000000180008e08                RTTI_$SYSTEM_$$_LONGINT
+                0x0000000180008e20                RTTI_$SYSTEM_$$_QWORD
+                0x0000000180008e38                RTTI_$SYSTEM_$$_INT64
+                0x0000000180008e50                RTTI_$SYSTEM_$$_uint128
+                0x0000000180008e68                RTTI_$SYSTEM_$$_int128
+                0x0000000180008e80                RTTI_$SYSTEM_$$_BOOLEAN
+                0x0000000180008e98                RTTI_$SYSTEM_$$_BOOLEAN8
+                0x0000000180008eb0                RTTI_$SYSTEM_$$_BOOLEAN16
+                0x0000000180008ec8                RTTI_$SYSTEM_$$_BOOLEAN32
+                0x0000000180008ee0                RTTI_$SYSTEM_$$_BOOLEAN64
+                0x0000000180008f00                RTTI_$SYSTEM_$$_BYTEBOOL
+                0x0000000180008f18                RTTI_$SYSTEM_$$_WORDBOOL
+                0x0000000180008f30                RTTI_$SYSTEM_$$_LONGBOOL
+                0x0000000180008f48                RTTI_$SYSTEM_$$_QWORDBOOL
+                0x0000000180008f68                RTTI_$SYSTEM_$$_CHAR
+                0x0000000180008f78                RTTI_$SYSTEM_$$_WIDECHAR
+                0x0000000180008f90                RTTI_$SYSTEM_$$_SHORTSTRING
+                0x0000000180008fa0                RTTI_$SYSTEM_$$_longstring
+                0x0000000180008fb0                RTTI_$SYSTEM_$$_ANSISTRING
+                0x0000000180008fc0                RTTI_$SYSTEM_$$_WIDESTRING
+                0x0000000180008fd0                RTTI_$SYSTEM_$$_UNICODESTRING
+                0x0000000180008fe0                RTTI_$SYSTEM_$$_OPENSTRING
+                0x0000000180008ff0                RTTI_$SYSTEM_$$_SINGLE
+                0x0000000180009000                RTTI_$SYSTEM_$$_DOUBLE
+                0x0000000180009010                RTTI_$SYSTEM_$$_s80real
+                0x0000000180009020                RTTI_$SYSTEM_$$_sc80real
+                0x0000000180009030                RTTI_$SYSTEM_$$_CURRENCY
+                0x0000000180009040                RTTI_$SYSTEM_$$_char_pointer
+                0x0000000180009058                RTTI_$SYSTEM_$$_widechar_pointer
+                0x0000000180009078                RTTI_$SYSTEM_$$_parentfp_void_pointer
+                0x0000000180009098                RTTI_$SYSTEM_$$_NEARPOINTER
+                0x00000001800090b0                RTTI_$SYSTEM_$$_NEARCSPOINTER
+                0x00000001800090c8                RTTI_$SYSTEM_$$_NEARDSPOINTER
+                0x00000001800090e0                RTTI_$SYSTEM_$$_NEARSSPOINTER
+                0x00000001800090f8                RTTI_$SYSTEM_$$_NEARESPOINTER
+                0x0000000180009110                RTTI_$SYSTEM_$$_NEARFSPOINTER
+                0x0000000180009128                RTTI_$SYSTEM_$$_NEARGSPOINTER
+                0x0000000180009140                RTTI_$SYSTEM_$$_openchararray
+                0x0000000180009168                RTTI_$SYSTEM_$$_file
+                0x0000000180009170                RTTI_$SYSTEM_$$_VARIANT
+                0x0000000180009180                RTTI_$SYSTEM_$$_OLEVARIANT
+                0x0000000180009190                RTTI_$SYSTEM_$$_TEXT
+                0x0000000180009198                RTTI_$SYSTEM_$$_TYPEDFILE
+                0x00000001800091a8                INIT_$SYSTEM_$$___vtbl_ptr_type
+                0x00000001800091e0                RTTI_$SYSTEM_$$_pvmt
+                0x00000001800091f0                RTTI_$SYSTEM_$$_def00000037
+                0x0000000180009200                RTTI_$SYSTEM_$$_def00000038
+                0x0000000180009228                RTTI_$SYSTEM_$$___vtbl_ptr_type
+                0x00000001800092a0                RTTI_$SYSTEM_$$_vtblarray
+                0x00000001800092d0                INIT_$SYSTEM_$$_methodpointer
+                0x0000000180009300                RTTI_$SYSTEM_$$_methodpointer
+                0x0000000180009340                INIT_$SYSTEM_$$_nestedprocpointer
+                0x0000000180009378                RTTI_$SYSTEM_$$_nestedprocpointer
+                0x00000001800093c0                RTTI_$SYSTEM_$$_CARDINAL
+                0x00000001800093d8                RTTI_$SYSTEM_$$_HRESULT
+                0x00000001800093f0                RTTI_$SYSTEM_$$_PCHAR
+                0x0000000180009400                RTTI_$SYSTEM_$$_PPCHAR
+                0x0000000180009410                RTTI_$SYSTEM_$$_PANSICHAR
+                0x0000000180009428                RTTI_$SYSTEM_$$_PANSISTRING
+                0x0000000180009440                RTTI_$SYSTEM_$$_PWIDECHAR
+                0x0000000180009458                RTTI_$SYSTEM_$$_PPWIDECHAR
+                0x0000000180009470                RTTI_$SYSTEM_$$_PSHORTSTRING
+                0x0000000180009488                RTTI_$SYSTEM_$$_RAWBYTESTRING
+                0x00000001800094a0                RTTI_$SYSTEM_$$_PRAWBYTESTRING
+                0x00000001800094b8                RTTI_$SYSTEM_$$_UTF8STRING
+                0x00000001800094c8                RTTI_$SYSTEM_$$_PUTF8STRING
+                0x00000001800094e0                RTTI_$SYSTEM_$$_PUNICODECHAR
+                0x00000001800094f8                RTTI_$SYSTEM_$$_PUNICODESTRING
+                0x0000000180009510                RTTI_$SYSTEM_$$_PSMALLINT
+                0x0000000180009528                RTTI_$SYSTEM_$$_PSHORTINT
+                0x0000000180009540                RTTI_$SYSTEM_$$_PINTEGER
+                0x0000000180009558                RTTI_$SYSTEM_$$_PBYTE
+                0x0000000180009568                RTTI_$SYSTEM_$$_PWORD
+                0x0000000180009578                RTTI_$SYSTEM_$$_PDWORD
+                0x0000000180009588                RTTI_$SYSTEM_$$_PLONGWORD
+                0x00000001800095a0                RTTI_$SYSTEM_$$_PLONGINT
+                0x00000001800095b8                RTTI_$SYSTEM_$$_PCARDINAL
+                0x00000001800095d0                RTTI_$SYSTEM_$$_PQWORD
+                0x00000001800095e0                RTTI_$SYSTEM_$$_PINT64
+                0x00000001800095f0                RTTI_$SYSTEM_$$_PUINT64
+                0x0000000180009608                RTTI_$SYSTEM_$$_PPTRINT
+                0x0000000180009620                RTTI_$SYSTEM_$$_PPTRUINT
+                0x0000000180009638                RTTI_$SYSTEM_$$_PSIZEINT
+                0x0000000180009650                RTTI_$SYSTEM_$$_PSIZEUINT
+                0x0000000180009668                RTTI_$SYSTEM_$$_PSINGLE
+                0x0000000180009680                RTTI_$SYSTEM_$$_PDOUBLE
+                0x0000000180009698                RTTI_$SYSTEM_$$_PEXTENDED
+                0x00000001800096b0                RTTI_$SYSTEM_$$_PBOOLEAN
+                0x00000001800096c8                RTTI_$SYSTEM_$$_PBOOLEAN16
+                0x00000001800096e0                RTTI_$SYSTEM_$$_PBOOLEAN32
+                0x00000001800096f8                RTTI_$SYSTEM_$$_PBOOLEAN64
+                0x0000000180009710                RTTI_$SYSTEM_$$_PBYTEBOOL
+                0x0000000180009728                RTTI_$SYSTEM_$$_PWORDBOOL
+                0x0000000180009740                RTTI_$SYSTEM_$$_PLONGBOOL
+                0x0000000180009758                RTTI_$SYSTEM_$$_PQWORDBOOL
+                0x0000000180009770                RTTI_$SYSTEM_$$_PNATIVEINT
+                0x0000000180009788                RTTI_$SYSTEM_$$_PNATIVEUINT
+                0x00000001800097a0                RTTI_$SYSTEM_$$_PCURRENCY
+                0x00000001800097b8                RTTI_$SYSTEM_$$_PVARIANT
+                0x00000001800097d0                RTTI_$SYSTEM_$$_PPOINTER
+                0x00000001800097e8                RTTI_$SYSTEM_$$_TDATETIME
+                0x00000001800097f8                RTTI_$SYSTEM_$$_TDATE
+                0x0000000180009800                RTTI_$SYSTEM_$$_TTIME
+                0x0000000180009808                RTTI_$SYSTEM_$$_TPROCEDURE
+                0x0000000180009820                RTTI_$SYSTEM_$$_PTEXT
+                0x0000000180009830                RTTI_$SYSTEM_$$_PCODEPOINTER
+                0x0000000180009848                RTTI_$SYSTEM_$$_PFILETEXTRECCHAR
+                0x0000000180009868                INIT_$SYSTEM_$$_JMP_BUF
+                0x0000000180009898                INIT_$SYSTEM_$$_def00000074
+                0x00000001800098c0                RTTI_$SYSTEM_$$_def00000074
+                0x00000001800098f8                RTTI_$SYSTEM_$$_JMP_BUF
+                0x0000000180009a88                RTTI_$SYSTEM_$$_PJMP_BUF
+                0x0000000180009aa0                INIT_$SYSTEM_$$_TEXCEPTADDR
+                0x0000000180009ad0                RTTI_$SYSTEM_$$_TEXCEPTADDR
+                0x0000000180009b20                RTTI_$SYSTEM_$$_PEXCEPTADDR
+                0x0000000180009b38                INIT_$SYSTEM_$$_TGUID
+                0x0000000180009b60                RTTI_$SYSTEM_$$_def0000007E
+                0x0000000180009b88                RTTI_$SYSTEM_$$_def0000007F
+                0x0000000180009bb0                RTTI_$SYSTEM_$$_def00000080
+                0x0000000180009bd8                RTTI_$SYSTEM_$$_TGUID
+                0x0000000180009cd0                RTTI_$SYSTEM_$$_PGUID
+                0x0000000180009ce0                RTTI_$SYSTEM_$$_TLINEENDSTR
+                0x0000000180009cf0                RTTI_$SYSTEM_$$_TEXTBUF
+                0x0000000180009d20                INIT_$SYSTEM_$$_TEXTREC
+                0x0000000180009d50                RTTI_$SYSTEM_$$_def00000084
+                0x0000000180009d60                RTTI_$SYSTEM_$$_def00000085
+                0x0000000180009d88                RTTI_$SYSTEM_$$_def00000086
+                0x0000000180009db0                RTTI_$SYSTEM_$$_TEXTREC
+                0x0000000180009ee0                INIT_$SYSTEM_$$_TANSIREC
+                0x0000000180009f10                RTTI_$SYSTEM_$$_TANSIREC
+                0x0000000180009f80                RTTI_$SYSTEM_$$_PANSIREC
+                0x0000000180009f98                INIT_$SYSTEM_$$_TWIDEREC
+                0x0000000180009fc8                RTTI_$SYSTEM_$$_TWIDEREC
+                0x000000018000a008                RTTI_$SYSTEM_$$_PWIDEREC
+                0x000000018000a020                INIT_$SYSTEM_$$_FILEREC
+                0x000000018000a050                RTTI_$SYSTEM_$$_def0000008F
+                0x000000018000a078                RTTI_$SYSTEM_$$_def00000090
+                0x000000018000a0a0                RTTI_$SYSTEM_$$_def00000091
+                0x000000018000a0c8                RTTI_$SYSTEM_$$_FILEREC
+                0x000000018000a148                INIT_$SYSTEM_$$_TOBJECT
+                0x000000018000a178                RTTI_$SYSTEM_$$_TOBJECT
+                0x000000018000a1a0                RTTI_$SYSTEM_$$_IUNKNOWN
+                0x000000018000a1d0                RTTI_$SYSTEM_$$_TCLASS
+                0x000000018000a1e0                RTTI_$SYSTEM_$$_PCLASS
+                0x000000018000a1f0                RTTI_$SYSTEM_$$_TINTERFACEENTRYTYPE
+                0x000000018000a2a0                RTTI_$SYSTEM_$$_TINTERFACEENTRYTYPE_s2o
+                0x000000018000a2f8                RTTI_$SYSTEM_$$_TINTERFACEENTRYTYPE_o2s
+                0x000000018000a338                INIT_$SYSTEM_$$_TINTERFACEENTRY
+                0x000000018000a370                RTTI_$SYSTEM_$$_def000000C8
+                0x000000018000a380                RTTI_$SYSTEM_$$_def000000CA
+                0x000000018000a390                RTTI_$SYSTEM_$$_TINTERFACEENTRY
+                0x000000018000a418                RTTI_$SYSTEM_$$_PINTERFACEENTRY
+                0x000000018000a438                INIT_$SYSTEM_$$_TINTERFACETABLE
+                0x000000018000a470                RTTI_$SYSTEM_$$_def000000CD
+                0x000000018000a498                RTTI_$SYSTEM_$$_TINTERFACETABLE
+                0x000000018000a4e0                RTTI_$SYSTEM_$$_PINTERFACETABLE
+                0x000000018000a500                INIT_$SYSTEM_$$_TMSGSTRTABLE
+                0x000000018000a530                RTTI_$SYSTEM_$$_TMSGSTRTABLE
+                0x000000018000a570                RTTI_$SYSTEM_$$_PMSGSTRTABLE
+                0x000000018000a588                INIT_$SYSTEM_$$_TSTRINGMESSAGETABLE
+                0x000000018000a5c0                RTTI_$SYSTEM_$$_def000000D2
+                0x000000018000a5e8                RTTI_$SYSTEM_$$_TSTRINGMESSAGETABLE
+                0x000000018000a630                RTTI_$SYSTEM_$$_PSTRINGMESSAGETABLE
+                0x000000018000a650                INIT_$SYSTEM_$$_TVMT
+                0x000000018000a678                RTTI_$SYSTEM_$$_PPVMT
+                0x000000018000a688                RTTI_$SYSTEM_$$_TVMT
+                0x000000018000a830                RTTI_$SYSTEM_$$_PVMT
+                0x000000018000a840                INIT_$SYSTEM_$$_TINTERFACEDOBJECT
+                0x000000018000a878                RTTI_$SYSTEM_$$_TINTERFACEDOBJECT
+                0x000000018000a8a8                RTTI_$SYSTEM_$$_TINTERFACEDCLASS
+                0x000000018000a8c8                INIT_$SYSTEM_$$_TMETHOD
+                0x000000018000a8f8                RTTI_$SYSTEM_$$_TMETHOD
+                0x000000018000a938                RTTI_$SYSTEM_$$_PMETHOD
+                0x000000018000a950                RTTI_$SYSTEM_$$_EXCEPTION_DISPOSITION
+                0x000000018000a9e8                RTTI_$SYSTEM_$$_EXCEPTION_DISPOSITION_s2o
+                0x000000018000aa20                RTTI_$SYSTEM_$$_EXCEPTION_DISPOSITION_o2s
+                0x000000018000aa48                INIT_$SYSTEM_$$_EXCEPTION_RECORD
+                0x000000018000aa80                RTTI_$SYSTEM_$$_def00000129
+                0x000000018000aaa8                RTTI_$SYSTEM_$$_EXCEPTION_RECORD
+                0x000000018000ab30                RTTI_$SYSTEM_$$_PEXCEPTION_RECORD
+                0x000000018000ab50                INIT_$SYSTEM_$$_TSEHFRAME
+                0x000000018000ab80                RTTI_$SYSTEM_$$_TSEHFRAME
+                0x000000018000abe0                RTTI_$SYSTEM_$$_PSEHFRAME
+                0x000000018000abf8                INIT_$SYSTEM_$$_TEXCEPTOBJECT
+                0x000000018000ac28                RTTI_$SYSTEM_$$_TEXCEPTOBJECT
+                0x000000018000aca8                RTTI_$SYSTEM_$$_PEXCEPTOBJECT
+                0x000000018000acc0                INIT_$SYSTEM_$$_TFILTERREC
+                0x000000018000acf0                RTTI_$SYSTEM_$$_TFILTERREC
+                0x000000018000ad30                RTTI_$SYSTEM_$$_PFILTERREC
+                0x000000018000ad48                INIT_$SYSTEM_$$_TEXCEPTION_FRAME
+                0x000000018000ad80                RTTI_$SYSTEM_$$_TEXCEPTION_FRAME
+                0x000000018000adc8                RTTI_$SYSTEM_$$_PEXCEPTION_FRAME
+                0x000000018000ade8                RTTI_$SYSTEM_$$_TUNWINDPROC
+                0x000000018000ae10                RTTI_$SYSTEM_$$_TEXCEPTOBJPROC
+                0x000000018000ae48                RTTI_$SYSTEM_$$_TEXCEPTCLSPROC
+                0x000000018000ae78                RTTI_$SYSTEM_$$_TERRORPROC
+                0x000000018000aec8                INIT_$SYSTEM_$$_M128A
+                0x000000018000aef0                RTTI_$SYSTEM_$$_M128A
+                0x000000018000af28                RTTI_$SYSTEM_$$_PM128A
+                0x000000018000af38                INIT_$SYSTEM_$$_TCONTEXT
+                0x000000018000af68                RTTI_$SYSTEM_$$_def0000013A
+                0x000000018000af90                RTTI_$SYSTEM_$$_def0000013B
+                0x000000018000afb8                RTTI_$SYSTEM_$$_def0000013C
+                0x000000018000afe0                RTTI_$SYSTEM_$$_TCONTEXT
+                0x000000018000b3f0                RTTI_$SYSTEM_$$_PCONTEXT
+                0x000000018000b408                INIT_$SYSTEM_$$_EXCEPTION_POINTERS
+                0x000000018000b440                RTTI_$SYSTEM_$$_EXCEPTION_POINTERS
+                0x000000018000b488                RTTI_$SYSTEM_$$_PEXCEPTION_POINTERS
+                0x000000018000b4a8                INIT_$SYSTEM_$$_TSCOPEREC
+                0x000000018000b4d8                RTTI_$SYSTEM_$$_TSCOPEREC
+                0x000000018000b538                RTTI_$SYSTEM_$$_PSCOPEREC
+                0x000000018000b550                RTTI_$SYSTEM_$$_EXCEPTION_ROUTINE
+                0x000000018000b5d8                INIT_$SYSTEM_$$_RUNTIME_FUNCTION
+                0x000000018000b610                RTTI_$SYSTEM_$$_RUNTIME_FUNCTION
+                0x000000018000b668                RTTI_$SYSTEM_$$_PRUNTIME_FUNCTION
+                0x000000018000b688                INIT_$SYSTEM_$$_UNWIND_HISTORY_TABLE_ENTRY
+                0x000000018000b6c8                RTTI_$SYSTEM_$$_UNWIND_HISTORY_TABLE_ENTRY
+                0x000000018000b718                INIT_$SYSTEM_$$_UNWIND_HISTORY_TABLE
+                0x000000018000b750                RTTI_$SYSTEM_$$_def00000147
+                0x000000018000b778                RTTI_$SYSTEM_$$_UNWIND_HISTORY_TABLE
+                0x000000018000b820                RTTI_$SYSTEM_$$_PUNWIND_HISTORY_TABLE
+                0x000000018000b840                INIT_$SYSTEM_$$_TDISPATCHERCONTEXT
+                0x000000018000b878                RTTI_$SYSTEM_$$_TDISPATCHERCONTEXT
+                0x000000018000b950                RTTI_$SYSTEM_$$_PDISPATCHERCONTEXT
+                0x000000018000b970                RTTI_$SYSTEM_$$_TTYPEKIND
+                0x000000018000bab0                RTTI_$SYSTEM_$$_TTYPEKIND_s2o
+                0x000000018000bc20                RTTI_$SYSTEM_$$_TTYPEKIND_o2s
+                0x000000018000bd18                RTTI_$SYSTEM_$$_PTYPEKIND
+                0x000000018000bd30                RTTI_$SYSTEM_$$_def00000191
+                0x000000018000bd60                INIT_$SYSTEM_$$_TUNICODEREC
+                0x000000018000bd90                RTTI_$SYSTEM_$$_TUNICODEREC
+                0x000000018000bdf0                RTTI_$SYSTEM_$$_PUNICODEREC
+                0x000000018000be08                RTTI_$SYSTEM_$$_def000001B8
+                0x000000018000be38                INIT_$SYSTEM_$$_TVARREC
+                0x000000018000be68                RTTI_$SYSTEM_$$_TVARREC
+                0x000000018000bfc8                RTTI_$SYSTEM_$$_PVARREC
+                0x000000018000bfe0                INIT_$SYSTEM_$$_TTESTEXCEPTION
+                0x000000018000c020                RTTI_$SYSTEM_$$_TTESTEXCEPTION
+                0x000000018000c050                RTTI_$SYSTEM_$$_PDYNARRAYINDEX
+                0x000000018000c068                INIT_$SYSTEM_$$_TDYNARRAY
+                0x000000018000c098                RTTI_$SYSTEM_$$_TDYNARRAY
+                0x000000018000c0d8                RTTI_$SYSTEM_$$_PDYNARRAY
+                0x000000018000c0f0                INIT_$SYSTEM_$$_TDYNARRAYTYPEDATA
+                0x000000018000c128                RTTI_$SYSTEM_$$_TDYNARRAYTYPEDATA
+                0x000000018000c1a0                RTTI_$SYSTEM_$$_PDYNARRAYTYPEDATA
+                0x000000018000c1c0                INIT_$SYSTEM_$$_TENTRYINFORMATION
+                0x000000018000c1f8                RTTI_$SYSTEM_$$_def00000212
+                0x000000018000c208                RTTI_$SYSTEM_$$_TENTRYINFORMATION
+                0x000000018000c2a0                RTTI_$SYSTEM_$$_def00000283
+                0x000000018000c2c8                VMT_$SYSTEM_$$_TOBJECT$indirect
+                0x000000018000c2d0                IID_$SYSTEM_$$_IUNKNOWN$indirect
+                0x000000018000c2d8                IIDSTR_$SYSTEM_$$_IUNKNOWN$indirect
+                0x000000018000c2e0                VMT_$SYSTEM_$$_TINTERFACEDOBJECT$indirect
+                0x000000018000c2e8                VMT_$SYSTEM_$$_TTESTEXCEPTION$indirect
+                0x000000018000c2f0                RTTI_$SYSTEM_$$_formal$indirect
+                0x000000018000c2f8                RTTI_$SYSTEM_$$_typedformal$indirect
+                0x000000018000c300                RTTI_$SYSTEM_$$_void$indirect
+                0x000000018000c308                RTTI_$SYSTEM_$$_POINTER$indirect
+                0x000000018000c310                RTTI_$SYSTEM_$$_BYTE$indirect
+                0x000000018000c318                RTTI_$SYSTEM_$$_SHORTINT$indirect
+                0x000000018000c320                RTTI_$SYSTEM_$$_WORD$indirect
+                0x000000018000c328                RTTI_$SYSTEM_$$_SMALLINT$indirect
+                0x000000018000c330                RTTI_$SYSTEM_$$_LONGWORD$indirect
+                0x000000018000c338                RTTI_$SYSTEM_$$_LONGINT$indirect
+                0x000000018000c340                RTTI_$SYSTEM_$$_QWORD$indirect
+                0x000000018000c348                RTTI_$SYSTEM_$$_INT64$indirect
+                0x000000018000c350                RTTI_$SYSTEM_$$_uint128$indirect
+                0x000000018000c358                RTTI_$SYSTEM_$$_int128$indirect
+                0x000000018000c360                RTTI_$SYSTEM_$$_BOOLEAN$indirect
+                0x000000018000c368                RTTI_$SYSTEM_$$_BOOLEAN8$indirect
+                0x000000018000c370                RTTI_$SYSTEM_$$_BOOLEAN16$indirect
+                0x000000018000c378                RTTI_$SYSTEM_$$_BOOLEAN32$indirect
+                0x000000018000c380                RTTI_$SYSTEM_$$_BOOLEAN64$indirect
+                0x000000018000c388                RTTI_$SYSTEM_$$_BYTEBOOL$indirect
+                0x000000018000c390                RTTI_$SYSTEM_$$_WORDBOOL$indirect
+                0x000000018000c398                RTTI_$SYSTEM_$$_LONGBOOL$indirect
+                0x000000018000c3a0                RTTI_$SYSTEM_$$_QWORDBOOL$indirect
+                0x000000018000c3a8                RTTI_$SYSTEM_$$_CHAR$indirect
+                0x000000018000c3b0                RTTI_$SYSTEM_$$_WIDECHAR$indirect
+                0x000000018000c3b8                RTTI_$SYSTEM_$$_SHORTSTRING$indirect
+                0x000000018000c3c0                RTTI_$SYSTEM_$$_longstring$indirect
+                0x000000018000c3c8                RTTI_$SYSTEM_$$_ANSISTRING$indirect
+                0x000000018000c3d0                RTTI_$SYSTEM_$$_WIDESTRING$indirect
+                0x000000018000c3d8                RTTI_$SYSTEM_$$_UNICODESTRING$indirect
+                0x000000018000c3e0                RTTI_$SYSTEM_$$_OPENSTRING$indirect
+                0x000000018000c3e8                RTTI_$SYSTEM_$$_SINGLE$indirect
+                0x000000018000c3f0                RTTI_$SYSTEM_$$_DOUBLE$indirect
+                0x000000018000c3f8                RTTI_$SYSTEM_$$_s80real$indirect
+                0x000000018000c400                RTTI_$SYSTEM_$$_sc80real$indirect
+                0x000000018000c408                RTTI_$SYSTEM_$$_CURRENCY$indirect
+                0x000000018000c410                RTTI_$SYSTEM_$$_char_pointer$indirect
+                0x000000018000c418                RTTI_$SYSTEM_$$_widechar_pointer$indirect
+                0x000000018000c420                RTTI_$SYSTEM_$$_parentfp_void_pointer$indirect
+                0x000000018000c428                RTTI_$SYSTEM_$$_NEARPOINTER$indirect
+                0x000000018000c430                RTTI_$SYSTEM_$$_NEARCSPOINTER$indirect
+                0x000000018000c438                RTTI_$SYSTEM_$$_NEARDSPOINTER$indirect
+                0x000000018000c440                RTTI_$SYSTEM_$$_NEARSSPOINTER$indirect
+                0x000000018000c448                RTTI_$SYSTEM_$$_NEARESPOINTER$indirect
+                0x000000018000c450                RTTI_$SYSTEM_$$_NEARFSPOINTER$indirect
+                0x000000018000c458                RTTI_$SYSTEM_$$_NEARGSPOINTER$indirect
+                0x000000018000c460                RTTI_$SYSTEM_$$_openchararray$indirect
+                0x000000018000c468                RTTI_$SYSTEM_$$_file$indirect
+                0x000000018000c470                RTTI_$SYSTEM_$$_VARIANT$indirect
+                0x000000018000c478                RTTI_$SYSTEM_$$_OLEVARIANT$indirect
+                0x000000018000c480                RTTI_$SYSTEM_$$_TEXT$indirect
+                0x000000018000c488                RTTI_$SYSTEM_$$_TYPEDFILE$indirect
+                0x000000018000c490                INIT_$SYSTEM_$$___vtbl_ptr_type$indirect
+                0x000000018000c498                RTTI_$SYSTEM_$$_pvmt$indirect
+                0x000000018000c4a0                RTTI_$SYSTEM_$$_def00000037$indirect
+                0x000000018000c4a8                RTTI_$SYSTEM_$$_def00000038$indirect
+                0x000000018000c4b0                RTTI_$SYSTEM_$$___vtbl_ptr_type$indirect
+                0x000000018000c4b8                RTTI_$SYSTEM_$$_vtblarray$indirect
+                0x000000018000c4c0                INIT_$SYSTEM_$$_methodpointer$indirect
+                0x000000018000c4c8                RTTI_$SYSTEM_$$_methodpointer$indirect
+                0x000000018000c4d0                INIT_$SYSTEM_$$_nestedprocpointer$indirect
+                0x000000018000c4d8                RTTI_$SYSTEM_$$_nestedprocpointer$indirect
+                0x000000018000c4e0                RTTI_$SYSTEM_$$_CARDINAL$indirect
+                0x000000018000c4e8                RTTI_$SYSTEM_$$_HRESULT$indirect
+                0x000000018000c4f0                RTTI_$SYSTEM_$$_PCHAR$indirect
+                0x000000018000c4f8                RTTI_$SYSTEM_$$_PPCHAR$indirect
+                0x000000018000c500                RTTI_$SYSTEM_$$_PANSICHAR$indirect
+                0x000000018000c508                RTTI_$SYSTEM_$$_PANSISTRING$indirect
+                0x000000018000c510                RTTI_$SYSTEM_$$_PWIDECHAR$indirect
+                0x000000018000c518                RTTI_$SYSTEM_$$_PPWIDECHAR$indirect
+                0x000000018000c520                RTTI_$SYSTEM_$$_PSHORTSTRING$indirect
+                0x000000018000c528                RTTI_$SYSTEM_$$_RAWBYTESTRING$indirect
+                0x000000018000c530                RTTI_$SYSTEM_$$_PRAWBYTESTRING$indirect
+                0x000000018000c538                RTTI_$SYSTEM_$$_UTF8STRING$indirect
+                0x000000018000c540                RTTI_$SYSTEM_$$_PUTF8STRING$indirect
+                0x000000018000c548                RTTI_$SYSTEM_$$_PUNICODECHAR$indirect
+                0x000000018000c550                RTTI_$SYSTEM_$$_PUNICODESTRING$indirect
+                0x000000018000c558                RTTI_$SYSTEM_$$_PSMALLINT$indirect
+                0x000000018000c560                RTTI_$SYSTEM_$$_PSHORTINT$indirect
+                0x000000018000c568                RTTI_$SYSTEM_$$_PINTEGER$indirect
+                0x000000018000c570                RTTI_$SYSTEM_$$_PBYTE$indirect
+                0x000000018000c578                RTTI_$SYSTEM_$$_PWORD$indirect
+                0x000000018000c580                RTTI_$SYSTEM_$$_PDWORD$indirect
+                0x000000018000c588                RTTI_$SYSTEM_$$_PLONGWORD$indirect
+                0x000000018000c590                RTTI_$SYSTEM_$$_PLONGINT$indirect
+                0x000000018000c598                RTTI_$SYSTEM_$$_PCARDINAL$indirect
+                0x000000018000c5a0                RTTI_$SYSTEM_$$_PQWORD$indirect
+                0x000000018000c5a8                RTTI_$SYSTEM_$$_PINT64$indirect
+                0x000000018000c5b0                RTTI_$SYSTEM_$$_PUINT64$indirect
+                0x000000018000c5b8                RTTI_$SYSTEM_$$_PPTRINT$indirect
+                0x000000018000c5c0                RTTI_$SYSTEM_$$_PPTRUINT$indirect
+                0x000000018000c5c8                RTTI_$SYSTEM_$$_PSIZEINT$indirect
+                0x000000018000c5d0                RTTI_$SYSTEM_$$_PSIZEUINT$indirect
+                0x000000018000c5d8                RTTI_$SYSTEM_$$_PSINGLE$indirect
+                0x000000018000c5e0                RTTI_$SYSTEM_$$_PDOUBLE$indirect
+                0x000000018000c5e8                RTTI_$SYSTEM_$$_PEXTENDED$indirect
+                0x000000018000c5f0                RTTI_$SYSTEM_$$_PBOOLEAN$indirect
+                0x000000018000c5f8                RTTI_$SYSTEM_$$_PBOOLEAN16$indirect
+                0x000000018000c600                RTTI_$SYSTEM_$$_PBOOLEAN32$indirect
+                0x000000018000c608                RTTI_$SYSTEM_$$_PBOOLEAN64$indirect
+                0x000000018000c610                RTTI_$SYSTEM_$$_PBYTEBOOL$indirect
+                0x000000018000c618                RTTI_$SYSTEM_$$_PWORDBOOL$indirect
+                0x000000018000c620                RTTI_$SYSTEM_$$_PLONGBOOL$indirect
+                0x000000018000c628                RTTI_$SYSTEM_$$_PQWORDBOOL$indirect
+                0x000000018000c630                RTTI_$SYSTEM_$$_PNATIVEINT$indirect
+                0x000000018000c638                RTTI_$SYSTEM_$$_PNATIVEUINT$indirect
+                0x000000018000c640                RTTI_$SYSTEM_$$_PCURRENCY$indirect
+                0x000000018000c648                RTTI_$SYSTEM_$$_PVARIANT$indirect
+                0x000000018000c650                RTTI_$SYSTEM_$$_PPOINTER$indirect
+                0x000000018000c658                RTTI_$SYSTEM_$$_TDATETIME$indirect
+                0x000000018000c660                RTTI_$SYSTEM_$$_TDATE$indirect
+                0x000000018000c668                RTTI_$SYSTEM_$$_TTIME$indirect
+                0x000000018000c670                RTTI_$SYSTEM_$$_TPROCEDURE$indirect
+                0x000000018000c678                RTTI_$SYSTEM_$$_PTEXT$indirect
+                0x000000018000c680                RTTI_$SYSTEM_$$_PCODEPOINTER$indirect
+                0x000000018000c688                RTTI_$SYSTEM_$$_PFILETEXTRECCHAR$indirect
+                0x000000018000c690                INIT_$SYSTEM_$$_JMP_BUF$indirect
+                0x000000018000c698                INIT_$SYSTEM_$$_def00000074$indirect
+                0x000000018000c6a0                RTTI_$SYSTEM_$$_def00000074$indirect
+                0x000000018000c6a8                RTTI_$SYSTEM_$$_JMP_BUF$indirect
+                0x000000018000c6b0                RTTI_$SYSTEM_$$_PJMP_BUF$indirect
+                0x000000018000c6b8                INIT_$SYSTEM_$$_TEXCEPTADDR$indirect
+                0x000000018000c6c0                RTTI_$SYSTEM_$$_TEXCEPTADDR$indirect
+                0x000000018000c6c8                RTTI_$SYSTEM_$$_PEXCEPTADDR$indirect
+                0x000000018000c6d0                INIT_$SYSTEM_$$_TGUID$indirect
+                0x000000018000c6d8                RTTI_$SYSTEM_$$_def0000007E$indirect
+                0x000000018000c6e0                RTTI_$SYSTEM_$$_def0000007F$indirect
+                0x000000018000c6e8                RTTI_$SYSTEM_$$_def00000080$indirect
+                0x000000018000c6f0                RTTI_$SYSTEM_$$_TGUID$indirect
+                0x000000018000c6f8                RTTI_$SYSTEM_$$_PGUID$indirect
+                0x000000018000c700                RTTI_$SYSTEM_$$_TLINEENDSTR$indirect
+                0x000000018000c708                RTTI_$SYSTEM_$$_TEXTBUF$indirect
+                0x000000018000c710                INIT_$SYSTEM_$$_TEXTREC$indirect
+                0x000000018000c718                RTTI_$SYSTEM_$$_def00000084$indirect
+                0x000000018000c720                RTTI_$SYSTEM_$$_def00000085$indirect
+                0x000000018000c728                RTTI_$SYSTEM_$$_def00000086$indirect
+                0x000000018000c730                RTTI_$SYSTEM_$$_TEXTREC$indirect
+                0x000000018000c738                INIT_$SYSTEM_$$_TANSIREC$indirect
+                0x000000018000c740                RTTI_$SYSTEM_$$_TANSIREC$indirect
+                0x000000018000c748                RTTI_$SYSTEM_$$_PANSIREC$indirect
+                0x000000018000c750                INIT_$SYSTEM_$$_TWIDEREC$indirect
+                0x000000018000c758                RTTI_$SYSTEM_$$_TWIDEREC$indirect
+                0x000000018000c760                RTTI_$SYSTEM_$$_PWIDEREC$indirect
+                0x000000018000c768                INIT_$SYSTEM_$$_FILEREC$indirect
+                0x000000018000c770                RTTI_$SYSTEM_$$_def0000008F$indirect
+                0x000000018000c778                RTTI_$SYSTEM_$$_def00000090$indirect
+                0x000000018000c780                RTTI_$SYSTEM_$$_def00000091$indirect
+                0x000000018000c788                RTTI_$SYSTEM_$$_FILEREC$indirect
+                0x000000018000c790                INIT_$SYSTEM_$$_TOBJECT$indirect
+                0x000000018000c798                RTTI_$SYSTEM_$$_TOBJECT$indirect
+                0x000000018000c7a0                RTTI_$SYSTEM_$$_IUNKNOWN$indirect
+                0x000000018000c7a8                RTTI_$SYSTEM_$$_TCLASS$indirect
+                0x000000018000c7b0                RTTI_$SYSTEM_$$_PCLASS$indirect
+                0x000000018000c7b8                RTTI_$SYSTEM_$$_TINTERFACEENTRYTYPE$indirect
+                0x000000018000c7c0                RTTI_$SYSTEM_$$_TINTERFACEENTRYTYPE_s2o$indirect
+                0x000000018000c7c8                RTTI_$SYSTEM_$$_TINTERFACEENTRYTYPE_o2s$indirect
+                0x000000018000c7d0                INIT_$SYSTEM_$$_TINTERFACEENTRY$indirect
+                0x000000018000c7d8                RTTI_$SYSTEM_$$_def000000C8$indirect
+                0x000000018000c7e0                RTTI_$SYSTEM_$$_def000000CA$indirect
+                0x000000018000c7e8                RTTI_$SYSTEM_$$_TINTERFACEENTRY$indirect
+                0x000000018000c7f0                RTTI_$SYSTEM_$$_PINTERFACEENTRY$indirect
+                0x000000018000c7f8                INIT_$SYSTEM_$$_TINTERFACETABLE$indirect
+                0x000000018000c800                RTTI_$SYSTEM_$$_def000000CD$indirect
+                0x000000018000c808                RTTI_$SYSTEM_$$_TINTERFACETABLE$indirect
+                0x000000018000c810                RTTI_$SYSTEM_$$_PINTERFACETABLE$indirect
+                0x000000018000c818                INIT_$SYSTEM_$$_TMSGSTRTABLE$indirect
+                0x000000018000c820                RTTI_$SYSTEM_$$_TMSGSTRTABLE$indirect
+                0x000000018000c828                RTTI_$SYSTEM_$$_PMSGSTRTABLE$indirect
+                0x000000018000c830                INIT_$SYSTEM_$$_TSTRINGMESSAGETABLE$indirect
+                0x000000018000c838                RTTI_$SYSTEM_$$_def000000D2$indirect
+                0x000000018000c840                RTTI_$SYSTEM_$$_TSTRINGMESSAGETABLE$indirect
+                0x000000018000c848                RTTI_$SYSTEM_$$_PSTRINGMESSAGETABLE$indirect
+                0x000000018000c850                INIT_$SYSTEM_$$_TVMT$indirect
+                0x000000018000c858                RTTI_$SYSTEM_$$_PPVMT$indirect
+                0x000000018000c860                RTTI_$SYSTEM_$$_TVMT$indirect
+                0x000000018000c868                RTTI_$SYSTEM_$$_PVMT$indirect
+                0x000000018000c870                INIT_$SYSTEM_$$_TINTERFACEDOBJECT$indirect
+                0x000000018000c878                RTTI_$SYSTEM_$$_TINTERFACEDOBJECT$indirect
+                0x000000018000c880                RTTI_$SYSTEM_$$_TINTERFACEDCLASS$indirect
+                0x000000018000c888                INIT_$SYSTEM_$$_TMETHOD$indirect
+                0x000000018000c890                RTTI_$SYSTEM_$$_TMETHOD$indirect
+                0x000000018000c898                RTTI_$SYSTEM_$$_PMETHOD$indirect
+                0x000000018000c8a0                RTTI_$SYSTEM_$$_EXCEPTION_DISPOSITION$indirect
+                0x000000018000c8a8                RTTI_$SYSTEM_$$_EXCEPTION_DISPOSITION_s2o$indirect
+                0x000000018000c8b0                RTTI_$SYSTEM_$$_EXCEPTION_DISPOSITION_o2s$indirect
+                0x000000018000c8b8                INIT_$SYSTEM_$$_EXCEPTION_RECORD$indirect
+                0x000000018000c8c0                RTTI_$SYSTEM_$$_def00000129$indirect
+                0x000000018000c8c8                RTTI_$SYSTEM_$$_EXCEPTION_RECORD$indirect
+                0x000000018000c8d0                RTTI_$SYSTEM_$$_PEXCEPTION_RECORD$indirect
+                0x000000018000c8d8                INIT_$SYSTEM_$$_TSEHFRAME$indirect
+                0x000000018000c8e0                RTTI_$SYSTEM_$$_TSEHFRAME$indirect
+                0x000000018000c8e8                RTTI_$SYSTEM_$$_PSEHFRAME$indirect
+                0x000000018000c8f0                INIT_$SYSTEM_$$_TEXCEPTOBJECT$indirect
+                0x000000018000c8f8                RTTI_$SYSTEM_$$_TEXCEPTOBJECT$indirect
+                0x000000018000c900                RTTI_$SYSTEM_$$_PEXCEPTOBJECT$indirect
+                0x000000018000c908                INIT_$SYSTEM_$$_TFILTERREC$indirect
+                0x000000018000c910                RTTI_$SYSTEM_$$_TFILTERREC$indirect
+                0x000000018000c918                RTTI_$SYSTEM_$$_PFILTERREC$indirect
+                0x000000018000c920                INIT_$SYSTEM_$$_TEXCEPTION_FRAME$indirect
+                0x000000018000c928                RTTI_$SYSTEM_$$_TEXCEPTION_FRAME$indirect
+                0x000000018000c930                RTTI_$SYSTEM_$$_PEXCEPTION_FRAME$indirect
+                0x000000018000c938                RTTI_$SYSTEM_$$_TUNWINDPROC$indirect
+                0x000000018000c940                RTTI_$SYSTEM_$$_TEXCEPTOBJPROC$indirect
+                0x000000018000c948                RTTI_$SYSTEM_$$_TEXCEPTCLSPROC$indirect
+                0x000000018000c950                RTTI_$SYSTEM_$$_TERRORPROC$indirect
+                0x000000018000c958                INIT_$SYSTEM_$$_M128A$indirect
+                0x000000018000c960                RTTI_$SYSTEM_$$_M128A$indirect
+                0x000000018000c968                RTTI_$SYSTEM_$$_PM128A$indirect
+                0x000000018000c970                INIT_$SYSTEM_$$_TCONTEXT$indirect
+                0x000000018000c978                RTTI_$SYSTEM_$$_def0000013A$indirect
+                0x000000018000c980                RTTI_$SYSTEM_$$_def0000013B$indirect
+                0x000000018000c988                RTTI_$SYSTEM_$$_def0000013C$indirect
+                0x000000018000c990                RTTI_$SYSTEM_$$_TCONTEXT$indirect
+                0x000000018000c998                RTTI_$SYSTEM_$$_PCONTEXT$indirect
+                0x000000018000c9a0                INIT_$SYSTEM_$$_EXCEPTION_POINTERS$indirect
+                0x000000018000c9a8                RTTI_$SYSTEM_$$_EXCEPTION_POINTERS$indirect
+                0x000000018000c9b0                RTTI_$SYSTEM_$$_PEXCEPTION_POINTERS$indirect
+                0x000000018000c9b8                INIT_$SYSTEM_$$_TSCOPEREC$indirect
+                0x000000018000c9c0                RTTI_$SYSTEM_$$_TSCOPEREC$indirect
+                0x000000018000c9c8                RTTI_$SYSTEM_$$_PSCOPEREC$indirect
+                0x000000018000c9d0                RTTI_$SYSTEM_$$_EXCEPTION_ROUTINE$indirect
+                0x000000018000c9d8                INIT_$SYSTEM_$$_RUNTIME_FUNCTION$indirect
+                0x000000018000c9e0                RTTI_$SYSTEM_$$_RUNTIME_FUNCTION$indirect
+                0x000000018000c9e8                RTTI_$SYSTEM_$$_PRUNTIME_FUNCTION$indirect
+                0x000000018000c9f0                INIT_$SYSTEM_$$_UNWIND_HISTORY_TABLE_ENTRY$indirect
+                0x000000018000c9f8                RTTI_$SYSTEM_$$_UNWIND_HISTORY_TABLE_ENTRY$indirect
+                0x000000018000ca00                INIT_$SYSTEM_$$_UNWIND_HISTORY_TABLE$indirect
+                0x000000018000ca08                RTTI_$SYSTEM_$$_def00000147$indirect
+                0x000000018000ca10                RTTI_$SYSTEM_$$_UNWIND_HISTORY_TABLE$indirect
+                0x000000018000ca18                RTTI_$SYSTEM_$$_PUNWIND_HISTORY_TABLE$indirect
+                0x000000018000ca20                INIT_$SYSTEM_$$_TDISPATCHERCONTEXT$indirect
+                0x000000018000ca28                RTTI_$SYSTEM_$$_TDISPATCHERCONTEXT$indirect
+                0x000000018000ca30                RTTI_$SYSTEM_$$_PDISPATCHERCONTEXT$indirect
+                0x000000018000ca38                RTTI_$SYSTEM_$$_TTYPEKIND$indirect
+                0x000000018000ca40                RTTI_$SYSTEM_$$_TTYPEKIND_s2o$indirect
+                0x000000018000ca48                RTTI_$SYSTEM_$$_TTYPEKIND_o2s$indirect
+                0x000000018000ca50                RTTI_$SYSTEM_$$_PTYPEKIND$indirect
+                0x000000018000ca58                RTTI_$SYSTEM_$$_def00000191$indirect
+                0x000000018000ca60                INIT_$SYSTEM_$$_TUNICODEREC$indirect
+                0x000000018000ca68                RTTI_$SYSTEM_$$_TUNICODEREC$indirect
+                0x000000018000ca70                RTTI_$SYSTEM_$$_PUNICODEREC$indirect
+                0x000000018000ca78                RTTI_$SYSTEM_$$_def000001B8$indirect
+                0x000000018000ca80                INIT_$SYSTEM_$$_TVARREC$indirect
+                0x000000018000ca88                RTTI_$SYSTEM_$$_TVARREC$indirect
+                0x000000018000ca90                RTTI_$SYSTEM_$$_PVARREC$indirect
+                0x000000018000ca98                INIT_$SYSTEM_$$_TTESTEXCEPTION$indirect
+                0x000000018000caa0                RTTI_$SYSTEM_$$_TTESTEXCEPTION$indirect
+                0x000000018000caa8                RTTI_$SYSTEM_$$_PDYNARRAYINDEX$indirect
+                0x000000018000cab0                INIT_$SYSTEM_$$_TDYNARRAY$indirect
+                0x000000018000cab8                RTTI_$SYSTEM_$$_TDYNARRAY$indirect
+                0x000000018000cac0                RTTI_$SYSTEM_$$_PDYNARRAY$indirect
+                0x000000018000cac8                INIT_$SYSTEM_$$_TDYNARRAYTYPEDATA$indirect
+                0x000000018000cad0                RTTI_$SYSTEM_$$_TDYNARRAYTYPEDATA$indirect
+                0x000000018000cad8                RTTI_$SYSTEM_$$_PDYNARRAYTYPEDATA$indirect
+                0x000000018000cae0                INIT_$SYSTEM_$$_TENTRYINFORMATION$indirect
+                0x000000018000cae8                RTTI_$SYSTEM_$$_def00000212$indirect
+                0x000000018000caf0                RTTI_$SYSTEM_$$_TENTRYINFORMATION$indirect
+                0x000000018000caf8                RTTI_$SYSTEM_$$_def00000283$indirect
+ .data          0x000000018000cb00      0xb98 windows.o
+                0x000000018000cb00                RTTI_$WINDOWS_$$_PHANDLE
+                0x000000018000cb18                RTTI_$WINDOWS_$$_PLONG
+                0x000000018000cb28                INIT_$WINDOWS_$$_LARGE_INTEGER
+                0x000000018000cb58                RTTI_$WINDOWS_$$_LARGE_INTEGER
+                0x000000018000cba8                RTTI_$WINDOWS_$$_PLARGE_INTEGER
+                0x000000018000cbc0                RTTI_$WINDOWS_$$_PPANSICHAR
+                0x000000018000cbd8                RTTI_$WINDOWS_$$_LPBYTE
+                0x000000018000cbe8                INIT_$WINDOWS_$$_SECURITY_ATTRIBUTES
+                0x000000018000cc20                RTTI_$WINDOWS_$$_SECURITY_ATTRIBUTES
+                0x000000018000cc78                RTTI_$WINDOWS_$$_LPSECURITY_ATTRIBUTES
+                0x000000018000cc98                INIT_$WINDOWS_$$_OVERLAPPED
+                0x000000018000ccc8                RTTI_$WINDOWS_$$_OVERLAPPED
+                0x000000018000cd38                RTTI_$WINDOWS_$$_LPOVERLAPPED
+                0x000000018000cd50                INIT_$WINDOWS_$$_POINT
+                0x000000018000cd78                RTTI_$WINDOWS_$$_POINT
+                0x000000018000cdb0                INIT_$WINDOWS_$$_MSG
+                0x000000018000cdd8                RTTI_$WINDOWS_$$_MSG
+                0x000000018000ce50                RTTI_$WINDOWS_$$_LPMSG
+                0x000000018000ce60                RTTI_$WINDOWS_$$_TIMERPROC
+                0x000000018000ceb8                INIT_$WINDOWS_$$_STARTUPINFOA
+                0x000000018000cee8                RTTI_$WINDOWS_$$_STARTUPINFOA
+                0x000000018000d028                INIT_$WINDOWS_$$_STARTUPINFOW
+                0x000000018000d058                RTTI_$WINDOWS_$$_STARTUPINFOW
+                0x000000018000d198                INIT_$WINDOWS_$$_PROCESS_INFORMATION
+                0x000000018000d1d0                RTTI_$WINDOWS_$$_PROCESS_INFORMATION
+                0x000000018000d238                RTTI_$WINDOWS_$$_PPROCESS_INFORMATION
+                0x000000018000d258                RTTI_$WINDOWS_$$_LPTHREAD_START_ROUTINE
+                0x000000018000d298                INIT_$WINDOWS_$$_RECT
+                0x000000018000d2c0                RTTI_$WINDOWS_$$_RECT
+                0x000000018000d318                INIT_$WINDOWS_$$_RTL_CRITICAL_SECTION
+                0x000000018000d350                RTTI_$WINDOWS_$$_RTL_CRITICAL_SECTION
+                0x000000018000d3d8                RTTI_$WINDOWS_$$_PRTL_CRITICAL_SECTION
+                0x000000018000d3f8                INIT_$WINDOWS_$$_SYSTEMTIME
+                0x000000018000d428                RTTI_$WINDOWS_$$_SYSTEMTIME
+                0x000000018000d4c8                RTTI_$WINDOWS_$$_PSYSTEMTIME
+                0x000000018000d4e0                INIT_$WINDOWS_$$_FILETIME
+                0x000000018000d510                RTTI_$WINDOWS_$$_FILETIME
+                0x000000018000d550                RTTI_$WINDOWS_$$_PFILETIME
+                0x000000018000d568                RTTI_$WINDOWS_$$_PHANDLE$indirect
+                0x000000018000d570                RTTI_$WINDOWS_$$_PLONG$indirect
+                0x000000018000d578                INIT_$WINDOWS_$$_LARGE_INTEGER$indirect
+                0x000000018000d580                RTTI_$WINDOWS_$$_LARGE_INTEGER$indirect
+                0x000000018000d588                RTTI_$WINDOWS_$$_PLARGE_INTEGER$indirect
+                0x000000018000d590                RTTI_$WINDOWS_$$_PPANSICHAR$indirect
+                0x000000018000d598                RTTI_$WINDOWS_$$_LPBYTE$indirect
+                0x000000018000d5a0                INIT_$WINDOWS_$$_SECURITY_ATTRIBUTES$indirect
+                0x000000018000d5a8                RTTI_$WINDOWS_$$_SECURITY_ATTRIBUTES$indirect
+                0x000000018000d5b0                RTTI_$WINDOWS_$$_LPSECURITY_ATTRIBUTES$indirect
+                0x000000018000d5b8                INIT_$WINDOWS_$$_OVERLAPPED$indirect
+                0x000000018000d5c0                RTTI_$WINDOWS_$$_OVERLAPPED$indirect
+                0x000000018000d5c8                RTTI_$WINDOWS_$$_LPOVERLAPPED$indirect
+                0x000000018000d5d0                INIT_$WINDOWS_$$_POINT$indirect
+                0x000000018000d5d8                RTTI_$WINDOWS_$$_POINT$indirect
+                0x000000018000d5e0                INIT_$WINDOWS_$$_MSG$indirect
+                0x000000018000d5e8                RTTI_$WINDOWS_$$_MSG$indirect
+                0x000000018000d5f0                RTTI_$WINDOWS_$$_LPMSG$indirect
+                0x000000018000d5f8                RTTI_$WINDOWS_$$_TIMERPROC$indirect
+                0x000000018000d600                INIT_$WINDOWS_$$_STARTUPINFOA$indirect
+                0x000000018000d608                RTTI_$WINDOWS_$$_STARTUPINFOA$indirect
+                0x000000018000d610                INIT_$WINDOWS_$$_STARTUPINFOW$indirect
+                0x000000018000d618                RTTI_$WINDOWS_$$_STARTUPINFOW$indirect
+                0x000000018000d620                INIT_$WINDOWS_$$_PROCESS_INFORMATION$indirect
+                0x000000018000d628                RTTI_$WINDOWS_$$_PROCESS_INFORMATION$indirect
+                0x000000018000d630                RTTI_$WINDOWS_$$_PPROCESS_INFORMATION$indirect
+                0x000000018000d638                RTTI_$WINDOWS_$$_LPTHREAD_START_ROUTINE$indirect
+                0x000000018000d640                INIT_$WINDOWS_$$_RECT$indirect
+                0x000000018000d648                RTTI_$WINDOWS_$$_RECT$indirect
+                0x000000018000d650                INIT_$WINDOWS_$$_RTL_CRITICAL_SECTION$indirect
+                0x000000018000d658                RTTI_$WINDOWS_$$_RTL_CRITICAL_SECTION$indirect
+                0x000000018000d660                RTTI_$WINDOWS_$$_PRTL_CRITICAL_SECTION$indirect
+                0x000000018000d668                INIT_$WINDOWS_$$_SYSTEMTIME$indirect
+                0x000000018000d670                RTTI_$WINDOWS_$$_SYSTEMTIME$indirect
+                0x000000018000d678                RTTI_$WINDOWS_$$_PSYSTEMTIME$indirect
+                0x000000018000d680                INIT_$WINDOWS_$$_FILETIME$indirect
+                0x000000018000d688                RTTI_$WINDOWS_$$_FILETIME$indirect
+                0x000000018000d690                RTTI_$WINDOWS_$$_PFILETIME$indirect
+ .data          0x000000018000d698        0x5 xmm.o
+ *fill*         0x000000018000d69d        0x3 
+ .data          0x000000018000d6a0      0x128 QApplicationPascal.o
+                0x000000018000d6a0                VMT_$QAPPLICATIONPASCAL_$$_TAPPLICATION
+                0x000000018000d748                INIT_$QAPPLICATIONPASCAL_$$_TAPPLICATION
+                0x000000018000d778                RTTI_$QAPPLICATIONPASCAL_$$_TAPPLICATION
+                0x000000018000d7b0                VMT_$QAPPLICATIONPASCAL_$$_TAPPLICATION$indirect
+                0x000000018000d7b8                INIT_$QAPPLICATIONPASCAL_$$_TAPPLICATION$indirect
+                0x000000018000d7c0                RTTI_$QAPPLICATIONPASCAL_$$_TAPPLICATION$indirect
+ *(.data2)
+ *(SORT_BY_NAME(.data$*))
+ *(.jcr)
+                [!provide]                        PROVIDE (_tls_index = .)
+                0x000000018000d7c8        0x4 LONG 0x0
+                0x000000018000d7cc                __data_end__ = .
+ *(.data_cygwin_nocopy)
+
+.rdata          0x000000018000e000     0x1400
+ *(.rdata)
+ *(.rdata.*)
+ .rdata.n_FPC_RESOURCESTRINGTABLES
+                0x000000018000e000        0x8 rtllib.o
+ .rdata.n_VMT_$EXCEPTIONS_$$_EXCEPTION
+                0x000000018000e008       0xb0 exceptions.o
+                0x000000018000e008                VMT_$EXCEPTIONS_$$_EXCEPTION
+                0x000000018000e0b0                VMT_$EXCEPTIONS_$$_EXCEPTION$indirect
+ .rdata.n_VMT_$EXCEPTIONS_$$_EDIVBYZERO
+                0x000000018000e0b8       0xb0 exceptions.o
+                0x000000018000e0b8                VMT_$EXCEPTIONS_$$_EDIVBYZERO
+                0x000000018000e160                VMT_$EXCEPTIONS_$$_EDIVBYZERO$indirect
+ .rdata.n_VMT_$EXCEPTIONS_$$_EOUTOFMEMORY
+                0x000000018000e168       0xb0 exceptions.o
+                0x000000018000e168                VMT_$EXCEPTIONS_$$_EOUTOFMEMORY
+                0x000000018000e210                VMT_$EXCEPTIONS_$$_EOUTOFMEMORY$indirect
+ .rdata.n_VMT_$EXCEPTIONS_$$_EACCESSVIOLATION
+                0x000000018000e218       0xb8 exceptions.o
+                0x000000018000e218                VMT_$EXCEPTIONS_$$_EACCESSVIOLATION
+                0x000000018000e2c8                VMT_$EXCEPTIONS_$$_EACCESSVIOLATION$indirect
+ .rdata.n__$EXCEPTIONS$_Ld1
+                0x000000018000e2d0        0x8 exceptions.o
+                0x000000018000e2d0                _$EXCEPTIONS$_Ld1
+ .rdata.n__$EXCEPTIONS$_Ld2
+                0x000000018000e2d8        0x8 exceptions.o
+                0x000000018000e2d8                _$EXCEPTIONS$_Ld2
+ .rdata.n__$EXCEPTIONS$_Ld3
+                0x000000018000e2e0       0x10 exceptions.o
+                0x000000018000e2e0                _$EXCEPTIONS$_Ld3
+ .rdata.n_.Ld4  0x000000018000e2f0       0x20 exceptions.o
+ .rdata.n_INIT_$EXCEPTIONS_$$_EXCEPTION
+                0x000000018000e310       0x48 exceptions.o
+                0x000000018000e310                INIT_$EXCEPTIONS_$$_EXCEPTION
+                0x000000018000e350                INIT_$EXCEPTIONS_$$_EXCEPTION$indirect
+ .rdata.n_RTTI_$EXCEPTIONS_$$_EXCEPTION
+                0x000000018000e358       0x38 exceptions.o
+                0x000000018000e358                RTTI_$EXCEPTIONS_$$_EXCEPTION
+                0x000000018000e388                RTTI_$EXCEPTIONS_$$_EXCEPTION$indirect
+ .rdata.n_INIT_$EXCEPTIONS_$$_EDIVBYZERO
+                0x000000018000e390       0x38 exceptions.o
+                0x000000018000e390                INIT_$EXCEPTIONS_$$_EDIVBYZERO
+                0x000000018000e3c0                INIT_$EXCEPTIONS_$$_EDIVBYZERO$indirect
+ .rdata.n_RTTI_$EXCEPTIONS_$$_EDIVBYZERO
+                0x000000018000e3c8       0x38 exceptions.o
+                0x000000018000e3c8                RTTI_$EXCEPTIONS_$$_EDIVBYZERO
+                0x000000018000e3f8                RTTI_$EXCEPTIONS_$$_EDIVBYZERO$indirect
+ .rdata.n_INIT_$EXCEPTIONS_$$_EOUTOFMEMORY
+                0x000000018000e400       0x38 exceptions.o
+                0x000000018000e400                INIT_$EXCEPTIONS_$$_EOUTOFMEMORY
+                0x000000018000e430                INIT_$EXCEPTIONS_$$_EOUTOFMEMORY$indirect
+ .rdata.n_RTTI_$EXCEPTIONS_$$_EOUTOFMEMORY
+                0x000000018000e438       0x38 exceptions.o
+                0x000000018000e438                RTTI_$EXCEPTIONS_$$_EOUTOFMEMORY
+                0x000000018000e468                RTTI_$EXCEPTIONS_$$_EOUTOFMEMORY$indirect
+ .rdata.n_INIT_$EXCEPTIONS_$$_EACCESSVIOLATION
+                0x000000018000e470       0x40 exceptions.o
+                0x000000018000e470                INIT_$EXCEPTIONS_$$_EACCESSVIOLATION
+                0x000000018000e4a8                INIT_$EXCEPTIONS_$$_EACCESSVIOLATION$indirect
+ .rdata.n_RTTI_$EXCEPTIONS_$$_EACCESSVIOLATION
+                0x000000018000e4b0       0x40 exceptions.o
+                0x000000018000e4b0                RTTI_$EXCEPTIONS_$$_EACCESSVIOLATION
+                0x000000018000e4e8                RTTI_$EXCEPTIONS_$$_EACCESSVIOLATION$indirect
+ .rdata.n_.Ld1  0x000000018000e4f0       0x28 locales.o
+ .rdata.n_.Ld2  0x000000018000e518       0x20 locales.o
+ .rdata.n_.Ld3  0x000000018000e538       0x20 locales.o
+ .rdata.n_.Ld4  0x000000018000e558       0x20 locales.o
+ .rdata.n_VMT_$RTLUNIT_$$_TWIDGETSET
+                0x000000018000e578       0xb0 rtlunit.o
+                0x000000018000e578                VMT_$RTLUNIT_$$_TWIDGETSET
+                0x000000018000e620                VMT_$RTLUNIT_$$_TWIDGETSET$indirect
+ .rdata.n_VMT_$RTLUNIT_$$_TRTL
+                0x000000018000e628       0xa8 rtlunit.o
+                0x000000018000e628                VMT_$RTLUNIT_$$_TRTL
+                0x000000018000e6c8                VMT_$RTLUNIT_$$_TRTL$indirect
+ .rdata.n__$RTLUNIT$_Ld1
+                0x000000018000e6d0        0x8 rtlunit.o
+                0x000000018000e6d0                _$RTLUNIT$_Ld1
+ .rdata.n_RTTI_$RTLUNIT_$$_TBYTELOOKUP
+                0x000000018000e6d8       0x38 rtlunit.o
+                0x000000018000e6d8                RTTI_$RTLUNIT_$$_TBYTELOOKUP
+                0x000000018000e708                RTTI_$RTLUNIT_$$_TBYTELOOKUP$indirect
+ .rdata.n_RTTI_$RTLUNIT_$$_PBYTELOOKUP
+                0x000000018000e710       0x20 rtlunit.o
+                0x000000018000e710                RTTI_$RTLUNIT_$$_PBYTELOOKUP
+                0x000000018000e728                RTTI_$RTLUNIT_$$_PBYTELOOKUP$indirect
+ .rdata.n_INIT_$RTLUNIT_$$_TWIDGETSET
+                0x000000018000e730       0x38 rtlunit.o
+                0x000000018000e730                INIT_$RTLUNIT_$$_TWIDGETSET
+                0x000000018000e760                INIT_$RTLUNIT_$$_TWIDGETSET$indirect
+ .rdata.n_RTTI_$RTLUNIT_$$_TWIDGETSET
+                0x000000018000e768       0x30 rtlunit.o
+                0x000000018000e768                RTTI_$RTLUNIT_$$_TWIDGETSET
+                0x000000018000e790                RTTI_$RTLUNIT_$$_TWIDGETSET$indirect
+ .rdata.n_INIT_$RTLUNIT_$$_TRTL
+                0x000000018000e798       0x30 rtlunit.o
+                0x000000018000e798                INIT_$RTLUNIT_$$_TRTL
+                0x000000018000e7c0                INIT_$RTLUNIT_$$_TRTL$indirect
+ .rdata.n_RTTI_$RTLUNIT_$$_TRTL
+                0x000000018000e7c8       0x30 rtlunit.o
+                0x000000018000e7c8                RTTI_$RTLUNIT_$$_TRTL
+                0x000000018000e7f0                RTTI_$RTLUNIT_$$_TRTL$indirect
+ .rdata.n_RTTI_$RTLUNIT_$$_T_ARRAY_BOOLEAN
+                0x000000018000e7f8       0x40 rtlunit.o
+                0x000000018000e7f8                RTTI_$RTLUNIT_$$_T_ARRAY_BOOLEAN
+                0x000000018000e830                RTTI_$RTLUNIT_$$_T_ARRAY_BOOLEAN$indirect
+ .rdata.n_RTTI_$RTLUNIT_$$_T_ARRAY_CHAR
+                0x000000018000e838       0x40 rtlunit.o
+                0x000000018000e838                RTTI_$RTLUNIT_$$_T_ARRAY_CHAR
+                0x000000018000e870                RTTI_$RTLUNIT_$$_T_ARRAY_CHAR$indirect
+ .rdata.n_RTTI_$RTLUNIT_$$_T_ARRAY_BYTE
+                0x000000018000e878       0x40 rtlunit.o
+                0x000000018000e878                RTTI_$RTLUNIT_$$_T_ARRAY_BYTE
+                0x000000018000e8b0                RTTI_$RTLUNIT_$$_T_ARRAY_BYTE$indirect
+ .rdata.n_RTTI_$RTLUNIT_$$_T_ARRAY_WORD
+                0x000000018000e8b8       0x40 rtlunit.o
+                0x000000018000e8b8                RTTI_$RTLUNIT_$$_T_ARRAY_WORD
+                0x000000018000e8f0                RTTI_$RTLUNIT_$$_T_ARRAY_WORD$indirect
+ .rdata.n_RTTI_$RTLUNIT_$$_T_ARRAY_DWORD
+                0x000000018000e8f8       0x40 rtlunit.o
+                0x000000018000e8f8                RTTI_$RTLUNIT_$$_T_ARRAY_DWORD
+                0x000000018000e930                RTTI_$RTLUNIT_$$_T_ARRAY_DWORD$indirect
+ .rdata.n_RTTI_$RTLUNIT_$$_T_ARRAY_INTEGER
+                0x000000018000e938       0x40 rtlunit.o
+                0x000000018000e938                RTTI_$RTLUNIT_$$_T_ARRAY_INTEGER
+                0x000000018000e970                RTTI_$RTLUNIT_$$_T_ARRAY_INTEGER$indirect
+ .rdata.n_RTTI_$RTLUNIT_$$_T_ARRAY_STRING
+                0x000000018000e978       0x40 rtlunit.o
+                0x000000018000e978                RTTI_$RTLUNIT_$$_T_ARRAY_STRING
+                0x000000018000e9b0                RTTI_$RTLUNIT_$$_T_ARRAY_STRING$indirect
+ *(.rodata .rodata.* .gnu.linkonce.r.*)
+ *fill*         0x000000018000e9b8        0x8 
+ .rodata        0x000000018000e9c0        0x7 test.o
+ *fill*         0x000000018000e9c7        0x9 
+ .rodata        0x000000018000e9d0       0x1a Dialogs.o
+ *fill*         0x000000018000e9ea        0x6 
+ .rodata        0x000000018000e9f0      0x876 system.o
+ *fill*         0x000000018000f266        0xa 
+ .rodata        0x000000018000f270       0x1f sysutils.o
+ *fill*         0x000000018000f28f        0x1 
+ .rodata        0x000000018000f290       0x82 QApplicationPascal.o
+ *(SORT_BY_NAME(.rdata$*))
+ *(.eh_frame)
+                0x000000018000f312                ___RUNTIME_PSEUDO_RELOC_LIST__ = .
+                0x000000018000f312                __RUNTIME_PSEUDO_RELOC_LIST__ = .
+ *(.rdata_runtime_pseudo_reloc)
+                0x000000018000f312                ___RUNTIME_PSEUDO_RELOC_LIST_END__ = .
+                0x000000018000f312                __RUNTIME_PSEUDO_RELOC_LIST_END__ = .
+
+.xdata.n_p      0x0000000180010000      0x200
+ .xdata.n_p$rtllib_$$_main
+                0x0000000180010000        0x8 rtllib.o
+                0x0000000180010000                $unwind$P$RTLLIB_$$_main
+
+.pdata.n_p      0x0000000180011000      0x200
+ .pdata.n_p$rtllib_$$_main
+                0x0000000180011000        0xc rtllib.o
+
+.xdata.n_exceptions
+                0x0000000180012000      0x200
+ .xdata.n_exceptions$_$exception_$__$$_create$ansistring$longint$$exception
+                0x0000000180012000       0x20 exceptions.o
+                0x0000000180012000                $unwind$EXCEPTIONS$_$EXCEPTION_$__$$_CREATE$ANSISTRING$LONGINT$$EXCEPTION
+ .xdata.n_exceptions$_$translate_windows_error$longint$$ansistring_$$_fin$00000017
+                0x0000000180012020        0x8 exceptions.o
+                0x0000000180012020                $unwind$EXCEPTIONS$_$TRANSLATE_WINDOWS_ERROR$LONGINT$$ANSISTRING_$$_fin$00000017
+
+.pdata.n_exceptions
+                0x0000000180013000      0x200
+ .pdata.n_exceptions$_$exception_$__$$_create$ansistring$longint$$exception
+                0x0000000180013000        0xc exceptions.o
+ .pdata.n_exceptions$_$translate_windows_error$longint$$ansistring_$$_fin$00000017
+                0x000000018001300c        0xc exceptions.o
+
+.xdata.n_exceptions_
+                0x0000000180014000      0x200
+ .xdata.n_exceptions_$$_default_errorproc$longint$pointer$pointer
+                0x0000000180014000       0x14 exceptions.o
+                0x0000000180014000                $unwind$EXCEPTIONS_$$_DEFAULT_ERRORPROC$LONGINT$POINTER$POINTER
+ .xdata.n_exceptions_$$_default_exceptobjproc$longint$exception_record$$pointer
+                0x0000000180014014        0x8 exceptions.o
+                0x0000000180014014                $unwind$EXCEPTIONS_$$_DEFAULT_EXCEPTOBJPROC$LONGINT$EXCEPTION_RECORD$$POINTER
+ .xdata.n_exceptions_$$_init$
+                0x000000018001401c        0x8 exceptions.o
+                0x000000018001401c                $unwind$EXCEPTIONS_$$_init$
+ .xdata.n_exceptions_$$_translate_windows_error$longint$$ansistring
+                0x0000000180014024       0x2c exceptions.o
+                0x0000000180014024                $unwind$EXCEPTIONS_$$_TRANSLATE_WINDOWS_ERROR$LONGINT$$ANSISTRING
+
+.pdata.n_exceptions_
+                0x0000000180015000      0x200
+ .pdata.n_exceptions_$$_default_errorproc$longint$pointer$pointer
+                0x0000000180015000        0xc exceptions.o
+ .pdata.n_exceptions_$$_default_exceptobjproc$longint$exception_record$$pointer
+                0x000000018001500c        0xc exceptions.o
+ .pdata.n_exceptions_$$_init$
+                0x0000000180015018        0xc exceptions.o
+ .pdata.n_exceptions_$$_translate_windows_error$longint$$ansistring
+                0x0000000180015024        0xc exceptions.o
+
+.xdata.n_locales_
+                0x0000000180016000      0x200
+ .xdata.n_locales_$$_serror$$ansistring
+                0x0000000180016000        0x8 locales.o
+                0x0000000180016000                $unwind$LOCALES_$$_SERROR$$ANSISTRING
+ .xdata.n_locales_$$_shello$$ansistring
+                0x0000000180016008        0x8 locales.o
+                0x0000000180016008                $unwind$LOCALES_$$_SHELLO$$ANSISTRING
+ .xdata.n_locales_$$_sinformation$$ansistring
+                0x0000000180016010        0x8 locales.o
+                0x0000000180016010                $unwind$LOCALES_$$_SINFORMATION$$ANSISTRING
+ .xdata.n_locales_$$_swarning$$ansistring
+                0x0000000180016018        0x8 locales.o
+                0x0000000180016018                $unwind$LOCALES_$$_SWARNING$$ANSISTRING
+
+.pdata.n_locales_
+                0x0000000180017000      0x200
+ .pdata.n_locales_$$_serror$$ansistring
+                0x0000000180017000        0xc locales.o
+ .pdata.n_locales_$$_shello$$ansistring
+                0x000000018001700c        0xc locales.o
+ .pdata.n_locales_$$_sinformation$$ansistring
+                0x0000000180017018        0xc locales.o
+ .pdata.n_locales_$$_swarning$$ansistring
+                0x0000000180017024        0xc locales.o
+
+.xdata.n_rtlunit
+                0x0000000180018000      0x200
+ .xdata.n_rtlunit$_$trtl_$__$$_create$$trtl
+                0x0000000180018000       0x20 rtlunit.o
+                0x0000000180018000                $unwind$RTLUNIT$_$TRTL_$__$$_CREATE$$TRTL
+ .xdata.n_rtlunit$_$trtl_$__$$_destroy
+                0x0000000180018020        0xc rtlunit.o
+                0x0000000180018020                $unwind$RTLUNIT$_$TRTL_$__$$_DESTROY
+ .xdata.n_rtlunit$_$twidgetset_$__$$_create$$twidgetset
+                0x000000018001802c       0x20 rtlunit.o
+                0x000000018001802c                $unwind$RTLUNIT$_$TWIDGETSET_$__$$_CREATE$$TWIDGETSET
+ .xdata.n_rtlunit$_$twidgetset_$__$$_destroy
+                0x000000018001804c        0xc rtlunit.o
+                0x000000018001804c                $unwind$RTLUNIT$_$TWIDGETSET_$__$$_DESTROY
+
+.pdata.n_rtlunit
+                0x0000000180019000      0x200
+ .pdata.n_rtlunit$_$trtl_$__$$_create$$trtl
+                0x0000000180019000        0xc rtlunit.o
+ .pdata.n_rtlunit$_$trtl_$__$$_destroy
+                0x000000018001900c        0xc rtlunit.o
+ .pdata.n_rtlunit$_$twidgetset_$__$$_create$$twidgetset
+                0x0000000180019018        0xc rtlunit.o
+ .pdata.n_rtlunit$_$twidgetset_$__$$_destroy
+                0x0000000180019024        0xc rtlunit.o
+
+.xdata.n_rtlunit_
+                0x000000018001a000      0x200
+ .xdata.n_rtlunit_$$_trtl_create$$trtl
+                0x000000018001a000        0x8 rtlunit.o
+                0x000000018001a000                $unwind$RTLUNIT_$$_TRTL_CREATE$$TRTL
+ .xdata.n_rtlunit_$$_trtl_destroy$trtl
+                0x000000018001a008        0x8 rtlunit.o
+                0x000000018001a008                $unwind$RTLUNIT_$$_TRTL_DESTROY$TRTL
+
+.pdata.n_rtlunit_
+                0x000000018001b000      0x200
+ .pdata.n_rtlunit_$$_trtl_create$$trtl
+                0x000000018001b000        0xc rtlunit.o
+ .pdata.n_rtlunit_$$_trtl_destroy$trtl
+                0x000000018001b00c        0xc rtlunit.o
+
+.pdata
+ *(.pdata)
+
+.bss            0x000000018001c000   0x4502d0
+                0x000000018001c000                __bss_start__ = .
+ *(.bss .bss.* .gnu.linkonce.b.*)
+ .bss           0x000000018001c000        0x8 test.o
+ *fill*         0x000000018001c008        0x8 
+ .bss.n_u_$exceptions_$$_exception_classes
+                0x000000018001c010      0x128 exceptions.o
+                0x000000018001c010                U_$EXCEPTIONS_$$_EXCEPTION_CLASSES
+ .bss           0x000000018001c138        0x4 global.o
+                0x000000018001c138                U_$GLOBAL_$$_QAPPLICATION_COUNTER
+ *fill*         0x000000018001c13c        0x4 
+ .bss           0x000000018001c140       0x10 sysinitpas.o
+                0x000000018001c140                U_$SYSINITPAS_$$_SYSINSTANCE
+                0x000000018001c144                U_$SYSINITPAS_$$_DLLREASON
+                0x000000018001c148                U_$SYSINITPAS_$$_DLLPARAM
+ .bss           0x000000018001c150      0x180 system.o
+                0x000000018001c150                FPC_EMPTYCHAR
+                0x000000018001c158                U_$SYSTEM_$$_EXCEPTADDRSTACK
+                0x000000018001c160                U_$SYSTEM_$$_EXCEPTOBJECTSTACK
+                0x000000018001c168                U_$SYSTEM_$$_STDIN
+                0x000000018001c170                U_$SYSTEM_$$_STDOUT
+                0x000000018001c178                U_$SYSTEM_$$_STDERR
+                0x000000018001c180                U_$SYSTEM_$$_ENTRYINFORMATION
+                0x000000018001c1b8                operatingsystem_result
+ .bss           0x000000018001c2d0   0x450000 xmm.o
+ *(SORT_BY_NAME(.bss$*))
+ *(COMMON)
+                0x000000018046c2d0                __bss_end__ = .
+
+.edata          0x000000018046d000     0xce00
+ *(.edata)
+ .edata         0x000000018046d000      0x13f test.o
+                0x000000018046d000                EDATA_$P$TEST
+ *fill*         0x000000018046d13f        0x1 
+ .edata         0x000000018046d140      0x468 rtllib.o
+                0x000000018046d140                EDATA_$P$RTLLIB
+ .edata         0x000000018046d5a8     0xc70c dll stuff
+
+.idata          0x000000018047a000      0x600
+ SORT_BY_NAME(*)(.idata$2)
+ .idata$2       0x000000018047a000       0x14 libimpexceptions.a(impexceptions1h1.o)
+                0x000000018047a000                impexceptions_head_kernel32.dll
+ .idata$2       0x000000018047a014       0x14 libimpQApplicationPascal.a(impqapplicationpascal1h1.o)
+                0x000000018047a014                impqapplicationpascal_head_kernel32.dll
+ .idata$2       0x000000018047a028       0x14 libimpQApplicationPascal.a(impqapplicationpascal2h4.o)
+                0x000000018047a028                impqapplicationpascal_head_rtllib.dll
+ .idata$2       0x000000018047a03c       0x14 libimpsystem.a(impsystem1h1.o)
+                0x000000018047a03c                impsystem_head_user32.dll
+ .idata$2       0x000000018047a050       0x14 libimpsystem.a(impsystem2h4.o)
+                0x000000018047a050                impsystem_head_kernel32.dll
+ .idata$2       0x000000018047a064       0x14 libimpsystem.a(impsystem4h25.o)
+                0x000000018047a064                impsystem_head_rtllib.dll
+ .idata$2       0x000000018047a078       0x14 libimpSysUtils.a(impsysutils1h1.o)
+                0x000000018047a078                impsysutils_head_msvcrt.dll
+ .idata$2       0x000000018047a08c       0x14 libimpwindows.a(impwindows1h1.o)
+                0x000000018047a08c                impwindows_head_kernel32.dll
+ .idata$2       0x000000018047a0a0       0x14 libimpxmm.a(impxmm1h1.o)
+                0x000000018047a0a0                impxmm_head_kernel32.dll
+ .idata$2       0x000000018047a0b4       0x14 libimpxmm.a(impxmm2h8.o)
+                0x000000018047a0b4                impxmm_head_ntdll.dll
+ SORT_BY_NAME(*)(.idata$3)
+                0x000000018047a0c8        0x4 LONG 0x0
+                0x000000018047a0cc        0x4 LONG 0x0
+                0x000000018047a0d0        0x4 LONG 0x0
+                0x000000018047a0d4        0x4 LONG 0x0
+                0x000000018047a0d8        0x4 LONG 0x0
+ SORT_BY_NAME(*)(.idata$4)
+ .idata$4       0x000000018047a0dc        0x0 libimpexceptions.a(impexceptions1h1.o)
+                0x000000018047a0dc                impexceptions_names_kernel32.dll
+ .idata$4       0x000000018047a0dc        0x8 libimpexceptions.a(impexceptions1s2.o)
+ .idata$4       0x000000018047a0e4        0x8 libimpexceptions.a(impexceptions1t4.o)
+ .idata$4       0x000000018047a0ec        0x0 libimpQApplicationPascal.a(impqapplicationpascal1h1.o)
+                0x000000018047a0ec                impqapplicationpascal_names_kernel32.dll
+ .idata$4       0x000000018047a0ec        0x8 libimpQApplicationPascal.a(impqapplicationpascal1s2.o)
+ .idata$4       0x000000018047a0f4        0x8 libimpQApplicationPascal.a(impqapplicationpascal1t3.o)
+ .idata$4       0x000000018047a0fc        0x0 libimpQApplicationPascal.a(impqapplicationpascal2h4.o)
+                0x000000018047a0fc                impqapplicationpascal_names_rtllib.dll
+ .idata$4       0x000000018047a0fc        0x8 libimpQApplicationPascal.a(impqapplicationpascal2s5.o)
+ .idata$4       0x000000018047a104        0x8 libimpQApplicationPascal.a(impqapplicationpascal2t6.o)
+ .idata$4       0x000000018047a10c        0x0 libimpsystem.a(impsystem1h1.o)
+                0x000000018047a10c                impsystem_names_user32.dll
+ .idata$4       0x000000018047a10c        0x8 libimpsystem.a(impsystem1s2.o)
+ .idata$4       0x000000018047a114        0x8 libimpsystem.a(impsystem1t3.o)
+ .idata$4       0x000000018047a11c        0x0 libimpsystem.a(impsystem2h4.o)
+                0x000000018047a11c                impsystem_names_kernel32.dll
+ .idata$4       0x000000018047a11c        0x8 libimpsystem.a(impsystem2s10.o)
+ .idata$4       0x000000018047a124        0x8 libimpsystem.a(impsystem2s11.o)
+ .idata$4       0x000000018047a12c        0x8 libimpsystem.a(impsystem2s12.o)
+ .idata$4       0x000000018047a134        0x8 libimpsystem.a(impsystem2s13.o)
+ .idata$4       0x000000018047a13c        0x8 libimpsystem.a(impsystem2s14.o)
+ .idata$4       0x000000018047a144        0x8 libimpsystem.a(impsystem2s15.o)
+ .idata$4       0x000000018047a14c        0x8 libimpsystem.a(impsystem2s16.o)
+ .idata$4       0x000000018047a154        0x8 libimpsystem.a(impsystem2s17.o)
+ .idata$4       0x000000018047a15c        0x8 libimpsystem.a(impsystem2s18.o)
+ .idata$4       0x000000018047a164        0x8 libimpsystem.a(impsystem2s19.o)
+ .idata$4       0x000000018047a16c        0x8 libimpsystem.a(impsystem2s5.o)
+ .idata$4       0x000000018047a174        0x8 libimpsystem.a(impsystem2s6.o)
+ .idata$4       0x000000018047a17c        0x8 libimpsystem.a(impsystem2s7.o)
+ .idata$4       0x000000018047a184        0x8 libimpsystem.a(impsystem2s8.o)
+ .idata$4       0x000000018047a18c        0x8 libimpsystem.a(impsystem2t21.o)
+ .idata$4       0x000000018047a194        0x0 libimpsystem.a(impsystem4h25.o)
+                0x000000018047a194                impsystem_names_rtllib.dll
+ .idata$4       0x000000018047a194        0x8 libimpsystem.a(impsystem4s26.o)
+ .idata$4       0x000000018047a19c        0x8 libimpsystem.a(impsystem4t27.o)
+ .idata$4       0x000000018047a1a4        0x0 libimpSysUtils.a(impsysutils1h1.o)
+                0x000000018047a1a4                impsysutils_names_msvcrt.dll
+ .idata$4       0x000000018047a1a4        0x8 libimpSysUtils.a(impsysutils1s2.o)
+ .idata$4       0x000000018047a1ac        0x8 libimpSysUtils.a(impsysutils1s3.o)
+ .idata$4       0x000000018047a1b4        0x8 libimpSysUtils.a(impsysutils1t5.o)
+ .idata$4       0x000000018047a1bc        0x0 libimpwindows.a(impwindows1h1.o)
+                0x000000018047a1bc                impwindows_names_kernel32.dll
+ .idata$4       0x000000018047a1bc        0x8 libimpwindows.a(impwindows1s38.o)
+ .idata$4       0x000000018047a1c4        0x8 libimpwindows.a(impwindows1s65.o)
+ .idata$4       0x000000018047a1cc        0x8 libimpwindows.a(impwindows1t75.o)
+ .idata$4       0x000000018047a1d4        0x0 libimpxmm.a(impxmm1h1.o)
+                0x000000018047a1d4                impxmm_names_kernel32.dll
+ .idata$4       0x000000018047a1d4        0x8 libimpxmm.a(impxmm1s4.o)
+ .idata$4       0x000000018047a1dc        0x8 libimpxmm.a(impxmm1t7.o)
+ .idata$4       0x000000018047a1e4        0x0 libimpxmm.a(impxmm2h8.o)
+                0x000000018047a1e4                impxmm_names_ntdll.dll
+ .idata$4       0x000000018047a1e4        0x8 libimpxmm.a(impxmm2s9.o)
+ .idata$4       0x000000018047a1ec        0x8 libimpxmm.a(impxmm2t10.o)
+ SORT_BY_NAME(*)(.idata$5)
+ .idata$5       0x000000018047a1f4        0x0 libimpexceptions.a(impexceptions1h1.o)
+                0x000000018047a1f4                impexceptions_fixup_kernel32.dll
+ .idata$5       0x000000018047a1f4        0x8 libimpexceptions.a(impexceptions1s2.o)
+ .idata$5       0x000000018047a1fc        0x8 libimpexceptions.a(impexceptions1t4.o)
+ .idata$5       0x000000018047a204        0x0 libimpQApplicationPascal.a(impqapplicationpascal1h1.o)
+                0x000000018047a204                impqapplicationpascal_fixup_kernel32.dll
+ .idata$5       0x000000018047a204        0x8 libimpQApplicationPascal.a(impqapplicationpascal1s2.o)
+ .idata$5       0x000000018047a20c        0x8 libimpQApplicationPascal.a(impqapplicationpascal1t3.o)
+ .idata$5       0x000000018047a214        0x0 libimpQApplicationPascal.a(impqapplicationpascal2h4.o)
+                0x000000018047a214                impqapplicationpascal_fixup_rtllib.dll
+ .idata$5       0x000000018047a214        0x8 libimpQApplicationPascal.a(impqapplicationpascal2s5.o)
+ .idata$5       0x000000018047a21c        0x8 libimpQApplicationPascal.a(impqapplicationpascal2t6.o)
+ .idata$5       0x000000018047a224        0x0 libimpsystem.a(impsystem1h1.o)
+                0x000000018047a224                impsystem_fixup_user32.dll
+ .idata$5       0x000000018047a224        0x8 libimpsystem.a(impsystem1s2.o)
+ .idata$5       0x000000018047a22c        0x8 libimpsystem.a(impsystem1t3.o)
+ .idata$5       0x000000018047a234        0x0 libimpsystem.a(impsystem2h4.o)
+                0x000000018047a234                impsystem_fixup_kernel32.dll
+ .idata$5       0x000000018047a234        0x8 libimpsystem.a(impsystem2s10.o)
+ .idata$5       0x000000018047a23c        0x8 libimpsystem.a(impsystem2s11.o)
+ .idata$5       0x000000018047a244        0x8 libimpsystem.a(impsystem2s12.o)
+ .idata$5       0x000000018047a24c        0x8 libimpsystem.a(impsystem2s13.o)
+ .idata$5       0x000000018047a254        0x8 libimpsystem.a(impsystem2s14.o)
+ .idata$5       0x000000018047a25c        0x8 libimpsystem.a(impsystem2s15.o)
+ .idata$5       0x000000018047a264        0x8 libimpsystem.a(impsystem2s16.o)
+ .idata$5       0x000000018047a26c        0x8 libimpsystem.a(impsystem2s17.o)
+ .idata$5       0x000000018047a274        0x8 libimpsystem.a(impsystem2s18.o)
+ .idata$5       0x000000018047a27c        0x8 libimpsystem.a(impsystem2s19.o)
+ .idata$5       0x000000018047a284        0x8 libimpsystem.a(impsystem2s5.o)
+ .idata$5       0x000000018047a28c        0x8 libimpsystem.a(impsystem2s6.o)
+ .idata$5       0x000000018047a294        0x8 libimpsystem.a(impsystem2s7.o)
+ .idata$5       0x000000018047a29c        0x8 libimpsystem.a(impsystem2s8.o)
+ .idata$5       0x000000018047a2a4        0x8 libimpsystem.a(impsystem2t21.o)
+ .idata$5       0x000000018047a2ac        0x0 libimpsystem.a(impsystem4h25.o)
+                0x000000018047a2ac                impsystem_fixup_rtllib.dll
+ .idata$5       0x000000018047a2ac        0x8 libimpsystem.a(impsystem4s26.o)
+ .idata$5       0x000000018047a2b4        0x8 libimpsystem.a(impsystem4t27.o)
+ .idata$5       0x000000018047a2bc        0x0 libimpSysUtils.a(impsysutils1h1.o)
+                0x000000018047a2bc                impsysutils_fixup_msvcrt.dll
+ .idata$5       0x000000018047a2bc        0x8 libimpSysUtils.a(impsysutils1s2.o)
+ .idata$5       0x000000018047a2c4        0x8 libimpSysUtils.a(impsysutils1s3.o)
+ .idata$5       0x000000018047a2cc        0x8 libimpSysUtils.a(impsysutils1t5.o)
+ .idata$5       0x000000018047a2d4        0x0 libimpwindows.a(impwindows1h1.o)
+                0x000000018047a2d4                impwindows_fixup_kernel32.dll
+ .idata$5       0x000000018047a2d4        0x8 libimpwindows.a(impwindows1s38.o)
+ .idata$5       0x000000018047a2dc        0x8 libimpwindows.a(impwindows1s65.o)
+ .idata$5       0x000000018047a2e4        0x8 libimpwindows.a(impwindows1t75.o)
+ .idata$5       0x000000018047a2ec        0x0 libimpxmm.a(impxmm1h1.o)
+                0x000000018047a2ec                impxmm_fixup_kernel32.dll
+ .idata$5       0x000000018047a2ec        0x8 libimpxmm.a(impxmm1s4.o)
+ .idata$5       0x000000018047a2f4        0x8 libimpxmm.a(impxmm1t7.o)
+ .idata$5       0x000000018047a2fc        0x0 libimpxmm.a(impxmm2h8.o)
+                0x000000018047a2fc                impxmm_fixup_ntdll.dll
+ .idata$5       0x000000018047a2fc        0x8 libimpxmm.a(impxmm2s9.o)
+ .idata$5       0x000000018047a304        0x8 libimpxmm.a(impxmm2t10.o)
+ SORT_BY_NAME(*)(.idata$6)
+ .idata$6       0x000000018047a30c       0x12 libimpexceptions.a(impexceptions1s2.o)
+ *fill*         0x000000018047a31e        0x2 
+ .idata$6       0x000000018047a320       0x12 libimpQApplicationPascal.a(impqapplicationpascal1s2.o)
+ *fill*         0x000000018047a332        0x2 
+ .idata$6       0x000000018047a334        0xc libimpQApplicationPascal.a(impqapplicationpascal2s5.o)
+ .idata$6       0x000000018047a340        0xe libimpsystem.a(impsystem1s2.o)
+ *fill*         0x000000018047a34e        0x2 
+ .idata$6       0x000000018047a350        0xe libimpsystem.a(impsystem2s10.o)
+ *fill*         0x000000018047a35e        0x2 
+ .idata$6       0x000000018047a360       0x1e libimpsystem.a(impsystem2s11.o)
+ *fill*         0x000000018047a37e        0x2 
+ .idata$6       0x000000018047a380       0x22 libimpsystem.a(impsystem2s12.o)
+ *fill*         0x000000018047a3a2        0x2 
+ .idata$6       0x000000018047a3a4       0x1a libimpsystem.a(impsystem2s13.o)
+ *fill*         0x000000018047a3be        0x2 
+ .idata$6       0x000000018047a3c0       0x14 libimpsystem.a(impsystem2s14.o)
+ .idata$6       0x000000018047a3d4       0x10 libimpsystem.a(impsystem2s15.o)
+ .idata$6       0x000000018047a3e4       0x12 libimpsystem.a(impsystem2s16.o)
+ *fill*         0x000000018047a3f6        0x2 
+ .idata$6       0x000000018047a3f8       0x10 libimpsystem.a(impsystem2s17.o)
+ .idata$6       0x000000018047a408       0x10 libimpsystem.a(impsystem2s18.o)
+ .idata$6       0x000000018047a418       0x10 libimpsystem.a(impsystem2s19.o)
+ .idata$6       0x000000018047a428        0xe libimpsystem.a(impsystem2s5.o)
+ *fill*         0x000000018047a436        0x2 
+ .idata$6       0x000000018047a438       0x10 libimpsystem.a(impsystem2s6.o)
+ .idata$6       0x000000018047a448       0x10 libimpsystem.a(impsystem2s7.o)
+ .idata$6       0x000000018047a458        0xe libimpsystem.a(impsystem2s8.o)
+ *fill*         0x000000018047a466        0x2 
+ .idata$6       0x000000018047a468        0xc libimpsystem.a(impsystem4s26.o)
+ .idata$6       0x000000018047a474        0x8 libimpSysUtils.a(impsysutils1s2.o)
+ .idata$6       0x000000018047a47c        0xa libimpSysUtils.a(impsysutils1s3.o)
+ *fill*         0x000000018047a486        0x2 
+ .idata$6       0x000000018047a488        0xe libimpwindows.a(impwindows1s38.o)
+ *fill*         0x000000018047a496        0x2 
+ .idata$6       0x000000018047a498        0xc libimpwindows.a(impwindows1s65.o)
+ .idata$6       0x000000018047a4a4       0x10 libimpxmm.a(impxmm1s4.o)
+ .idata$6       0x000000018047a4b4       0x14 libimpxmm.a(impxmm2s9.o)
+ SORT_BY_NAME(*)(.idata$7)
+ .idata$7       0x000000018047a4c8        0x4 libimpexceptions.a(impexceptions1s2.o)
+ .idata$7       0x000000018047a4cc        0xd libimpexceptions.a(impexceptions1t4.o)
+                0x000000018047a4cc                impexceptions_dll_kernel32.dll
+ *fill*         0x000000018047a4d9        0x3 
+ .idata$7       0x000000018047a4dc        0x4 libimpQApplicationPascal.a(impqapplicationpascal1s2.o)
+ .idata$7       0x000000018047a4e0        0xd libimpQApplicationPascal.a(impqapplicationpascal1t3.o)
+                0x000000018047a4e0                impqapplicationpascal_dll_kernel32.dll
+ *fill*         0x000000018047a4ed        0x3 
+ .idata$7       0x000000018047a4f0        0x4 libimpQApplicationPascal.a(impqapplicationpascal2s5.o)
+ .idata$7       0x000000018047a4f4        0xb libimpQApplicationPascal.a(impqapplicationpascal2t6.o)
+                0x000000018047a4f4                impqapplicationpascal_dll_rtllib.dll
+ *fill*         0x000000018047a4ff        0x1 
+ .idata$7       0x000000018047a500        0x4 libimpsystem.a(impsystem1s2.o)
+ .idata$7       0x000000018047a504        0xb libimpsystem.a(impsystem1t3.o)
+                0x000000018047a504                impsystem_dll_user32.dll
+ *fill*         0x000000018047a50f        0x1 
+ .idata$7       0x000000018047a510        0x4 libimpsystem.a(impsystem2s10.o)
+ .idata$7       0x000000018047a514        0x4 libimpsystem.a(impsystem2s11.o)
+ .idata$7       0x000000018047a518        0x4 libimpsystem.a(impsystem2s12.o)
+ .idata$7       0x000000018047a51c        0x4 libimpsystem.a(impsystem2s13.o)
+ .idata$7       0x000000018047a520        0x4 libimpsystem.a(impsystem2s14.o)
+ .idata$7       0x000000018047a524        0x4 libimpsystem.a(impsystem2s15.o)
+ .idata$7       0x000000018047a528        0x4 libimpsystem.a(impsystem2s16.o)
+ .idata$7       0x000000018047a52c        0x4 libimpsystem.a(impsystem2s17.o)
+ .idata$7       0x000000018047a530        0x4 libimpsystem.a(impsystem2s18.o)
+ .idata$7       0x000000018047a534        0x4 libimpsystem.a(impsystem2s19.o)
+ .idata$7       0x000000018047a538        0x4 libimpsystem.a(impsystem2s5.o)
+ .idata$7       0x000000018047a53c        0x4 libimpsystem.a(impsystem2s6.o)
+ .idata$7       0x000000018047a540        0x4 libimpsystem.a(impsystem2s7.o)
+ .idata$7       0x000000018047a544        0x4 libimpsystem.a(impsystem2s8.o)
+ .idata$7       0x000000018047a548        0xd libimpsystem.a(impsystem2t21.o)
+                0x000000018047a548                impsystem_dll_kernel32.dll
+ *fill*         0x000000018047a555        0x3 
+ .idata$7       0x000000018047a558        0x4 libimpsystem.a(impsystem4s26.o)
+ .idata$7       0x000000018047a55c        0xb libimpsystem.a(impsystem4t27.o)
+                0x000000018047a55c                impsystem_dll_rtllib.dll
+ *fill*         0x000000018047a567        0x1 
+ .idata$7       0x000000018047a568        0x4 libimpSysUtils.a(impsysutils1s2.o)
+ .idata$7       0x000000018047a56c        0x4 libimpSysUtils.a(impsysutils1s3.o)
+ .idata$7       0x000000018047a570        0xb libimpSysUtils.a(impsysutils1t5.o)
+                0x000000018047a570                impsysutils_dll_msvcrt.dll
+ *fill*         0x000000018047a57b        0x1 
+ .idata$7       0x000000018047a57c        0x4 libimpwindows.a(impwindows1s38.o)
+ .idata$7       0x000000018047a580        0x4 libimpwindows.a(impwindows1s65.o)
+ .idata$7       0x000000018047a584        0xd libimpwindows.a(impwindows1t75.o)
+                0x000000018047a584                impwindows_dll_kernel32.dll
+ *fill*         0x000000018047a591        0x3 
+ .idata$7       0x000000018047a594        0x4 libimpxmm.a(impxmm1s4.o)
+ .idata$7       0x000000018047a598        0xd libimpxmm.a(impxmm1t7.o)
+                0x000000018047a598                impxmm_dll_kernel32.dll
+ *fill*         0x000000018047a5a5        0x3 
+ .idata$7       0x000000018047a5a8        0x4 libimpxmm.a(impxmm2s9.o)
+ .idata$7       0x000000018047a5ac        0xa libimpxmm.a(impxmm2t10.o)
+                0x000000018047a5ac                impxmm_dll_ntdll.dll
+
+.CRT            0x000000018047b000        0x0
+                0x000000018047b000                ___crt_xc_start__ = .
+ *(SORT_BY_NAME(.CRT$XC*))
+                0x000000018047b000                ___crt_xc_end__ = .
+                0x000000018047b000                ___crt_xi_start__ = .
+ *(SORT_BY_NAME(.CRT$XI*))
+                0x000000018047b000                ___crt_xi_end__ = .
+                0x000000018047b000                ___crt_xl_start__ = .
+ *(SORT_BY_NAME(.CRT$XL*))
+                [!provide]                        PROVIDE (___crt_xl_end__ = .)
+                0x000000018047b000                ___crt_xp_start__ = .
+ *(SORT_BY_NAME(.CRT$XP*))
+                0x000000018047b000                ___crt_xp_end__ = .
+                0x000000018047b000                ___crt_xt_start__ = .
+ *(SORT_BY_NAME(.CRT$XT*))
+                0x000000018047b000                ___crt_xt_end__ = .
+
+.tls            0x000000018047b000        0x0
+                0x000000018047b000                ___tls_start__ = .
+ *(.tls .tls.*)
+ *(.tls$)
+ *(SORT_BY_NAME(.tls$*))
+                0x000000018047b000                ___tls_end__ = .
+
+.rsrc
+ *(.rsrc)
+ *(SORT_BY_NAME(.rsrc$*))
+
+.reloc          0x000000018047b000      0xa00
+ *(.reloc)
+ .reloc         0x000000018047b000      0x9b8 dll stuff
+
+.stab
+ *(.stab)
+
+.stabstr
+ *(.stabstr)
+
+.debug_aranges
+ *(.debug_aranges)
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.debug_info
+ *(.debug_info)
+ *(.gnu.linkonce.wi.*)
+
+.debug_abbrev
+ *(.debug_abbrev)
+
+.debug_line
+ *(.debug_line)
+
+.debug_frame    0x000000018047c000     0x2a00
+ *(.debug_frame)
+ .debug_frame   0x000000018047c000       0x38 rtllib.o
+ *fill*         0x000000018047c038        0x8 
+ .debug_frame   0x000000018047c040       0x2c Dialogs.o
+ *fill*         0x000000018047c06c        0x4 
+ .debug_frame   0x000000018047c070      0x148 exceptions.o
+ *fill*         0x000000018047c1b8        0x8 
+ .debug_frame   0x000000018047c1c0       0x10 global.o
+ .debug_frame   0x000000018047c1d0       0x98 locales.o
+ .debug_frame   0x000000018047c268      0x110 rtlunit.o
+ *fill*         0x000000018047c378        0x8 
+ .debug_frame   0x000000018047c380       0x60 strutils.o
+ .debug_frame   0x000000018047c3e0       0x9c sysinitpas.o
+ *fill*         0x000000018047c47c        0x4 
+ .debug_frame   0x000000018047c480     0x1eac system.o
+ *fill*         0x000000018047e32c        0x4 
+ .debug_frame   0x000000018047e330      0x298 sysutils.o
+ *fill*         0x000000018047e5c8        0x8 
+ .debug_frame   0x000000018047e5d0       0x10 windows.o
+ .debug_frame   0x000000018047e5e0      0x250 xmm.o
+ .debug_frame   0x000000018047e830       0xa8 QApplicationPascal.o
+
+.debug_str
+ *(.debug_str)
+
+.debug_loc
+ *(.debug_loc)
+
+.debug_macinfo
+ *(.debug_macinfo)
+
+.debug_weaknames
+ *(.debug_weaknames)
+
+.debug_funcnames
+ *(.debug_funcnames)
+
+.debug_typenames
+ *(.debug_typenames)
+
+.debug_varnames
+ *(.debug_varnames)
+
+.debug_ranges
+ *(.debug_ranges)
+OUTPUT(test3.dll pei-x86-64)
+LOAD dll stuff

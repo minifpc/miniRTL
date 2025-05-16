@@ -2,67 +2,108 @@ BITS 64
 default rel
 CPU x64
 
-EXTERN	_$dll$rtllib$ShowMessage
-EXTERN	EXESTART
+EXTERN	VMT_$QAPPLICATIONPASCAL_$$_TAPPLICATION
+EXTERN	QAPPLICATIONPASCAL$_$TAPPLICATION_$__$$_CREATE$$TAPPLICATION
+EXTERN	DIALOGS_$$_SHOWMESSAGE$PCHAR
+EXTERN	SYSTEM$_$TOBJECT_$__$$_FREE
 EXTERN	fpc_initializeunits
 EXTERN	fpc_do_exit
-EXTERN	XMM_$$_XMMINIT
-EXTERN	XMM_$$_XGETFREECHUNKS$$LONGINT
-EXTERN	XMM_$$_XMEMCOMPARE$POINTER$POINTER$QWORD$$BOOLEAN
-EXTERN	XMM_$$_XMEMDIFFAT$POINTER$POINTER$QWORD$$QWORD
-EXTERN	XMM_$$_XMOVEMEM$POINTER$POINTER$QWORD$$QWORD
-EXTERN	XMM_$$_XZEROMEM$POINTER$QWORD$$QWORD
+EXTERN	QAPPLICATIONPASCAL_$$_TAPPLICATION_DESTROY$TAPPLICATION$$TAPPLICATION
+EXTERN	QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE$TAPPLICATION$$TAPPLICATION
+EXTERN	STRUTILS_$$_STRINGREPLACE$ANSISTRING$ANSISTRING$ANSISTRING$TREPLACEFLAGS$$ANSISTRING
+EXTERN	SYSUTILS_$$_STRDISPOSE$PCHAR
+EXTERN	SYSUTILS_$$_STRCAT_$PCHAR$PCHAR$$PCHAR
+EXTERN	SYSUTILS_$$_STRCAT$PCHAR$PCHAR$$PCHAR
+EXTERN	SYSUTILS_$$_STRCOPY$PCHAR$PCHAR$$PCHAR
+EXTERN	SYSUTILS_$$_STRALLOC$CARDINAL$$PCHAR
+EXTERN	SYSUTILS_$$_UINTTOSTR$QWORD$$ANSISTRING
+EXTERN	SYSUTILS_$$_CHATASTR3$PANSICHAR$LONGINT$$ANSISTRING
+EXTERN	SYSUTILS_$$_CHATASTR2$array_of_CHAR$LONGINT$$ANSISTRING
+EXTERN	SYSUTILS_$$_CHATASTR1$array_of_CHAR$$ANSISTRING
+EXTERN	SYSUTILS_$$_COMMANDLINETOARGVA$PANSICHAR$LONGINT$$PPANSICHAR
+EXTERN	SYSTEM_$$_ISGUIDEQUAL$TGUID$TGUID$$BOOLEAN
+EXTERN	SYSTEM_$$_FPCINTFDECRREF$POINTER
+EXTERN	SYSTEM_$$_INITINTERFACEPOINTERS$TCLASS$POINTER
 EXTERN	XMM_$$_XFREEMEM$POINTER$$QWORD
-EXTERN	XMM_$$_XMEMAVAILSIZE$POINTER$$QWORD
-EXTERN	XMM_$$_XMEMREALSIZE$POINTER$$QWORD
 EXTERN	XMM_$$_XMEMSIZE$POINTER$$QWORD
-EXTERN	XMM_$$_XCLONE$POINTER$$POINTER
-EXTERN	XMM_$$_XGETMEM$QWORD$$POINTER
-EXTERN	XMM_$$_XFILLMEM_CHAR$POINTER$QWORD$CHAR$$QWORD
-EXTERN	XMM_$$_XFILLMEM_BYTE$POINTER$QWORD$BYTE$$QWORD
-EXTERN	XMM_$$_XALLOCMEM$QWORD$$POINTER
-EXTERN	XMM_$$__ATOMIC32$LONGINT$LONGINT$$LONGINT
 EXTERN	INIT$_$XMM
 EXTERN	INIT$_$SYSTEM
-EXTERN	INIT$_$EXCEPTIONS
 ; Begin asmlist al_procedures
 
 SECTION .text
-	ALIGN 16
+P$TEST_$$_fin$00000003:
+..@c1:
+; [test.pas]
+; [26] end;
+		push	rbp
+..@c3:
+..@c4:
+		mov	rbp,rcx
+..@c5:
+		lea	rsp,[rsp-32]
+; [25] app.Free;
+		mov	rcx,qword [U_$P$TEST_$$_APP]
+		call	SYSTEM$_$TOBJECT_$__$$_FREE
+		nop
+		lea	rsp,[rsp+32]
+		pop	rbp
+		ret
+..@c2:
+
+SECTION .text
 	GLOBAL PASCALMAIN
 PASCALMAIN:
 	GLOBAL main
 main:
-..@c1:
-; [test.pas]
+..@c6:
 ; [20] begin
 		push	rbp
-..@c3:
-..@c4:
+..@c8:
+..@c9:
 		mov	rbp,rsp
-..@c5:
+..@c10:
 		lea	rsp,[rsp-32]
 		call	fpc_initializeunits
-; [21] ShowMessage('sError');
-		lea	rax,[_$TEST$_Ld1]
-		mov	rcx,rax
-		call	_$dll$rtllib$ShowMessage
-; [22] ExeStart;
-		call	EXESTART
-; [23] end.
+; [21] app := TApplication.Create;
+		mov	eax,1
+		lea	rcx,[VMT_$QAPPLICATIONPASCAL_$$_TAPPLICATION]
+		mov	rdx,rax
+		call	QAPPLICATIONPASCAL$_$TAPPLICATION_$__$$_CREATE$$TAPPLICATION
+		mov	qword [U_$P$TEST_$$_APP],rax
+..@j9:
+; [22] try
+		nop
+..@j5:
+; [23] ShowMessage('sError');
+		lea	rcx,[_$TEST$_Ld1]
+		call	DIALOGS_$$_SHOWMESSAGE$PCHAR
+..@j7:
+		nop
+..@j6:
+		mov	rcx,rbp
+		call	P$TEST_$$_fin$00000003
+; [27] end.
 		call	fpc_do_exit
 		nop
 		lea	rsp,[rbp]
 		pop	rbp
 		ret
-..@c2:
+	DD	1,0
+
+SECTION .text
+..@c7:
 ; End asmlist al_procedures
 ; Begin asmlist al_globals
+
+SECTION .bss
+	ALIGNB 8
+; [19] app: TApplication;
+U_$P$TEST_$$_APP:	RESB	8
 
 SECTION .data
 	ALIGN 8,DB 0
 	GLOBAL INITFINAL
-INITFINAL	DQ	3,0,INIT$_$XMM,0,INIT$_$SYSTEM,0,INIT$_$EXCEPTIONS,0
+INITFINAL	DQ	2,0,INIT$_$XMM,0,INIT$_$SYSTEM,0
 
 SECTION .data
 	ALIGN 8,DB 0
@@ -85,7 +126,6 @@ SECTION .data
 FPC_RESSTRINITTABLES	DQ	0
 
 SECTION .fpc
-	ALIGN 16,DB 0
 __fpc_ident		DB	"FPC 3.2.2-r0d122c49 [2024/11/15] for x86_64 - Win64"
 
 SECTION .data
@@ -101,7 +141,6 @@ __fpc_valgrind	DB	0
 ; Begin asmlist al_typedconsts
 
 SECTION .rodata
-	ALIGN 8,DB 0
 _$TEST$_Ld1:
 		DB	"sError",0
 ; End asmlist al_typedconsts
@@ -111,64 +150,73 @@ SECTION .edata
 	GLOBAL EDATA_$P$TEST
 EDATA_$P$TEST	DD	0,0
 	DW	0,0
-	DD	1,16,16
-..@j3:
+	DD	1,19,19
+..@j10:
 		DB	"TEST.dll",0
 	ALIGN 4,DB 0
-..@j4:
-	ALIGN 4,DB 0
-..@j5:
-	ALIGN 4,DB 0
-..@j6:
-	DW	15,14,10,13,12,6,1,11,7,2,3,8,9,0,4,5
-	ALIGN 4,DB 0
-	ALIGN 2,DB 0
-..@j7:
-		DB	"_atomic32",0
-	ALIGN 2,DB 0
-..@j8:
-		DB	"xallocmem",0
-	ALIGN 2,DB 0
-..@j9:
-		DB	"xclone",0
-	ALIGN 2,DB 0
-..@j10:
-		DB	"xfillmem_byte",0
-	ALIGN 2,DB 0
 ..@j11:
-		DB	"xfillmem_char",0
-	ALIGN 2,DB 0
+	ALIGN 4,DB 0
 ..@j12:
-		DB	"xfreemem",0
-	ALIGN 2,DB 0
+	ALIGN 4,DB 0
 ..@j13:
-		DB	"xgetfreechunks",0
+	DW	11,10,9,12,16,14,13,7,5,4,6,3,2,1,0,8,15,17,18
+	ALIGN 4,DB 0
 	ALIGN 2,DB 0
 ..@j14:
-		DB	"xgetmem",0
+		DB	"ChATAStr1",0
 	ALIGN 2,DB 0
 ..@j15:
-		DB	"xmemavailsize",0
+		DB	"ChATAStr2",0
 	ALIGN 2,DB 0
 ..@j16:
-		DB	"xmemcompare",0
+		DB	"ChATAStr3",0
 	ALIGN 2,DB 0
 ..@j17:
-		DB	"xmemdiffat",0
+		DB	"CommandLineToArgvA",0
 	ALIGN 2,DB 0
 ..@j18:
-		DB	"xmemrealsize",0
+		DB	"InitInterfacePointers",0
 	ALIGN 2,DB 0
 ..@j19:
-		DB	"xmemsize",0
+		DB	"IsGUIDEqual",0
 	ALIGN 2,DB 0
 ..@j20:
-		DB	"xmminit",0
+		DB	"ShowMessage",0
 	ALIGN 2,DB 0
 ..@j21:
-		DB	"xmovemem",0
+		DB	"StrAlloc",0
 	ALIGN 2,DB 0
 ..@j22:
-		DB	"xzeromem",0
+		DB	"StrCat",0
+	ALIGN 2,DB 0
+..@j23:
+		DB	"StrCat_",0
+	ALIGN 2,DB 0
+..@j24:
+		DB	"StrCopy",0
+	ALIGN 2,DB 0
+..@j25:
+		DB	"StrDispose",0
+	ALIGN 2,DB 0
+..@j26:
+		DB	"StringReplace",0
+	ALIGN 2,DB 0
+..@j27:
+		DB	"TApplication_Create",0
+	ALIGN 2,DB 0
+..@j28:
+		DB	"TApplication_Destroy",0
+	ALIGN 2,DB 0
+..@j29:
+		DB	"UIntToStr",0
+	ALIGN 2,DB 0
+..@j30:
+		DB	"fpcintfdecrref",0
+	ALIGN 2,DB 0
+..@j31:
+		DB	"xfreemem",0
+	ALIGN 2,DB 0
+..@j32:
+		DB	"xmemsize",0
 ; End asmlist al_exports
 

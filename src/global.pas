@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------
 unit global;
 interface
-uses Windows;
 
 // todo: versioning !
 {$ifdef FPC}

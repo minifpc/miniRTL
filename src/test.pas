@@ -3,24 +3,18 @@
 // ---------------------------------------------------------------------------------------
 {$mode objfpc}{$H+}
 {$define DLLIMPORT}
+{$LinkPath '.'}
 program test;
-{ $ L t est_unit.o}
-
 uses
-  Windows, Dialogs, SysUtils, StrUtils, Exceptions,
-  Locales, global, xmm, test_unit,
-  RtlLibImport, QApplicationPascal;
+  Windows, QApplicationPascal;
 
-function StringReplace(const S, OldPattern, NewPattern: string; Flags: TReplaceFlags): string; external RTLDLL;
-procedure ShowMessage(msg: PChar); stdcall; external RTLDLL;
-
-function xfreemem(p: pointer): ptruint; external name 'xfreemem';
-function xmemsize(const p: pointer): ptruint; external;
-
-procedure ExeStart; external name 'EXESTART';
-function sError: AnsiString; external RTLDLL;
-
+var
+  app: TApplication;
 begin
+  app := TApplication.Create;
+  try
   ShowMessage('sError');
-  ExeStart;
+  finally
+    app.Free;
+  end;
 end.

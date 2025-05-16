@@ -14,8 +14,7 @@ EXTERN	VMT_$SYSTEM_$$_TOBJECT$indirect
 EXTERN	SYSTEM$_$TOBJECT_$__$$_NEWINSTANCE$$TOBJECT
 EXTERN	SYSTEM$_$TOBJECT_$__$$_FREEINSTANCE
 EXTERN	SYSTEM$_$TOBJECT_$__$$_SAFECALLEXCEPTION$TOBJECT$POINTER$$HRESULT
-EXTERN	SYSTEM$_$TOBJECT_$__$$_AFTERCONSTRUCTION
-EXTERN	SYSTEM$_$TOBJECT_$__$$_BEFOREDESTRUCTION
+EXTERN	FPC_EMPTYMETHOD
 EXTERN	RTTI_$SYSTEM_$$_BYTE$indirect
 EXTERN	RTTI_$SYSTEM_$$_TOBJECT$indirect
 EXTERN	RTTI_$SYSTEM_$$_BOOLEAN$indirect
@@ -27,107 +26,89 @@ EXTERN	RTTI_$SYSTEM_$$_ANSISTRING$indirect
 ; Begin asmlist al_procedures
 
 SECTION .text
-	ALIGN 16
 	GLOBAL RTLUNIT_$$_GETBSR8BIT$$PBYTELOOKUP
 RTLUNIT_$$_GETBSR8BIT$$PBYTELOOKUP:
 ..@c1:
-; [RTLunit.pas]
+; Var $result located in register rax
+; [RTLUnit.pas]
 ; [63] begin
-		push	rbp
-..@c3:
-..@c4:
-		mov	rbp,rsp
-..@c5:
-		lea	rsp,[rsp-16]
-; Var $result located at rbp-8, size=OS_64
+%LINE 63+0 RTLUnit.pas
 ; [64] result := @bsr8bit;
+%LINE 64+0
 		lea	rax,[TC_$RTLUNIT_$$_BSR8BIT]
-		mov	qword [rbp-8],rax
+; Var $result located in register rax
 ; [65] end;
-		mov	rax,qword [rbp-8]
-		lea	rsp,[rbp]
-		pop	rbp
+%LINE 65+0
 		ret
 ..@c2:
 
 SECTION .text
-	ALIGN 16
 	GLOBAL RTLUNIT$_$TWIDGETSET_$__$$_CREATE$$TWIDGETSET
 RTLUNIT$_$TWIDGETSET_$__$$_CREATE$$TWIDGETSET:
-..@c6:
+..@c3:
 ; [81] begin
+%LINE 81+0
 		push	rbp
-..@c8:
-..@c9:
+..@c5:
+..@c6:
 		mov	rbp,rsp
-..@c10:
+..@c7:
 		lea	rsp,[rsp-64]
 ; Var $vmt located at rbp-8, size=OS_64
 ; Var $self located at rbp-16, size=OS_64
 ; Var $vmt_afterconstruction_local located at rbp-24, size=OS_S64
 		mov	qword [rbp-16],rcx
 		mov	qword [rbp-8],rdx
-		cmp	qword [rbp-8],1
-		je	..@j7
-		jmp	..@j8
-..@j7:
+		cmp	rdx,1
+		jne	..@j8
 		mov	rax,qword [rbp-16]
 		mov	rdx,qword [rbp-16]
 		mov	rcx,rax
 		call	[rdx+104]
 		mov	qword [rbp-16],rax
-	ALIGN 4
 ..@j8:
 		cmp	qword [rbp-16],0
-		je	..@j9
-		jmp	..@j10
-..@j9:
-		jmp	..@j5
-	ALIGN 4
-..@j10:
+		je	..@j5
 ..@j16:
 		nop
 ..@j15:
 		mov	qword [rbp-24],-1
 ; [82] inherited Create;
+%LINE 82+0
 		mov	rcx,qword [rbp-16]
-		mov	rdx,0
+		xor	edx,edx
 		call	SYSTEM$_$TOBJECT_$__$$_CREATE$$TOBJECT
 ; [83] end;
+%LINE 83+0
 		mov	qword [rbp-24],1
 		cmp	qword [rbp-16],0
-		jne	..@j18
-		jmp	..@j19
-..@j18:
+		je	..@j13
 		cmp	qword [rbp-8],0
-		jne	..@j20
-		jmp	..@j19
-..@j20:
+		je	..@j13
 		mov	rcx,qword [rbp-16]
 		mov	rax,qword [rbp-16]
 		mov	rax,qword [rax]
 		call	[rax+128]
-	ALIGN 4
-..@j19:
+%LINE 81+0
 		jmp	..@j13
 ..@j12:
+%LINE 83+0
 		cmp	qword [rbp-8],0
-		jne	..@j21
-		jmp	..@j22
-..@j21:
+		je	..@j22
 		mov	rdx,qword [rbp-24]
 		mov	rcx,qword [rbp-16]
 		mov	rax,qword [rbp-16]
 		mov	rax,qword [rax]
 		call	[rax+96]
-	ALIGN 4
 ..@j22:
 		call	fpc_reraise
+%LINE 81+0
 		call	FPC_DONEEXCEPTION
 ..@j23:
 		nop
 ..@j13:
 ..@j5:
+%LINE 83+0
 		mov	rax,qword [rbp-16]
 		nop
 		lea	rsp,[rbp]
@@ -136,138 +117,118 @@ RTLUNIT$_$TWIDGETSET_$__$$_CREATE$$TWIDGETSET:
 	DD	1,1
 
 SECTION .text
-..@c7:
+..@c4:
 
 SECTION .text
-	ALIGN 16
 	GLOBAL RTLUNIT$_$TWIDGETSET_$__$$_DESTROY
 RTLUNIT$_$TWIDGETSET_$__$$_DESTROY:
-..@c11:
+..@c8:
 ; [86] begin
+%LINE 86+0
+		push	rbx
+		push	rsi
+		lea	rsp,[rsp-40]
+..@c10:
+		mov	rbx,rcx
+; Var $self located in register rbx
+		mov	rsi,rdx
+; Var $vmt located in register rsi
+		test	rsi,rsi
+		jng	..@j27
+		mov	rcx,rbx
+		mov	rax,qword [rbx]
+		call	[rax+136]
+..@j27:
+; Var $self located in register rbx
+; [87] inherited Destroy;
+%LINE 87+0
+		mov	rcx,rbx
+		xor	edx,edx
+		call	SYSTEM$_$TOBJECT_$__$$_DESTROY
+; [88] end;
+%LINE 88+0
+		test	rbx,rbx
+		je	..@j29
+		test	rsi,rsi
+		je	..@j29
+		mov	rcx,rbx
+		mov	rax,qword [rbx]
+		call	[rax+112]
+..@j29:
+		nop
+		lea	rsp,[rsp+40]
+		pop	rsi
+		pop	rbx
+		ret
+..@c9:
+
+SECTION .text
+	GLOBAL RTLUNIT$_$TRTL_$__$$_CREATE$$TRTL
+RTLUNIT$_$TRTL_$__$$_CREATE$$TRTL:
+..@c11:
+; [91] begin
+%LINE 91+0
 		push	rbp
 ..@c13:
 ..@c14:
 		mov	rbp,rsp
 ..@c15:
-		lea	rsp,[rsp-48]
-; Var $vmt located at rbp-8, size=OS_64
-; Var $self located at rbp-16, size=OS_64
-		mov	qword [rbp-16],rcx
-		mov	qword [rbp-8],rdx
-		cmp	qword [rbp-8],0
-		jg	..@j26
-		jmp	..@j27
-..@j26:
-		mov	rax,qword [rbp-16]
-		mov	rdx,qword [rbp-16]
-		mov	rdx,qword [rdx]
-		mov	rcx,rax
-		call	[rdx+136]
-	ALIGN 4
-..@j27:
-; [87] inherited Destroy;
-		mov	rcx,qword [rbp-16]
-		mov	rdx,0
-		call	SYSTEM$_$TOBJECT_$__$$_DESTROY
-; [88] end;
-		cmp	qword [rbp-16],0
-		jne	..@j28
-		jmp	..@j29
-..@j28:
-		cmp	qword [rbp-8],0
-		jne	..@j30
-		jmp	..@j29
-..@j30:
-		mov	rcx,qword [rbp-16]
-		mov	rax,qword [rbp-16]
-		mov	rax,qword [rax]
-		call	[rax+112]
-	ALIGN 4
-..@j29:
-		nop
-		lea	rsp,[rbp]
-		pop	rbp
-		ret
-..@c12:
-
-SECTION .text
-	ALIGN 16
-	GLOBAL RTLUNIT$_$TRTL_$__$$_CREATE$$TRTL
-RTLUNIT$_$TRTL_$__$$_CREATE$$TRTL:
-..@c16:
-; [91] begin
-		push	rbp
-..@c18:
-..@c19:
-		mov	rbp,rsp
-..@c20:
 		lea	rsp,[rsp-64]
 ; Var $vmt located at rbp-8, size=OS_64
 ; Var $self located at rbp-16, size=OS_64
 ; Var $vmt_afterconstruction_local located at rbp-24, size=OS_S64
 		mov	qword [rbp-16],rcx
 		mov	qword [rbp-8],rdx
-		cmp	qword [rbp-8],1
-		je	..@j33
-		jmp	..@j34
-..@j33:
+		cmp	rdx,1
+		jne	..@j34
 		mov	rax,qword [rbp-16]
 		mov	rdx,qword [rbp-16]
 		mov	rcx,rax
 		call	[rdx+104]
 		mov	qword [rbp-16],rax
-	ALIGN 4
 ..@j34:
 		cmp	qword [rbp-16],0
-		je	..@j35
-		jmp	..@j36
-..@j35:
-		jmp	..@j31
-	ALIGN 4
-..@j36:
+		je	..@j31
 ..@j42:
 		nop
 ..@j41:
 		mov	qword [rbp-24],-1
 ; [92] inherited Create;
+%LINE 92+0
 		mov	rcx,qword [rbp-16]
-		mov	rdx,0
+		xor	edx,edx
 		call	SYSTEM$_$TOBJECT_$__$$_CREATE$$TOBJECT
 ; [93] end;
+%LINE 93+0
 		mov	qword [rbp-24],1
 		cmp	qword [rbp-16],0
-		jne	..@j44
-		jmp	..@j45
-..@j44:
+		je	..@j39
 		cmp	qword [rbp-8],0
-		jne	..@j46
-		jmp	..@j45
-..@j46:
+		je	..@j39
 		mov	rcx,qword [rbp-16]
 		mov	rax,qword [rbp-16]
 		mov	rax,qword [rax]
 		call	[rax+128]
-	ALIGN 4
-..@j45:
+%LINE 91+0
 		jmp	..@j39
 ..@j38:
+%LINE 93+0
 		cmp	qword [rbp-8],0
-		jne	..@j47
-		jmp	..@j48
-..@j47:
+		je	..@j48
 		mov	rdx,qword [rbp-24]
 		mov	rcx,qword [rbp-16]
 		mov	rax,qword [rbp-16]
 		mov	rax,qword [rax]
 		call	[rax+96]
-	ALIGN 4
 ..@j48:
 		call	fpc_reraise
+%LINE 91+0
 		call	FPC_DONEEXCEPTION
 ..@j49:
 		nop
 ..@j39:
 ..@j31:
+%LINE 93+0
 		mov	rax,qword [rbp-16]
 		nop
 		lea	rsp,[rbp]
@@ -276,121 +237,104 @@ RTLUNIT$_$TRTL_$__$$_CREATE$$TRTL:
 	DD	1,1
 
 SECTION .text
+..@c12:
+
+SECTION .text
+	GLOBAL RTLUNIT$_$TRTL_$__$$_DESTROY
+RTLUNIT$_$TRTL_$__$$_DESTROY:
+..@c16:
+; [96] begin
+%LINE 96+0
+		push	rbx
+		push	rsi
+		lea	rsp,[rsp-40]
+..@c18:
+		mov	rbx,rcx
+; Var $self located in register rbx
+		mov	rsi,rdx
+; Var $vmt located in register rsi
+		test	rsi,rsi
+		jng	..@j53
+		mov	rcx,rbx
+		mov	rax,qword [rbx]
+		call	[rax+136]
+..@j53:
+; Var $self located in register rbx
+; [97] inherited Destroy;
+%LINE 97+0
+		mov	rcx,rbx
+		xor	edx,edx
+		call	SYSTEM$_$TOBJECT_$__$$_DESTROY
+; [98] end;
+%LINE 98+0
+		test	rbx,rbx
+		je	..@j55
+		test	rsi,rsi
+		je	..@j55
+		mov	rcx,rbx
+		mov	rax,qword [rbx]
+		call	[rax+112]
+..@j55:
+		nop
+		lea	rsp,[rsp+40]
+		pop	rsi
+		pop	rbx
+		ret
 ..@c17:
 
 SECTION .text
-	ALIGN 16
-	GLOBAL RTLUNIT$_$TRTL_$__$$_DESTROY
-RTLUNIT$_$TRTL_$__$$_DESTROY:
-..@c21:
-; [96] begin
-		push	rbp
-..@c23:
-..@c24:
-		mov	rbp,rsp
-..@c25:
-		lea	rsp,[rsp-48]
-; Var $vmt located at rbp-8, size=OS_64
-; Var $self located at rbp-16, size=OS_64
-		mov	qword [rbp-16],rcx
-		mov	qword [rbp-8],rdx
-		cmp	qword [rbp-8],0
-		jg	..@j52
-		jmp	..@j53
-..@j52:
-		mov	rax,qword [rbp-16]
-		mov	rdx,qword [rbp-16]
-		mov	rdx,qword [rdx]
-		mov	rcx,rax
-		call	[rdx+136]
-	ALIGN 4
-..@j53:
-; [97] inherited Destroy;
-		mov	rcx,qword [rbp-16]
-		mov	rdx,0
-		call	SYSTEM$_$TOBJECT_$__$$_DESTROY
-; [98] end;
-		cmp	qword [rbp-16],0
-		jne	..@j54
-		jmp	..@j55
-..@j54:
-		cmp	qword [rbp-8],0
-		jne	..@j56
-		jmp	..@j55
-..@j56:
-		mov	rcx,qword [rbp-16]
-		mov	rax,qword [rbp-16]
-		mov	rax,qword [rax]
-		call	[rax+112]
-	ALIGN 4
-..@j55:
-		nop
-		lea	rsp,[rbp]
-		pop	rbp
-		ret
-..@c22:
-
-SECTION .text
-	ALIGN 16
 	GLOBAL RTLUNIT_$$_TRTL_CREATE$$TRTL
 RTLUNIT_$$_TRTL_CREATE$$TRTL:
-..@c26:
-; Temps allocated between rbp-16 and rbp-8
+..@c19:
 ; [101] begin
-		push	rbp
-..@c28:
-..@c29:
-		mov	rbp,rsp
-..@c30:
-		lea	rsp,[rsp-48]
-		mov	qword [rbp-16],rbx
-; Var $result located at rbp-8, size=OS_64
+%LINE 101+0
+		push	rbx
+		lea	rsp,[rsp-32]
+..@c21:
+; Var $result located in register rax
 ; [102] WriteLn('xxxx');
+%LINE 102+0
 		call	fpc_get_output
 		mov	rbx,rax
 		lea	r8,[_$RTLUNIT$_Ld1]
 		mov	rdx,rbx
-		mov	ecx,0
+		xor	ecx,ecx
 		call	fpc_write_text_shortstr
 		mov	rcx,rbx
 		call	fpc_writeln_end
 ; [103] result := TRTL.Create;
-		mov	rdx,1
+%LINE 103+0
+		mov	edx,1
 		lea	rcx,[VMT_$RTLUNIT_$$_TRTL]
 		call	RTLUNIT$_$TRTL_$__$$_CREATE$$TRTL
-		mov	qword [rbp-8],rax
+; Var $result located in register rax
 ; [104] end;
-		mov	rax,qword [rbp-8]
-		mov	rbx,qword [rbp-16]
-		lea	rsp,[rbp]
-		pop	rbp
+%LINE 104+0
+		nop
+		lea	rsp,[rsp+32]
+		pop	rbx
 		ret
-..@c27:
+..@c20:
 
 SECTION .text
-	ALIGN 16
 	GLOBAL RTLUNIT_$$_TRTL_DESTROY$TRTL
 RTLUNIT_$$_TRTL_DESTROY$TRTL:
-..@c31:
+..@c22:
 ; [107] begin
-		push	rbp
-..@c33:
-..@c34:
-		mov	rbp,rsp
-..@c35:
-		lea	rsp,[rsp-48]
-; Var AValue located at rbp-8, size=OS_64
-		mov	qword [rbp-8],rcx
+%LINE 107+0
+		lea	rsp,[rsp-40]
+..@c24:
+; Var AValue located in register rax
+; Var AValue located in register rcx
 ; [108] AValue.Free;
-		mov	rax,qword [rbp-8]
-		mov	rcx,rax
+%LINE 108+0
 		call	SYSTEM$_$TOBJECT_$__$$_FREE
 ; [109] end;
+%LINE 109+0
 		nop
-		lea	rsp,[rbp]
-		pop	rbp
+		lea	rsp,[rsp+40]
 		ret
-..@c32:
+..@c23:
 ; End asmlist al_procedures
 ; Begin asmlist al_globals
 
@@ -400,9 +344,9 @@ SECTION .data
 VMT_$RTLUNIT_$$_TWIDGETSET	DQ	8,-8,VMT_$SYSTEM_$$_TOBJECT$indirect,..@d2,0,0,0,RTTI_$RTLUNIT_$$_TWIDGETSET
 	DQ	0,0,0,0,RTLUNIT$_$TWIDGETSET_$__$$_DESTROY,SYSTEM$_$TOBJECT_$__$$_NEWINSTANCE$$TOBJECT
 	DQ	SYSTEM$_$TOBJECT_$__$$_FREEINSTANCE,SYSTEM$_$TOBJECT_$__$$_SAFECALLEXCEPTION$TOBJECT$POINTER$$HRESULT
-	DQ	SYSTEM$_$TOBJECT_$__$$_AFTERCONSTRUCTION,SYSTEM$_$TOBJECT_$__$$_BEFOREDESTRUCTION
-	DQ	0
-; [165] end.
+	DQ	FPC_EMPTYMETHOD,FPC_EMPTYMETHOD,0
+; [154] end.
+%LINE 154+0 RTLUnit.pas
 
 SECTION .data
 	ALIGN 8,DB 0
@@ -410,8 +354,7 @@ SECTION .data
 VMT_$RTLUNIT_$$_TRTL	DQ	16,-16,VMT_$SYSTEM_$$_TOBJECT$indirect,..@d3,0,0,0,RTTI_$RTLUNIT_$$_TRTL
 	DQ	0,0,0,0,RTLUNIT$_$TRTL_$__$$_DESTROY,SYSTEM$_$TOBJECT_$__$$_NEWINSTANCE$$TOBJECT
 	DQ	SYSTEM$_$TOBJECT_$__$$_FREEINSTANCE,SYSTEM$_$TOBJECT_$__$$_SAFECALLEXCEPTION$TOBJECT$POINTER$$HRESULT
-	DQ	SYSTEM$_$TOBJECT_$__$$_AFTERCONSTRUCTION,SYSTEM$_$TOBJECT_$__$$_BEFOREDESTRUCTION
-	DQ	0
+	DQ	FPC_EMPTYMETHOD,FPC_EMPTYMETHOD,0
 ; End asmlist al_globals
 ; Begin asmlist al_const
 
@@ -436,10 +379,11 @@ TC_$RTLUNIT_$$_BSR8BIT	DB	255,0,1,1,2,2,2,2,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,
 	DB	7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7
 	DB	7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7
 ; [28] function GetBsr8bit: PByteLookup; stdcall; export;
+%LINE 28+0 RTLUnit.pas
 
 SECTION .rodata
-	ALIGN 8,DB 0
 _$RTLUNIT$_Ld1:
+%LINE 102+0
 		DB	4,"xxxx",0
 ; End asmlist al_typedconsts
 ; Begin asmlist al_rtti
@@ -448,7 +392,8 @@ SECTION .data
 	ALIGN 8,DB 0
 	GLOBAL RTTI_$RTLUNIT_$$_TBYTELOOKUP
 RTTI_$RTLUNIT_$$_TBYTELOOKUP	DB	12,11
-; [166] 
+; [155] 
+%LINE 155+0 RTLUnit.pas
 		DB	"TByteLookup"
 	DQ	256,256,RTTI_$SYSTEM_$$_BYTE$indirect
 	DB	1
@@ -586,6 +531,7 @@ SECTION .data
 	ALIGN 8,DB 0
 	GLOBAL VMT_$RTLUNIT_$$_TWIDGETSET$indirect
 VMT_$RTLUNIT_$$_TWIDGETSET$indirect	DQ	VMT_$RTLUNIT_$$_TWIDGETSET
+%LINE 154+0 RTLUnit.pas
 
 SECTION .data
 	ALIGN 8,DB 0
@@ -596,6 +542,7 @@ SECTION .data
 	ALIGN 8,DB 0
 	GLOBAL RTTI_$RTLUNIT_$$_TBYTELOOKUP$indirect
 RTTI_$RTLUNIT_$$_TBYTELOOKUP$indirect	DQ	RTTI_$RTLUNIT_$$_TBYTELOOKUP
+%LINE 155+0
 
 SECTION .data
 	ALIGN 8,DB 0
@@ -657,4 +604,100 @@ SECTION .data
 	GLOBAL RTTI_$RTLUNIT_$$_T_ARRAY_STRING$indirect
 RTTI_$RTLUNIT_$$_T_ARRAY_STRING$indirect	DQ	RTTI_$RTLUNIT_$$_T_ARRAY_STRING
 ; End asmlist al_indirectglobals
+; Begin asmlist al_dwarf_frame
+
+SECTION .debug_frame
+..@c25:
+	DD	..@c27-..@c26
+..@c26:
+	DD	-1
+	DB	1,0
+; Unsupported const type 	FIXME_ULEB128BIT	
+; Unsupported const type 	FIXME_SLEB128BIT	
+	DB	16,12
+; Unsupported const type 	FIXME_ULEB128BIT	
+; Unsupported const type 	FIXME_ULEB128BIT	
+	DB	5
+; Unsupported const type 	FIXME_ULEB128BIT	
+; Unsupported const type 	FIXME_ULEB128BIT	
+	ALIGN 4,DB 0
+..@c27:
+	DD	..@c29-..@c28
+..@c28:
+	DQ	..@c1,..@c2-..@c1
+	ALIGN 4,DB 0
+..@c29:
+	DD	..@c31-..@c30
+..@c30:
+	DQ	..@c3,..@c4-..@c3
+	DB	4
+	DD	..@c5-..@c3
+	DB	14
+; Unsupported const type 	FIXME_ULEB128BIT	
+	DB	4
+	DD	..@c6-..@c5
+	DB	5
+; Unsupported const type 	FIXME_ULEB128BIT	
+; Unsupported const type 	FIXME_ULEB128BIT	
+	DB	4
+	DD	..@c7-..@c6
+	DB	13
+; Unsupported const type 	FIXME_ULEB128BIT	
+	ALIGN 4,DB 0
+..@c31:
+	DD	..@c33-..@c32
+..@c32:
+	DQ	..@c8,..@c9-..@c8
+	DB	4
+	DD	..@c10-..@c8
+	DB	14
+; Unsupported const type 	FIXME_ULEB128BIT	
+	ALIGN 4,DB 0
+..@c33:
+	DD	..@c35-..@c34
+..@c34:
+	DQ	..@c11,..@c12-..@c11
+	DB	4
+	DD	..@c13-..@c11
+	DB	14
+; Unsupported const type 	FIXME_ULEB128BIT	
+	DB	4
+	DD	..@c14-..@c13
+	DB	5
+; Unsupported const type 	FIXME_ULEB128BIT	
+; Unsupported const type 	FIXME_ULEB128BIT	
+	DB	4
+	DD	..@c15-..@c14
+	DB	13
+; Unsupported const type 	FIXME_ULEB128BIT	
+	ALIGN 4,DB 0
+..@c35:
+	DD	..@c37-..@c36
+..@c36:
+	DQ	..@c16,..@c17-..@c16
+	DB	4
+	DD	..@c18-..@c16
+	DB	14
+; Unsupported const type 	FIXME_ULEB128BIT	
+	ALIGN 4,DB 0
+..@c37:
+	DD	..@c39-..@c38
+..@c38:
+	DQ	..@c19,..@c20-..@c19
+	DB	4
+	DD	..@c21-..@c19
+	DB	14
+; Unsupported const type 	FIXME_ULEB128BIT	
+	ALIGN 4,DB 0
+..@c39:
+	DD	..@c41-..@c40
+..@c40:
+	DQ	..@c22,..@c23-..@c22
+	DB	4
+	DD	..@c24-..@c22
+	DB	14
+; Unsupported const type 	FIXME_ULEB128BIT	
+	ALIGN 4,DB 0
+..@c41:
+; End asmlist al_dwarf_frame
 

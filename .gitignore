@@ -57,3 +57,12 @@ src/dd
 /src/mfcFPC/x64
 src/mfcFPC/pch.h
 *.res
+*.s
+*.s
+*.exe
+*.s
+*.s
+*.exp
+*.lib
+*.base
+src/QApplicationPascal.s

@@ -1,11 +1,12 @@
 // ---------------------------------------------------------------------------------------
 // Copyright(c) 2025 @paule32 and @fibonacci
 // ---------------------------------------------------------------------------------------
-{$mode delphi}
+{$mode objfpc}{$H+}
+{$linklib rtllib_dll}
 unit QApplicationPascal;
-
 interface
-uses Windows, Dialogs, SysUtils; //, QObjectPascalExport;
+uses
+  Windows, SysUtils;
 
 function GetCommandLineA: LPSTR; stdcall; external kernel32;
 function StrAlloc(Size: Cardinal): PChar; stdcall; external RTLDLL;
@@ -39,15 +40,16 @@ type
   ///   The following example shows how to dynamically create an appropriate type of
   ///   application instance:
   /// </details>
-  QApplication = class
+  TApplication = class
+  private
   public
     /// <constructor>
     /// <brief>
     ///   This is the Pascal constructor for class QApplication.
     /// </brief>
     /// </constructor>
-    //constructor Create(ArgCount: Integer; Args: PPChar); overload;
-    constructor Create;
+    constructor Create(var ArgCount: Integer; var Args: PPChar); overload;
+    constructor Create; overload;
     
     /// <destructor>
     /// <brief>
@@ -58,75 +60,48 @@ type
   end;
   /// </class>
 
+{$ifdef DLLIMPORT}
+function TApplication_Create(p: TApplication): TApplication; stdcall; external 'rtllib.dll';
+procedure TApplication_Destroy(P: TApplication); stdcall; external 'rtllib.dll';
+
+function TApplication_Create2(p: TApplication; var ArgCount: Integer; var Args: PPChar): TApplication; stdcall; external 'rtllib.dll';
+{$else}
+function TApplication_Create(p: TApplication): TApplication; stdcall;
+procedure TApplication_Destroy(P: TApplication); stdcall;
+
+function TApplication_Create2(p: TApplication; var ArgCount: Integer; var Args: PPChar): TApplication; stdcall;
+{$endif}
+
 implementation
 
 {$ifdef DLLEXPORT}
-function QApplication_Create(var p: QApplication): QApplication; export;
+function TApplication_Create(p: TApplication): TApplication; stdcall; [public, alias: 'TApplication_Create']; export;
 begin
-  p := QApplication.Create;
   if p = nil then
   begin
-    ShowMessage('Error: could not create QApplication.');
+    ShowMessage('Error: could not access TApplication.');
     ExitProcess(1)
   end;
+  writeln('__init__');
   Exit(p);
 end;
-procedure QApplication_Destroy(p: QApplication); export;
+procedure TApplication_Destroy(P: TApplication); stdcall; [public, alias: 'TApplication_Destroy']; export;
 begin
+  writeln('delter');
   p.Free;
 end;
-{$endif DLLEXPORT}
-{$ifdef DLLIMPORT}
-function  QApplication_Create(var p: QApplication): QApplication; external RTLDLL;
-procedure QApplication_Destroy(P: QApplication); external RTLDLL;
-{$endif DLLIMPORT}
 
-(**
- * \brief CTOR Create of QApplication
- * \param ArgCount - Integer
- * \param Args     - Array of String
- *)
-{$ifdef DLLEXPORT}
-(*constructor QApplication.Create(
-  ArgCount: Integer;
-  Args: PPChar);
-begin
-  writeln('app create');
-  //inherited Create;
-end;
-{$endif DLLEXPORT}
-{$ifdef DLLIMPORT}
-constructor QApplication.Create(
-  ArgCount: Integer;
-  Args: PPChar);
-begin
-end;*)
-{$endif DLLIMPORT}
-
-constructor QApplication.Create;
-begin
-writeln('cccccc');
-  //inherited Create;
-end;
-
-destructor QApplication.Destroy;
-begin
-  //inherited Destroy;
-end;
-
-{$ifdef DLLEXPORT}
-function  QApplication__Create: QApplication; stdcall; export;
+function TApplication_Create2(p: TApplication; var ArgCount: Integer; var Args: PPChar): TApplication; stdcall; [public, alias: 'TApplication_Create2']; export;
 var
   cmdline   : PAnsiChar;
-  Args      : PPAnsiChar;
   ArgsCount : Integer;
   S, R      : PChar;
   TotalLen  : Integer;
   
-  P : QApplication;
   I : Integer;
 begin
-  result  := nil;
+  writeln('halplo');
+
   CmdLine := GetCommandLineA;
   Args    := CommandLineToArgvA(CmdLine, ArgsCount);
   
@@ -157,13 +132,26 @@ begin
   
   //Exit(QApplication.Create(ArgsCount, Args));
 end;
-{$endif DLLEXPORT}
+{$endif}
 
-{$ifdef DLLEXPORT}
-exports
-  QApplication__Create  name 'QApplication_Create'
-  //QApplication_Destroy name 'QApplication_Destroy'
-  ;
-{$endif DLLEXPORT}
+constructor TApplication.Create;
+begin
+  writeln('cccccc');
+  //inherited Create;
+  TApplication_Create(self);
+end;
+
+constructor TApplication.Create(var ArgCount: Integer; var Args: PPChar);
+begin
+  TApplication_Create2(self, ArgCount, Args);
+end;
+
+destructor TApplication.Destroy;
+begin
+  writeln('destroyer');
+  TApplication_Destroy(self);
+  //inherited Destroy;
+end;
+
 
 end.

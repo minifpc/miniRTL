@@ -11,7 +11,8 @@ EXTERN	RTTI_$SYSTEM_$$_PCHAR$indirect
 SECTION .bss
 	ALIGNB 4
 ; [global.pas]
-; [18] QApplication_Counter: DWORD32;
+; [17] QApplication_Counter: DWORD32;
+%LINE 17+0 global.pas
 	GLOBAL U_$GLOBAL_$$_QAPPLICATION_COUNTER
 U_$GLOBAL_$$_QAPPLICATION_COUNTER:	RESB	4
 ; End asmlist al_globals
@@ -21,7 +22,8 @@ SECTION .data
 	ALIGN 8,DB 0
 	GLOBAL INIT_$GLOBAL_$$_TDLLERROR
 INIT_$GLOBAL_$$_TDLLERROR	DB	13,9
-; [58] 
+; [57] 
+%LINE 57+0 global.pas
 		DB	"TDLLerror"
 	DQ	0
 	DD	64
@@ -248,4 +250,22 @@ SECTION .data
 	GLOBAL RTTI_$GLOBAL_$$_PDLLREQUEST$indirect
 RTTI_$GLOBAL_$$_PDLLREQUEST$indirect	DQ	RTTI_$GLOBAL_$$_PDLLREQUEST
 ; End asmlist al_indirectglobals
+; Begin asmlist al_dwarf_frame
+
+SECTION .debug_frame
+	DD	..@c3-..@c2
+..@c2:
+	DD	-1
+	DB	1,0
+; Unsupported const type 	FIXME_ULEB128BIT	
+; Unsupported const type 	FIXME_SLEB128BIT	
+	DB	16,12
+; Unsupported const type 	FIXME_ULEB128BIT	
+; Unsupported const type 	FIXME_ULEB128BIT	
+	DB	5
+; Unsupported const type 	FIXME_ULEB128BIT	
+; Unsupported const type 	FIXME_ULEB128BIT	
+	ALIGN 4,DB 0
+..@c3:
+; End asmlist al_dwarf_frame
 

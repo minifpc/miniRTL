@@ -1,7 +1,3 @@
-// ---------------------------------------------------------------------------------------
-// Copyright(c) 2025 @paule32 and @fibonacci
-// ---------------------------------------------------------------------------------------
-
 unit system;
 
 {$mode objfpc}{$H+}
@@ -18,12 +14,6 @@ unit system;
 
 interface
 
-const rtllib  = 'rtllib.dll';
-
-type
-  TByteLookup = array[0..255] of Byte;
-  PByteLookup = ^TByteLookup;
-  
 const
   CP_ACP     = 0;     // default to ANSI code page
   CP_OEMCP   = 1;     // default to OEM (console) code page
@@ -56,13 +46,12 @@ const
   USER32   = 'user32.dll';
   KERNEL32 = 'kernel32.dll';
   NTDLL    = 'ntdll.dll';
-  RTLDLL   = 'rtllib.dll';
-                                             
-function MessageBoxA(hWnd: HWND;lpText:LPCSTR; lpCaption: LPCSTR; uType: UINT): longint; stdcall; external USER32;
+
+//function MessageBoxA(hWnd: HWND;lpText:LPCSTR; lpCaption: LPCSTR; uType: UINT): longint; stdcall; external USER32;
 procedure ExitProcess(ExitCode: longint); stdcall; external KERNEL32;
 procedure RtlMoveMemory(Destination: PVOID; const Source: PVOID; Length: size_t); stdcall; external KERNEL32;
-function VirtualAlloc(lpAddress: Pointer; dwSize: SizeUInt; flAllocationType, flProtect: DWORD): Pointer; stdcall; external KERNEL32;
-function VirtualFree(lpAddress: LPVOID; dwSize: size_t; dwFreeType: DWORD): BOOL; stdcall; external KERNEL32;
+//function VirtualAlloc(lpAddress: Pointer; dwSize: SizeUInt; flAllocationType, flProtect: DWORD): Pointer; stdcall; external KERNEL32;
+//function VirtualFree(lpAddress: LPVOID; dwSize: size_t; dwFreeType: DWORD): BOOL; stdcall; external KERNEL32;
 function VirtualProtect(lpAddress: LPVOID; dwSize: SIZE_T; flNewProtect: DWORD; var lpflOldProtect: DWORD): BOOL; stdcall; external KERNEL32;
 procedure RtlUnwind(TargetFrame: Pointer; TargetIp: Pointer; ExceptionRecord: Pointer; ReturnValue: Pointer); stdcall; external NTDLL;
 //procedure RtlUnwindEx(TargetFrame: Pointer; TargetIp: Pointer; ExceptionRecord: PExceptionRecord; ReturnValue: Pointer; OriginalContext: PContext; HistoryTable: PUNWIND_HISTORY_TABLE); stdcall; external KERNEL32;
@@ -82,6 +71,8 @@ function RemoveVectoredExceptionHandler(Handle: Pointer): LongBool; stdcall; ext
 {$undef codei} {$define codeh} {$I misc.inc}  
 {$undef codei} {$define codeh} {$I constarray.inc}
 {$undef codei} {$define codeh} {$I heap.inc}
+{$undef codei} {$define codeh} {$I StrUtils.pas}
+{$undef codei} {$define codeh} {$I Dialogs.pas}
 
 // raise exception test
 type
@@ -142,8 +133,6 @@ function fpc_dynarray_high(p: pointer): tdynarrayindex; compilerproc;
 procedure fpc_dynarray_incr_ref(p: pointer); compilerproc;
 procedure fpc_dynarray_clear(var p: pointer; ti: pointer); compilerproc;
 
-Function fpc_chararray_to_ansistr(const arr: array of char; zerobased: boolean = true): ansistring; compilerproc;
-
 // -- console mode support --------------------------
 
 {$ifdef CONSOLE}
@@ -170,14 +159,14 @@ procedure msgdebug(msg: ansistring);
 
 // -- various rountines -----------------------------
 
-procedure fpc_initializeunits; compilerproc; export;
+procedure fpc_initializeunits; compilerproc;
 procedure fpc_finalizeunits; compilerproc;
 procedure fpc_libinitializeunits; compilerproc;
 
 procedure internal_do_exit; external name 'FPC_DO_EXIT'; // NOT in implementation! no code, external import from compiler
 procedure Halt(err: integer); noreturn;
 procedure fpc_do_exit; compilerproc;
-procedure _fpc_leave(a1, a2, a3, a4: pointer); stdcall; compilerproc;
+procedure _fpc_leave(a1, a2, a3, a4: pointer); stdcall; compilerproc; assembler;
 
 // these 3 needed to make int64 version of itoa()
 //function fpc_mod_int64(n, z: int64): int64; compilerproc;
@@ -205,26 +194,13 @@ var
   is_console: boolean = false; public name 'operatingsystem_isconsole';
   IsMultithread: boolean = false;
 
-Procedure fpc_Copy_proc (Src, Dest, TypeInfo : Pointer); compilerproc; inline;
-
-procedure fpchandleerror(errno: longint); stdcall; export;
-function  fpcdivint64(n, z: int64): int64; stdcall; export;
-function  fpcdivqword(n, z: qword): qword; stdcall; export;
-
-function BsrDWord_(Const AValue : DWord): cardinal; stdcall export;
-function BsrQWord_(Const AValue : QWord): cardinal; stdcall export;
-
-procedure fpcdynarraysetlength(var p: pointer; pti: pointer; dimcount: sizeint; dims: pdynarrayindex); stdcall; export;
-
 implementation
 
 uses xmm;
 
-
 procedure HandleError(errno: LongInt); external name 'FPC_HANDLEERROR';
 
-{$ifdef DLLEXPORT}
-procedure wait_for_enter; export;
+procedure wait_for_enter;
 var
   c: char;
   d: dword;
@@ -236,10 +212,6 @@ begin
     if c = #13 then break;
   end;
 end;
-{$endif DLLEXPORT}
-{$ifdef DLLIMPORT}
-procedure wait_for_enter; external RTLDLL;
-{$endif DLLIMPORT}
 
 {$undef codeh} {$define codei} {$I objects.inc}
 {$undef codeh} {$define codei} {$I exceptions.inc}
@@ -252,6 +224,8 @@ procedure wait_for_enter; external RTLDLL;
 {$undef codeh} {$define codei} {$I misc.inc}
 {$undef codeh} {$define codei} {$I constarray.inc}
 {$undef codeh} {$define codei} {$I heap.inc}
+{$undef codeh} {$define codei} {$I StrUtils.pas}
+{$undef codeh} {$define codei} {$I Dialogs.pas}
 
 // -- custom function -------------------------------
 
@@ -286,8 +260,7 @@ type
 var
   InitFinalTable: TInitFinalTable; external name 'INITFINAL';
 
-{$ifdef DLLEXPORT}
-procedure fpc_unitinit; export;
+procedure fpc_initializeunits; [public, alias: 'FPC_INITIALIZEUNITS'];
 var
   i: integer;
 begin
@@ -297,36 +270,9 @@ begin
     end;
   end;
 end;
-procedure fpc_initializeunits; [public, alias: 'FPC_INITIALIZEUNITS'];
-begin
-  fpc_unitinit;
-end;
-{$endif DLLEXPORT}
-{$ifdef DLLIMPORT}
-procedure fpc_unitinit; external RTLDLL;
-procedure fpc_initializeunits; [public, alias: 'FPC_INITIALIZEUNITS'];
-begin
-  fpc_unitinit;
-end;
-{$endif DLLIMPORT}
 
 // for internal use
 procedure fpc_initializeunits; [external name 'FPC_INITIALIZEUNITS'];
-
-
-{ define alias for internal use in the system unit }
-Function fpc_Copy_internal (Src, Dest, TypeInfo : Pointer) : SizeInt;[external name 'FPC_COPY'];
-
-Function fpc_Copy (Src, Dest, TypeInfo : Pointer) : SizeInt;[Public,alias : 'FPC_COPY']; compilerproc;
-begin
-  result:=sizeof(pointer);
-end;
-
-procedure fpc_Copy_proc (Src, Dest, TypeInfo : Pointer);compilerproc; inline;
-begin
-  fpc_copy_internal(src,dest,typeinfo);
-end;
-
 
 // internal use only
 procedure fpc_finalizeunits; [public, alias: 'FPC_FINALIZEUNITS'];
@@ -363,27 +309,14 @@ end;
 
 { Parameters are dummy and used to force "ret 16" at the end;
   this removes a TSEHFrame record from the stack }
- {$ifdef DLLEXPORT}
 {$asmmode att}
-procedure _fpc__leave(a1, a2, a3, a4: pointer); stdcall; assembler; nostackframe; export;
+procedure _fpc_leave(a1, a2, a3, a4: pointer); [public, alias: '_FPC_leave']; stdcall; compilerproc; assembler; nostackframe;
 asm
   movl   4(%esp),%eax
   movl   %eax,%fs:(0)
   movl   %ebp,%eax
   call   16(%esp)
 end;
-procedure _fpc_leave(a1, a2, a3, a4: pointer); [public, alias: '_FPC_leave']; stdcall; compilerproc;
-begin
-  _fpc__leave(a1, a2, a3, a4);
-end;
-{$endif DLLEXPORT}
-{$ifdef DLLIMPORT}
-procedure _fpc__leave(a1, a2, a3, a4: pointer); stdcall; external RTLDLL;
-procedure _fpc_leave(a1, a2, a3, a4: pointer); [public, alias: '_FPC_leave']; stdcall; compilerproc;
-begin
-  _fpc__leave(a1, a2, a3, a4);
-end;
-{$endif DLLIMPORT}
 
 procedure fpc_emptymethod; [public, alias : 'FPC_EMPTYMETHOD'];
 begin
@@ -399,17 +332,22 @@ end;
 
 // MOVE THESE!!!!!!!!!!!!
 
-function GetBsr8bit: PByteLookup; stdcall; external rtllib;
 function BsrByte(Const AValue: Byte): Byte;
-var
-  bsr: PByteLookup;
+const bsr8bit: array [Byte] of Byte = (
+  $ff,0,1,1,2,2,2,2,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,
+	5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+	6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
+	6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
+	7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+	7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+	7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+	7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7
+);
 begin
-  bsr := GetBsr8bit;
-  result := bsr^[AValue];
+  result:=bsr8bit[AValue];
 end;
 
-{$ifdef DLLEXPORT}
-function BsrDWord_(Const AValue : DWord): cardinal; stdcall; export;
+function BsrDWord(Const AValue : DWord): cardinal;
 var
   tmp: DWord;
 begin
@@ -419,21 +357,8 @@ begin
   tmp:=tmp shr (result and 8);
   result:=result or BsrByte(byte(tmp));
 end;
-function BsrDWord(Const AValue : DWord): cardinal;
-begin
-  result := BsrDWord_(AValue);
-end;
-{$endif DLLEXPORT}
-{$ifdef DLLIMPORT}
-function BsrDWord_(Const AValue : DWord): cardinal; stdcall external RTLDLL;
-function BsrDWord(Const AValue : DWord): cardinal;
-begin
-  result := BsrDWord_(AValue);
-end;
-{$endif DLLIMPORT}
 
-{$ifdef DLLEXPORT}
-function BsrQWord_(Const AValue : QWord): cardinal; stdcall export;
+function BsrQWord(Const AValue : QWord): cardinal;
 var
   tmp: DWord;
 begin
@@ -446,31 +371,18 @@ begin
     end;
   result:=result or BsrDword(tmp);
 end;
-function BsrQWord(Const AValue : QWord): cardinal;
-begin
-  result := BsrQWord_(AValue);
-end;
-{$endif DLLEXPORT}
-{$ifdef DLLIMPORT}
-function BsrQWord_(Const AValue : QWord): cardinal; stdcall external RTLDLL;
-function BsrQWord(Const AValue : QWord): cardinal;
-begin
-  result := BsrQWord_(AValue);
-end;
-{$endif DLLIMPORT}
 
-{$ifdef DLLEXPORT}
-function fpcdivqword(n, z: qword): qword; stdcall; export;
+function fpc_div_qword(n, z: qword): qword; [public, alias: 'FPC_DIV_QWORD']; compilerproc;
 var
   shift, lzz, lzn: LongInt;
 begin
   { Use the usually faster 32-bit division if possible }
   if (hi(z) = 0) and (hi(n) = 0) then begin
-    fpcdivqword := Dword(z) div Dword(n);
+    fpc_div_qword := Dword(z) div Dword(n);
     exit;
   end;
 
-  fpcdivqword:=0;
+  fpc_div_qword:=0;
   //if n=0 then HandleErrorAddrFrameInd(200,get_pc_addr,get_frame);
   //if z=0 then exit;
   lzz:=BsrQWord(z);
@@ -487,26 +399,13 @@ begin
   if z>=n then
   begin
   z:=z-n;
-  fpcdivqword:=fpcdivqword+(qword(1) shl shift);
+  fpc_div_qword:=fpc_div_qword+(qword(1) shl shift);
   end;
   n:=n shr 1;
   end;
 end;
-function fpc_div_qword(n, z: qword): qword; [public, alias: 'FPC_DIV_QWORD']; compilerproc;
-begin
-  result := fpcdivqword(n, z);
-end;
-{$endif DLLEXPORT}
-{$ifdef DLLIMPORT}
-function fpcdivqword(n, z: qword): qword; stdcall; external RTLDLL;
-function fpc_div_qword(n, z: qword): qword; [public, alias: 'FPC_DIV_QWORD']; compilerproc;
-begin
-  result := fpcdivqword(n, z);
-end;
-{$endif}
 
-{$ifdef DLLEXPORT}
-function fpcdivint64(n, z: int64): int64; stdcall; export;
+function fpc_div_int64(n, z: int64): int64; [public, alias: 'FPC_DIV_INT64']; compilerproc;
 var
   sign: boolean;
   q1, q2: qword;
@@ -535,22 +434,9 @@ begin
   else
     result := q1 div q2;
 end;
-function fpc_div_int64(n, z: int64): int64; [public, alias: 'FPC_DIV_INT64']; compilerproc;
-begin
-  result := fpcdivint64(n, z);
-end;
-{$endif DLLEXPORT}
-{$ifdef DLLIMPORT}
-function fpcdivint64(n, z: int64): int64; stdcall; external RTLDLL;
-function fpc_div_int64(n, z: int64): int64; [public, alias: 'FPC_DIV_INT64']; compilerproc;
-begin
-  result := fpcdivint64(n, z);
-end;
-{$endif}
 
 // called by HandleError
-{$ifdef DLLEXPORT}
-procedure fpchandleerror(errno: longint); stdcall; export;
+procedure fpc_handleerror(errno: longint); compilerproc; [public, alias: 'FPC_HANDLEERROR'];
 const
   errmap: array[200..236] of ansistring = (
     'DivByZero',        'RangeError',      'StackOverflow',     '203',            '204',
@@ -565,18 +451,6 @@ const
 begin
   writeln('fpc_handleerror, errno = ', errno, ', meaning = ', errmap[errno]);
 end;
-procedure fpc_handleerror(errno: longint); compilerproc; [public, alias: 'FPC_HANDLEERROR'];
-begin
-  fpchandleerror(errno);
-end;
-{$endif DLLEXPORT}
-{$ifdef DLLIMPORT}
-procedure fpchandleerror(errno: longint); stdcall; external RTLDLL;
-procedure fpc_handleerror(errno: longint); compilerproc; [public, alias: 'FPC_HANDLEERROR'];
-begin
-  fpchandleerror(errno);
-end;
-{$endif}
 
 // required at rebase to one commit before 5bb121e91cc266a93c300054cd6edfeb85a37da9
 procedure fpc_popaddrstack; [public, alias: 'FPC_POPADDRSTACK']; compilerproc;
@@ -589,7 +463,6 @@ begin
   writeln('fpc_pushexceptaddr');
 end;
 
-{$asmmode att}
 {$ifdef CPU86}
 function fpc_setjmp(var s: jmp_buf): longint; assembler; nostackframe; [public, alias: 'FPC_SETJMP']; compilerproc;
 asm
@@ -645,10 +518,10 @@ asm
   xchgl %edx,%eax
   cmpl  $1,%eax
   adcl  $0,%eax
-    {$ifdef FPC_USE_WIN32_SEH}
-    movl  Jmp_buf.exhead(%edx),%edi
-    movl  %edi,%fs:(0)
-    {$endif FPC_USE_WIN32_SEH}
+  {$ifdef FPC_USE_WIN32_SEH}
+  movl  Jmp_buf.exhead(%edx),%edi
+  movl  %edi,%fs:(0)
+  {$endif FPC_USE_WIN32_SEH}
   movl Jmp_buf.ebx(%edx),%ebx
   movl Jmp_buf.esi(%edx),%esi
   movl Jmp_buf.edi(%edx),%edi
@@ -682,7 +555,7 @@ asm
   fnclex
   fldcw    jmp_buf.fpucw(%rcx)
   jmpq     jmp_buf.rip(%rcx)
-  {$endif CPU86}
+  {$endif}
 end;
 
 procedure HandleErrorAddrFrame(Errno: longint; addr: CodePointer; frame: Pointer); [public, alias: 'FPC_BREAK_ERROR']; {$ifdef CPUI386} register; {$endif}
@@ -708,8 +581,7 @@ end;
 // -- dynamic arrays --------------------------------
 
 // how about change "pti" from pointer to pdynarraytypedata later?
-{$ifdef DLLEXPORT}
-procedure fpcdynarraysetlength(var p: pointer; pti: pointer; dimcount: sizeint; dims: pdynarrayindex); stdcall; export;
+procedure fpc_dynarray_setlength(var p: pointer; pti: pointer; dimcount: sizeint; dims: pdynarrayindex); [public, alias: 'FPC_DYNARR_SETLENGTH']; compilerproc;
 var
   elesize: sizeint;
   eletype, eletypemngd: pointer;
@@ -779,18 +651,6 @@ begin
   newp^.refcount := 1;
   newp^.high := dims[0]-1;
 end;
-procedure fpc_dynarray_setlength(var p: pointer; pti: pointer; dimcount: sizeint; dims: pdynarrayindex); [public, alias: 'FPC_DYNARR_SETLENGTH']; compilerproc;
-begin
-  fpcdynarraysetlength(p, pti, dimcount, dims);
-end;
-{$endif DLLEXPORT}
-{$ifdef DLLIMPORT}
-procedure fpcdynarraysetlength(var p: pointer; pti: pointer; dimcount: sizeint; dims: pdynarrayindex); stdcall; external RTLDLL;
-procedure fpc_dynarray_setlength(var p: pointer; pti: pointer; dimcount: sizeint; dims: pdynarrayindex); [public, alias: 'FPC_DYNARR_SETLENGTH']; compilerproc;
-begin
-  fpcdynarraysetlength(p, pti, dimcount, dims);
-end;
-{$endif DLLIMPORT}
 
 function fpc_dynarray_length(p: pointer): tdynarrayindex; [public, alias: 'FPC_DYNARRAY_LENGTH']; compilerproc;
 begin
@@ -837,41 +697,6 @@ begin
   end;
   p := nil;
 end;
-
-Function fpc_chararray_to_ansistr(const arr: array of char; zerobased: boolean = true): ansistring; compilerproc;
-var
-  i  : SizeInt;
-begin
-  result := '';
-  
-  if (zerobased) then
-  begin
-    i := 0;
-    repeat
-      if (arr[i] = #0) Then
-      begin
-        i := 0;
-        exit;
-      end else
-      begin
-        result := result + arr[i];
-      end;
-      inc(i);
-    until i = Length(arr);
-  end else
-  begin
-    i := 0;
-    repeat
-      result := result + arr[i];
-      inc(i);
-    until i = high(arr)+1;
-  end;
-  if i > 0 then
-  begin
-    Move (arr[0],Pointer(fpc_CharArray_To_AnsiStr)^,i);
-  end;
-end;
-
 
 {$asmmode intel}
 function InterlockedDecrement(var Addend: LongInt): LongInt; assembler;
@@ -981,13 +806,6 @@ end;
 //  decq       (%rcx)
 //  setzb      %al
 //end;
-
-{$ifdef DLLEXPORT}
-exports
-  wait_for_enter name 'wait_for_enter',
-  fpc_unitinit name 'fpc_unitinit'
-  ;
-{$endif DLLEXPORT}
 
 initialization
   install_exception_handlers;

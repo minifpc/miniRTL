@@ -6,10 +6,10 @@ unit Exceptions;
 
 {$mode ObjFPC}{$H+}
 
-interface  
-
-uses Windows;
-
+interface
+uses
+  Windows;
+  
 function translate_windows_error(code: integer): string;
 
 type

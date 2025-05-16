@@ -52,6 +52,7 @@ _FPC_DLL_Entry:
 ; [85] PASCALMAIN;
 %LINE 85+0
 		call	PASCALMAIN
+		jmp	..@j5
 ..@j9:
 ..@j10:
 ..@j6:

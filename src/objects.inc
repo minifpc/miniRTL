@@ -202,6 +202,8 @@ type
   funcs
   **************************************** }
 
+const RTLDLL = 'rtllib.dll';
+
 procedure fpc_intf_assign(var d: pointer; const s: pointer); compilerproc;
 function fpc_class_as_intf(const s: pointer; const iid: TGUID): IInterface; compilerproc;
 function fpc_intf_as_class(const s: pointer; const aclass: TClass): pointer; compilerproc;
