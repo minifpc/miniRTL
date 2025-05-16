@@ -66,8 +66,8 @@ procedure TApplication_Destroy(P: TApplication); stdcall; external 'rtllib.dll';
 
 function TApplication_Create2(p: TApplication; var ArgCount: Integer; var Args: PPChar): TApplication; stdcall; external 'rtllib.dll';
 {$else}
-function TApplication_Create(p: TApplication): TApplication; stdcall;
-procedure TApplication_Destroy(P: TApplication); stdcall;
+function TApplication_Create(p: TApplication): TApplication; stdcall; export;
+procedure TApplication_Destroy(P: TApplication); stdcall; export;
 
 function TApplication_Create2(p: TApplication; var ArgCount: Integer; var Args: PPChar): TApplication; stdcall;
 {$endif}
@@ -75,7 +75,7 @@ function TApplication_Create2(p: TApplication; var ArgCount: Integer; var Args: 
 implementation
 
 {$ifdef DLLEXPORT}
-function TApplication_Create(p: TApplication): TApplication; stdcall; [public, alias: 'TApplication_Create']; export;
+function TApplication_Create(p: TApplication): TApplication; stdcall; [public, alias: 'TApplication_Create'];
 begin
   if p = nil then
   begin
@@ -91,7 +91,7 @@ begin
   p.Free;
 end;
 
-function TApplication_Create2(p: TApplication; var ArgCount: Integer; var Args: PPChar): TApplication; stdcall; [public, alias: 'TApplication_Create2']; export;
+function TApplication_Create2(p: TApplication; var ArgCount: Integer; var Args: PPChar): TApplication; stdcall; [public, alias: 'TApplication_Create2'];
 var
   cmdline   : PAnsiChar;
   ArgsCount : Integer;
@@ -138,7 +138,7 @@ constructor TApplication.Create;
 begin
   writeln('cccccc');
   //inherited Create;
-  TApplication_Create(self);
+  TAPPLICATION_CREATE(self);
 end;
 
 constructor TApplication.Create(var ArgCount: Integer; var Args: PPChar);
@@ -153,5 +153,12 @@ begin
   //inherited Destroy;
 end;
 
-
+{$ifdef DLLEXPORT}
+exports
+  TApplication_Create,
+  TApplication_Create2,
+  TApplication_Destroy
+  ;
+{$endif}
+ 
 end.

@@ -51,12 +51,7 @@ function xreallocmem(var p: pointer; size: ptruint): pointer;
 // clones the memory block at p
 function xclone(const p: pointer): pointer;
 // returns size of memory block at p
-{$ifdef DLLEXPORT}
-function xmemsize(const p: pointer): ptruint; export;
-{$endif}
-{$ifdef DLLIMPORT}
-function xmemsize(const p: pointer): ptruint; external RTLDLL;
-{$endif}
+function xmemsize(const p: pointer): ptruint;
 // returns the actual allocated size of the memory block, including header and OS alignment
 function xmemrealsize(const p: pointer): ptruint;
 // returns the actual usable memory size, excluding metadata; the raw allocation size, not guaranteed for safe use by this pointer (but possible)
@@ -207,7 +202,7 @@ begin
   xfillmem(result, size, 0);
 end;
 
-function xreallocmem(var p: pointer; size: ptruint): pointer; inline;
+function xreallocmem(var p: pointer; size: ptruint): pointer;
 var
   h: pxmemheader;
   n: ptruint;
@@ -281,7 +276,6 @@ begin
   xmovemem(p, result, u);
 end;
 
-{$ifdef DLLEXPORT}
 function xmemsize(const p: pointer): ptruint; export;
 begin
   {$ifdef XMMDEBUG}
@@ -289,7 +283,6 @@ begin
   {$endif}
   result := pxmemheader(p-sizeof(txmemheader))^.size;
 end;
-{$endif DLLEXPORT}
 
 function xmemrealsize(const p: pointer): ptruint;
 begin
@@ -437,7 +430,6 @@ end;
 
 {$ifdef DLLEXPORT}
 exports
-  xmemsize,
   xfreemem
   ;
 {$endif DLLEXPORT}

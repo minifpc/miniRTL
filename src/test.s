@@ -1,222 +1,132 @@
-BITS 64
-default rel
-CPU x64
+	.file "test.pas"
+# Begin asmlist al_procedures
 
-EXTERN	VMT_$QAPPLICATIONPASCAL_$$_TAPPLICATION
-EXTERN	QAPPLICATIONPASCAL$_$TAPPLICATION_$__$$_CREATE$$TAPPLICATION
-EXTERN	DIALOGS_$$_SHOWMESSAGE$PCHAR
-EXTERN	SYSTEM$_$TOBJECT_$__$$_FREE
-EXTERN	fpc_initializeunits
-EXTERN	fpc_do_exit
-EXTERN	QAPPLICATIONPASCAL_$$_TAPPLICATION_DESTROY$TAPPLICATION$$TAPPLICATION
-EXTERN	QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE$TAPPLICATION$$TAPPLICATION
-EXTERN	STRUTILS_$$_STRINGREPLACE$ANSISTRING$ANSISTRING$ANSISTRING$TREPLACEFLAGS$$ANSISTRING
-EXTERN	SYSUTILS_$$_STRDISPOSE$PCHAR
-EXTERN	SYSUTILS_$$_STRCAT_$PCHAR$PCHAR$$PCHAR
-EXTERN	SYSUTILS_$$_STRCAT$PCHAR$PCHAR$$PCHAR
-EXTERN	SYSUTILS_$$_STRCOPY$PCHAR$PCHAR$$PCHAR
-EXTERN	SYSUTILS_$$_STRALLOC$CARDINAL$$PCHAR
-EXTERN	SYSUTILS_$$_UINTTOSTR$QWORD$$ANSISTRING
-EXTERN	SYSUTILS_$$_CHATASTR3$PANSICHAR$LONGINT$$ANSISTRING
-EXTERN	SYSUTILS_$$_CHATASTR2$array_of_CHAR$LONGINT$$ANSISTRING
-EXTERN	SYSUTILS_$$_CHATASTR1$array_of_CHAR$$ANSISTRING
-EXTERN	SYSUTILS_$$_COMMANDLINETOARGVA$PANSICHAR$LONGINT$$PPANSICHAR
-EXTERN	SYSTEM_$$_ISGUIDEQUAL$TGUID$TGUID$$BOOLEAN
-EXTERN	SYSTEM_$$_FPCINTFDECRREF$POINTER
-EXTERN	SYSTEM_$$_INITINTERFACEPOINTERS$TCLASS$POINTER
-EXTERN	XMM_$$_XFREEMEM$POINTER$$QWORD
-EXTERN	XMM_$$_XMEMSIZE$POINTER$$QWORD
-EXTERN	INIT$_$XMM
-EXTERN	INIT$_$SYSTEM
-; Begin asmlist al_procedures
-
-SECTION .text
-P$TEST_$$_fin$00000003:
-..@c1:
-; [test.pas]
-; [26] end;
-		push	rbp
-..@c3:
-..@c4:
-		mov	rbp,rcx
-..@c5:
-		lea	rsp,[rsp-32]
-; [25] app.Free;
-		mov	rcx,qword [U_$P$TEST_$$_APP]
-		call	SYSTEM$_$TOBJECT_$__$$_FREE
-		nop
-		lea	rsp,[rsp+32]
-		pop	rbp
-		ret
-..@c2:
-
-SECTION .text
-	GLOBAL PASCALMAIN
+.section .text.n_main,"x"
+	.balign 16,0x90
+.globl	PASCALMAIN
 PASCALMAIN:
-	GLOBAL main
+.globl	main
 main:
-..@c6:
-; [20] begin
-		push	rbp
-..@c8:
-..@c9:
-		mov	rbp,rsp
-..@c10:
-		lea	rsp,[rsp-32]
-		call	fpc_initializeunits
-; [21] app := TApplication.Create;
-		mov	eax,1
-		lea	rcx,[VMT_$QAPPLICATIONPASCAL_$$_TAPPLICATION]
-		mov	rdx,rax
-		call	QAPPLICATIONPASCAL$_$TAPPLICATION_$__$$_CREATE$$TAPPLICATION
-		mov	qword [U_$P$TEST_$$_APP],rax
-..@j9:
-; [22] try
-		nop
-..@j5:
-; [23] ShowMessage('sError');
-		lea	rcx,[_$TEST$_Ld1]
-		call	DIALOGS_$$_SHOWMESSAGE$PCHAR
-..@j7:
-		nop
-..@j6:
-		mov	rcx,rbp
-		call	P$TEST_$$_fin$00000003
-; [27] end.
-		call	fpc_do_exit
-		nop
-		lea	rsp,[rbp]
-		pop	rbp
-		ret
-	DD	1,0
+.Lc1:
+.seh_proc main
+# [test.pas]
+# [10] begin
+	pushq	%rbx
+.seh_pushreg %rbx
+	leaq	-32(%rsp),%rsp
+.Lc3:
+.seh_stackalloc 32
+.seh_endprologue
+	call	fpc_initializeunits
+# [11] writeln('start');
+	call	fpc_get_output
+	movq	%rax,%rbx
+	leaq	_$TEST$_Ld1(%rip),%r8
+	movq	%rbx,%rdx
+	xorl	%ecx,%ecx
+	call	fpc_write_text_shortstr
+	movq	%rbx,%rcx
+	call	fpc_writeln_end
+# [12] end.
+	call	fpc_do_exit
+	nop
+	leaq	32(%rsp),%rsp
+	popq	%rbx
+	ret
+.seh_endproc
+.Lc2:
+# End asmlist al_procedures
+# Begin asmlist al_globals
 
-SECTION .text
-..@c7:
-; End asmlist al_procedures
-; Begin asmlist al_globals
+.section .data.n_INITFINAL,"d"
+	.balign 8
+.globl	INITFINAL
+INITFINAL:
+	.quad	2,0
+	.quad	INIT$_$XMM
+	.quad	0
+	.quad	INIT$_$SYSTEM
+	.quad	0
 
-SECTION .bss
-	ALIGNB 8
-; [19] app: TApplication;
-U_$P$TEST_$$_APP:	RESB	8
+.section .data.n_FPC_THREADVARTABLES,"d"
+	.balign 8
+.globl	FPC_THREADVARTABLES
+FPC_THREADVARTABLES:
+	.long	0
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL INITFINAL
-INITFINAL	DQ	2,0,INIT$_$XMM,0,INIT$_$SYSTEM,0
+.section .rodata.n_FPC_RESOURCESTRINGTABLES,"d"
+	.balign 8
+.globl	FPC_RESOURCESTRINGTABLES
+FPC_RESOURCESTRINGTABLES:
+	.quad	0
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL FPC_THREADVARTABLES
-FPC_THREADVARTABLES	DD	0
+.section .data.n_FPC_WIDEINITTABLES,"d"
+	.balign 8
+.globl	FPC_WIDEINITTABLES
+FPC_WIDEINITTABLES:
+	.quad	0
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL FPC_RESOURCESTRINGTABLES
-FPC_RESOURCESTRINGTABLES	DQ	0
+.section .data.n_FPC_RESSTRINITTABLES,"d"
+	.balign 8
+.globl	FPC_RESSTRINITTABLES
+FPC_RESSTRINITTABLES:
+	.quad	0
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL FPC_WIDEINITTABLES
-FPC_WIDEINITTABLES	DQ	0
+.section .fpc.n_version
+	.balign 16
+__fpc_ident:
+	.ascii	"FPC 3.2.2-r0d122c49 [2024/11/15] for x86_64 - Win64"
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL FPC_RESSTRINITTABLES
-FPC_RESSTRINITTABLES	DQ	0
+.section .data.n___heapsize,"d"
+	.balign 8
+.globl	__heapsize
+__heapsize:
+	.quad	0
 
-SECTION .fpc
-__fpc_ident		DB	"FPC 3.2.2-r0d122c49 [2024/11/15] for x86_64 - Win64"
+.section .data.n___fpc_valgrind,"d"
+	.balign 8
+.globl	__fpc_valgrind
+__fpc_valgrind:
+	.byte	0
+# End asmlist al_globals
+# Begin asmlist al_typedconsts
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL __heapsize
-__heapsize	DQ	0
-
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL __fpc_valgrind
-__fpc_valgrind	DB	0
-; End asmlist al_globals
-; Begin asmlist al_typedconsts
-
-SECTION .rodata
+.section .rodata.n__$TEST$_Ld1,"d"
+	.balign 8
+.globl	_$TEST$_Ld1
 _$TEST$_Ld1:
-		DB	"sError",0
-; End asmlist al_typedconsts
-; Begin asmlist al_exports
+	.ascii	"\005start\000"
+# End asmlist al_typedconsts
+# Begin asmlist al_dwarf_frame
 
-SECTION .edata
-	GLOBAL EDATA_$P$TEST
-EDATA_$P$TEST	DD	0,0
-	DW	0,0
-	DD	1,19,19
-..@j10:
-		DB	"TEST.dll",0
-	ALIGN 4,DB 0
-..@j11:
-	ALIGN 4,DB 0
-..@j12:
-	ALIGN 4,DB 0
-..@j13:
-	DW	11,10,9,12,16,14,13,7,5,4,6,3,2,1,0,8,15,17,18
-	ALIGN 4,DB 0
-	ALIGN 2,DB 0
-..@j14:
-		DB	"ChATAStr1",0
-	ALIGN 2,DB 0
-..@j15:
-		DB	"ChATAStr2",0
-	ALIGN 2,DB 0
-..@j16:
-		DB	"ChATAStr3",0
-	ALIGN 2,DB 0
-..@j17:
-		DB	"CommandLineToArgvA",0
-	ALIGN 2,DB 0
-..@j18:
-		DB	"InitInterfacePointers",0
-	ALIGN 2,DB 0
-..@j19:
-		DB	"IsGUIDEqual",0
-	ALIGN 2,DB 0
-..@j20:
-		DB	"ShowMessage",0
-	ALIGN 2,DB 0
-..@j21:
-		DB	"StrAlloc",0
-	ALIGN 2,DB 0
-..@j22:
-		DB	"StrCat",0
-	ALIGN 2,DB 0
-..@j23:
-		DB	"StrCat_",0
-	ALIGN 2,DB 0
-..@j24:
-		DB	"StrCopy",0
-	ALIGN 2,DB 0
-..@j25:
-		DB	"StrDispose",0
-	ALIGN 2,DB 0
-..@j26:
-		DB	"StringReplace",0
-	ALIGN 2,DB 0
-..@j27:
-		DB	"TApplication_Create",0
-	ALIGN 2,DB 0
-..@j28:
-		DB	"TApplication_Destroy",0
-	ALIGN 2,DB 0
-..@j29:
-		DB	"UIntToStr",0
-	ALIGN 2,DB 0
-..@j30:
-		DB	"fpcintfdecrref",0
-	ALIGN 2,DB 0
-..@j31:
-		DB	"xfreemem",0
-	ALIGN 2,DB 0
-..@j32:
-		DB	"xmemsize",0
-; End asmlist al_exports
+.section .debug_frame
+.Lc4:
+	.long	.Lc6-.Lc5
+.Lc5:
+	.long	-1
+	.byte	1
+	.byte	0
+	.uleb128	1
+	.sleb128	-4
+	.byte	16
+	.byte	12
+	.uleb128	7
+	.uleb128	8
+	.byte	5
+	.uleb128	16
+	.uleb128	2
+	.balign 4,0
+.Lc6:
+	.long	.Lc8-.Lc7
+.Lc7:
+	.secrel32	.Lc4
+	.quad	.Lc1
+	.quad	.Lc2-.Lc1
+	.byte	4
+	.long	.Lc3-.Lc1
+	.byte	14
+	.uleb128	40
+	.balign 4,0
+.Lc8:
+# End asmlist al_dwarf_frame
 

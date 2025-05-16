@@ -1,38 +1,35 @@
-// ---------------------------------------------------------------------------------------
-// Copyright(c) 2025 Jens Kallup
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy of this
-// software and associated documentation files(the "Software"), to deal in the Software
-// without restriction, including without limitation the rights to use, copy, modify,
-// merge, publish, distribute, sublicense, and /or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to the following
-// conditions :
-// 
-// The above copyright notice and this permission notice shall be included in all copies
-// or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-// INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-// PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
-// CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
-// OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-// ---------------------------------------------------------------------------------------
 
 //function  Lo(B: Byte):Byte;{$ifdef SYSTEMINLINE}inline;{$endif}
 //function  Hi(b : Byte) : Byte;{$ifdef SYSTEMINLINE}inline;{$endif}
-function  Lo(i : Integer) : byte;  [INTERNPROC: fpc_in_lo_Word];
-function  Lo(w : Word) : byte;     [INTERNPROC: fpc_in_lo_Word];
+//function  Lo(i : Integer) : byte;  [INTERNPROC: fpc_in_lo_Word] overload;
+//function  Lo(w : Word) : byte;     [INTERNPROC: fpc_in_lo_Word] overload;
 //function  Lo(l : Longint) : Word;  [INTERNPROC: fpc_in_lo_long];
-function  Lo(l : DWord) : Word;    [INTERNPROC: fpc_in_lo_long];
-function  Lo(i : Int64) : DWord;   [INTERNPROC: fpc_in_lo_qword];
-function  Lo(q : QWord) : DWord;   [INTERNPROC: fpc_in_lo_qword];
-function  Hi(i : Integer) : byte;  [INTERNPROC: fpc_in_hi_Word];
-function  Hi(w : Word) : byte;     [INTERNPROC: fpc_in_hi_Word];
+//function  Lo(l : DWord) : Word;    [INTERNPROC: fpc_in_lo_long] overload;
+//function  Lo(i : Int64) : DWord;   [INTERNPROC: fpc_in_lo_qword] overload;
+//function  Lo(q : QWord) : DWord;   [INTERNPROC: fpc_in_lo_qword] overload;
+//function  Hi(i : Integer) : byte;  [INTERNPROC: fpc_in_hi_Word] overload;
+//function  Hi(w : Word) : byte;     [INTERNPROC: fpc_in_hi_Word] overload;
 //function  Hi(l : Longint) : Word;  [INTERNPROC: fpc_in_hi_long];
-function  Hi(l : DWord) : Word;    [INTERNPROC: fpc_in_hi_long];
-function  Hi(i : Int64) : DWord;   [INTERNPROC: fpc_in_hi_qword];
-function  Hi(q : QWord) : DWord;   [INTERNPROC: fpc_in_hi_qword];
+//function  Hi(l : DWord) : Word;    [INTERNPROC: fpc_in_hi_long] overload;
+//function  Hi(i : Int64) : DWord;   [INTERNPROC: fpc_in_hi_qword] overload;
+//function  Hi(q : QWord) : DWord;   [INTERNPROC: fpc_in_hi_qword] overload;
+
+
+function Lo(i: Integer): Byte ; overload;
+function Lo(w: Word   ): Byte ; overload;
+function Lo(l: Longint): Word ; overload;
+function Lo(l: DWord  ): Word ; overload;
+
+function Lo(i: Int64  ): DWord; overload;
+function Lo(q: QWord  ): DWord; overload;
+
+function Hi(i: Integer): Byte ; overload;
+function Hi(w: Word   ): Byte ; overload;
+
+function Hi(l: DWord  ): Word ; overload;
+function Hi(i: Int64  ): DWord; overload;
+function Hi(q: QWord  ): DWord; overload;
+
 
 //function BsfByte(const avalue: byte): byte;{$ifdef SYSTEMINLINE}inline;{$endif}
 function BsrByte(const avalue: byte): byte;{$ifdef SYSTEMINLINE}inline;{$endif}

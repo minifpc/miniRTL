@@ -1,703 +1,762 @@
-BITS 64
-default rel
-CPU x64
+	.file "RTLUnit.pas"
+# Begin asmlist al_procedures
 
-EXTERN	SYSTEM$_$TOBJECT_$__$$_CREATE$$TOBJECT
-EXTERN	fpc_reraise
-EXTERN	FPC_DONEEXCEPTION
-EXTERN	SYSTEM$_$TOBJECT_$__$$_DESTROY
-EXTERN	fpc_get_output
-EXTERN	fpc_write_text_shortstr
-EXTERN	fpc_writeln_end
-EXTERN	SYSTEM$_$TOBJECT_$__$$_FREE
-EXTERN	VMT_$SYSTEM_$$_TOBJECT$indirect
-EXTERN	SYSTEM$_$TOBJECT_$__$$_NEWINSTANCE$$TOBJECT
-EXTERN	SYSTEM$_$TOBJECT_$__$$_FREEINSTANCE
-EXTERN	SYSTEM$_$TOBJECT_$__$$_SAFECALLEXCEPTION$TOBJECT$POINTER$$HRESULT
-EXTERN	FPC_EMPTYMETHOD
-EXTERN	RTTI_$SYSTEM_$$_BYTE$indirect
-EXTERN	RTTI_$SYSTEM_$$_TOBJECT$indirect
-EXTERN	RTTI_$SYSTEM_$$_BOOLEAN$indirect
-EXTERN	RTTI_$SYSTEM_$$_CHAR$indirect
-EXTERN	RTTI_$SYSTEM_$$_WORD$indirect
-EXTERN	RTTI_$SYSTEM_$$_LONGWORD$indirect
-EXTERN	RTTI_$SYSTEM_$$_LONGINT$indirect
-EXTERN	RTTI_$SYSTEM_$$_ANSISTRING$indirect
-; Begin asmlist al_procedures
-
-SECTION .text
-	GLOBAL RTLUNIT_$$_GETBSR8BIT$$PBYTELOOKUP
+.section .text.n_rtlunit_$$_getbsr8bit$$pbytelookup,"x"
+.globl	RTLUNIT_$$_GETBSR8BIT$$PBYTELOOKUP
 RTLUNIT_$$_GETBSR8BIT$$PBYTELOOKUP:
-..@c1:
-; Var $result located in register rax
-; [RTLUnit.pas]
-; [63] begin
-%LINE 63+0 RTLUnit.pas
-; [64] result := @bsr8bit;
-%LINE 64+0
-		lea	rax,[TC_$RTLUNIT_$$_BSR8BIT]
-; Var $result located in register rax
-; [65] end;
-%LINE 65+0
-		ret
-..@c2:
+.Lc1:
+# Var $result located in register rax
+# [RTLUnit.pas]
+# [63] begin
+# [64] result := @bsr8bit;
+	leaq	TC_$RTLUNIT_$$_BSR8BIT(%rip),%rax
+# Var $result located in register rax
+# [65] end;
+	ret
+.Lc2:
 
-SECTION .text
-	GLOBAL RTLUNIT$_$TWIDGETSET_$__$$_CREATE$$TWIDGETSET
+.section .text.n_rtlunit$_$twidgetset_$__$$_create$$twidgetset,"x"
+.globl	RTLUNIT$_$TWIDGETSET_$__$$_CREATE$$TWIDGETSET
 RTLUNIT$_$TWIDGETSET_$__$$_CREATE$$TWIDGETSET:
-..@c3:
-; [81] begin
-%LINE 81+0
-		push	rbp
-..@c5:
-..@c6:
-		mov	rbp,rsp
-..@c7:
-		lea	rsp,[rsp-64]
-; Var $vmt located at rbp-8, size=OS_64
-; Var $self located at rbp-16, size=OS_64
-; Var $vmt_afterconstruction_local located at rbp-24, size=OS_S64
-		mov	qword [rbp-16],rcx
-		mov	qword [rbp-8],rdx
-		cmp	rdx,1
-		jne	..@j8
-		mov	rax,qword [rbp-16]
-		mov	rdx,qword [rbp-16]
-		mov	rcx,rax
-		call	[rdx+104]
-		mov	qword [rbp-16],rax
-..@j8:
-		cmp	qword [rbp-16],0
-		je	..@j5
-..@j16:
-		nop
-..@j15:
-		mov	qword [rbp-24],-1
-; [82] inherited Create;
-%LINE 82+0
-		mov	rcx,qword [rbp-16]
-		xor	edx,edx
-		call	SYSTEM$_$TOBJECT_$__$$_CREATE$$TOBJECT
-; [83] end;
-%LINE 83+0
-		mov	qword [rbp-24],1
-		cmp	qword [rbp-16],0
-		je	..@j13
-		cmp	qword [rbp-8],0
-		je	..@j13
-		mov	rcx,qword [rbp-16]
-		mov	rax,qword [rbp-16]
-		mov	rax,qword [rax]
-		call	[rax+128]
-%LINE 81+0
-		jmp	..@j13
-..@j12:
-%LINE 83+0
-		cmp	qword [rbp-8],0
-		je	..@j22
-		mov	rdx,qword [rbp-24]
-		mov	rcx,qword [rbp-16]
-		mov	rax,qword [rbp-16]
-		mov	rax,qword [rax]
-		call	[rax+96]
-..@j22:
-		call	fpc_reraise
-%LINE 81+0
-		call	FPC_DONEEXCEPTION
-..@j23:
-		nop
-..@j13:
-..@j5:
-%LINE 83+0
-		mov	rax,qword [rbp-16]
-		nop
-		lea	rsp,[rbp]
-		pop	rbp
-		ret
-	DD	1,1
+.Lc3:
+.seh_proc RTLUNIT$_$TWIDGETSET_$__$$_CREATE$$TWIDGETSET
+# [81] begin
+	pushq	%rbp
+.seh_pushreg %rbp
+.Lc5:
+.Lc6:
+	movq	%rsp,%rbp
+.Lc7:
+	leaq	-64(%rsp),%rsp
+.seh_stackalloc 64
+.seh_endprologue
+# Var $vmt located at rbp-8, size=OS_64
+# Var $self located at rbp-16, size=OS_64
+# Var $vmt_afterconstruction_local located at rbp-24, size=OS_S64
+	movq	%rcx,-16(%rbp)
+	movq	%rdx,-8(%rbp)
+	cmpq	$1,%rdx
+	jne	.Lj8
+	movq	-16(%rbp),%rax
+	movq	-16(%rbp),%rdx
+	movq	%rax,%rcx
+	call	*104(%rdx)
+	movq	%rax,-16(%rbp)
+.Lj8:
+	cmpq	$0,-16(%rbp)
+	je	.Lj5
+.Lj16:
+	nop
+.Lj15:
+	movq	$-1,-24(%rbp)
+# [82] inherited Create;
+	movq	-16(%rbp),%rcx
+	xorl	%edx,%edx
+	call	SYSTEM$_$TOBJECT_$__$$_CREATE$$TOBJECT
+# [83] end;
+	movq	$1,-24(%rbp)
+	cmpq	$0,-16(%rbp)
+	je	.Lj13
+	cmpq	$0,-8(%rbp)
+	je	.Lj13
+	movq	-16(%rbp),%rcx
+	movq	-16(%rbp),%rax
+	movq	(%rax),%rax
+	call	*128(%rax)
+	jmp	.Lj13
+.Lj12:
+	cmpq	$0,-8(%rbp)
+	je	.Lj22
+	movq	-24(%rbp),%rdx
+	movq	-16(%rbp),%rcx
+	movq	-16(%rbp),%rax
+	movq	(%rax),%rax
+	call	*96(%rax)
+.Lj22:
+	call	fpc_reraise
+	call	FPC_DONEEXCEPTION
+.Lj23:
+	nop
+.Lj13:
+.Lj5:
+	movq	-16(%rbp),%rax
+	nop
+	leaq	(%rbp),%rsp
+	popq	%rbp
+	ret
+.seh_handler __FPC_specific_handler,@except,@unwind
+.seh_handlerdata
+	.long	1
+	.long	1
+	.rva	.Lj15
+	.rva	.Lj12
+	.rva	.Lj13
 
-SECTION .text
-..@c4:
+.section .text.n_rtlunit$_$twidgetset_$__$$_create$$twidgetset,"x"
+.seh_endproc
+.Lc4:
 
-SECTION .text
-	GLOBAL RTLUNIT$_$TWIDGETSET_$__$$_DESTROY
+.section .text.n_rtlunit$_$twidgetset_$__$$_destroy,"x"
+.globl	RTLUNIT$_$TWIDGETSET_$__$$_DESTROY
 RTLUNIT$_$TWIDGETSET_$__$$_DESTROY:
-..@c8:
-; [86] begin
-%LINE 86+0
-		push	rbx
-		push	rsi
-		lea	rsp,[rsp-40]
-..@c10:
-		mov	rbx,rcx
-; Var $self located in register rbx
-		mov	rsi,rdx
-; Var $vmt located in register rsi
-		test	rsi,rsi
-		jng	..@j27
-		mov	rcx,rbx
-		mov	rax,qword [rbx]
-		call	[rax+136]
-..@j27:
-; Var $self located in register rbx
-; [87] inherited Destroy;
-%LINE 87+0
-		mov	rcx,rbx
-		xor	edx,edx
-		call	SYSTEM$_$TOBJECT_$__$$_DESTROY
-; [88] end;
-%LINE 88+0
-		test	rbx,rbx
-		je	..@j29
-		test	rsi,rsi
-		je	..@j29
-		mov	rcx,rbx
-		mov	rax,qword [rbx]
-		call	[rax+112]
-..@j29:
-		nop
-		lea	rsp,[rsp+40]
-		pop	rsi
-		pop	rbx
-		ret
-..@c9:
+.Lc8:
+.seh_proc RTLUNIT$_$TWIDGETSET_$__$$_DESTROY
+# [86] begin
+	pushq	%rbx
+.seh_pushreg %rbx
+	pushq	%rsi
+.seh_pushreg %rsi
+	leaq	-40(%rsp),%rsp
+.Lc10:
+.seh_stackalloc 40
+.seh_endprologue
+	movq	%rcx,%rbx
+# Var $self located in register rbx
+	movq	%rdx,%rsi
+# Var $vmt located in register rsi
+	testq	%rsi,%rsi
+	jng	.Lj27
+	movq	%rbx,%rcx
+	movq	(%rbx),%rax
+	call	*136(%rax)
+.Lj27:
+# Var $self located in register rbx
+# [87] inherited Destroy;
+	movq	%rbx,%rcx
+	xorl	%edx,%edx
+	call	SYSTEM$_$TOBJECT_$__$$_DESTROY
+# [88] end;
+	testq	%rbx,%rbx
+	je	.Lj29
+	testq	%rsi,%rsi
+	je	.Lj29
+	movq	%rbx,%rcx
+	movq	(%rbx),%rax
+	call	*112(%rax)
+.Lj29:
+	nop
+	leaq	40(%rsp),%rsp
+	popq	%rsi
+	popq	%rbx
+	ret
+.seh_endproc
+.Lc9:
 
-SECTION .text
-	GLOBAL RTLUNIT$_$TRTL_$__$$_CREATE$$TRTL
+.section .text.n_rtlunit$_$trtl_$__$$_create$$trtl,"x"
+.globl	RTLUNIT$_$TRTL_$__$$_CREATE$$TRTL
 RTLUNIT$_$TRTL_$__$$_CREATE$$TRTL:
-..@c11:
-; [91] begin
-%LINE 91+0
-		push	rbp
-..@c13:
-..@c14:
-		mov	rbp,rsp
-..@c15:
-		lea	rsp,[rsp-64]
-; Var $vmt located at rbp-8, size=OS_64
-; Var $self located at rbp-16, size=OS_64
-; Var $vmt_afterconstruction_local located at rbp-24, size=OS_S64
-		mov	qword [rbp-16],rcx
-		mov	qword [rbp-8],rdx
-		cmp	rdx,1
-		jne	..@j34
-		mov	rax,qword [rbp-16]
-		mov	rdx,qword [rbp-16]
-		mov	rcx,rax
-		call	[rdx+104]
-		mov	qword [rbp-16],rax
-..@j34:
-		cmp	qword [rbp-16],0
-		je	..@j31
-..@j42:
-		nop
-..@j41:
-		mov	qword [rbp-24],-1
-; [92] inherited Create;
-%LINE 92+0
-		mov	rcx,qword [rbp-16]
-		xor	edx,edx
-		call	SYSTEM$_$TOBJECT_$__$$_CREATE$$TOBJECT
-; [93] end;
-%LINE 93+0
-		mov	qword [rbp-24],1
-		cmp	qword [rbp-16],0
-		je	..@j39
-		cmp	qword [rbp-8],0
-		je	..@j39
-		mov	rcx,qword [rbp-16]
-		mov	rax,qword [rbp-16]
-		mov	rax,qword [rax]
-		call	[rax+128]
-%LINE 91+0
-		jmp	..@j39
-..@j38:
-%LINE 93+0
-		cmp	qword [rbp-8],0
-		je	..@j48
-		mov	rdx,qword [rbp-24]
-		mov	rcx,qword [rbp-16]
-		mov	rax,qword [rbp-16]
-		mov	rax,qword [rax]
-		call	[rax+96]
-..@j48:
-		call	fpc_reraise
-%LINE 91+0
-		call	FPC_DONEEXCEPTION
-..@j49:
-		nop
-..@j39:
-..@j31:
-%LINE 93+0
-		mov	rax,qword [rbp-16]
-		nop
-		lea	rsp,[rbp]
-		pop	rbp
-		ret
-	DD	1,1
+.Lc11:
+.seh_proc RTLUNIT$_$TRTL_$__$$_CREATE$$TRTL
+# [91] begin
+	pushq	%rbp
+.seh_pushreg %rbp
+.Lc13:
+.Lc14:
+	movq	%rsp,%rbp
+.Lc15:
+	leaq	-64(%rsp),%rsp
+.seh_stackalloc 64
+.seh_endprologue
+# Var $vmt located at rbp-8, size=OS_64
+# Var $self located at rbp-16, size=OS_64
+# Var $vmt_afterconstruction_local located at rbp-24, size=OS_S64
+	movq	%rcx,-16(%rbp)
+	movq	%rdx,-8(%rbp)
+	cmpq	$1,%rdx
+	jne	.Lj34
+	movq	-16(%rbp),%rax
+	movq	-16(%rbp),%rdx
+	movq	%rax,%rcx
+	call	*104(%rdx)
+	movq	%rax,-16(%rbp)
+.Lj34:
+	cmpq	$0,-16(%rbp)
+	je	.Lj31
+.Lj42:
+	nop
+.Lj41:
+	movq	$-1,-24(%rbp)
+# [92] inherited Create;
+	movq	-16(%rbp),%rcx
+	xorl	%edx,%edx
+	call	SYSTEM$_$TOBJECT_$__$$_CREATE$$TOBJECT
+# [93] end;
+	movq	$1,-24(%rbp)
+	cmpq	$0,-16(%rbp)
+	je	.Lj39
+	cmpq	$0,-8(%rbp)
+	je	.Lj39
+	movq	-16(%rbp),%rcx
+	movq	-16(%rbp),%rax
+	movq	(%rax),%rax
+	call	*128(%rax)
+	jmp	.Lj39
+.Lj38:
+	cmpq	$0,-8(%rbp)
+	je	.Lj48
+	movq	-24(%rbp),%rdx
+	movq	-16(%rbp),%rcx
+	movq	-16(%rbp),%rax
+	movq	(%rax),%rax
+	call	*96(%rax)
+.Lj48:
+	call	fpc_reraise
+	call	FPC_DONEEXCEPTION
+.Lj49:
+	nop
+.Lj39:
+.Lj31:
+	movq	-16(%rbp),%rax
+	nop
+	leaq	(%rbp),%rsp
+	popq	%rbp
+	ret
+.seh_handler __FPC_specific_handler,@except,@unwind
+.seh_handlerdata
+	.long	1
+	.long	1
+	.rva	.Lj41
+	.rva	.Lj38
+	.rva	.Lj39
 
-SECTION .text
-..@c12:
+.section .text.n_rtlunit$_$trtl_$__$$_create$$trtl,"x"
+.seh_endproc
+.Lc12:
 
-SECTION .text
-	GLOBAL RTLUNIT$_$TRTL_$__$$_DESTROY
+.section .text.n_rtlunit$_$trtl_$__$$_destroy,"x"
+.globl	RTLUNIT$_$TRTL_$__$$_DESTROY
 RTLUNIT$_$TRTL_$__$$_DESTROY:
-..@c16:
-; [96] begin
-%LINE 96+0
-		push	rbx
-		push	rsi
-		lea	rsp,[rsp-40]
-..@c18:
-		mov	rbx,rcx
-; Var $self located in register rbx
-		mov	rsi,rdx
-; Var $vmt located in register rsi
-		test	rsi,rsi
-		jng	..@j53
-		mov	rcx,rbx
-		mov	rax,qword [rbx]
-		call	[rax+136]
-..@j53:
-; Var $self located in register rbx
-; [97] inherited Destroy;
-%LINE 97+0
-		mov	rcx,rbx
-		xor	edx,edx
-		call	SYSTEM$_$TOBJECT_$__$$_DESTROY
-; [98] end;
-%LINE 98+0
-		test	rbx,rbx
-		je	..@j55
-		test	rsi,rsi
-		je	..@j55
-		mov	rcx,rbx
-		mov	rax,qword [rbx]
-		call	[rax+112]
-..@j55:
-		nop
-		lea	rsp,[rsp+40]
-		pop	rsi
-		pop	rbx
-		ret
-..@c17:
+.Lc16:
+.seh_proc RTLUNIT$_$TRTL_$__$$_DESTROY
+# [96] begin
+	pushq	%rbx
+.seh_pushreg %rbx
+	pushq	%rsi
+.seh_pushreg %rsi
+	leaq	-40(%rsp),%rsp
+.Lc18:
+.seh_stackalloc 40
+.seh_endprologue
+	movq	%rcx,%rbx
+# Var $self located in register rbx
+	movq	%rdx,%rsi
+# Var $vmt located in register rsi
+	testq	%rsi,%rsi
+	jng	.Lj53
+	movq	%rbx,%rcx
+	movq	(%rbx),%rax
+	call	*136(%rax)
+.Lj53:
+# Var $self located in register rbx
+# [97] inherited Destroy;
+	movq	%rbx,%rcx
+	xorl	%edx,%edx
+	call	SYSTEM$_$TOBJECT_$__$$_DESTROY
+# [98] end;
+	testq	%rbx,%rbx
+	je	.Lj55
+	testq	%rsi,%rsi
+	je	.Lj55
+	movq	%rbx,%rcx
+	movq	(%rbx),%rax
+	call	*112(%rax)
+.Lj55:
+	nop
+	leaq	40(%rsp),%rsp
+	popq	%rsi
+	popq	%rbx
+	ret
+.seh_endproc
+.Lc17:
 
-SECTION .text
-	GLOBAL RTLUNIT_$$_TRTL_CREATE$$TRTL
+.section .text.n_rtlunit_$$_trtl_create$$trtl,"x"
+.globl	RTLUNIT_$$_TRTL_CREATE$$TRTL
 RTLUNIT_$$_TRTL_CREATE$$TRTL:
-..@c19:
-; [101] begin
-%LINE 101+0
-		push	rbx
-		lea	rsp,[rsp-32]
-..@c21:
-; Var $result located in register rax
-; [102] WriteLn('xxxx');
-%LINE 102+0
-		call	fpc_get_output
-		mov	rbx,rax
-		lea	r8,[_$RTLUNIT$_Ld1]
-		mov	rdx,rbx
-		xor	ecx,ecx
-		call	fpc_write_text_shortstr
-		mov	rcx,rbx
-		call	fpc_writeln_end
-; [103] result := TRTL.Create;
-%LINE 103+0
-		mov	edx,1
-		lea	rcx,[VMT_$RTLUNIT_$$_TRTL]
-		call	RTLUNIT$_$TRTL_$__$$_CREATE$$TRTL
-; Var $result located in register rax
-; [104] end;
-%LINE 104+0
-		nop
-		lea	rsp,[rsp+32]
-		pop	rbx
-		ret
-..@c20:
+.Lc19:
+.seh_proc RTLUNIT_$$_TRTL_CREATE$$TRTL
+# [101] begin
+	pushq	%rbx
+.seh_pushreg %rbx
+	leaq	-32(%rsp),%rsp
+.Lc21:
+.seh_stackalloc 32
+.seh_endprologue
+# Var $result located in register rax
+# [102] WriteLn('xxxx');
+	call	fpc_get_output
+	movq	%rax,%rbx
+	leaq	_$RTLUNIT$_Ld1(%rip),%r8
+	movq	%rbx,%rdx
+	xorl	%ecx,%ecx
+	call	fpc_write_text_shortstr
+	movq	%rbx,%rcx
+	call	fpc_writeln_end
+# [103] result := TRTL.Create;
+	movl	$1,%edx
+	leaq	VMT_$RTLUNIT_$$_TRTL(%rip),%rcx
+	call	RTLUNIT$_$TRTL_$__$$_CREATE$$TRTL
+# Var $result located in register rax
+# [104] end;
+	nop
+	leaq	32(%rsp),%rsp
+	popq	%rbx
+	ret
+.seh_endproc
+.Lc20:
 
-SECTION .text
-	GLOBAL RTLUNIT_$$_TRTL_DESTROY$TRTL
+.section .text.n_rtlunit_$$_trtl_destroy$trtl,"x"
+.globl	RTLUNIT_$$_TRTL_DESTROY$TRTL
 RTLUNIT_$$_TRTL_DESTROY$TRTL:
-..@c22:
-; [107] begin
-%LINE 107+0
-		lea	rsp,[rsp-40]
-..@c24:
-; Var AValue located in register rax
-; Var AValue located in register rcx
-; [108] AValue.Free;
-%LINE 108+0
-		call	SYSTEM$_$TOBJECT_$__$$_FREE
-; [109] end;
-%LINE 109+0
-		nop
-		lea	rsp,[rsp+40]
-		ret
-..@c23:
-; End asmlist al_procedures
-; Begin asmlist al_globals
+.Lc22:
+.seh_proc RTLUNIT_$$_TRTL_DESTROY$TRTL
+# [107] begin
+	leaq	-40(%rsp),%rsp
+.Lc24:
+.seh_stackalloc 40
+.seh_endprologue
+# Var AValue located in register rax
+# Var AValue located in register rcx
+# [108] AValue.Free;
+	call	SYSTEM$_$TOBJECT_$__$$_FREE
+# [109] end;
+	nop
+	leaq	40(%rsp),%rsp
+	ret
+.seh_endproc
+.Lc23:
+# End asmlist al_procedures
+# Begin asmlist al_globals
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL VMT_$RTLUNIT_$$_TWIDGETSET
-VMT_$RTLUNIT_$$_TWIDGETSET	DQ	8,-8,VMT_$SYSTEM_$$_TOBJECT$indirect,..@d2,0,0,0,RTTI_$RTLUNIT_$$_TWIDGETSET
-	DQ	0,0,0,0,RTLUNIT$_$TWIDGETSET_$__$$_DESTROY,SYSTEM$_$TOBJECT_$__$$_NEWINSTANCE$$TOBJECT
-	DQ	SYSTEM$_$TOBJECT_$__$$_FREEINSTANCE,SYSTEM$_$TOBJECT_$__$$_SAFECALLEXCEPTION$TOBJECT$POINTER$$HRESULT
-	DQ	FPC_EMPTYMETHOD,FPC_EMPTYMETHOD,0
-; [154] end.
-%LINE 154+0 RTLUnit.pas
+.section .rodata.n_VMT_$RTLUNIT_$$_TWIDGETSET,"d"
+	.balign 8
+.globl	VMT_$RTLUNIT_$$_TWIDGETSET
+VMT_$RTLUNIT_$$_TWIDGETSET:
+	.quad	8,-8
+	.quad	VMT_$SYSTEM_$$_TOBJECT$indirect
+	.quad	.Ld2
+	.quad	0,0,0
+	.quad	RTTI_$RTLUNIT_$$_TWIDGETSET
+	.quad	0,0,0,0
+	.quad	RTLUNIT$_$TWIDGETSET_$__$$_DESTROY
+	.quad	SYSTEM$_$TOBJECT_$__$$_NEWINSTANCE$$TOBJECT
+	.quad	SYSTEM$_$TOBJECT_$__$$_FREEINSTANCE
+	.quad	SYSTEM$_$TOBJECT_$__$$_SAFECALLEXCEPTION$TOBJECT$POINTER$$HRESULT
+	.quad	FPC_EMPTYMETHOD
+	.quad	FPC_EMPTYMETHOD
+	.quad	0
+# [154] end.
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL VMT_$RTLUNIT_$$_TRTL
-VMT_$RTLUNIT_$$_TRTL	DQ	16,-16,VMT_$SYSTEM_$$_TOBJECT$indirect,..@d3,0,0,0,RTTI_$RTLUNIT_$$_TRTL
-	DQ	0,0,0,0,RTLUNIT$_$TRTL_$__$$_DESTROY,SYSTEM$_$TOBJECT_$__$$_NEWINSTANCE$$TOBJECT
-	DQ	SYSTEM$_$TOBJECT_$__$$_FREEINSTANCE,SYSTEM$_$TOBJECT_$__$$_SAFECALLEXCEPTION$TOBJECT$POINTER$$HRESULT
-	DQ	FPC_EMPTYMETHOD,FPC_EMPTYMETHOD,0
-; End asmlist al_globals
-; Begin asmlist al_const
+.section .rodata.n_VMT_$RTLUNIT_$$_TRTL,"d"
+	.balign 8
+.globl	VMT_$RTLUNIT_$$_TRTL
+VMT_$RTLUNIT_$$_TRTL:
+	.quad	16,-16
+	.quad	VMT_$SYSTEM_$$_TOBJECT$indirect
+	.quad	.Ld3
+	.quad	0,0,0
+	.quad	RTTI_$RTLUNIT_$$_TRTL
+	.quad	0,0,0,0
+	.quad	RTLUNIT$_$TRTL_$__$$_DESTROY
+	.quad	SYSTEM$_$TOBJECT_$__$$_NEWINSTANCE$$TOBJECT
+	.quad	SYSTEM$_$TOBJECT_$__$$_FREEINSTANCE
+	.quad	SYSTEM$_$TOBJECT_$__$$_SAFECALLEXCEPTION$TOBJECT$POINTER$$HRESULT
+	.quad	FPC_EMPTYMETHOD
+	.quad	FPC_EMPTYMETHOD
+	.quad	0
+# End asmlist al_globals
+# Begin asmlist al_const
 
-SECTION .data
-	ALIGN 8,DB 0
-..@d2:
-	DB	10
-		DB	"TWidgetSet"
+.section .rodata.n_VMT_$RTLUNIT_$$_TWIDGETSET,"d"
+	.balign 8
+.Ld2:
+	.byte	10
+	.ascii	"TWidgetSet"
 
-SECTION .data
-	ALIGN 8,DB 0
-..@d3:
-	DB	4
-		DB	"TRtl"
-; End asmlist al_const
-; Begin asmlist al_typedconsts
+.section .rodata.n_VMT_$RTLUNIT_$$_TRTL,"d"
+	.balign 8
+.Ld3:
+	.byte	4
+	.ascii	"TRtl"
+# End asmlist al_const
+# Begin asmlist al_typedconsts
 
-SECTION .data
-	GLOBAL TC_$RTLUNIT_$$_BSR8BIT
-TC_$RTLUNIT_$$_BSR8BIT	DB	255,0,1,1,2,2,2,2,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5
-	DB	5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6
-	DB	7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7
-	DB	7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7
-; [28] function GetBsr8bit: PByteLookup; stdcall; export;
-%LINE 28+0 RTLUnit.pas
+.section .data.n_TC_$RTLUNIT_$$_BSR8BIT,"d"
+.globl	TC_$RTLUNIT_$$_BSR8BIT
+TC_$RTLUNIT_$$_BSR8BIT:
+	.byte	255,0,1,1,2,2,2,2,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6
+	.byte	6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,7,7,7,7,7,7,7,7,7,7,7,7
+	.byte	7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7
+	.byte	7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7
+# [28] function GetBsr8bit: PByteLookup; stdcall; export;
 
-SECTION .rodata
+.section .rodata.n__$RTLUNIT$_Ld1,"d"
+.globl	_$RTLUNIT$_Ld1
 _$RTLUNIT$_Ld1:
-%LINE 102+0
-		DB	4,"xxxx",0
-; End asmlist al_typedconsts
-; Begin asmlist al_rtti
+	.ascii	"\004xxxx\000"
+# End asmlist al_typedconsts
+# Begin asmlist al_rtti
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$RTLUNIT_$$_TBYTELOOKUP
-RTTI_$RTLUNIT_$$_TBYTELOOKUP	DB	12,11
-; [155] 
-%LINE 155+0 RTLUnit.pas
-		DB	"TByteLookup"
-	DQ	256,256,RTTI_$SYSTEM_$$_BYTE$indirect
-	DB	1
-	DQ	RTTI_$SYSTEM_$$_BYTE$indirect
+.section .rodata.n_RTTI_$RTLUNIT_$$_TBYTELOOKUP,"d"
+	.balign 8
+.globl	RTTI_$RTLUNIT_$$_TBYTELOOKUP
+RTTI_$RTLUNIT_$$_TBYTELOOKUP:
+	.byte	12,11
+# [155] 
+	.ascii	"TByteLookup"
+	.quad	256,256
+	.quad	RTTI_$SYSTEM_$$_BYTE$indirect
+	.byte	1
+	.quad	RTTI_$SYSTEM_$$_BYTE$indirect
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$RTLUNIT_$$_PBYTELOOKUP
-RTTI_$RTLUNIT_$$_PBYTELOOKUP	DB	29,11
-		DB	"PByteLookup"
-	DQ	RTTI_$RTLUNIT_$$_TBYTELOOKUP$indirect
+.section .rodata.n_RTTI_$RTLUNIT_$$_PBYTELOOKUP,"d"
+	.balign 8
+.globl	RTTI_$RTLUNIT_$$_PBYTELOOKUP
+RTTI_$RTLUNIT_$$_PBYTELOOKUP:
+	.byte	29,11
+	.ascii	"PByteLookup"
+	.quad	RTTI_$RTLUNIT_$$_TBYTELOOKUP$indirect
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL INIT_$RTLUNIT_$$_TWIDGETSET
-INIT_$RTLUNIT_$$_TWIDGETSET	DB	15,10
-		DB	"TWidgetSet"
-	DQ	0
-	DD	8
-	DQ	0,0
-	DD	0
+.section .rodata.n_INIT_$RTLUNIT_$$_TWIDGETSET,"d"
+	.balign 8
+.globl	INIT_$RTLUNIT_$$_TWIDGETSET
+INIT_$RTLUNIT_$$_TWIDGETSET:
+	.byte	15,10
+	.ascii	"TWidgetSet"
+	.quad	0
+	.long	8
+	.quad	0,0
+	.long	0
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$RTLUNIT_$$_TWIDGETSET
-RTTI_$RTLUNIT_$$_TWIDGETSET	DB	15,10
-		DB	"TWidgetSet"
-	DQ	VMT_$RTLUNIT_$$_TWIDGETSET,RTTI_$SYSTEM_$$_TOBJECT$indirect
-	DW	0
-	DB	7
-		DB	"RTLUnit"
-	DW	0
+.section .rodata.n_RTTI_$RTLUNIT_$$_TWIDGETSET,"d"
+	.balign 8
+.globl	RTTI_$RTLUNIT_$$_TWIDGETSET
+RTTI_$RTLUNIT_$$_TWIDGETSET:
+	.byte	15,10
+	.ascii	"TWidgetSet"
+	.quad	VMT_$RTLUNIT_$$_TWIDGETSET
+	.quad	RTTI_$SYSTEM_$$_TOBJECT$indirect
+	.short	0
+	.byte	7
+	.ascii	"RTLUnit"
+	.short	0
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL INIT_$RTLUNIT_$$_TRTL
-INIT_$RTLUNIT_$$_TRTL	DB	15,4
-		DB	"TRtl"
-	DQ	0
-	DD	8
-	DQ	0,0
-	DD	0
+.section .rodata.n_INIT_$RTLUNIT_$$_TRTL,"d"
+	.balign 8
+.globl	INIT_$RTLUNIT_$$_TRTL
+INIT_$RTLUNIT_$$_TRTL:
+	.byte	15,4
+	.ascii	"TRtl"
+	.quad	0
+	.long	8
+	.quad	0,0
+	.long	0
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$RTLUNIT_$$_TRTL
-RTTI_$RTLUNIT_$$_TRTL	DB	15,4
-		DB	"TRtl"
-	DQ	VMT_$RTLUNIT_$$_TRTL,RTTI_$SYSTEM_$$_TOBJECT$indirect
-	DW	0
-	DB	7
-		DB	"RTLUnit"
-	DW	0
+.section .rodata.n_RTTI_$RTLUNIT_$$_TRTL,"d"
+	.balign 8
+.globl	RTTI_$RTLUNIT_$$_TRTL
+RTTI_$RTLUNIT_$$_TRTL:
+	.byte	15,4
+	.ascii	"TRtl"
+	.quad	VMT_$RTLUNIT_$$_TRTL
+	.quad	RTTI_$SYSTEM_$$_TOBJECT$indirect
+	.short	0
+	.byte	7
+	.ascii	"RTLUnit"
+	.short	0
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$RTLUNIT_$$_T_ARRAY_BOOLEAN
-RTTI_$RTLUNIT_$$_T_ARRAY_BOOLEAN	DB	21,15
-		DB	"T_Array_Boolean"
-	DQ	1,RTTI_$SYSTEM_$$_BOOLEAN$indirect
-	DD	11
-	DQ	0
-	DB	7
-		DB	"RTLUnit"
+.section .rodata.n_RTTI_$RTLUNIT_$$_T_ARRAY_BOOLEAN,"d"
+	.balign 8
+.globl	RTTI_$RTLUNIT_$$_T_ARRAY_BOOLEAN
+RTTI_$RTLUNIT_$$_T_ARRAY_BOOLEAN:
+	.byte	21,15
+	.ascii	"T_Array_Boolean"
+	.quad	1
+	.quad	RTTI_$SYSTEM_$$_BOOLEAN$indirect
+	.long	11
+	.quad	0
+	.byte	7
+	.ascii	"RTLUnit"
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$RTLUNIT_$$_T_ARRAY_CHAR
-RTTI_$RTLUNIT_$$_T_ARRAY_CHAR	DB	21,12
-		DB	"T_Array_Char"
-	DQ	1,RTTI_$SYSTEM_$$_CHAR$indirect
-	DD	-1
-	DQ	0
-	DB	7
-		DB	"RTLUnit"
+.section .rodata.n_RTTI_$RTLUNIT_$$_T_ARRAY_CHAR,"d"
+	.balign 8
+.globl	RTTI_$RTLUNIT_$$_T_ARRAY_CHAR
+RTTI_$RTLUNIT_$$_T_ARRAY_CHAR:
+	.byte	21,12
+	.ascii	"T_Array_Char"
+	.quad	1
+	.quad	RTTI_$SYSTEM_$$_CHAR$indirect
+	.long	-1
+	.quad	0
+	.byte	7
+	.ascii	"RTLUnit"
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$RTLUNIT_$$_T_ARRAY_BYTE
-RTTI_$RTLUNIT_$$_T_ARRAY_BYTE	DB	21,12
-		DB	"T_Array_Byte"
-	DQ	1,RTTI_$SYSTEM_$$_BYTE$indirect
-	DD	17
-	DQ	0
-	DB	7
-		DB	"RTLUnit"
+.section .rodata.n_RTTI_$RTLUNIT_$$_T_ARRAY_BYTE,"d"
+	.balign 8
+.globl	RTTI_$RTLUNIT_$$_T_ARRAY_BYTE
+RTTI_$RTLUNIT_$$_T_ARRAY_BYTE:
+	.byte	21,12
+	.ascii	"T_Array_Byte"
+	.quad	1
+	.quad	RTTI_$SYSTEM_$$_BYTE$indirect
+	.long	17
+	.quad	0
+	.byte	7
+	.ascii	"RTLUnit"
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$RTLUNIT_$$_T_ARRAY_WORD
-RTTI_$RTLUNIT_$$_T_ARRAY_WORD	DB	21,12
-		DB	"T_Array_Word"
-	DQ	2,RTTI_$SYSTEM_$$_WORD$indirect
-	DD	18
-	DQ	0
-	DB	7
-		DB	"RTLUnit"
+.section .rodata.n_RTTI_$RTLUNIT_$$_T_ARRAY_WORD,"d"
+	.balign 8
+.globl	RTTI_$RTLUNIT_$$_T_ARRAY_WORD
+RTTI_$RTLUNIT_$$_T_ARRAY_WORD:
+	.byte	21,12
+	.ascii	"T_Array_Word"
+	.quad	2
+	.quad	RTTI_$SYSTEM_$$_WORD$indirect
+	.long	18
+	.quad	0
+	.byte	7
+	.ascii	"RTLUnit"
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$RTLUNIT_$$_T_ARRAY_DWORD
-RTTI_$RTLUNIT_$$_T_ARRAY_DWORD	DB	21,13
-		DB	"T_Array_DWord"
-	DQ	4,RTTI_$SYSTEM_$$_LONGWORD$indirect
-	DD	19
-	DQ	0
-	DB	7
-		DB	"RTLUnit"
+.section .rodata.n_RTTI_$RTLUNIT_$$_T_ARRAY_DWORD,"d"
+	.balign 8
+.globl	RTTI_$RTLUNIT_$$_T_ARRAY_DWORD
+RTTI_$RTLUNIT_$$_T_ARRAY_DWORD:
+	.byte	21,13
+	.ascii	"T_Array_DWord"
+	.quad	4
+	.quad	RTTI_$SYSTEM_$$_LONGWORD$indirect
+	.long	19
+	.quad	0
+	.byte	7
+	.ascii	"RTLUnit"
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$RTLUNIT_$$_T_ARRAY_INTEGER
-RTTI_$RTLUNIT_$$_T_ARRAY_INTEGER	DB	21,15
-		DB	"T_Array_Integer"
-	DQ	4,RTTI_$SYSTEM_$$_LONGINT$indirect
-	DD	3
-	DQ	0
-	DB	7
-		DB	"RTLUnit"
+.section .rodata.n_RTTI_$RTLUNIT_$$_T_ARRAY_INTEGER,"d"
+	.balign 8
+.globl	RTTI_$RTLUNIT_$$_T_ARRAY_INTEGER
+RTTI_$RTLUNIT_$$_T_ARRAY_INTEGER:
+	.byte	21,15
+	.ascii	"T_Array_Integer"
+	.quad	4
+	.quad	RTTI_$SYSTEM_$$_LONGINT$indirect
+	.long	3
+	.quad	0
+	.byte	7
+	.ascii	"RTLUnit"
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$RTLUNIT_$$_T_ARRAY_STRING
-RTTI_$RTLUNIT_$$_T_ARRAY_STRING	DB	21,14
-		DB	"T_Array_String"
-	DQ	8,RTTI_$SYSTEM_$$_ANSISTRING$indirect
-	DD	256
-	DQ	RTTI_$SYSTEM_$$_ANSISTRING$indirect
-	DB	7
-		DB	"RTLUnit"
-; End asmlist al_rtti
-; Begin asmlist al_indirectglobals
+.section .rodata.n_RTTI_$RTLUNIT_$$_T_ARRAY_STRING,"d"
+	.balign 8
+.globl	RTTI_$RTLUNIT_$$_T_ARRAY_STRING
+RTTI_$RTLUNIT_$$_T_ARRAY_STRING:
+	.byte	21,14
+	.ascii	"T_Array_String"
+	.quad	8
+	.quad	RTTI_$SYSTEM_$$_ANSISTRING$indirect
+	.long	256
+	.quad	RTTI_$SYSTEM_$$_ANSISTRING$indirect
+	.byte	7
+	.ascii	"RTLUnit"
+# End asmlist al_rtti
+# Begin asmlist al_indirectglobals
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL VMT_$RTLUNIT_$$_TWIDGETSET$indirect
-VMT_$RTLUNIT_$$_TWIDGETSET$indirect	DQ	VMT_$RTLUNIT_$$_TWIDGETSET
-%LINE 154+0 RTLUnit.pas
+.section .rodata.n_VMT_$RTLUNIT_$$_TWIDGETSET,"d"
+	.balign 8
+.globl	VMT_$RTLUNIT_$$_TWIDGETSET$indirect
+VMT_$RTLUNIT_$$_TWIDGETSET$indirect:
+	.quad	VMT_$RTLUNIT_$$_TWIDGETSET
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL VMT_$RTLUNIT_$$_TRTL$indirect
-VMT_$RTLUNIT_$$_TRTL$indirect	DQ	VMT_$RTLUNIT_$$_TRTL
+.section .rodata.n_VMT_$RTLUNIT_$$_TRTL,"d"
+	.balign 8
+.globl	VMT_$RTLUNIT_$$_TRTL$indirect
+VMT_$RTLUNIT_$$_TRTL$indirect:
+	.quad	VMT_$RTLUNIT_$$_TRTL
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$RTLUNIT_$$_TBYTELOOKUP$indirect
-RTTI_$RTLUNIT_$$_TBYTELOOKUP$indirect	DQ	RTTI_$RTLUNIT_$$_TBYTELOOKUP
-%LINE 155+0
+.section .rodata.n_RTTI_$RTLUNIT_$$_TBYTELOOKUP,"d"
+	.balign 8
+.globl	RTTI_$RTLUNIT_$$_TBYTELOOKUP$indirect
+RTTI_$RTLUNIT_$$_TBYTELOOKUP$indirect:
+	.quad	RTTI_$RTLUNIT_$$_TBYTELOOKUP
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$RTLUNIT_$$_PBYTELOOKUP$indirect
-RTTI_$RTLUNIT_$$_PBYTELOOKUP$indirect	DQ	RTTI_$RTLUNIT_$$_PBYTELOOKUP
+.section .rodata.n_RTTI_$RTLUNIT_$$_PBYTELOOKUP,"d"
+	.balign 8
+.globl	RTTI_$RTLUNIT_$$_PBYTELOOKUP$indirect
+RTTI_$RTLUNIT_$$_PBYTELOOKUP$indirect:
+	.quad	RTTI_$RTLUNIT_$$_PBYTELOOKUP
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL INIT_$RTLUNIT_$$_TWIDGETSET$indirect
-INIT_$RTLUNIT_$$_TWIDGETSET$indirect	DQ	INIT_$RTLUNIT_$$_TWIDGETSET
+.section .rodata.n_INIT_$RTLUNIT_$$_TWIDGETSET,"d"
+	.balign 8
+.globl	INIT_$RTLUNIT_$$_TWIDGETSET$indirect
+INIT_$RTLUNIT_$$_TWIDGETSET$indirect:
+	.quad	INIT_$RTLUNIT_$$_TWIDGETSET
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$RTLUNIT_$$_TWIDGETSET$indirect
-RTTI_$RTLUNIT_$$_TWIDGETSET$indirect	DQ	RTTI_$RTLUNIT_$$_TWIDGETSET
+.section .rodata.n_RTTI_$RTLUNIT_$$_TWIDGETSET,"d"
+	.balign 8
+.globl	RTTI_$RTLUNIT_$$_TWIDGETSET$indirect
+RTTI_$RTLUNIT_$$_TWIDGETSET$indirect:
+	.quad	RTTI_$RTLUNIT_$$_TWIDGETSET
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL INIT_$RTLUNIT_$$_TRTL$indirect
-INIT_$RTLUNIT_$$_TRTL$indirect	DQ	INIT_$RTLUNIT_$$_TRTL
+.section .rodata.n_INIT_$RTLUNIT_$$_TRTL,"d"
+	.balign 8
+.globl	INIT_$RTLUNIT_$$_TRTL$indirect
+INIT_$RTLUNIT_$$_TRTL$indirect:
+	.quad	INIT_$RTLUNIT_$$_TRTL
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$RTLUNIT_$$_TRTL$indirect
-RTTI_$RTLUNIT_$$_TRTL$indirect	DQ	RTTI_$RTLUNIT_$$_TRTL
+.section .rodata.n_RTTI_$RTLUNIT_$$_TRTL,"d"
+	.balign 8
+.globl	RTTI_$RTLUNIT_$$_TRTL$indirect
+RTTI_$RTLUNIT_$$_TRTL$indirect:
+	.quad	RTTI_$RTLUNIT_$$_TRTL
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$RTLUNIT_$$_T_ARRAY_BOOLEAN$indirect
-RTTI_$RTLUNIT_$$_T_ARRAY_BOOLEAN$indirect	DQ	RTTI_$RTLUNIT_$$_T_ARRAY_BOOLEAN
+.section .rodata.n_RTTI_$RTLUNIT_$$_T_ARRAY_BOOLEAN,"d"
+	.balign 8
+.globl	RTTI_$RTLUNIT_$$_T_ARRAY_BOOLEAN$indirect
+RTTI_$RTLUNIT_$$_T_ARRAY_BOOLEAN$indirect:
+	.quad	RTTI_$RTLUNIT_$$_T_ARRAY_BOOLEAN
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$RTLUNIT_$$_T_ARRAY_CHAR$indirect
-RTTI_$RTLUNIT_$$_T_ARRAY_CHAR$indirect	DQ	RTTI_$RTLUNIT_$$_T_ARRAY_CHAR
+.section .rodata.n_RTTI_$RTLUNIT_$$_T_ARRAY_CHAR,"d"
+	.balign 8
+.globl	RTTI_$RTLUNIT_$$_T_ARRAY_CHAR$indirect
+RTTI_$RTLUNIT_$$_T_ARRAY_CHAR$indirect:
+	.quad	RTTI_$RTLUNIT_$$_T_ARRAY_CHAR
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$RTLUNIT_$$_T_ARRAY_BYTE$indirect
-RTTI_$RTLUNIT_$$_T_ARRAY_BYTE$indirect	DQ	RTTI_$RTLUNIT_$$_T_ARRAY_BYTE
+.section .rodata.n_RTTI_$RTLUNIT_$$_T_ARRAY_BYTE,"d"
+	.balign 8
+.globl	RTTI_$RTLUNIT_$$_T_ARRAY_BYTE$indirect
+RTTI_$RTLUNIT_$$_T_ARRAY_BYTE$indirect:
+	.quad	RTTI_$RTLUNIT_$$_T_ARRAY_BYTE
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$RTLUNIT_$$_T_ARRAY_WORD$indirect
-RTTI_$RTLUNIT_$$_T_ARRAY_WORD$indirect	DQ	RTTI_$RTLUNIT_$$_T_ARRAY_WORD
+.section .rodata.n_RTTI_$RTLUNIT_$$_T_ARRAY_WORD,"d"
+	.balign 8
+.globl	RTTI_$RTLUNIT_$$_T_ARRAY_WORD$indirect
+RTTI_$RTLUNIT_$$_T_ARRAY_WORD$indirect:
+	.quad	RTTI_$RTLUNIT_$$_T_ARRAY_WORD
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$RTLUNIT_$$_T_ARRAY_DWORD$indirect
-RTTI_$RTLUNIT_$$_T_ARRAY_DWORD$indirect	DQ	RTTI_$RTLUNIT_$$_T_ARRAY_DWORD
+.section .rodata.n_RTTI_$RTLUNIT_$$_T_ARRAY_DWORD,"d"
+	.balign 8
+.globl	RTTI_$RTLUNIT_$$_T_ARRAY_DWORD$indirect
+RTTI_$RTLUNIT_$$_T_ARRAY_DWORD$indirect:
+	.quad	RTTI_$RTLUNIT_$$_T_ARRAY_DWORD
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$RTLUNIT_$$_T_ARRAY_INTEGER$indirect
-RTTI_$RTLUNIT_$$_T_ARRAY_INTEGER$indirect	DQ	RTTI_$RTLUNIT_$$_T_ARRAY_INTEGER
+.section .rodata.n_RTTI_$RTLUNIT_$$_T_ARRAY_INTEGER,"d"
+	.balign 8
+.globl	RTTI_$RTLUNIT_$$_T_ARRAY_INTEGER$indirect
+RTTI_$RTLUNIT_$$_T_ARRAY_INTEGER$indirect:
+	.quad	RTTI_$RTLUNIT_$$_T_ARRAY_INTEGER
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$RTLUNIT_$$_T_ARRAY_STRING$indirect
-RTTI_$RTLUNIT_$$_T_ARRAY_STRING$indirect	DQ	RTTI_$RTLUNIT_$$_T_ARRAY_STRING
-; End asmlist al_indirectglobals
-; Begin asmlist al_dwarf_frame
+.section .rodata.n_RTTI_$RTLUNIT_$$_T_ARRAY_STRING,"d"
+	.balign 8
+.globl	RTTI_$RTLUNIT_$$_T_ARRAY_STRING$indirect
+RTTI_$RTLUNIT_$$_T_ARRAY_STRING$indirect:
+	.quad	RTTI_$RTLUNIT_$$_T_ARRAY_STRING
+# End asmlist al_indirectglobals
+# Begin asmlist al_dwarf_frame
 
-SECTION .debug_frame
-..@c25:
-	DD	..@c27-..@c26
-..@c26:
-	DD	-1
-	DB	1,0
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_SLEB128BIT	
-	DB	16,12
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	5
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c27:
-	DD	..@c29-..@c28
-..@c28:
-	DQ	..@c1,..@c2-..@c1
-	ALIGN 4,DB 0
-..@c29:
-	DD	..@c31-..@c30
-..@c30:
-	DQ	..@c3,..@c4-..@c3
-	DB	4
-	DD	..@c5-..@c3
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c6-..@c5
-	DB	5
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c7-..@c6
-	DB	13
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c31:
-	DD	..@c33-..@c32
-..@c32:
-	DQ	..@c8,..@c9-..@c8
-	DB	4
-	DD	..@c10-..@c8
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c33:
-	DD	..@c35-..@c34
-..@c34:
-	DQ	..@c11,..@c12-..@c11
-	DB	4
-	DD	..@c13-..@c11
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c14-..@c13
-	DB	5
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c15-..@c14
-	DB	13
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c35:
-	DD	..@c37-..@c36
-..@c36:
-	DQ	..@c16,..@c17-..@c16
-	DB	4
-	DD	..@c18-..@c16
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c37:
-	DD	..@c39-..@c38
-..@c38:
-	DQ	..@c19,..@c20-..@c19
-	DB	4
-	DD	..@c21-..@c19
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c39:
-	DD	..@c41-..@c40
-..@c40:
-	DQ	..@c22,..@c23-..@c22
-	DB	4
-	DD	..@c24-..@c22
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c41:
-; End asmlist al_dwarf_frame
+.section .debug_frame
+.Lc25:
+	.long	.Lc27-.Lc26
+.Lc26:
+	.long	-1
+	.byte	1
+	.byte	0
+	.uleb128	1
+	.sleb128	-4
+	.byte	16
+	.byte	12
+	.uleb128	7
+	.uleb128	8
+	.byte	5
+	.uleb128	16
+	.uleb128	2
+	.balign 4,0
+.Lc27:
+	.long	.Lc29-.Lc28
+.Lc28:
+	.secrel32	.Lc25
+	.quad	.Lc1
+	.quad	.Lc2-.Lc1
+	.balign 4,0
+.Lc29:
+	.long	.Lc31-.Lc30
+.Lc30:
+	.secrel32	.Lc25
+	.quad	.Lc3
+	.quad	.Lc4-.Lc3
+	.byte	4
+	.long	.Lc5-.Lc3
+	.byte	14
+	.uleb128	16
+	.byte	4
+	.long	.Lc6-.Lc5
+	.byte	5
+	.uleb128	6
+	.uleb128	4
+	.byte	4
+	.long	.Lc7-.Lc6
+	.byte	13
+	.uleb128	6
+	.balign 4,0
+.Lc31:
+	.long	.Lc33-.Lc32
+.Lc32:
+	.secrel32	.Lc25
+	.quad	.Lc8
+	.quad	.Lc9-.Lc8
+	.byte	4
+	.long	.Lc10-.Lc8
+	.byte	14
+	.uleb128	48
+	.balign 4,0
+.Lc33:
+	.long	.Lc35-.Lc34
+.Lc34:
+	.secrel32	.Lc25
+	.quad	.Lc11
+	.quad	.Lc12-.Lc11
+	.byte	4
+	.long	.Lc13-.Lc11
+	.byte	14
+	.uleb128	16
+	.byte	4
+	.long	.Lc14-.Lc13
+	.byte	5
+	.uleb128	6
+	.uleb128	4
+	.byte	4
+	.long	.Lc15-.Lc14
+	.byte	13
+	.uleb128	6
+	.balign 4,0
+.Lc35:
+	.long	.Lc37-.Lc36
+.Lc36:
+	.secrel32	.Lc25
+	.quad	.Lc16
+	.quad	.Lc17-.Lc16
+	.byte	4
+	.long	.Lc18-.Lc16
+	.byte	14
+	.uleb128	48
+	.balign 4,0
+.Lc37:
+	.long	.Lc39-.Lc38
+.Lc38:
+	.secrel32	.Lc25
+	.quad	.Lc19
+	.quad	.Lc20-.Lc19
+	.byte	4
+	.long	.Lc21-.Lc19
+	.byte	14
+	.uleb128	40
+	.balign 4,0
+.Lc39:
+	.long	.Lc41-.Lc40
+.Lc40:
+	.secrel32	.Lc25
+	.quad	.Lc22
+	.quad	.Lc23-.Lc22
+	.byte	4
+	.long	.Lc24-.Lc22
+	.byte	14
+	.uleb128	48
+	.balign 4,0
+.Lc41:
+# End asmlist al_dwarf_frame
 

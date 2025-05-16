@@ -1,271 +1,323 @@
-BITS 64
-default rel
-CPU x64
+	.file "global.pas"
+# Begin asmlist al_globals
 
-EXTERN	RTTI_$SYSTEM_$$_CHAR$indirect
-EXTERN	RTTI_$SYSTEM_$$_SHORTINT$indirect
-EXTERN	RTTI_$SYSTEM_$$_LONGINT$indirect
-EXTERN	RTTI_$SYSTEM_$$_PCHAR$indirect
-; Begin asmlist al_globals
+.section .bss
+	.balign 4
+# [global.pas]
+# [17] QApplication_Counter: DWORD32;
+	.globl U_$GLOBAL_$$_QAPPLICATION_COUNTER
+U_$GLOBAL_$$_QAPPLICATION_COUNTER:
+	.zero 4
+# End asmlist al_globals
+# Begin asmlist al_rtti
 
-SECTION .bss
-	ALIGNB 4
-; [global.pas]
-; [17] QApplication_Counter: DWORD32;
-%LINE 17+0 global.pas
-	GLOBAL U_$GLOBAL_$$_QAPPLICATION_COUNTER
-U_$GLOBAL_$$_QAPPLICATION_COUNTER:	RESB	4
-; End asmlist al_globals
-; Begin asmlist al_rtti
+.section .rodata.n_INIT_$GLOBAL_$$_TDLLERROR,"d"
+	.balign 8
+.globl	INIT_$GLOBAL_$$_TDLLERROR
+INIT_$GLOBAL_$$_TDLLERROR:
+	.byte	13,9
+# [57] 
+	.ascii	"TDLLerror"
+	.quad	0
+	.long	64
+	.quad	0,0
+	.long	0
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL INIT_$GLOBAL_$$_TDLLERROR
-INIT_$GLOBAL_$$_TDLLERROR	DB	13,9
-; [57] 
-%LINE 57+0 global.pas
-		DB	"TDLLerror"
-	DQ	0
-	DD	64
-	DQ	0,0
-	DD	0
+.section .rodata.n_RTTI_$GLOBAL_$$_def00000006,"d"
+	.balign 8
+.globl	RTTI_$GLOBAL_$$_def00000006
+RTTI_$GLOBAL_$$_def00000006:
+	.byte	12,0
+	.quad	32,32
+	.quad	RTTI_$SYSTEM_$$_CHAR$indirect
+	.byte	1
+	.quad	RTTI_$SYSTEM_$$_SHORTINT$indirect
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$GLOBAL_$$_def00000006
-RTTI_$GLOBAL_$$_def00000006	DB	12,0
-	DQ	32,32,RTTI_$SYSTEM_$$_CHAR$indirect
-	DB	1
-	DQ	RTTI_$SYSTEM_$$_SHORTINT$indirect
+.section .rodata.n_RTTI_$GLOBAL_$$_TDLLERROR,"d"
+	.balign 8
+.globl	RTTI_$GLOBAL_$$_TDLLERROR
+RTTI_$GLOBAL_$$_TDLLERROR:
+	.byte	13,9
+	.ascii	"TDLLerror"
+	.quad	INIT_$GLOBAL_$$_TDLLERROR
+	.long	64,7
+	.quad	RTTI_$SYSTEM_$$_LONGINT$indirect
+	.quad	0
+	.quad	RTTI_$SYSTEM_$$_LONGINT$indirect
+	.quad	4
+	.quad	RTTI_$SYSTEM_$$_LONGINT$indirect
+	.quad	8
+	.quad	RTTI_$SYSTEM_$$_LONGINT$indirect
+	.quad	12
+	.quad	RTTI_$SYSTEM_$$_PCHAR$indirect
+	.quad	16
+	.quad	RTTI_$GLOBAL_$$_def00000006$indirect
+	.quad	24
+	.quad	RTTI_$SYSTEM_$$_PCHAR$indirect
+	.quad	56
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$GLOBAL_$$_TDLLERROR
-RTTI_$GLOBAL_$$_TDLLERROR	DB	13,9
-		DB	"TDLLerror"
-	DQ	INIT_$GLOBAL_$$_TDLLERROR
-	DD	64,7
-	DQ	RTTI_$SYSTEM_$$_LONGINT$indirect,0,RTTI_$SYSTEM_$$_LONGINT$indirect
-	DQ	4,RTTI_$SYSTEM_$$_LONGINT$indirect,8,RTTI_$SYSTEM_$$_LONGINT$indirect
-	DQ	12,RTTI_$SYSTEM_$$_PCHAR$indirect,16,RTTI_$GLOBAL_$$_def00000006$indirect
-	DQ	24,RTTI_$SYSTEM_$$_PCHAR$indirect,56
+.section .rodata.n_RTTI_$GLOBAL_$$_PDLLERROR,"d"
+	.balign 8
+.globl	RTTI_$GLOBAL_$$_PDLLERROR
+RTTI_$GLOBAL_$$_PDLLERROR:
+	.byte	29,9
+	.ascii	"PDLLerror"
+	.quad	RTTI_$GLOBAL_$$_TDLLERROR$indirect
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$GLOBAL_$$_PDLLERROR
-RTTI_$GLOBAL_$$_PDLLERROR	DB	29,9
-		DB	"PDLLerror"
-	DQ	RTTI_$GLOBAL_$$_TDLLERROR$indirect
+.section .rodata.n_INIT_$GLOBAL_$$_TDLLARGUMENTS,"d"
+	.balign 8
+.globl	INIT_$GLOBAL_$$_TDLLARGUMENTS
+INIT_$GLOBAL_$$_TDLLARGUMENTS:
+	.byte	13,13
+	.ascii	"TDLLarguments"
+	.quad	0
+	.long	80
+	.quad	0,0
+	.long	0
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL INIT_$GLOBAL_$$_TDLLARGUMENTS
-INIT_$GLOBAL_$$_TDLLARGUMENTS	DB	13,13
-		DB	"TDLLarguments"
-	DQ	0
-	DD	80
-	DQ	0,0
-	DD	0
+.section .rodata.n_RTTI_$GLOBAL_$$_def00000009,"d"
+	.balign 8
+.globl	RTTI_$GLOBAL_$$_def00000009
+RTTI_$GLOBAL_$$_def00000009:
+	.byte	12,0
+	.quad	65,65
+	.quad	RTTI_$SYSTEM_$$_CHAR$indirect
+	.byte	1
+	.quad	RTTI_$SYSTEM_$$_SHORTINT$indirect
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$GLOBAL_$$_def00000009
-RTTI_$GLOBAL_$$_def00000009	DB	12,0
-	DQ	65,65,RTTI_$SYSTEM_$$_CHAR$indirect
-	DB	1
-	DQ	RTTI_$SYSTEM_$$_SHORTINT$indirect
+.section .rodata.n_RTTI_$GLOBAL_$$_TDLLARGUMENTS,"d"
+	.balign 8
+.globl	RTTI_$GLOBAL_$$_TDLLARGUMENTS
+RTTI_$GLOBAL_$$_TDLLARGUMENTS:
+	.byte	13,13
+	.ascii	"TDLLarguments"
+	.quad	INIT_$GLOBAL_$$_TDLLARGUMENTS
+	.long	80,3
+	.quad	RTTI_$GLOBAL_$$_def00000009$indirect
+	.quad	0
+	.quad	RTTI_$SYSTEM_$$_LONGINT$indirect
+	.quad	68
+	.quad	RTTI_$SYSTEM_$$_PCHAR$indirect
+	.quad	72
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$GLOBAL_$$_TDLLARGUMENTS
-RTTI_$GLOBAL_$$_TDLLARGUMENTS	DB	13,13
-		DB	"TDLLarguments"
-	DQ	INIT_$GLOBAL_$$_TDLLARGUMENTS
-	DD	80,3
-	DQ	RTTI_$GLOBAL_$$_def00000009$indirect,0,RTTI_$SYSTEM_$$_LONGINT$indirect
-	DQ	68,RTTI_$SYSTEM_$$_PCHAR$indirect,72
+.section .rodata.n_RTTI_$GLOBAL_$$_PDLLARGUMENTS,"d"
+	.balign 8
+.globl	RTTI_$GLOBAL_$$_PDLLARGUMENTS
+RTTI_$GLOBAL_$$_PDLLARGUMENTS:
+	.byte	29,13
+	.ascii	"PDLLarguments"
+	.quad	RTTI_$GLOBAL_$$_TDLLARGUMENTS$indirect
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$GLOBAL_$$_PDLLARGUMENTS
-RTTI_$GLOBAL_$$_PDLLARGUMENTS	DB	29,13
-		DB	"PDLLarguments"
-	DQ	RTTI_$GLOBAL_$$_TDLLARGUMENTS$indirect
+.section .rodata.n_INIT_$GLOBAL_$$_def0000000C,"d"
+	.balign 8
+.globl	INIT_$GLOBAL_$$_def0000000C
+INIT_$GLOBAL_$$_def0000000C:
+	.byte	21,0
+	.quad	80
+	.quad	INIT_$GLOBAL_$$_TDLLARGUMENTS$indirect
+	.long	-1
+	.quad	0
+	.byte	6
+	.ascii	"global"
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL INIT_$GLOBAL_$$_def0000000C
-INIT_$GLOBAL_$$_def0000000C	DB	21,0
-	DQ	80,INIT_$GLOBAL_$$_TDLLARGUMENTS$indirect
-	DD	-1
-	DQ	0
-	DB	6
-		DB	"global"
+.section .rodata.n_INIT_$GLOBAL_$$_TDLLARGS,"d"
+	.balign 8
+.globl	INIT_$GLOBAL_$$_TDLLARGS
+INIT_$GLOBAL_$$_TDLLARGS:
+	.byte	13,8
+	.ascii	"TDLLargs"
+	.quad	0
+	.long	16
+	.quad	0,0
+	.long	1
+	.quad	INIT_$GLOBAL_$$_def0000000C$indirect
+	.quad	8
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL INIT_$GLOBAL_$$_TDLLARGS
-INIT_$GLOBAL_$$_TDLLARGS	DB	13,8
-		DB	"TDLLargs"
-	DQ	0
-	DD	16
-	DQ	0,0
-	DD	1
-	DQ	INIT_$GLOBAL_$$_def0000000C$indirect,8
+.section .rodata.n_RTTI_$GLOBAL_$$_def0000000C,"d"
+	.balign 8
+.globl	RTTI_$GLOBAL_$$_def0000000C
+RTTI_$GLOBAL_$$_def0000000C:
+	.byte	21,0
+	.quad	80
+	.quad	RTTI_$GLOBAL_$$_TDLLARGUMENTS$indirect
+	.long	-1
+	.quad	0
+	.byte	6
+	.ascii	"global"
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$GLOBAL_$$_def0000000C
-RTTI_$GLOBAL_$$_def0000000C	DB	21,0
-	DQ	80,RTTI_$GLOBAL_$$_TDLLARGUMENTS$indirect
-	DD	-1
-	DQ	0
-	DB	6
-		DB	"global"
+.section .rodata.n_RTTI_$GLOBAL_$$_TDLLARGS,"d"
+	.balign 8
+.globl	RTTI_$GLOBAL_$$_TDLLARGS
+RTTI_$GLOBAL_$$_TDLLARGS:
+	.byte	13,8
+	.ascii	"TDLLargs"
+	.quad	INIT_$GLOBAL_$$_TDLLARGS
+	.long	16,2
+	.quad	RTTI_$SYSTEM_$$_LONGINT$indirect
+	.quad	0
+	.quad	RTTI_$GLOBAL_$$_def0000000C$indirect
+	.quad	8
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$GLOBAL_$$_TDLLARGS
-RTTI_$GLOBAL_$$_TDLLARGS	DB	13,8
-		DB	"TDLLargs"
-	DQ	INIT_$GLOBAL_$$_TDLLARGS
-	DD	16,2
-	DQ	RTTI_$SYSTEM_$$_LONGINT$indirect,0,RTTI_$GLOBAL_$$_def0000000C$indirect
-	DQ	8
+.section .rodata.n_RTTI_$GLOBAL_$$_PDLLARGS,"d"
+	.balign 8
+.globl	RTTI_$GLOBAL_$$_PDLLARGS
+RTTI_$GLOBAL_$$_PDLLARGS:
+	.byte	29,8
+	.ascii	"PDLLargs"
+	.quad	RTTI_$GLOBAL_$$_TDLLARGS$indirect
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$GLOBAL_$$_PDLLARGS
-RTTI_$GLOBAL_$$_PDLLARGS	DB	29,8
-		DB	"PDLLargs"
-	DQ	RTTI_$GLOBAL_$$_TDLLARGS$indirect
+.section .rodata.n_INIT_$GLOBAL_$$_TDLLREQUEST,"d"
+	.balign 8
+.globl	INIT_$GLOBAL_$$_TDLLREQUEST
+INIT_$GLOBAL_$$_TDLLREQUEST:
+	.byte	13,11
+	.ascii	"TDLLrequest"
+	.quad	0
+	.long	88
+	.quad	0,0
+	.long	1
+	.quad	INIT_$GLOBAL_$$_TDLLARGS$indirect
+	.quad	72
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL INIT_$GLOBAL_$$_TDLLREQUEST
-INIT_$GLOBAL_$$_TDLLREQUEST	DB	13,11
-		DB	"TDLLrequest"
-	DQ	0
-	DD	88
-	DQ	0,0
-	DD	1
-	DQ	INIT_$GLOBAL_$$_TDLLARGS$indirect,72
+.section .rodata.n_RTTI_$GLOBAL_$$_TDLLREQUEST,"d"
+	.balign 8
+.globl	RTTI_$GLOBAL_$$_TDLLREQUEST
+RTTI_$GLOBAL_$$_TDLLREQUEST:
+	.byte	13,11
+	.ascii	"TDLLrequest"
+	.quad	INIT_$GLOBAL_$$_TDLLREQUEST
+	.long	88,3
+	.quad	RTTI_$SYSTEM_$$_LONGINT$indirect
+	.quad	0
+	.quad	RTTI_$GLOBAL_$$_TDLLERROR$indirect
+	.quad	8
+	.quad	RTTI_$GLOBAL_$$_TDLLARGS$indirect
+	.quad	72
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$GLOBAL_$$_TDLLREQUEST
-RTTI_$GLOBAL_$$_TDLLREQUEST	DB	13,11
-		DB	"TDLLrequest"
-	DQ	INIT_$GLOBAL_$$_TDLLREQUEST
-	DD	88,3
-	DQ	RTTI_$SYSTEM_$$_LONGINT$indirect,0,RTTI_$GLOBAL_$$_TDLLERROR$indirect
-	DQ	8,RTTI_$GLOBAL_$$_TDLLARGS$indirect,72
+.section .rodata.n_RTTI_$GLOBAL_$$_PDLLREQUEST,"d"
+	.balign 8
+.globl	RTTI_$GLOBAL_$$_PDLLREQUEST
+RTTI_$GLOBAL_$$_PDLLREQUEST:
+	.byte	29,11
+	.ascii	"PDLLrequest"
+	.quad	RTTI_$GLOBAL_$$_TDLLREQUEST$indirect
+# End asmlist al_rtti
+# Begin asmlist al_indirectglobals
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$GLOBAL_$$_PDLLREQUEST
-RTTI_$GLOBAL_$$_PDLLREQUEST	DB	29,11
-		DB	"PDLLrequest"
-	DQ	RTTI_$GLOBAL_$$_TDLLREQUEST$indirect
-; End asmlist al_rtti
-; Begin asmlist al_indirectglobals
+.section .rodata.n_INIT_$GLOBAL_$$_TDLLERROR,"d"
+	.balign 8
+.globl	INIT_$GLOBAL_$$_TDLLERROR$indirect
+INIT_$GLOBAL_$$_TDLLERROR$indirect:
+	.quad	INIT_$GLOBAL_$$_TDLLERROR
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL INIT_$GLOBAL_$$_TDLLERROR$indirect
-INIT_$GLOBAL_$$_TDLLERROR$indirect	DQ	INIT_$GLOBAL_$$_TDLLERROR
+.section .rodata.n_RTTI_$GLOBAL_$$_def00000006,"d"
+	.balign 8
+.globl	RTTI_$GLOBAL_$$_def00000006$indirect
+RTTI_$GLOBAL_$$_def00000006$indirect:
+	.quad	RTTI_$GLOBAL_$$_def00000006
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$GLOBAL_$$_def00000006$indirect
-RTTI_$GLOBAL_$$_def00000006$indirect	DQ	RTTI_$GLOBAL_$$_def00000006
+.section .rodata.n_RTTI_$GLOBAL_$$_TDLLERROR,"d"
+	.balign 8
+.globl	RTTI_$GLOBAL_$$_TDLLERROR$indirect
+RTTI_$GLOBAL_$$_TDLLERROR$indirect:
+	.quad	RTTI_$GLOBAL_$$_TDLLERROR
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$GLOBAL_$$_TDLLERROR$indirect
-RTTI_$GLOBAL_$$_TDLLERROR$indirect	DQ	RTTI_$GLOBAL_$$_TDLLERROR
+.section .rodata.n_RTTI_$GLOBAL_$$_PDLLERROR,"d"
+	.balign 8
+.globl	RTTI_$GLOBAL_$$_PDLLERROR$indirect
+RTTI_$GLOBAL_$$_PDLLERROR$indirect:
+	.quad	RTTI_$GLOBAL_$$_PDLLERROR
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$GLOBAL_$$_PDLLERROR$indirect
-RTTI_$GLOBAL_$$_PDLLERROR$indirect	DQ	RTTI_$GLOBAL_$$_PDLLERROR
+.section .rodata.n_INIT_$GLOBAL_$$_TDLLARGUMENTS,"d"
+	.balign 8
+.globl	INIT_$GLOBAL_$$_TDLLARGUMENTS$indirect
+INIT_$GLOBAL_$$_TDLLARGUMENTS$indirect:
+	.quad	INIT_$GLOBAL_$$_TDLLARGUMENTS
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL INIT_$GLOBAL_$$_TDLLARGUMENTS$indirect
-INIT_$GLOBAL_$$_TDLLARGUMENTS$indirect	DQ	INIT_$GLOBAL_$$_TDLLARGUMENTS
+.section .rodata.n_RTTI_$GLOBAL_$$_def00000009,"d"
+	.balign 8
+.globl	RTTI_$GLOBAL_$$_def00000009$indirect
+RTTI_$GLOBAL_$$_def00000009$indirect:
+	.quad	RTTI_$GLOBAL_$$_def00000009
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$GLOBAL_$$_def00000009$indirect
-RTTI_$GLOBAL_$$_def00000009$indirect	DQ	RTTI_$GLOBAL_$$_def00000009
+.section .rodata.n_RTTI_$GLOBAL_$$_TDLLARGUMENTS,"d"
+	.balign 8
+.globl	RTTI_$GLOBAL_$$_TDLLARGUMENTS$indirect
+RTTI_$GLOBAL_$$_TDLLARGUMENTS$indirect:
+	.quad	RTTI_$GLOBAL_$$_TDLLARGUMENTS
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$GLOBAL_$$_TDLLARGUMENTS$indirect
-RTTI_$GLOBAL_$$_TDLLARGUMENTS$indirect	DQ	RTTI_$GLOBAL_$$_TDLLARGUMENTS
+.section .rodata.n_RTTI_$GLOBAL_$$_PDLLARGUMENTS,"d"
+	.balign 8
+.globl	RTTI_$GLOBAL_$$_PDLLARGUMENTS$indirect
+RTTI_$GLOBAL_$$_PDLLARGUMENTS$indirect:
+	.quad	RTTI_$GLOBAL_$$_PDLLARGUMENTS
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$GLOBAL_$$_PDLLARGUMENTS$indirect
-RTTI_$GLOBAL_$$_PDLLARGUMENTS$indirect	DQ	RTTI_$GLOBAL_$$_PDLLARGUMENTS
+.section .rodata.n_INIT_$GLOBAL_$$_def0000000C,"d"
+	.balign 8
+.globl	INIT_$GLOBAL_$$_def0000000C$indirect
+INIT_$GLOBAL_$$_def0000000C$indirect:
+	.quad	INIT_$GLOBAL_$$_def0000000C
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL INIT_$GLOBAL_$$_def0000000C$indirect
-INIT_$GLOBAL_$$_def0000000C$indirect	DQ	INIT_$GLOBAL_$$_def0000000C
+.section .rodata.n_INIT_$GLOBAL_$$_TDLLARGS,"d"
+	.balign 8
+.globl	INIT_$GLOBAL_$$_TDLLARGS$indirect
+INIT_$GLOBAL_$$_TDLLARGS$indirect:
+	.quad	INIT_$GLOBAL_$$_TDLLARGS
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL INIT_$GLOBAL_$$_TDLLARGS$indirect
-INIT_$GLOBAL_$$_TDLLARGS$indirect	DQ	INIT_$GLOBAL_$$_TDLLARGS
+.section .rodata.n_RTTI_$GLOBAL_$$_def0000000C,"d"
+	.balign 8
+.globl	RTTI_$GLOBAL_$$_def0000000C$indirect
+RTTI_$GLOBAL_$$_def0000000C$indirect:
+	.quad	RTTI_$GLOBAL_$$_def0000000C
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$GLOBAL_$$_def0000000C$indirect
-RTTI_$GLOBAL_$$_def0000000C$indirect	DQ	RTTI_$GLOBAL_$$_def0000000C
+.section .rodata.n_RTTI_$GLOBAL_$$_TDLLARGS,"d"
+	.balign 8
+.globl	RTTI_$GLOBAL_$$_TDLLARGS$indirect
+RTTI_$GLOBAL_$$_TDLLARGS$indirect:
+	.quad	RTTI_$GLOBAL_$$_TDLLARGS
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$GLOBAL_$$_TDLLARGS$indirect
-RTTI_$GLOBAL_$$_TDLLARGS$indirect	DQ	RTTI_$GLOBAL_$$_TDLLARGS
+.section .rodata.n_RTTI_$GLOBAL_$$_PDLLARGS,"d"
+	.balign 8
+.globl	RTTI_$GLOBAL_$$_PDLLARGS$indirect
+RTTI_$GLOBAL_$$_PDLLARGS$indirect:
+	.quad	RTTI_$GLOBAL_$$_PDLLARGS
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$GLOBAL_$$_PDLLARGS$indirect
-RTTI_$GLOBAL_$$_PDLLARGS$indirect	DQ	RTTI_$GLOBAL_$$_PDLLARGS
+.section .rodata.n_INIT_$GLOBAL_$$_TDLLREQUEST,"d"
+	.balign 8
+.globl	INIT_$GLOBAL_$$_TDLLREQUEST$indirect
+INIT_$GLOBAL_$$_TDLLREQUEST$indirect:
+	.quad	INIT_$GLOBAL_$$_TDLLREQUEST
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL INIT_$GLOBAL_$$_TDLLREQUEST$indirect
-INIT_$GLOBAL_$$_TDLLREQUEST$indirect	DQ	INIT_$GLOBAL_$$_TDLLREQUEST
+.section .rodata.n_RTTI_$GLOBAL_$$_TDLLREQUEST,"d"
+	.balign 8
+.globl	RTTI_$GLOBAL_$$_TDLLREQUEST$indirect
+RTTI_$GLOBAL_$$_TDLLREQUEST$indirect:
+	.quad	RTTI_$GLOBAL_$$_TDLLREQUEST
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$GLOBAL_$$_TDLLREQUEST$indirect
-RTTI_$GLOBAL_$$_TDLLREQUEST$indirect	DQ	RTTI_$GLOBAL_$$_TDLLREQUEST
+.section .rodata.n_RTTI_$GLOBAL_$$_PDLLREQUEST,"d"
+	.balign 8
+.globl	RTTI_$GLOBAL_$$_PDLLREQUEST$indirect
+RTTI_$GLOBAL_$$_PDLLREQUEST$indirect:
+	.quad	RTTI_$GLOBAL_$$_PDLLREQUEST
+# End asmlist al_indirectglobals
+# Begin asmlist al_dwarf_frame
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$GLOBAL_$$_PDLLREQUEST$indirect
-RTTI_$GLOBAL_$$_PDLLREQUEST$indirect	DQ	RTTI_$GLOBAL_$$_PDLLREQUEST
-; End asmlist al_indirectglobals
-; Begin asmlist al_dwarf_frame
-
-SECTION .debug_frame
-	DD	..@c3-..@c2
-..@c2:
-	DD	-1
-	DB	1,0
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_SLEB128BIT	
-	DB	16,12
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	5
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c3:
-; End asmlist al_dwarf_frame
+.section .debug_frame
+	.long	.Lc3-.Lc2
+.Lc2:
+	.long	-1
+	.byte	1
+	.byte	0
+	.uleb128	1
+	.sleb128	-4
+	.byte	16
+	.byte	12
+	.uleb128	7
+	.uleb128	8
+	.byte	5
+	.uleb128	16
+	.uleb128	2
+	.balign 4,0
+.Lc3:
+# End asmlist al_dwarf_frame
 

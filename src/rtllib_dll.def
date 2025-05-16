@@ -145,6 +145,6 @@ EXPORTS
     TRTL_Create
     TRTL_Destroy
 
-    TApplication__Create
+    TAPPLICATION_CREATE
     TApplication__Destroy
     

@@ -1,671 +1,700 @@
-BITS 64
-default rel
-CPU x64
+	.file "QApplicationPascal.pas"
+# Begin asmlist al_procedures
 
-EXTERN	SYSTEM_$$_SHOWMESSAGE$PCHAR
-EXTERN	_$dll$kernel32$ExitProcess
-EXTERN	fpc_get_output
-EXTERN	fpc_write_text_shortstr
-EXTERN	fpc_writeln_end
-EXTERN	SYSTEM$_$TOBJECT_$__$$_FREE
-EXTERN	_$dll$kernel32$GetCommandLineA
-EXTERN	SYSUTILS_$$_COMMANDLINETOARGVA$PANSICHAR$LONGINT$$PPANSICHAR
-EXTERN	_$dll$user32$MessageBoxA
-EXTERN	_$dll$rtllib$StrAlloc
-EXTERN	SYSUTILS_$$_STRCOPY$PCHAR$PCHAR$$PCHAR
-EXTERN	SYSUTILS_$$_INTTOSTR$LONGINT$$PCHAR
-EXTERN	SYSUTILS_$$_STRCAT$PCHAR$PCHAR$$PCHAR
-EXTERN	SYSUTILS_$$_STRDISPOSE$PCHAR
-EXTERN	fpc_reraise
-EXTERN	FPC_DONEEXCEPTION
-EXTERN	VMT_$SYSTEM_$$_TOBJECT$indirect
-EXTERN	SYSTEM$_$TOBJECT_$__$$_DESTROY
-EXTERN	SYSTEM$_$TOBJECT_$__$$_NEWINSTANCE$$TOBJECT
-EXTERN	SYSTEM$_$TOBJECT_$__$$_FREEINSTANCE
-EXTERN	SYSTEM$_$TOBJECT_$__$$_SAFECALLEXCEPTION$TOBJECT$POINTER$$HRESULT
-EXTERN	FPC_EMPTYMETHOD
-EXTERN	RTTI_$SYSTEM_$$_TOBJECT$indirect
-; Begin asmlist al_procedures
-
-SECTION .text
-	GLOBAL QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE$TAPPLICATION$$TAPPLICATION
+.section .text.n_qapplicationpascal_$$_tapplication_create$tapplication$$tapplication,"x"
+	.balign 16,0x90
+.globl	QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE$TAPPLICATION$$TAPPLICATION
 QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE$TAPPLICATION$$TAPPLICATION:
-	GLOBAL TApplication_Create
+.globl	TApplication_Create
 TApplication_Create:
-..@c1:
-; [QApplicationPascal.pas]
-; [79] begin
-%LINE 79+0 QApplicationPascal.pas
-		push	rbx
-		push	rsi
-		lea	rsp,[rsp-40]
-..@c3:
-; Var $result located in register rax
-		mov	rbx,rcx
-; Var p located in register rbx
-; [80] if p = nil then
-%LINE 80+0
-		test	rcx,rcx
-		jne	..@j6
-; [82] ShowMessage('Error: could not access TApplication.');
-%LINE 82+0
-		lea	rcx,[_$QAPPLICATIONPASCAL$_Ld1]
-		call	SYSTEM_$$_SHOWMESSAGE$PCHAR
-; [83] ExitProcess(1)
-%LINE 83+0
-		mov	ecx,1
-		call	_$dll$kernel32$ExitProcess
-..@j6:
-; [85] writeln('__init__');
-%LINE 85+0
-		call	fpc_get_output
-		mov	rsi,rax
-		lea	r8,[_$QAPPLICATIONPASCAL$_Ld2]
-		mov	rdx,rsi
-		xor	ecx,ecx
-		call	fpc_write_text_shortstr
-		mov	rcx,rsi
-		call	fpc_writeln_end
-; Var $result located in register rax
-; [86] Exit(p);
-%LINE 86+0
-		mov	rax,rbx
-; Var p located in register rax
-; [87] end;
-%LINE 87+0
-		nop
-		lea	rsp,[rsp+40]
-		pop	rsi
-		pop	rbx
-		ret
-..@c2:
+.Lc1:
+.seh_proc QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE$TAPPLICATION$$TAPPLICATION
+# [QApplicationPascal.pas]
+# [79] begin
+	pushq	%rbx
+.seh_pushreg %rbx
+	pushq	%rsi
+.seh_pushreg %rsi
+	leaq	-40(%rsp),%rsp
+.Lc3:
+.seh_stackalloc 40
+.seh_endprologue
+# Var $result located in register rax
+	movq	%rcx,%rbx
+# Var p located in register rbx
+# [80] if p = nil then
+	testq	%rcx,%rcx
+	jne	.Lj6
+# [82] ShowMessage('Error: could not access TApplication.');
+	leaq	_$QAPPLICATIONPASCAL$_Ld1(%rip),%rcx
+	call	SYSTEM_$$_SHOWMESSAGE$PCHAR
+# [83] ExitProcess(1)
+	movl	$1,%ecx
+	call	_$dll$kernel32$ExitProcess
+	.balign 4,0x90
+.Lj6:
+# [85] writeln('__init__');
+	call	fpc_get_output
+	movq	%rax,%rsi
+	leaq	_$QAPPLICATIONPASCAL$_Ld2(%rip),%r8
+	movq	%rsi,%rdx
+	xorl	%ecx,%ecx
+	call	fpc_write_text_shortstr
+	movq	%rsi,%rcx
+	call	fpc_writeln_end
+# Var $result located in register rax
+# [86] Exit(p);
+	movq	%rbx,%rax
+# Var p located in register rax
+# [87] end;
+	nop
+	leaq	40(%rsp),%rsp
+	popq	%rsi
+	popq	%rbx
+	ret
+.seh_endproc
+.Lc2:
 
-SECTION .text
-	GLOBAL QAPPLICATIONPASCAL_$$_TAPPLICATION_DESTROY$TAPPLICATION
+.section .text.n_qapplicationpascal_$$_tapplication_destroy$tapplication,"x"
+	.balign 16,0x90
+.globl	QAPPLICATIONPASCAL_$$_TAPPLICATION_DESTROY$TAPPLICATION
 QAPPLICATIONPASCAL_$$_TAPPLICATION_DESTROY$TAPPLICATION:
-	GLOBAL TApplication_Destroy
+.globl	TApplication_Destroy
 TApplication_Destroy:
-..@c4:
-; [89] begin
-%LINE 89+0
-		push	rbx
-		push	rsi
-		lea	rsp,[rsp-40]
-..@c6:
-		mov	rbx,rcx
-; Var P located in register rbx
-; [90] writeln('delter');
-%LINE 90+0
-		call	fpc_get_output
-		mov	rsi,rax
-		lea	r8,[_$QAPPLICATIONPASCAL$_Ld3]
-		mov	rdx,rsi
-		xor	ecx,ecx
-		call	fpc_write_text_shortstr
-		mov	rcx,rsi
-		call	fpc_writeln_end
-; [91] p.Free;
-%LINE 91+0
-		mov	rcx,rbx
-; Var P located in register rcx
-		call	SYSTEM$_$TOBJECT_$__$$_FREE
-; [92] end;
-%LINE 92+0
-		nop
-		lea	rsp,[rsp+40]
-		pop	rsi
-		pop	rbx
-		ret
-..@c5:
+.Lc4:
+.seh_proc QAPPLICATIONPASCAL_$$_TAPPLICATION_DESTROY$TAPPLICATION
+# [89] begin
+	pushq	%rbx
+.seh_pushreg %rbx
+	pushq	%rsi
+.seh_pushreg %rsi
+	leaq	-40(%rsp),%rsp
+.Lc6:
+.seh_stackalloc 40
+.seh_endprologue
+	movq	%rcx,%rbx
+# Var P located in register rbx
+# [90] writeln('delter');
+	call	fpc_get_output
+	movq	%rax,%rsi
+	leaq	_$QAPPLICATIONPASCAL$_Ld3(%rip),%r8
+	movq	%rsi,%rdx
+	xorl	%ecx,%ecx
+	call	fpc_write_text_shortstr
+	movq	%rsi,%rcx
+	call	fpc_writeln_end
+# [91] p.Free;
+	movq	%rbx,%rcx
+# Var P located in register rcx
+	call	SYSTEM$_$TOBJECT_$__$$_FREE
+# [92] end;
+	nop
+	leaq	40(%rsp),%rsp
+	popq	%rsi
+	popq	%rbx
+	ret
+.seh_endproc
+.Lc5:
 
-SECTION .text
-	GLOBAL QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE2$TAPPLICATION$LONGINT$PPCHAR$$TAPPLICATION
+.section .text.n_qapplicationpascal_$$_tapplication_create2$tapplication$longint$ppchar$$tapplication,"x"
+	.balign 16,0x90
+.globl	QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE2$TAPPLICATION$LONGINT$PPCHAR$$TAPPLICATION
 QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE2$TAPPLICATION$LONGINT$PPCHAR$$TAPPLICATION:
-	GLOBAL TApplication_Create2
+.globl	TApplication_Create2
 TApplication_Create2:
-..@c7:
-; [102] begin
-%LINE 102+0
-		push	rbx
-		push	rsi
-		lea	rsp,[rsp-56]
-..@c9:
-; Var $result located in register rax
-; Var cmdline located in register rax
-; Var ArgsCount located at rsp+32, size=OS_S32
-; Var S located at rsp+40, size=OS_64
-; Var R located at rsp+48, size=OS_64
-; Var TotalLen located in register eax
-; Var I located in register eax
-; Var p located in register rcx
-; Var ArgCount located in register rdx
-		mov	rbx,r8
-; Var Args located in register rbx
-; [103] writeln('halplo');
-%LINE 103+0
-		call	fpc_get_output
-		mov	rsi,rax
-		lea	r8,[_$QAPPLICATIONPASCAL$_Ld4]
-		mov	rdx,rsi
-		xor	ecx,ecx
-		call	fpc_write_text_shortstr
-		mov	rcx,rsi
-		call	fpc_writeln_end
-; [105] CmdLine := GetCommandLineA;
-%LINE 105+0
-		call	_$dll$kernel32$GetCommandLineA
-		mov	rcx,rax
-; Var cmdline located in register rcx
-; [106] Args    := CommandLineToArgvA(CmdLine, ArgsCount);
-%LINE 106+0
-		lea	rdx,[rsp+32]
-; Var cmdline located in register rcx
-		call	SYSUTILS_$$_COMMANDLINETOARGVA$PANSICHAR$LONGINT$$PPANSICHAR
-		mov	qword [rbx],rax
-; [108] if Args = nil then
-%LINE 108+0
-		test	rax,rax
-		jne	..@j12
-; [110] MessageBoxA(0,'Error: can not parse command line.', 'Error', MB_OK);
-%LINE 110+0
-		xor	r9d,r9d
-		lea	r8,[_$QAPPLICATIONPASCAL$_Ld5]
-		lea	rdx,[_$QAPPLICATIONPASCAL$_Ld6]
-		xor	ecx,ecx
-		call	_$dll$user32$MessageBoxA
-; [111] ExitProcess(1);
-%LINE 111+0
-		mov	ecx,1
-		call	_$dll$kernel32$ExitProcess
-..@j12:
-; Var TotalLen located in register ecx
-; [114] TotalLen := 128;
-%LINE 114+0
-		mov	ecx,128
-; [116] R := StrAlloc(TotalLen);
-%LINE 116+0
-		call	_$dll$rtllib$StrAlloc
-		mov	qword [rsp+48],rax
-; [117] S := StrAlloc(16);
-%LINE 117+0
-		mov	ecx,16
-		call	_$dll$rtllib$StrAlloc
-		mov	qword [rsp+40],rax
-; [121] StrCopy(R, 'Count of Parameters: ');
-%LINE 121+0
-		lea	rcx,[rsp+48]
-		lea	rdx,[_$QAPPLICATIONPASCAL$_Ld7]
-		call	SYSUTILS_$$_STRCOPY$PCHAR$PCHAR$$PCHAR
-; [122] StrCopy(S, IntToStr(ArgsCount));
-%LINE 122+0
-		mov	ecx,dword [rsp+32]
-		call	SYSUTILS_$$_INTTOSTR$LONGINT$$PCHAR
-		mov	rdx,rax
-		lea	rcx,[rsp+40]
-		call	SYSUTILS_$$_STRCOPY$PCHAR$PCHAR$$PCHAR
-; [124] MessageBoxA(0, R, '222  11  222', 0);
-%LINE 124+0
-		mov	rdx,qword [rsp+48]
-		xor	r9d,r9d
-		lea	r8,[_$QAPPLICATIONPASCAL$_Ld8]
-		xor	ecx,ecx
-		call	_$dll$user32$MessageBoxA
-; [125] MessageBoxA(0, S, '222  11  222', 0);
-%LINE 125+0
-		mov	rdx,qword [rsp+40]
-		xor	r9d,r9d
-		lea	r8,[_$QAPPLICATIONPASCAL$_Ld8]
-		xor	ecx,ecx
-		call	_$dll$user32$MessageBoxA
-; [127] StrCat (R, S);
-%LINE 127+0
-		mov	rdx,qword [rsp+40]
-		lea	rcx,[rsp+48]
-		call	SYSUTILS_$$_STRCAT$PCHAR$PCHAR$$PCHAR
-; [129] MessageBoxA(0, R, '222  11  222', 0);
-%LINE 129+0
-		mov	rdx,qword [rsp+48]
-		xor	r9d,r9d
-		lea	r8,[_$QAPPLICATIONPASCAL$_Ld8]
-		xor	ecx,ecx
-		call	_$dll$user32$MessageBoxA
-; [131] StrDispose(R);
-%LINE 131+0
-		mov	rcx,qword [rsp+48]
-		call	SYSUTILS_$$_STRDISPOSE$PCHAR
-; [134] end;
-%LINE 134+0
-		nop
-		lea	rsp,[rsp+56]
-		pop	rsi
-		pop	rbx
-		ret
-..@c8:
+.Lc7:
+.seh_proc QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE2$TAPPLICATION$LONGINT$PPCHAR$$TAPPLICATION
+# [102] begin
+	pushq	%rbx
+.seh_pushreg %rbx
+	pushq	%rsi
+.seh_pushreg %rsi
+	leaq	-56(%rsp),%rsp
+.Lc9:
+.seh_stackalloc 56
+.seh_endprologue
+# Var $result located in register rax
+# Var cmdline located in register rax
+# Var ArgsCount located at rsp+32, size=OS_S32
+# Var S located at rsp+40, size=OS_64
+# Var R located at rsp+48, size=OS_64
+# Var TotalLen located in register eax
+# Var I located in register eax
+# Var p located in register rcx
+# Var ArgCount located in register rdx
+	movq	%r8,%rbx
+# Var Args located in register rbx
+# [103] writeln('halplo');
+	call	fpc_get_output
+	movq	%rax,%rsi
+	leaq	_$QAPPLICATIONPASCAL$_Ld4(%rip),%r8
+	movq	%rsi,%rdx
+	xorl	%ecx,%ecx
+	call	fpc_write_text_shortstr
+	movq	%rsi,%rcx
+	call	fpc_writeln_end
+# [105] CmdLine := GetCommandLineA;
+	call	_$dll$kernel32$GetCommandLineA
+	movq	%rax,%rcx
+# Var cmdline located in register rcx
+# [106] Args    := CommandLineToArgvA(CmdLine, ArgsCount);
+	leaq	32(%rsp),%rdx
+# Var cmdline located in register rcx
+	call	SYSUTILS_$$_COMMANDLINETOARGVA$PANSICHAR$LONGINT$$PPANSICHAR
+	movq	%rax,(%rbx)
+# [108] if Args = nil then
+	testq	%rax,%rax
+	jne	.Lj12
+# [110] MessageBoxA(0,'Error: can not parse command line.', 'Error', MB_OK);
+	xorl	%r9d,%r9d
+	leaq	_$QAPPLICATIONPASCAL$_Ld5(%rip),%r8
+	leaq	_$QAPPLICATIONPASCAL$_Ld6(%rip),%rdx
+	xorl	%ecx,%ecx
+	call	_$dll$user32$MessageBoxA
+# [111] ExitProcess(1);
+	movl	$1,%ecx
+	call	_$dll$kernel32$ExitProcess
+	.balign 4,0x90
+.Lj12:
+# Var TotalLen located in register ecx
+# [114] TotalLen := 128;
+	movl	$128,%ecx
+# [116] R := StrAlloc(TotalLen);
+	call	_$dll$rtllib$StrAlloc
+	movq	%rax,48(%rsp)
+# [117] S := StrAlloc(16);
+	movl	$16,%ecx
+	call	_$dll$rtllib$StrAlloc
+	movq	%rax,40(%rsp)
+# [121] StrCopy(R, 'Count of Parameters: ');
+	leaq	48(%rsp),%rcx
+	leaq	_$QAPPLICATIONPASCAL$_Ld7(%rip),%rdx
+	call	SYSUTILS_$$_STRCOPY$PCHAR$PCHAR$$PCHAR
+# [122] StrCopy(S, IntToStr(ArgsCount));
+	movl	32(%rsp),%ecx
+	call	SYSUTILS_$$_INTTOSTR$LONGINT$$PCHAR
+	movq	%rax,%rdx
+	leaq	40(%rsp),%rcx
+	call	SYSUTILS_$$_STRCOPY$PCHAR$PCHAR$$PCHAR
+# [124] MessageBoxA(0, R, '222  11  222', 0);
+	movq	48(%rsp),%rdx
+	xorl	%r9d,%r9d
+	leaq	_$QAPPLICATIONPASCAL$_Ld8(%rip),%r8
+	xorl	%ecx,%ecx
+	call	_$dll$user32$MessageBoxA
+# [125] MessageBoxA(0, S, '222  11  222', 0);
+	movq	40(%rsp),%rdx
+	xorl	%r9d,%r9d
+	leaq	_$QAPPLICATIONPASCAL$_Ld8(%rip),%r8
+	xorl	%ecx,%ecx
+	call	_$dll$user32$MessageBoxA
+# [127] StrCat (R, S);
+	movq	40(%rsp),%rdx
+	leaq	48(%rsp),%rcx
+	call	SYSUTILS_$$_STRCAT$PCHAR$PCHAR$$PCHAR
+# [129] MessageBoxA(0, R, '222  11  222', 0);
+	movq	48(%rsp),%rdx
+	xorl	%r9d,%r9d
+	leaq	_$QAPPLICATIONPASCAL$_Ld8(%rip),%r8
+	xorl	%ecx,%ecx
+	call	_$dll$user32$MessageBoxA
+# [131] StrDispose(R);
+	movq	48(%rsp),%rcx
+	call	SYSUTILS_$$_STRDISPOSE$PCHAR
+# [134] end;
+	nop
+	leaq	56(%rsp),%rsp
+	popq	%rsi
+	popq	%rbx
+	ret
+.seh_endproc
+.Lc8:
 
-SECTION .text
-	GLOBAL QAPPLICATIONPASCAL$_$TAPPLICATION_$__$$_CREATE$$TAPPLICATION
+.section .text.n_qapplicationpascal$_$tapplication_$__$$_create$$tapplication,"x"
+	.balign 16,0x90
+.globl	QAPPLICATIONPASCAL$_$TAPPLICATION_$__$$_CREATE$$TAPPLICATION
 QAPPLICATIONPASCAL$_$TAPPLICATION_$__$$_CREATE$$TAPPLICATION:
-..@c10:
-; Temps allocated between rbp-32 and rbp-24
-; [138] begin
-%LINE 138+0
-		push	rbp
-..@c12:
-..@c13:
-		mov	rbp,rsp
-..@c14:
-		lea	rsp,[rsp-64]
-		mov	qword [rbp-32],rbx
-; Var $vmt located at rbp-8, size=OS_64
-; Var $self located at rbp-16, size=OS_64
-; Var $vmt_afterconstruction_local located at rbp-24, size=OS_S64
-		mov	qword [rbp-16],rcx
-		mov	qword [rbp-8],rdx
-		cmp	rdx,1
-		jne	..@j16
-		mov	rax,qword [rbp-16]
-		mov	rdx,qword [rbp-16]
-		mov	rcx,rax
-		call	[rdx+104]
-		mov	qword [rbp-16],rax
-..@j16:
-		cmp	qword [rbp-16],0
-		je	..@j13
-..@j24:
-		nop
-..@j23:
-		mov	qword [rbp-24],-1
-; [139] writeln('cccccc');
-%LINE 139+0
-		call	fpc_get_output
-		mov	rbx,rax
-		lea	r8,[_$QAPPLICATIONPASCAL$_Ld9]
-		mov	rdx,rbx
-		xor	ecx,ecx
-		call	fpc_write_text_shortstr
-		mov	rcx,rbx
-		call	fpc_writeln_end
-; [141] TApplication_Create(self);
-%LINE 141+0
-		mov	rcx,qword [rbp-16]
-		call	QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE$TAPPLICATION$$TAPPLICATION
-; [142] end;
-%LINE 142+0
-		mov	qword [rbp-24],1
-		cmp	qword [rbp-16],0
-		je	..@j21
-		cmp	qword [rbp-8],0
-		je	..@j21
-		mov	rcx,qword [rbp-16]
-		mov	rax,qword [rbp-16]
-		mov	rax,qword [rax]
-		call	[rax+128]
-%LINE 138+0
-		jmp	..@j21
-..@j20:
-%LINE 142+0
-		cmp	qword [rbp-8],0
-		je	..@j30
-		mov	rdx,qword [rbp-24]
-		mov	rcx,qword [rbp-16]
-		call	QAPPLICATIONPASCAL$_$TAPPLICATION_$__$$_DESTROY
-..@j30:
-		call	fpc_reraise
-%LINE 138+0
-		call	FPC_DONEEXCEPTION
-..@j31:
-		nop
-..@j21:
-..@j13:
-%LINE 142+0
-		mov	rax,qword [rbp-16]
-		mov	rbx,qword [rbp-32]
-		lea	rsp,[rbp]
-		pop	rbp
-		ret
-	DD	1,1
+.Lc10:
+# Temps allocated between rbp-32 and rbp-24
+.seh_proc QAPPLICATIONPASCAL$_$TAPPLICATION_$__$$_CREATE$$TAPPLICATION
+# [138] begin
+	pushq	%rbp
+.seh_pushreg %rbp
+.Lc12:
+.Lc13:
+	movq	%rsp,%rbp
+.Lc14:
+	leaq	-64(%rsp),%rsp
+.seh_stackalloc 64
+	movq	%rbx,-32(%rbp)
+.seh_savereg %rbx, 32
+.seh_endprologue
+# Var $vmt located at rbp-8, size=OS_64
+# Var $self located at rbp-16, size=OS_64
+# Var $vmt_afterconstruction_local located at rbp-24, size=OS_S64
+	movq	%rcx,-16(%rbp)
+	movq	%rdx,-8(%rbp)
+	cmpq	$1,%rdx
+	jne	.Lj16
+	movq	-16(%rbp),%rax
+	movq	-16(%rbp),%rdx
+	movq	%rax,%rcx
+	call	*104(%rdx)
+	movq	%rax,-16(%rbp)
+	.balign 4,0x90
+.Lj16:
+	cmpq	$0,-16(%rbp)
+	je	.Lj13
+	.balign 4,0x90
+.Lj24:
+	nop
+.Lj23:
+	movq	$-1,-24(%rbp)
+# [139] writeln('cccccc');
+	call	fpc_get_output
+	movq	%rax,%rbx
+	leaq	_$QAPPLICATIONPASCAL$_Ld9(%rip),%r8
+	movq	%rbx,%rdx
+	xorl	%ecx,%ecx
+	call	fpc_write_text_shortstr
+	movq	%rbx,%rcx
+	call	fpc_writeln_end
+# [141] TAPPLICATION_CREATE(self);
+	movq	-16(%rbp),%rcx
+	call	QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE$TAPPLICATION$$TAPPLICATION
+# [142] end;
+	movq	$1,-24(%rbp)
+	cmpq	$0,-16(%rbp)
+	je	.Lj21
+	cmpq	$0,-8(%rbp)
+	je	.Lj21
+	movq	-16(%rbp),%rcx
+	movq	-16(%rbp),%rax
+	movq	(%rax),%rax
+	call	*128(%rax)
+	.balign 4,0x90
+	jmp	.Lj21
+.Lj20:
+	cmpq	$0,-8(%rbp)
+	je	.Lj30
+	movq	-24(%rbp),%rdx
+	movq	-16(%rbp),%rcx
+	call	QAPPLICATIONPASCAL$_$TAPPLICATION_$__$$_DESTROY
+	.balign 4,0x90
+.Lj30:
+	call	fpc_reraise
+	call	FPC_DONEEXCEPTION
+.Lj31:
+	nop
+.Lj21:
+.Lj13:
+	movq	-16(%rbp),%rax
+	movq	-32(%rbp),%rbx
+	leaq	(%rbp),%rsp
+	popq	%rbp
+	ret
+.seh_handler __FPC_specific_handler,@except,@unwind
+.seh_handlerdata
+	.long	1
+	.long	1
+	.rva	.Lj23
+	.rva	.Lj20
+	.rva	.Lj21
 
-SECTION .text
-..@c11:
+.section .text.n_qapplicationpascal$_$tapplication_$__$$_create$$tapplication,"x"
+.seh_endproc
+.Lc11:
 
-SECTION .text
-	GLOBAL QAPPLICATIONPASCAL$_$TAPPLICATION_$__$$_CREATE$LONGINT$PPCHAR$$TAPPLICATION
+.section .text.n_qapplicationpascal$_$tapplication_$__$$_create$longint$ppchar$$tapplication,"x"
+	.balign 16,0x90
+.globl	QAPPLICATIONPASCAL$_$TAPPLICATION_$__$$_CREATE$LONGINT$PPCHAR$$TAPPLICATION
 QAPPLICATIONPASCAL$_$TAPPLICATION_$__$$_CREATE$LONGINT$PPCHAR$$TAPPLICATION:
-..@c15:
-; [145] begin
-%LINE 145+0
-		push	rbp
-..@c17:
-..@c18:
-		mov	rbp,rsp
-..@c19:
-		lea	rsp,[rsp-80]
-; Var ArgCount located at rbp-8, size=OS_64
-; Var Args located at rbp-16, size=OS_64
-; Var $vmt located at rbp-24, size=OS_64
-; Var $self located at rbp-32, size=OS_64
-; Var $vmt_afterconstruction_local located at rbp-40, size=OS_S64
-		mov	qword [rbp-32],rcx
-		mov	qword [rbp-24],rdx
-		mov	qword [rbp-8],r8
-		mov	qword [rbp-16],r9
-		cmp	qword [rbp-24],1
-		jne	..@j35
-		mov	rax,qword [rbp-32]
-		mov	rdx,qword [rbp-32]
-		mov	rcx,rax
-		call	[rdx+104]
-		mov	qword [rbp-32],rax
-..@j35:
-		cmp	qword [rbp-32],0
-		je	..@j32
-..@j43:
-		nop
-..@j42:
-		mov	qword [rbp-40],-1
-; [146] TApplication_Create2(self, ArgCount, Args);
-%LINE 146+0
-		mov	r8,qword [rbp-16]
-		mov	rdx,qword [rbp-8]
-		mov	rcx,qword [rbp-32]
-		call	QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE2$TAPPLICATION$LONGINT$PPCHAR$$TAPPLICATION
-; [147] end;
-%LINE 147+0
-		mov	qword [rbp-40],1
-		cmp	qword [rbp-32],0
-		je	..@j40
-		cmp	qword [rbp-24],0
-		je	..@j40
-		mov	rcx,qword [rbp-32]
-		mov	rax,qword [rbp-32]
-		mov	rax,qword [rax]
-		call	[rax+128]
-%LINE 145+0
-		jmp	..@j40
-..@j39:
-%LINE 147+0
-		cmp	qword [rbp-24],0
-		je	..@j49
-		mov	rdx,qword [rbp-40]
-		mov	rcx,qword [rbp-32]
-		call	QAPPLICATIONPASCAL$_$TAPPLICATION_$__$$_DESTROY
-..@j49:
-		call	fpc_reraise
-%LINE 145+0
-		call	FPC_DONEEXCEPTION
-..@j50:
-		nop
-..@j40:
-..@j32:
-%LINE 147+0
-		mov	rax,qword [rbp-32]
-		nop
-		lea	rsp,[rbp]
-		pop	rbp
-		ret
-	DD	1,1
+.Lc15:
+.seh_proc QAPPLICATIONPASCAL$_$TAPPLICATION_$__$$_CREATE$LONGINT$PPCHAR$$TAPPLICATION
+# [145] begin
+	pushq	%rbp
+.seh_pushreg %rbp
+.Lc17:
+.Lc18:
+	movq	%rsp,%rbp
+.Lc19:
+	leaq	-80(%rsp),%rsp
+.seh_stackalloc 80
+.seh_endprologue
+# Var ArgCount located at rbp-8, size=OS_64
+# Var Args located at rbp-16, size=OS_64
+# Var $vmt located at rbp-24, size=OS_64
+# Var $self located at rbp-32, size=OS_64
+# Var $vmt_afterconstruction_local located at rbp-40, size=OS_S64
+	movq	%rcx,-32(%rbp)
+	movq	%rdx,-24(%rbp)
+	movq	%r8,-8(%rbp)
+	movq	%r9,-16(%rbp)
+	cmpq	$1,-24(%rbp)
+	jne	.Lj35
+	movq	-32(%rbp),%rax
+	movq	-32(%rbp),%rdx
+	movq	%rax,%rcx
+	call	*104(%rdx)
+	movq	%rax,-32(%rbp)
+	.balign 4,0x90
+.Lj35:
+	cmpq	$0,-32(%rbp)
+	je	.Lj32
+	.balign 4,0x90
+.Lj43:
+	nop
+.Lj42:
+	movq	$-1,-40(%rbp)
+# [146] TApplication_Create2(self, ArgCount, Args);
+	movq	-16(%rbp),%r8
+	movq	-8(%rbp),%rdx
+	movq	-32(%rbp),%rcx
+	call	QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE2$TAPPLICATION$LONGINT$PPCHAR$$TAPPLICATION
+# [147] end;
+	movq	$1,-40(%rbp)
+	cmpq	$0,-32(%rbp)
+	je	.Lj40
+	cmpq	$0,-24(%rbp)
+	je	.Lj40
+	movq	-32(%rbp),%rcx
+	movq	-32(%rbp),%rax
+	movq	(%rax),%rax
+	call	*128(%rax)
+	.balign 4,0x90
+	jmp	.Lj40
+.Lj39:
+	cmpq	$0,-24(%rbp)
+	je	.Lj49
+	movq	-40(%rbp),%rdx
+	movq	-32(%rbp),%rcx
+	call	QAPPLICATIONPASCAL$_$TAPPLICATION_$__$$_DESTROY
+	.balign 4,0x90
+.Lj49:
+	call	fpc_reraise
+	call	FPC_DONEEXCEPTION
+.Lj50:
+	nop
+.Lj40:
+.Lj32:
+	movq	-32(%rbp),%rax
+	nop
+	leaq	(%rbp),%rsp
+	popq	%rbp
+	ret
+.seh_handler __FPC_specific_handler,@except,@unwind
+.seh_handlerdata
+	.long	1
+	.long	1
+	.rva	.Lj42
+	.rva	.Lj39
+	.rva	.Lj40
 
-SECTION .text
-..@c16:
+.section .text.n_qapplicationpascal$_$tapplication_$__$$_create$longint$ppchar$$tapplication,"x"
+.seh_endproc
+.Lc16:
 
-SECTION .text
-	GLOBAL QAPPLICATIONPASCAL$_$TAPPLICATION_$__$$_DESTROY
+.section .text.n_qapplicationpascal$_$tapplication_$__$$_destroy,"x"
+	.balign 16,0x90
+.globl	QAPPLICATIONPASCAL$_$TAPPLICATION_$__$$_DESTROY
 QAPPLICATIONPASCAL$_$TAPPLICATION_$__$$_DESTROY:
-..@c20:
-; [150] begin
-%LINE 150+0
-		push	rbx
-		push	rdi
-		push	rsi
-		lea	rsp,[rsp-32]
-..@c22:
-		mov	rbx,rcx
-; Var $self located in register rbx
-		mov	rsi,rdx
-; Var $vmt located in register rsi
-		test	rsi,rsi
-		jng	..@j54
-		mov	rcx,rbx
-		mov	rax,qword [rbx]
-		call	[rax+136]
-..@j54:
-; [151] writeln('destroyer');
-%LINE 151+0
-		call	fpc_get_output
-		mov	rdi,rax
-		lea	r8,[_$QAPPLICATIONPASCAL$_Ld10]
-		mov	rdx,rdi
-		xor	ecx,ecx
-		call	fpc_write_text_shortstr
-		mov	rcx,rdi
-		call	fpc_writeln_end
-; Var $self located in register rbx
-; [152] TApplication_Destroy(self);
-%LINE 152+0
-		mov	rcx,rbx
-		call	QAPPLICATIONPASCAL_$$_TAPPLICATION_DESTROY$TAPPLICATION
-; [154] end;
-%LINE 154+0
-		test	rbx,rbx
-		je	..@j56
-		test	rsi,rsi
-		je	..@j56
-		mov	rcx,rbx
-		mov	rax,qword [rbx]
-		call	[rax+112]
-..@j56:
-		nop
-		lea	rsp,[rsp+32]
-		pop	rsi
-		pop	rdi
-		pop	rbx
-		ret
-..@c21:
-; End asmlist al_procedures
-; Begin asmlist al_globals
+.Lc20:
+.seh_proc QAPPLICATIONPASCAL$_$TAPPLICATION_$__$$_DESTROY
+# [150] begin
+	pushq	%rbx
+.seh_pushreg %rbx
+	pushq	%rdi
+.seh_pushreg %rdi
+	pushq	%rsi
+.seh_pushreg %rsi
+	leaq	-32(%rsp),%rsp
+.Lc22:
+.seh_stackalloc 32
+.seh_endprologue
+	movq	%rcx,%rbx
+# Var $self located in register rbx
+	movq	%rdx,%rsi
+# Var $vmt located in register rsi
+	testq	%rsi,%rsi
+	jng	.Lj54
+	movq	%rbx,%rcx
+	movq	(%rbx),%rax
+	call	*136(%rax)
+	.balign 4,0x90
+.Lj54:
+# [151] writeln('destroyer');
+	call	fpc_get_output
+	movq	%rax,%rdi
+	leaq	_$QAPPLICATIONPASCAL$_Ld10(%rip),%r8
+	movq	%rdi,%rdx
+	xorl	%ecx,%ecx
+	call	fpc_write_text_shortstr
+	movq	%rdi,%rcx
+	call	fpc_writeln_end
+# Var $self located in register rbx
+# [152] TApplication_Destroy(self);
+	movq	%rbx,%rcx
+	call	QAPPLICATIONPASCAL_$$_TAPPLICATION_DESTROY$TAPPLICATION
+# [154] end;
+	testq	%rbx,%rbx
+	je	.Lj56
+	testq	%rsi,%rsi
+	je	.Lj56
+	movq	%rbx,%rcx
+	movq	(%rbx),%rax
+	call	*112(%rax)
+	.balign 4,0x90
+.Lj56:
+	nop
+	leaq	32(%rsp),%rsp
+	popq	%rsi
+	popq	%rdi
+	popq	%rbx
+	ret
+.seh_endproc
+.Lc21:
+# End asmlist al_procedures
+# Begin asmlist al_globals
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL VMT_$QAPPLICATIONPASCAL_$$_TAPPLICATION
-VMT_$QAPPLICATIONPASCAL_$$_TAPPLICATION	DQ	8,-8,VMT_$SYSTEM_$$_TOBJECT$indirect,..@d11,0,0,0,RTTI_$QAPPLICATIONPASCAL_$$_TAPPLICATION
-	DQ	0,0,0,0,SYSTEM$_$TOBJECT_$__$$_DESTROY,SYSTEM$_$TOBJECT_$__$$_NEWINSTANCE$$TOBJECT
-	DQ	SYSTEM$_$TOBJECT_$__$$_FREEINSTANCE,SYSTEM$_$TOBJECT_$__$$_SAFECALLEXCEPTION$TOBJECT$POINTER$$HRESULT
-	DQ	FPC_EMPTYMETHOD,FPC_EMPTYMETHOD,0
-; [157] end.
-%LINE 157+0 QApplicationPascal.pas
-; End asmlist al_globals
-; Begin asmlist al_const
+.section .rodata.n_VMT_$QAPPLICATIONPASCAL_$$_TAPPLICATION,"d"
+	.balign 8
+.globl	VMT_$QAPPLICATIONPASCAL_$$_TAPPLICATION
+VMT_$QAPPLICATIONPASCAL_$$_TAPPLICATION:
+	.quad	8,-8
+	.quad	VMT_$SYSTEM_$$_TOBJECT$indirect
+	.quad	.Ld11
+	.quad	0,0,0
+	.quad	RTTI_$QAPPLICATIONPASCAL_$$_TAPPLICATION
+	.quad	0,0,0,0
+	.quad	SYSTEM$_$TOBJECT_$__$$_DESTROY
+	.quad	SYSTEM$_$TOBJECT_$__$$_NEWINSTANCE$$TOBJECT
+	.quad	SYSTEM$_$TOBJECT_$__$$_FREEINSTANCE
+	.quad	SYSTEM$_$TOBJECT_$__$$_SAFECALLEXCEPTION$TOBJECT$POINTER$$HRESULT
+	.quad	FPC_EMPTYMETHOD
+	.quad	FPC_EMPTYMETHOD
+	.quad	0
+# [164] end.
+# End asmlist al_globals
+# Begin asmlist al_const
 
-SECTION .data
-	ALIGN 8,DB 0
-..@d11:
-	DB	12
-		DB	"TApplication"
-; End asmlist al_const
-; Begin asmlist al_typedconsts
+.section .rodata.n_VMT_$QAPPLICATIONPASCAL_$$_TAPPLICATION,"d"
+	.balign 8
+.Ld11:
+	.byte	12
+	.ascii	"TApplication"
+# End asmlist al_const
+# Begin asmlist al_typedconsts
 
-SECTION .rodata
+.section .rodata.n__$QAPPLICATIONPASCAL$_Ld1,"d"
+	.balign 8
+.globl	_$QAPPLICATIONPASCAL$_Ld1
 _$QAPPLICATIONPASCAL$_Ld1:
-%LINE 82+0 QApplicationPascal.pas
-		DB	"Error: could not access TApplication.",0
+	.ascii	"Error: could not access TApplication.\000"
 
-SECTION .rodata
+.section .rodata.n__$QAPPLICATIONPASCAL$_Ld2,"d"
+	.balign 8
+.globl	_$QAPPLICATIONPASCAL$_Ld2
 _$QAPPLICATIONPASCAL$_Ld2:
-%LINE 85+0
-		DB	8,"__init__",0
+	.ascii	"\010__init__\000"
 
-SECTION .rodata
+.section .rodata.n__$QAPPLICATIONPASCAL$_Ld3,"d"
+	.balign 8
+.globl	_$QAPPLICATIONPASCAL$_Ld3
 _$QAPPLICATIONPASCAL$_Ld3:
-%LINE 90+0
-		DB	6,"delter",0
+	.ascii	"\006delter\000"
 
-SECTION .rodata
+.section .rodata.n__$QAPPLICATIONPASCAL$_Ld4,"d"
+	.balign 8
+.globl	_$QAPPLICATIONPASCAL$_Ld4
 _$QAPPLICATIONPASCAL$_Ld4:
-%LINE 103+0
-		DB	6,"halplo",0
+	.ascii	"\006halplo\000"
 
-SECTION .rodata
+.section .rodata.n__$QAPPLICATIONPASCAL$_Ld5,"d"
+	.balign 8
+.globl	_$QAPPLICATIONPASCAL$_Ld5
 _$QAPPLICATIONPASCAL$_Ld5:
-%LINE 110+0
-		DB	"Error",0
+	.ascii	"Error\000"
 
-SECTION .rodata
+.section .rodata.n__$QAPPLICATIONPASCAL$_Ld6,"d"
+	.balign 8
+.globl	_$QAPPLICATIONPASCAL$_Ld6
 _$QAPPLICATIONPASCAL$_Ld6:
-		DB	"Error: can not parse command line.",0
+	.ascii	"Error: can not parse command line.\000"
 
-SECTION .rodata
+.section .rodata.n__$QAPPLICATIONPASCAL$_Ld7,"d"
+	.balign 8
+.globl	_$QAPPLICATIONPASCAL$_Ld7
 _$QAPPLICATIONPASCAL$_Ld7:
-%LINE 121+0
-		DB	"Count of Parameters: ",0
+	.ascii	"Count of Parameters: \000"
 
-SECTION .rodata
+.section .rodata.n__$QAPPLICATIONPASCAL$_Ld8,"d"
+	.balign 8
+.globl	_$QAPPLICATIONPASCAL$_Ld8
 _$QAPPLICATIONPASCAL$_Ld8:
-%LINE 124+0
-		DB	"222  11  222",0
+	.ascii	"222  11  222\000"
 
-SECTION .rodata
+.section .rodata.n__$QAPPLICATIONPASCAL$_Ld9,"d"
+	.balign 8
+.globl	_$QAPPLICATIONPASCAL$_Ld9
 _$QAPPLICATIONPASCAL$_Ld9:
-%LINE 139+0
-		DB	6,"cccccc",0
+	.ascii	"\006cccccc\000"
 
-SECTION .rodata
+.section .rodata.n__$QAPPLICATIONPASCAL$_Ld10,"d"
+	.balign 8
+.globl	_$QAPPLICATIONPASCAL$_Ld10
 _$QAPPLICATIONPASCAL$_Ld10:
-%LINE 151+0
-		DB	9,"destroyer",0
-; End asmlist al_typedconsts
-; Begin asmlist al_rtti
+	.ascii	"\011destroyer\000"
+# End asmlist al_typedconsts
+# Begin asmlist al_rtti
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL INIT_$QAPPLICATIONPASCAL_$$_TAPPLICATION
-INIT_$QAPPLICATIONPASCAL_$$_TAPPLICATION	DB	15,12
-; [158] 
-%LINE 158+0 QApplicationPascal.pas
-		DB	"TApplication"
-	DQ	0
-	DD	8
-	DQ	0,0
-	DD	0
+.section .rodata.n_INIT_$QAPPLICATIONPASCAL_$$_TAPPLICATION,"d"
+	.balign 8
+.globl	INIT_$QAPPLICATIONPASCAL_$$_TAPPLICATION
+INIT_$QAPPLICATIONPASCAL_$$_TAPPLICATION:
+	.byte	15,12
+# [165] 
+	.ascii	"TApplication"
+	.quad	0
+	.long	8
+	.quad	0,0
+	.long	0
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$QAPPLICATIONPASCAL_$$_TAPPLICATION
-RTTI_$QAPPLICATIONPASCAL_$$_TAPPLICATION	DB	15,12
-		DB	"TApplication"
-	DQ	VMT_$QAPPLICATIONPASCAL_$$_TAPPLICATION,RTTI_$SYSTEM_$$_TOBJECT$indirect
-	DW	0
-	DB	18
-		DB	"QApplicationPascal"
-	DW	0
-; End asmlist al_rtti
-; Begin asmlist al_indirectglobals
+.section .rodata.n_RTTI_$QAPPLICATIONPASCAL_$$_TAPPLICATION,"d"
+	.balign 8
+.globl	RTTI_$QAPPLICATIONPASCAL_$$_TAPPLICATION
+RTTI_$QAPPLICATIONPASCAL_$$_TAPPLICATION:
+	.byte	15,12
+	.ascii	"TApplication"
+	.quad	VMT_$QAPPLICATIONPASCAL_$$_TAPPLICATION
+	.quad	RTTI_$SYSTEM_$$_TOBJECT$indirect
+	.short	0
+	.byte	18
+	.ascii	"QApplicationPascal"
+	.short	0
+# End asmlist al_rtti
+# Begin asmlist al_indirectglobals
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL VMT_$QAPPLICATIONPASCAL_$$_TAPPLICATION$indirect
-VMT_$QAPPLICATIONPASCAL_$$_TAPPLICATION$indirect	DQ	VMT_$QAPPLICATIONPASCAL_$$_TAPPLICATION
-%LINE 157+0 QApplicationPascal.pas
+.section .rodata.n_VMT_$QAPPLICATIONPASCAL_$$_TAPPLICATION,"d"
+	.balign 8
+.globl	VMT_$QAPPLICATIONPASCAL_$$_TAPPLICATION$indirect
+VMT_$QAPPLICATIONPASCAL_$$_TAPPLICATION$indirect:
+	.quad	VMT_$QAPPLICATIONPASCAL_$$_TAPPLICATION
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL INIT_$QAPPLICATIONPASCAL_$$_TAPPLICATION$indirect
-INIT_$QAPPLICATIONPASCAL_$$_TAPPLICATION$indirect	DQ	INIT_$QAPPLICATIONPASCAL_$$_TAPPLICATION
-%LINE 158+0
+.section .rodata.n_INIT_$QAPPLICATIONPASCAL_$$_TAPPLICATION,"d"
+	.balign 8
+.globl	INIT_$QAPPLICATIONPASCAL_$$_TAPPLICATION$indirect
+INIT_$QAPPLICATIONPASCAL_$$_TAPPLICATION$indirect:
+	.quad	INIT_$QAPPLICATIONPASCAL_$$_TAPPLICATION
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL RTTI_$QAPPLICATIONPASCAL_$$_TAPPLICATION$indirect
-RTTI_$QAPPLICATIONPASCAL_$$_TAPPLICATION$indirect	DQ	RTTI_$QAPPLICATIONPASCAL_$$_TAPPLICATION
-; End asmlist al_indirectglobals
-; Begin asmlist al_dwarf_frame
+.section .rodata.n_RTTI_$QAPPLICATIONPASCAL_$$_TAPPLICATION,"d"
+	.balign 8
+.globl	RTTI_$QAPPLICATIONPASCAL_$$_TAPPLICATION$indirect
+RTTI_$QAPPLICATIONPASCAL_$$_TAPPLICATION$indirect:
+	.quad	RTTI_$QAPPLICATIONPASCAL_$$_TAPPLICATION
+# End asmlist al_indirectglobals
+# Begin asmlist al_dwarf_frame
 
-SECTION .debug_frame
-..@c23:
-	DD	..@c25-..@c24
-..@c24:
-	DD	-1
-	DB	1,0
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_SLEB128BIT	
-	DB	16,12
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	5
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c25:
-	DD	..@c27-..@c26
-..@c26:
-	DQ	..@c1,..@c2-..@c1
-	DB	4
-	DD	..@c3-..@c1
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c27:
-	DD	..@c29-..@c28
-..@c28:
-	DQ	..@c4,..@c5-..@c4
-	DB	4
-	DD	..@c6-..@c4
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c29:
-	DD	..@c31-..@c30
-..@c30:
-	DQ	..@c7,..@c8-..@c7
-	DB	4
-	DD	..@c9-..@c7
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c31:
-	DD	..@c33-..@c32
-..@c32:
-	DQ	..@c10,..@c11-..@c10
-	DB	4
-	DD	..@c12-..@c10
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c13-..@c12
-	DB	5
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c14-..@c13
-	DB	13
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c33:
-	DD	..@c35-..@c34
-..@c34:
-	DQ	..@c15,..@c16-..@c15
-	DB	4
-	DD	..@c17-..@c15
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c18-..@c17
-	DB	5
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	4
-	DD	..@c19-..@c18
-	DB	13
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c35:
-	DD	..@c37-..@c36
-..@c36:
-	DQ	..@c20,..@c21-..@c20
-	DB	4
-	DD	..@c22-..@c20
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c37:
-; End asmlist al_dwarf_frame
+.section .debug_frame
+.Lc23:
+	.long	.Lc25-.Lc24
+.Lc24:
+	.long	-1
+	.byte	1
+	.byte	0
+	.uleb128	1
+	.sleb128	-4
+	.byte	16
+	.byte	12
+	.uleb128	7
+	.uleb128	8
+	.byte	5
+	.uleb128	16
+	.uleb128	2
+	.balign 4,0
+.Lc25:
+	.long	.Lc27-.Lc26
+.Lc26:
+	.secrel32	.Lc23
+	.quad	.Lc1
+	.quad	.Lc2-.Lc1
+	.byte	4
+	.long	.Lc3-.Lc1
+	.byte	14
+	.uleb128	48
+	.balign 4,0
+.Lc27:
+	.long	.Lc29-.Lc28
+.Lc28:
+	.secrel32	.Lc23
+	.quad	.Lc4
+	.quad	.Lc5-.Lc4
+	.byte	4
+	.long	.Lc6-.Lc4
+	.byte	14
+	.uleb128	48
+	.balign 4,0
+.Lc29:
+	.long	.Lc31-.Lc30
+.Lc30:
+	.secrel32	.Lc23
+	.quad	.Lc7
+	.quad	.Lc8-.Lc7
+	.byte	4
+	.long	.Lc9-.Lc7
+	.byte	14
+	.uleb128	64
+	.balign 4,0
+.Lc31:
+	.long	.Lc33-.Lc32
+.Lc32:
+	.secrel32	.Lc23
+	.quad	.Lc10
+	.quad	.Lc11-.Lc10
+	.byte	4
+	.long	.Lc12-.Lc10
+	.byte	14
+	.uleb128	16
+	.byte	4
+	.long	.Lc13-.Lc12
+	.byte	5
+	.uleb128	6
+	.uleb128	4
+	.byte	4
+	.long	.Lc14-.Lc13
+	.byte	13
+	.uleb128	6
+	.balign 4,0
+.Lc33:
+	.long	.Lc35-.Lc34
+.Lc34:
+	.secrel32	.Lc23
+	.quad	.Lc15
+	.quad	.Lc16-.Lc15
+	.byte	4
+	.long	.Lc17-.Lc15
+	.byte	14
+	.uleb128	16
+	.byte	4
+	.long	.Lc18-.Lc17
+	.byte	5
+	.uleb128	6
+	.uleb128	4
+	.byte	4
+	.long	.Lc19-.Lc18
+	.byte	13
+	.uleb128	6
+	.balign 4,0
+.Lc35:
+	.long	.Lc37-.Lc36
+.Lc36:
+	.secrel32	.Lc23
+	.quad	.Lc20
+	.quad	.Lc21-.Lc20
+	.byte	4
+	.long	.Lc22-.Lc20
+	.byte	14
+	.uleb128	40
+	.balign 4,0
+.Lc37:
+# End asmlist al_dwarf_frame
 

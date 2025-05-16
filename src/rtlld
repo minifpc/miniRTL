@@ -2,18 +2,18 @@ SEARCH_DIR(".")
 GROUP(
 libimpsystem.a
 libimpxmm.a
-libimpRTLlib.a
+libimpRTLUnit.a
 libimpexceptions.a
 libimpQApplicationPascal.a
 libimpwindows.a
 libimpSysUtils.a
 )
 INPUT(
-main.o
-QApplicationPascal.o
+librtllib_dll.a
+libkernel32.a
 )
 OUTPUT_FORMAT(pe-x86-64)
-ENTRY(MAIN_$$__START)
+ENTRY(DllEntryPoint)
 SECTIONS
 {
   . = SIZEOF_HEADERS;
@@ -122,4 +122,18 @@ SECTIONS
   .reloc BLOCK(__section_alignment__) : { *(.reloc) }
   .stab BLOCK(__section_alignment__) (NOLOAD) : { *(.stab) }
   .stabstr BLOCK(__section_alignment__) (NOLOAD) : { *(.stabstr) }
+  .debug_aranges BLOCK(__section_alignment__) (NOLOAD) : { *(.debug_aranges) }
+  .debug_pubnames BLOCK(__section_alignment__) (NOLOAD) : { *(.debug_pubnames) }
+  .debug_info BLOCK(__section_alignment__) (NOLOAD) : { *(.debug_info) *(.gnu.linkonce.wi.*) }
+  .debug_abbrev BLOCK(__section_alignment__) (NOLOAD) : { *(.debug_abbrev) }
+  .debug_line BLOCK(__section_alignment__) (NOLOAD) : { *(.debug_line) }
+  .debug_frame BLOCK(__section_alignment__) (NOLOAD) : { *(.debug_frame) }
+  .debug_str BLOCK(__section_alignment__) (NOLOAD) : { *(.debug_str) }
+  .debug_loc BLOCK(__section_alignment__) (NOLOAD) : { *(.debug_loc) }
+  .debug_macinfo BLOCK(__section_alignment__) (NOLOAD) : { *(.debug_macinfo) }
+  .debug_weaknames BLOCK(__section_alignment__) (NOLOAD) : { *(.debug_weaknames) }
+  .debug_funcnames BLOCK(__section_alignment__) (NOLOAD) : { *(.debug_funcnames) }
+  .debug_typenames BLOCK(__section_alignment__) (NOLOAD) : { *(.debug_typenames) }
+  .debug_varnames BLOCK(__section_alignment__) (NOLOAD) : { *(.debug_varnames) }
+  .debug_ranges BLOCK(__section_alignment__) (NOLOAD) : { *(.debug_ranges) }
 }

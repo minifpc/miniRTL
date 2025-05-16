@@ -142,11 +142,7 @@ exports
   atoi_exp              name 'atoi_exp',
   
   ShowMessage name 'ShowMessage',
-  
-  TApplication_Create,
-  TApplication_Create2,
-  TApplication_Destroy,
-  
+
   TRTL_Create,
   TRTL_Destroy;
 {$endif DLLEXPORT}

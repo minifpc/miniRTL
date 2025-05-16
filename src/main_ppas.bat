@@ -1,0 +1,16 @@
+@echo off
+SET THEFILE=xmm
+echo Assembling %THEFILE%
+as.exe --64 -o xmm.o   xmm.s
+if errorlevel 1 goto asmend
+SET THEFILE=main
+echo Assembling %THEFILE%
+as.exe --64 -o main.o   main.s
+if errorlevel 1 goto asmend
+goto end
+:asmend
+echo An error occurred while assembling %THEFILE%
+goto end
+:linkend
+echo An error occurred while linking %THEFILE%
+:end

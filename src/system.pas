@@ -1,16 +1,17 @@
 unit system;
 
-{$mode objfpc}{$H+}
+{$mode objfpc}
+{$H+}
 {$modeswitch advancedrecords}
 {$macro on}
 
 // @@todo: reorder functions; interface vs implementation mismatch
 
-// system.pas(9,1) Error: Internal error 2016060303
+// sy s tem.pas(9,1) Error: In ternal error 2016060303
 
 // IE 2006012304 means "compile system.pas first", and happens on latest trunk
 
-{$WARN 6058 off : Call to subroutine "$1" marked as inline is not inlined}
+{ $ W ARN 6058 off : Call to subroutine "$1" marked as inline is not inlined}
 
 interface
 
@@ -212,6 +213,23 @@ begin
     if c = #13 then break;
   end;
 end;
+
+{$asmmode intel}
+function Lo(i: Integer): Byte; overload; begin Result := Byte(i and $FF  ); end;
+function Lo(w: Word   ): Byte; overload; begin Result := Byte(w and $FF  ); end;
+function Lo(l: Longint): Word; overload; begin Result := Word(l and $FFFF); end;
+function Lo(l: DWord  ): Word; overload; begin Result := Word(l and $FFFF); end;
+
+function Lo(i: Int64): DWord; overload; begin Result := DWord(i and $FFFFFFFF); end;
+function Lo(q: QWord): DWord; overload; begin Result := DWord(q and $FFFFFFFF); end;
+
+function Hi(i: Integer): Byte ; overload; begin Result := Byte((i shr 8) and $FF); end;
+function Hi(w: Word   ): Byte ; overload; begin Result := Byte((w shr 8) and $FF); end;
+
+function Hi(l: DWord  ): Word ; overload; begin Result := Word ((l shr 16) and $FFFF    ); end;
+function Hi(i: Int64  ): DWord; overload; begin Result := DWord((i shr 32) and $FFFFFFFF); end;
+function Hi(q: QWord  ): DWord; overload; begin Result := DWord((q shr 32) and $FFFFFFFF); end;
+
 
 {$undef codeh} {$define codei} {$I objects.inc}
 {$undef codeh} {$define codei} {$I exceptions.inc}

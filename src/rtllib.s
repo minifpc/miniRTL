@@ -1,309 +1,322 @@
-BITS 64
-default rel
-CPU x64
+	.file "RTLLib.pas"
+# Begin asmlist al_procedures
 
-EXTERN	fpc_libinitializeunits
-EXTERN	RTLUNIT_$$_TRTL_DESTROY$TRTL
-EXTERN	RTLUNIT_$$_TRTL_CREATE$$TRTL
-EXTERN	QAPPLICATIONPASCAL_$$_TAPPLICATION_DESTROY$TAPPLICATION
-EXTERN	QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE2$TAPPLICATION$LONGINT$PPCHAR$$TAPPLICATION
-EXTERN	QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE$TAPPLICATION$$TAPPLICATION
-EXTERN	SYSTEM_$$_SHOWMESSAGE$PCHAR
-EXTERN	SYSTEM_$$_ATOI_EXP$PANSICHAR$$LONGINT
-EXTERN	SYSTEM_$$_ITOA_EXP$LONGINT$LONGINT$$PANSICHAR
-EXTERN	SYSTEM_$$_FPCPCHARTOANSISTR$PANSICHAR$LONGWORD$$RAWBYTESTRING
-EXTERN	SYSTEM_$$_FPCWIDESTRINCRREF$POINTER
-EXTERN	SYSTEM_$$_FPCPWIDECHARTOWIDESTR$PWIDECHAR$$WIDESTRING
-EXTERN	SYSTEM_$$_FPCWIDESTRASSIGN$POINTER$POINTER
-EXTERN	SYSTEM_$$_FPCPWIDECHARTOANSISTR$PWIDECHAR$LONGWORD$$ANSISTRING
-EXTERN	SYSTEM_$$_FPCANSISTRINCRREF$POINTER
-EXTERN	SYSTEM_$$_FPCANSISTRCOMPAREEQUAL$RAWBYTESTRING$RAWBYTESTRING$$INT64
-EXTERN	SYSTEM_$$_FPCANSISTRCOPY$RAWBYTESTRING$INT64$INT64$$RAWBYTESTRING
-EXTERN	SYSTEM_$$_FPCANSISTRDECRREF$POINTER
-EXTERN	SYSTEM_$$_FPCANSISTRSETLENGTH$RAWBYTESTRING$INT64$LONGWORD
-EXTERN	SYSTEM_$$_FPCANSISTRASSIGN$POINTER$POINTER
-EXTERN	SYSTEM_$$_FPCSHORTSTRCOPY$SHORTSTRING$INT64$INT64$$SHORTSTRING
-EXTERN	SYSTEM_$$_FPCSHORTSTRTOANSISTR$SHORTSTRING$LONGWORD$$RAWBYTESTRING
-EXTERN	SYSTEM_$$_FPCSHORTSTRCONCAT$SHORTSTRING$SHORTSTRING$SHORTSTRING
-EXTERN	SYSTEM_$$_FPCTRUELYANSISTRUNIQUE$POINTER$$POINTER
-EXTERN	SYSTEM_$$_NEWWIDESTRING$INT64$$POINTER
-EXTERN	SYSTEM_$$_NEWANSISTRING$INT64$$POINTER
-EXTERN	RTLUNIT_$$_GETBSR8BIT$$PBYTELOOKUP
-EXTERN	SYSUTILS_$$_STRDISPOSE$PCHAR
-EXTERN	SYSUTILS_$$_STRCAT_$PCHAR$PCHAR$$PCHAR
-EXTERN	SYSUTILS_$$_STRCAT$PCHAR$PCHAR$$PCHAR
-EXTERN	SYSUTILS_$$_STRCOPY$PCHAR$PCHAR$$PCHAR
-EXTERN	SYSUTILS_$$_STRALLOC$CARDINAL$$PCHAR
-EXTERN	SYSUTILS_$$_UINTTOSTR$QWORD$$ANSISTRING
-EXTERN	SYSUTILS_$$_CHATASTR3$PANSICHAR$LONGINT$$ANSISTRING
-EXTERN	SYSUTILS_$$_CHATASTR2$array_of_CHAR$LONGINT$$ANSISTRING
-EXTERN	SYSUTILS_$$_CHATASTR1$array_of_CHAR$$ANSISTRING
-EXTERN	SYSUTILS_$$_COMMANDLINETOARGVA$PANSICHAR$LONGINT$$PPANSICHAR
-EXTERN	LOCALES_$$_SHELLO$$ANSISTRING
-EXTERN	LOCALES_$$_SERROR$$ANSISTRING
-EXTERN	LOCALES_$$_SWARNING$$ANSISTRING
-EXTERN	LOCALES_$$_SINFORMATION$$ANSISTRING
-EXTERN	SYSTEM_$$_ISGUIDEQUAL$TGUID$TGUID$$BOOLEAN
-EXTERN	SYSTEM_$$_FPCINTFDECRREF$POINTER
-EXTERN	SYSTEM_$$_INITINTERFACEPOINTERS$TCLASS$POINTER
-EXTERN	XMM_$$_XFREEMEM$POINTER$$QWORD
-EXTERN	XMM_$$_XMEMSIZE$POINTER$$QWORD
-EXTERN	INIT$_$XMM
-EXTERN	INIT$_$SYSTEM
-EXTERN	INIT$_$EXCEPTIONS
-; Begin asmlist al_procedures
+.section .text.n_p$rtllib_$$_dllentrypoint$longword$$longbool,"x"
+	.balign 16,0x90
+.globl	P$RTLLIB_$$_DLLENTRYPOINT$LONGWORD$$LONGBOOL
+P$RTLLIB_$$_DLLENTRYPOINT$LONGWORD$$LONGBOOL:
+.Lc1:
+.seh_proc P$RTLLIB_$$_DLLENTRYPOINT$LONGWORD$$LONGBOOL
+# [RTLLib.pas]
+# [31] begin
+	pushq	%rbx
+.seh_pushreg %rbx
+	leaq	-32(%rsp),%rsp
+.Lc3:
+.seh_stackalloc 32
+.seh_endprologue
+# Var $result located in register eax
+# Var dwReason located in register ecx
+# [32] writeln('zuzu');
+	call	fpc_get_output
+	movq	%rax,%rbx
+	leaq	_$RTLLIB$_Ld1(%rip),%r8
+	movq	%rbx,%rdx
+	xorl	%ecx,%ecx
+	call	fpc_write_text_shortstr
+	movq	%rbx,%rcx
+	call	fpc_writeln_end
+# Var $result located in register eax
+# [33] Exit(True);
+	movl	$-1,%eax
+# [34] end;
+	nop
+	leaq	32(%rsp),%rsp
+	popq	%rbx
+	ret
+.seh_endproc
+.Lc2:
 
-SECTION .text
-	GLOBAL PASCALMAIN
+.section .text.n_p$rtllib_$$_main,"x"
+	.balign 16,0x90
+.globl	PASCALMAIN
 PASCALMAIN:
-	GLOBAL P$RTLLIB_$$_main
+.globl	P$RTLLIB_$$_main
 P$RTLLIB_$$_main:
-..@c1:
-; [RTLLib.pas]
-; [13] begin
-%LINE 13+0 RTLLib.pas
-		lea	rsp,[rsp-40]
-..@c3:
-		call	fpc_libinitializeunits
-; [15] end.
-%LINE 15+0
-		nop
-		lea	rsp,[rsp+40]
-		ret
-..@c2:
-; End asmlist al_procedures
-; Begin asmlist al_globals
+.Lc4:
+.seh_proc P$RTLLIB_$$_main
+# [39] begin
+	leaq	-40(%rsp),%rsp
+.Lc6:
+.seh_stackalloc 40
+.seh_endprologue
+	call	fpc_libinitializeunits
+# [40] end.
+	nop
+	leaq	40(%rsp),%rsp
+	ret
+.seh_endproc
+.Lc5:
+# End asmlist al_procedures
+# Begin asmlist al_globals
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL INITFINAL
-INITFINAL	DQ	3,0,INIT$_$XMM,0,INIT$_$SYSTEM,0,INIT$_$EXCEPTIONS,0
-%LINE 0+0 RTLLib.pas
+.section .data.n_INITFINAL,"d"
+	.balign 8
+.globl	INITFINAL
+INITFINAL:
+	.quad	3,0
+	.quad	INIT$_$XMM
+	.quad	0
+	.quad	INIT$_$SYSTEM
+	.quad	0
+	.quad	INIT$_$EXCEPTIONS
+	.quad	0
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL FPC_THREADVARTABLES
-FPC_THREADVARTABLES	DD	0
+.section .data.n_FPC_THREADVARTABLES,"d"
+	.balign 8
+.globl	FPC_THREADVARTABLES
+FPC_THREADVARTABLES:
+	.long	0
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL FPC_RESOURCESTRINGTABLES
-FPC_RESOURCESTRINGTABLES	DQ	0
+.section .rodata.n_FPC_RESOURCESTRINGTABLES,"d"
+	.balign 8
+.globl	FPC_RESOURCESTRINGTABLES
+FPC_RESOURCESTRINGTABLES:
+	.quad	0
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL FPC_WIDEINITTABLES
-FPC_WIDEINITTABLES	DQ	0
+.section .data.n_FPC_WIDEINITTABLES,"d"
+	.balign 8
+.globl	FPC_WIDEINITTABLES
+FPC_WIDEINITTABLES:
+	.quad	0
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL FPC_RESSTRINITTABLES
-FPC_RESSTRINITTABLES	DQ	0
+.section .data.n_FPC_RESSTRINITTABLES,"d"
+	.balign 8
+.globl	FPC_RESSTRINITTABLES
+FPC_RESSTRINITTABLES:
+	.quad	0
 
-SECTION .fpc
-__fpc_ident		DB	"FPC 3.2.2-r0d122c49 [2024/11/15] for x86_64 - Win64"
+.section .fpc.n_version
+	.balign 16
+__fpc_ident:
+	.ascii	"FPC 3.2.2-r0d122c49 [2024/11/15] for x86_64 - Win64"
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL __heapsize
-__heapsize	DQ	0
+.section .data.n___heapsize,"d"
+	.balign 8
+.globl	__heapsize
+__heapsize:
+	.quad	0
 
-SECTION .data
-	ALIGN 8,DB 0
-	GLOBAL __fpc_valgrind
-__fpc_valgrind	DB	0
-; End asmlist al_globals
-; Begin asmlist al_exports
+.section .data.n___fpc_valgrind,"d"
+	.balign 8
+.globl	__fpc_valgrind
+__fpc_valgrind:
+	.byte	0
+# End asmlist al_globals
+# Begin asmlist al_typedconsts
 
-SECTION .edata
-	GLOBAL EDATA_$P$RTLLIB
-EDATA_$P$RTLLIB	DD	0,0
-	DW	0,0
-	DD	1,48,48
-..@j3:
-		DB	"RTLLIB.dll",0
-	ALIGN 4,DB 0
-..@j4:
-	ALIGN 4,DB 0
-..@j5:
-	ALIGN 4,DB 0
-..@j6:
-	DW	37,36,35,38,28,45,43,7,5,3,8,33,31,30,32,29,6,4,2,1,0,34,9,21,17,18,19,16,20,44,11,15,13,24,22,23,25,14
-	DW	12,10,27,26,40,39,42,41,46,47
-	ALIGN 4,DB 0
-	ALIGN 2,DB 0
-..@j7:
-		DB	"ChATAStr1",0
-	ALIGN 2,DB 0
-..@j8:
-		DB	"ChATAStr2",0
-	ALIGN 2,DB 0
-..@j9:
-		DB	"ChATAStr3",0
-	ALIGN 2,DB 0
-..@j10:
-		DB	"CommandLineToArgvA",0
-	ALIGN 2,DB 0
-..@j11:
-		DB	"GetBsr8bit",0
-	ALIGN 2,DB 0
-..@j12:
-		DB	"InitInterfacePointers",0
-	ALIGN 2,DB 0
-..@j13:
-		DB	"IsGUIDEqual",0
-	ALIGN 2,DB 0
-..@j14:
-		DB	"QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE$TAPPLICATION$$TAPPLICA"
-		DB	"TION",0
-	ALIGN 2,DB 0
-..@j15:
-		DB	"QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE2$TAPPLICATION$LONGINT$"
-		DB	"PPCHAR$$TAPPLICATION",0
-	ALIGN 2,DB 0
-..@j16:
-		DB	"QAPPLICATIONPASCAL_$$_TAPPLICATION_DESTROY$TAPPLICATION",0
-	ALIGN 2,DB 0
-..@j17:
-		DB	"ShowMessage",0
-	ALIGN 2,DB 0
-..@j18:
-		DB	"StrAlloc",0
-	ALIGN 2,DB 0
-..@j19:
-		DB	"StrCat",0
-	ALIGN 2,DB 0
-..@j20:
-		DB	"StrCat_",0
-	ALIGN 2,DB 0
-..@j21:
-		DB	"StrCopy",0
-	ALIGN 2,DB 0
-..@j22:
-		DB	"StrDispose",0
-	ALIGN 2,DB 0
-..@j23:
-		DB	"TApplication_Create",0
-	ALIGN 2,DB 0
-..@j24:
-		DB	"TApplication_Create2",0
-	ALIGN 2,DB 0
-..@j25:
-		DB	"TApplication_Destroy",0
-	ALIGN 2,DB 0
-..@j26:
-		DB	"TRTL_Create",0
-	ALIGN 2,DB 0
-..@j27:
-		DB	"TRTL_Destroy",0
-	ALIGN 2,DB 0
-..@j28:
-		DB	"UIntToStr",0
-	ALIGN 2,DB 0
-..@j29:
-		DB	"atoi_exp",0
-	ALIGN 2,DB 0
-..@j30:
-		DB	"fpcansistrassign",0
-	ALIGN 2,DB 0
-..@j31:
-		DB	"fpcansistrcompareequal",0
-	ALIGN 2,DB 0
-..@j32:
-		DB	"fpcansistrcopy",0
-	ALIGN 2,DB 0
-..@j33:
-		DB	"fpcansistrdecrref",0
-	ALIGN 2,DB 0
-..@j34:
-		DB	"fpcansistrincrref",0
-	ALIGN 2,DB 0
-..@j35:
-		DB	"fpcansistrsetlength",0
-	ALIGN 2,DB 0
-..@j36:
-		DB	"fpcintfdecrref",0
-	ALIGN 2,DB 0
-..@j37:
-		DB	"fpcpchartoansistr",0
-	ALIGN 2,DB 0
-..@j38:
-		DB	"fpcpwidechartoansistr",0
-	ALIGN 2,DB 0
-..@j39:
-		DB	"fpcpwidechartowidestr",0
-	ALIGN 2,DB 0
-..@j40:
-		DB	"fpcshortstrconcat",0
-	ALIGN 2,DB 0
-..@j41:
-		DB	"fpcshortstrcopy",0
-	ALIGN 2,DB 0
-..@j42:
-		DB	"fpcshortstrtoansistr",0
-	ALIGN 2,DB 0
-..@j43:
-		DB	"fpctruelyansistrunique",0
-	ALIGN 2,DB 0
-..@j44:
-		DB	"fpcwidestrassign",0
-	ALIGN 2,DB 0
-..@j45:
-		DB	"fpcwidestrincrref",0
-	ALIGN 2,DB 0
-..@j46:
-		DB	"itoa_exp",0
-	ALIGN 2,DB 0
-..@j47:
-		DB	"newansistring",0
-	ALIGN 2,DB 0
-..@j48:
-		DB	"newwidestring",0
-	ALIGN 2,DB 0
-..@j49:
-		DB	"sError",0
-	ALIGN 2,DB 0
-..@j50:
-		DB	"sHello",0
-	ALIGN 2,DB 0
-..@j51:
-		DB	"sInformation",0
-	ALIGN 2,DB 0
-..@j52:
-		DB	"sWarning",0
-	ALIGN 2,DB 0
-..@j53:
-		DB	"xfreemem",0
-	ALIGN 2,DB 0
-..@j54:
-		DB	"xmemsize",0
-; End asmlist al_exports
-; Begin asmlist al_dwarf_frame
+.section .rodata.n__$RTLLIB$_Ld1,"d"
+	.balign 8
+.globl	_$RTLLIB$_Ld1
+_$RTLLIB$_Ld1:
+	.ascii	"\004zuzu\000"
+# End asmlist al_typedconsts
+# Begin asmlist al_exports
 
-SECTION .debug_frame
-..@c4:
-	DD	..@c6-..@c5
-..@c5:
-	DD	-1
-	DB	1,0
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_SLEB128BIT	
-	DB	16,12
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	DB	5
-; Unsupported const type 	FIXME_ULEB128BIT	
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c6:
-	DD	..@c8-..@c7
-..@c7:
-	DQ	..@c1,..@c2-..@c1
-	DB	4
-	DD	..@c3-..@c1
-	DB	14
-; Unsupported const type 	FIXME_ULEB128BIT	
-	ALIGN 4,DB 0
-..@c8:
-; End asmlist al_dwarf_frame
+.section .edata
+.globl	EDATA_$P$RTLLIB
+EDATA_$P$RTLLIB:
+	.long	0
+	.long	0
+	.short	0
+	.short	0
+	.rva	.Lj5
+	.long	1
+	.long	21
+	.long	21
+	.rva	.Lj6
+	.rva	.Lj7
+	.rva	.Lj8
+.Lj5:
+	.ascii	"RTLLIB.dll\000"
+	.balign 4,0
+.Lj6:
+	.rva	P$RTLLIB_$$_DLLENTRYPOINT$LONGWORD$$LONGBOOL
+	.rva	QAPPLICATIONPASCAL_$$_TAPPLICATION_DESTROY$TAPPLICATION
+	.rva	QAPPLICATIONPASCAL_$$_TAPPLICATION_DESTROY$TAPPLICATION
+	.rva	QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE2$TAPPLICATION$LONGINT$PPCHAR$$TAPPLICATION
+	.rva	QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE2$TAPPLICATION$LONGINT$PPCHAR$$TAPPLICATION
+	.rva	QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE$TAPPLICATION$$TAPPLICATION
+	.rva	QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE$TAPPLICATION$$TAPPLICATION
+	.rva	SYSUTILS_$$_STRDISPOSE$PCHAR
+	.rva	SYSUTILS_$$_STRCAT_$PCHAR$PCHAR$$PCHAR
+	.rva	SYSUTILS_$$_STRCAT$PCHAR$PCHAR$$PCHAR
+	.rva	SYSUTILS_$$_STRCOPY$PCHAR$PCHAR$$PCHAR
+	.rva	SYSUTILS_$$_STRALLOC$CARDINAL$$PCHAR
+	.rva	SYSUTILS_$$_UINTTOSTR$QWORD$$ANSISTRING
+	.rva	SYSUTILS_$$_CHATASTR3$PANSICHAR$LONGINT$$ANSISTRING
+	.rva	SYSUTILS_$$_CHATASTR2$array_of_CHAR$LONGINT$$ANSISTRING
+	.rva	SYSUTILS_$$_CHATASTR1$array_of_CHAR$$ANSISTRING
+	.rva	SYSUTILS_$$_COMMANDLINETOARGVA$PANSICHAR$LONGINT$$PPANSICHAR
+	.rva	SYSTEM_$$_ISGUIDEQUAL$TGUID$TGUID$$BOOLEAN
+	.rva	SYSTEM_$$_FPCINTFDECRREF$POINTER
+	.rva	SYSTEM_$$_INITINTERFACEPOINTERS$TCLASS$POINTER
+	.rva	XMM_$$_XFREEMEM$POINTER$$QWORD
+	.balign 4,0
+.Lj7:
+	.rva	.Lj9
+	.rva	.Lj10
+	.rva	.Lj11
+	.rva	.Lj12
+	.rva	.Lj13
+	.rva	.Lj14
+	.rva	.Lj15
+	.rva	.Lj16
+	.rva	.Lj17
+	.rva	.Lj18
+	.rva	.Lj19
+	.rva	.Lj20
+	.rva	.Lj21
+	.rva	.Lj22
+	.rva	.Lj23
+	.rva	.Lj24
+	.rva	.Lj25
+	.rva	.Lj26
+	.rva	.Lj27
+	.rva	.Lj28
+	.rva	.Lj29
+	.balign 4,0
+.Lj8:
+	.short	15
+	.short	14
+	.short	13
+	.short	16
+	.short	0
+	.short	19
+	.short	17
+	.short	6
+	.short	4
+	.short	2
+	.short	11
+	.short	9
+	.short	8
+	.short	10
+	.short	7
+	.short	5
+	.short	3
+	.short	1
+	.short	12
+	.short	18
+	.short	20
+	.balign 4,0
+	.balign 2,0
+.Lj9:
+	.ascii	"ChATAStr1\000"
+	.balign 2,0
+.Lj10:
+	.ascii	"ChATAStr2\000"
+	.balign 2,0
+.Lj11:
+	.ascii	"ChATAStr3\000"
+	.balign 2,0
+.Lj12:
+	.ascii	"CommandLineToArgvA\000"
+	.balign 2,0
+.Lj13:
+	.ascii	"DllEntryPoint\000"
+	.balign 2,0
+.Lj14:
+	.ascii	"InitInterfacePointers\000"
+	.balign 2,0
+.Lj15:
+	.ascii	"IsGUIDEqual\000"
+	.balign 2,0
+.Lj16:
+	.ascii	"QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE$TAPPLICAT"
+	.ascii	"ION$$TAPPLICATION\000"
+	.balign 2,0
+.Lj17:
+	.ascii	"QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE2$TAPPLICA"
+	.ascii	"TION$LONGINT$PPCHAR$$TAPPLICATION\000"
+	.balign 2,0
+.Lj18:
+	.ascii	"QAPPLICATIONPASCAL_$$_TAPPLICATION_DESTROY$TAPPLICA"
+	.ascii	"TION\000"
+	.balign 2,0
+.Lj19:
+	.ascii	"StrAlloc\000"
+	.balign 2,0
+.Lj20:
+	.ascii	"StrCat\000"
+	.balign 2,0
+.Lj21:
+	.ascii	"StrCat_\000"
+	.balign 2,0
+.Lj22:
+	.ascii	"StrCopy\000"
+	.balign 2,0
+.Lj23:
+	.ascii	"StrDispose\000"
+	.balign 2,0
+.Lj24:
+	.ascii	"TApplication_Create\000"
+	.balign 2,0
+.Lj25:
+	.ascii	"TApplication_Create2\000"
+	.balign 2,0
+.Lj26:
+	.ascii	"TApplication_Destroy\000"
+	.balign 2,0
+.Lj27:
+	.ascii	"UIntToStr\000"
+	.balign 2,0
+.Lj28:
+	.ascii	"fpcintfdecrref\000"
+	.balign 2,0
+.Lj29:
+	.ascii	"xfreemem\000"
+# End asmlist al_exports
+# Begin asmlist al_dwarf_frame
+
+.section .debug_frame
+.Lc7:
+	.long	.Lc9-.Lc8
+.Lc8:
+	.long	-1
+	.byte	1
+	.byte	0
+	.uleb128	1
+	.sleb128	-4
+	.byte	16
+	.byte	12
+	.uleb128	7
+	.uleb128	8
+	.byte	5
+	.uleb128	16
+	.uleb128	2
+	.balign 4,0
+.Lc9:
+	.long	.Lc11-.Lc10
+.Lc10:
+	.secrel32	.Lc7
+	.quad	.Lc1
+	.quad	.Lc2-.Lc1
+	.byte	4
+	.long	.Lc3-.Lc1
+	.byte	14
+	.uleb128	40
+	.balign 4,0
+.Lc11:
+	.long	.Lc13-.Lc12
+.Lc12:
+	.secrel32	.Lc7
+	.quad	.Lc4
+	.quad	.Lc5-.Lc4
+	.byte	4
+	.long	.Lc6-.Lc4
+	.byte	14
+	.uleb128	48
+	.balign 4,0
+.Lc13:
+# End asmlist al_dwarf_frame
 

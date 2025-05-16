@@ -251,7 +251,7 @@ type
   end;
 
 var
-  FPC_EMPTYCHAR: AnsiChar; public name 'FPC_EMPTYCHAR';
+  FPC_EMPTYCHAR: AnsiChar;
 
 const
   AnsiFirstOff = SizeOf(TAnsiRec);
