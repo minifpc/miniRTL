@@ -3,10 +3,6 @@ SET THEFILE=xmm
 echo Assembling %THEFILE%
 as.exe --64 -o xmm.o   xmm.s
 if errorlevel 1 goto asmend
-SET THEFILE=system
-echo Assembling %THEFILE%
-as.exe --64 -o system.o   system.s
-if errorlevel 1 goto asmend
 SET THEFILE=windows
 echo Assembling %THEFILE%
 as.exe --64 -o windows.o   windows.s
@@ -22,6 +18,10 @@ if errorlevel 1 goto asmend
 SET THEFILE=sysutils
 echo Assembling %THEFILE%
 as.exe --64 -o SysUtils.o   SysUtils.s
+if errorlevel 1 goto asmend
+SET THEFILE=dialogs
+echo Assembling %THEFILE%
+as.exe --64 -o Dialogs.o   Dialogs.s
 if errorlevel 1 goto asmend
 SET THEFILE=qapplicationpascal
 echo Assembling %THEFILE%

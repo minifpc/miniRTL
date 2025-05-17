@@ -1,18 +1,13 @@
 // ---------------------------------------------------------------------------------------
 // Copyright(c) 2025 @paule32 and @fibonacci
 // ---------------------------------------------------------------------------------------
-//{ $ mode delphi}
-//unit Dialogs;
+{$mode delphi}
+unit Dialogs;
 
-//interface
+interface
 
-//uses global, Windows;
-{$if defined(codeh) and defined(codei)}
-{$FATAL interface and implementation at the same time not possible}
-{$endif}
+uses global, Windows;
 
-{$ifdef codeh}
-function MessageBoxA(hWnd: HWND; lpText, lpCaption: LPCSTR; uType: UINT): Integer; stdcall; external 'user32.dll' name 'MessageBoxA';
 {$ifdef DLLEXPORT}
 procedure ShowMessage(msg: PChar); stdcall; export;
 {$endif DLLEXPORT}
@@ -21,9 +16,7 @@ procedure ShowMessage(msg: PChar); stdcall; export;
 procedure ShowMessage(msg: PChar); stdcall; external RTLDLL;
 {$endif DLLIMPORT}
 
-{$endif}
-{$ifdef codei}
-//implementation
+implementation
 
 {$ifdef DLLEXPORT}
 procedure ShowMessage(msg: PChar); stdcall; export;
@@ -33,11 +26,9 @@ end;
 {$endif DLLEXPORT}
 
 {$ifdef DLLEXPORT}
-//exports
-//  ShowMessage name 'ShowMessage'
-//  ;
+exports
+  ShowMessage name 'ShowMessage'
+  ;
 {$endif DLLEXPORT}
 
-//end.
-
-{$endif}
+end.

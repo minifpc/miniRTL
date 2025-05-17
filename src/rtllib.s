@@ -132,8 +132,8 @@ EDATA_$P$RTLLIB:
 	.short	0
 	.rva	.Lj5
 	.long	1
-	.long	21
-	.long	21
+	.long	22
+	.long	22
 	.rva	.Lj6
 	.rva	.Lj7
 	.rva	.Lj8
@@ -148,6 +148,7 @@ EDATA_$P$RTLLIB:
 	.rva	QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE2$TAPPLICATION$LONGINT$PPCHAR$$TAPPLICATION
 	.rva	QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE$TAPPLICATION$$TAPPLICATION
 	.rva	QAPPLICATIONPASCAL_$$_TAPPLICATION_CREATE$TAPPLICATION$$TAPPLICATION
+	.rva	DIALOGS_$$_SHOWMESSAGE$PCHAR
 	.rva	SYSUTILS_$$_STRDISPOSE$PCHAR
 	.rva	SYSUTILS_$$_STRCAT_$PCHAR$PCHAR$$PCHAR
 	.rva	SYSUTILS_$$_STRCAT$PCHAR$PCHAR$$PCHAR
@@ -185,29 +186,31 @@ EDATA_$P$RTLLIB:
 	.rva	.Lj27
 	.rva	.Lj28
 	.rva	.Lj29
+	.rva	.Lj30
 	.balign 4,0
 .Lj8:
+	.short	16
 	.short	15
 	.short	14
-	.short	13
-	.short	16
-	.short	0
-	.short	19
 	.short	17
+	.short	0
+	.short	20
+	.short	18
 	.short	6
 	.short	4
 	.short	2
-	.short	11
-	.short	9
-	.short	8
-	.short	10
 	.short	7
+	.short	12
+	.short	10
+	.short	9
+	.short	11
+	.short	8
 	.short	5
 	.short	3
 	.short	1
-	.short	12
-	.short	18
-	.short	20
+	.short	13
+	.short	19
+	.short	21
 	.balign 4,0
 	.balign 2,0
 .Lj9:
@@ -244,36 +247,39 @@ EDATA_$P$RTLLIB:
 	.ascii	"TION\000"
 	.balign 2,0
 .Lj19:
-	.ascii	"StrAlloc\000"
+	.ascii	"ShowMessage\000"
 	.balign 2,0
 .Lj20:
-	.ascii	"StrCat\000"
+	.ascii	"StrAlloc\000"
 	.balign 2,0
 .Lj21:
-	.ascii	"StrCat_\000"
+	.ascii	"StrCat\000"
 	.balign 2,0
 .Lj22:
-	.ascii	"StrCopy\000"
+	.ascii	"StrCat_\000"
 	.balign 2,0
 .Lj23:
-	.ascii	"StrDispose\000"
+	.ascii	"StrCopy\000"
 	.balign 2,0
 .Lj24:
-	.ascii	"TApplication_Create\000"
+	.ascii	"StrDispose\000"
 	.balign 2,0
 .Lj25:
-	.ascii	"TApplication_Create2\000"
+	.ascii	"TApplication_Create\000"
 	.balign 2,0
 .Lj26:
-	.ascii	"TApplication_Destroy\000"
+	.ascii	"TApplication_Create2\000"
 	.balign 2,0
 .Lj27:
-	.ascii	"UIntToStr\000"
+	.ascii	"TApplication_Destroy\000"
 	.balign 2,0
 .Lj28:
-	.ascii	"fpcintfdecrref\000"
+	.ascii	"UIntToStr\000"
 	.balign 2,0
 .Lj29:
+	.ascii	"fpcintfdecrref\000"
+	.balign 2,0
+.Lj30:
 	.ascii	"xfreemem\000"
 # End asmlist al_exports
 # Begin asmlist al_dwarf_frame

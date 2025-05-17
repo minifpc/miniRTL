@@ -1,16 +1,10 @@
 // ---------------------------------------------------------------------------------------
 // Copyright(c) 2025 @paule32 and @fibonacci
 // ---------------------------------------------------------------------------------------
-//{$mode delphi}
-//unit StrUtils;
+{$mode delphi}
+unit StrUtils;
 
-//interface
-
-{$if defined(codeh) and defined(codei)}
-{$FATAL interface and implementation at the same time not possible}
-{$endif}
-
-{$ifdef codeh}
+interface
 
 type
   TReplaceFlag  = (
@@ -27,36 +21,14 @@ function StringReplace(const S, OldPattern, NewPattern: string; Flags: TReplaceF
 function StringReplace(const S, OldPattern, NewPattern: string; Flags: TReplaceFlags): string; external RTLDLL;
 {$endif DLLIMPORT}
 
-procedure fpc_setstring_ansistr_pansichar(var dest: AnsiString; source: PAnsiChar);
-
-//implementation
-
-{$endif}
-{$ifdef codei}
-
-procedure fpc_setstring_ansistr_pansichar(var dest: AnsiString; source: PAnsiChar);
-var
-  len: SizeInt;
-  i: SizeInt;
-begin
-  if source = nil then
-  begin
-    dest := '';
-    Exit;
-  end;
-
-  len := 0;
-  while source[len] <> #0 do
-    Inc(len);
-
-  SetLength(dest, len);
-  for i := 1 to len do
-    dest[i] := source[i - 1];
-end;
-
+implementation
 
 {$ifdef DLLEXPORT}
-function StringReplace(const S, OldPattern, NewPattern: string; Flags: TReplaceFlags): string; stdcall; export;
+function StringReplace(
+  const S          : string;
+  const OldPattern : string;
+  const NewPattern : string;
+  Flags            : TReplaceFlags): string; export;
 var
   i, StartPos, OldLen: Integer;
   ResultStr: string;
@@ -99,12 +71,9 @@ end;
 {$endif DLLIMPORT}
 
 {$ifdef DLLEXPORT}
-//exports
-//  StringReplace  name 'StringReplace'
-//  ;
+exports
+  StringReplace  name 'StringReplace'
+  ;
 {$endif DLLEXPORT}
 
-//end.
-
-{$endif}
-
+end.

@@ -42,7 +42,6 @@ _FPC_DLL_Entry:
 .Lj8:
 # [85] PASCALMAIN;
 	call	PASCALMAIN
-	jmp	.Lj5
 	.balign 4,0x90
 	.balign 4,0x90
 	.balign 4,0x90

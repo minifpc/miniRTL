@@ -144,7 +144,3 @@ EXPORTS
     ; -------------------------------
     TRTL_Create
     TRTL_Destroy
-
-    TAPPLICATION_CREATE
-    TApplication__Destroy
-    

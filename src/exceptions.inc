@@ -1,3 +1,7 @@
+// ---------------------------------------------------------------------------------------
+// Copyright(c) 2025 @paule32 and @fibonacci
+// ---------------------------------------------------------------------------------------
+
 {$if defined(codeh) and defined(codei)}
 {$FATAL interface and implementation at the same time not possible}
 {$endif}
@@ -157,7 +161,12 @@ var
 
 {$ifdef codei}
 
-function FilterException(var rec: EXCEPTION_RECORD; imagebase: PtrUInt; filterRva: DWord; errcode: longint): Pointer;
+{$ifdef DLLEXPORT}
+function FilterException_(
+  var rec   : EXCEPTION_RECORD;
+  imagebase : PtrUInt;
+  filterRva : DWord;
+  errcode   : longint): Pointer; stdcall; export;
 var
   exclass: TClass;
   i: integer;
@@ -190,8 +199,33 @@ begin
     {$endif}
   end;
 end;
+function FilterException(
+  var rec   : EXCEPTION_RECORD;
+  imagebase : PtrUInt;
+  filterRva : DWord;
+  errcode   : longint): Pointer; stdcall;
+begin
+  Exit(FilterException_(rec, imageBase, filterRva, errcode));
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function FilterException_(
+  var rec   : EXCEPTION_RECORD;
+  imagebase : PtrUInt;
+  filterRva : DWord;
+  errcode   : longint): Pointer; stdcall; external RTLDLL;
+function FilterException(
+  var rec   : EXCEPTION_RECORD;
+  imagebase : PtrUInt;
+  filterRva : DWord;
+  errcode   : longint): Pointer; stdcall;
+begin
+  Exit(FilterException_(rec, imageBase, filterRva, errcode));
+end;
+{$endif DLLIMPORT}
 
-function RunErrorCode(const rec: EXCEPTION_RECORD): longint;
+{$ifdef DLLEXPORT}
+function RunErrorCode_(const rec: EXCEPTION_RECORD): longint; stdcall; export;
 begin
   { negative result means 'FPU reset required' }
   case rec.ExceptionCode of
@@ -216,8 +250,21 @@ begin
     result := 255; // reExternalException
   end;
 end;
+function RunErrorCode(const rec: EXCEPTION_RECORD): longint; stdcall;
+begin
+  Exit(RunErrorCode_(rec));
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function RunErrorCode_(const rec: EXCEPTION_RECORD): longint; stdcall; external RTLDLL;
+function RunErrorCode(const rec: EXCEPTION_RECORD): longint; stdcall;
+begin
+  Exit(RunErrorCode_(rec));
+end;
+{$endif DLLIMPORT}
 
-procedure TranslateMxcsr(mxcsr: longword; var code: longint);
+{$ifdef DLLEXPORT}
+procedure TranslateMxcsr(mxcsr: longword; var code: longint); stdcall; export;
 begin
   { we can return only one value, further one's are lost }
   { InvalidOp }
@@ -235,6 +282,16 @@ begin
   else { this should not happen }
     code := -255;
 end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+procedure TranslateMxcsr(mxcsr: longword; var code: longint); stdcall; external RTLDLL;
+{$endif DLLIMPORT}
+
+{$ifdef DLLEXPORT}
+exports
+  TranslateMxcsr name 'TranslateMxcsr'
+  ;
+{$endif DLLEXPORT}
 
 {$endif}
 
@@ -243,3 +300,5 @@ end;
 {$else}
   {$I exceptions32.inc}
 {$endif}
+
+

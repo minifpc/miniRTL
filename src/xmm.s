@@ -2,11 +2,12 @@
 # Begin asmlist al_pure_assembler
 
 .section .text.n_xmm_$$__atomic32$longint$longint$$longint,"x"
+	.balign 16,0x90
 XMM_$$__ATOMIC32$LONGINT$LONGINT$$LONGINT:
 .Lc1:
 .seh_proc XMM_$$__ATOMIC32$LONGINT$LONGINT$$LONGINT
 # [xmm.pas]
-# [107] asm
+# [102] asm
 	pushq	%rbp
 .seh_pushreg %rbp
 .Lc3:
@@ -18,12 +19,13 @@ XMM_$$__ATOMIC32$LONGINT$LONGINT$$LONGINT:
 .seh_endprologue
 # Var $result located at rbp-4, size=OS_S32
 #  CPU ATHLON64
-# [109] mov    eax, val
+# [104] mov    eax, val
 	movl	%edx,%eax
-# [111] xchg dword ptr [target], eax
-	xchgl	%eax,(%rcx)
+# [105] lock   xchg [target], eax
+	lock
+	xchgq	%eax,(%rcx)
 #  CPU ATHLON64
-# [117] end;
+# [111] end;
 	leaq	(%rbp),%rsp
 	popq	%rbp
 	ret
@@ -33,23 +35,25 @@ XMM_$$__ATOMIC32$LONGINT$LONGINT$$LONGINT:
 # Begin asmlist al_procedures
 
 .section .text.n_xmm_$$__xmemchunksbegin,"x"
+	.balign 16,0x90
 XMM_$$__XMEMCHUNKSBEGIN:
 .Lc6:
 .seh_proc XMM_$$__XMEMCHUNKSBEGIN
-# [121] begin
+# [115] begin
 	leaq	-40(%rsp),%rsp
 .Lc8:
 .seh_stackalloc 40
 .seh_endprologue
+	.balign 8,0x90
 .Lj7:
-# [122] while _atomic32(xmemchunks_critical_section, 1) <> 0 do; // consider adding a sleep to reduce CPU usage
+# [116] while _atomic32(xmemchunks_critical_section, 1) <> 0 do; // consider adding a sleep to reduce CPU usage
 	leaq	TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION(%rip),%rax
 	movl	$1,%edx
 	movq	%rax,%rcx
 	call	XMM_$$__ATOMIC32$LONGINT$LONGINT$$LONGINT
 	testl	%eax,%eax
 	jne	.Lj7
-# [123] end;
+# [117] end;
 	nop
 	leaq	40(%rsp),%rsp
 	ret
@@ -57,20 +61,21 @@ XMM_$$__XMEMCHUNKSBEGIN:
 .Lc7:
 
 .section .text.n_xmm_$$__xmemchunksend,"x"
+	.balign 16,0x90
 XMM_$$__XMEMCHUNKSEND:
 .Lc9:
 .seh_proc XMM_$$__XMEMCHUNKSEND
-# [127] begin
+# [121] begin
 	leaq	-40(%rsp),%rsp
 .Lc11:
 .seh_stackalloc 40
 .seh_endprologue
-# [128] _atomic32(xmemchunks_critical_section, 0);
+# [122] _atomic32(xmemchunks_critical_section, 0);
 	leaq	TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION(%rip),%rax
 	xorl	%edx,%edx
 	movq	%rax,%rcx
 	call	XMM_$$__ATOMIC32$LONGINT$LONGINT$$LONGINT
-# [129] end;
+# [123] end;
 	nop
 	leaq	40(%rsp),%rsp
 	ret
@@ -78,10 +83,11 @@ XMM_$$__XMEMCHUNKSEND:
 .Lc10:
 
 .section .text.n_xmm_$$__xgetmemchunk$longword$$pointer,"x"
+	.balign 16,0x90
 XMM_$$__XGETMEMCHUNK$LONGWORD$$POINTER:
 .Lc12:
 .seh_proc XMM_$$__XGETMEMCHUNK$LONGWORD$$POINTER
-# [135] begin
+# [129] begin
 	pushq	%rbx
 .seh_pushreg %rbx
 	pushq	%rsi
@@ -95,52 +101,57 @@ XMM_$$__XGETMEMCHUNK$LONGWORD$$POINTER:
 	movl	%ecx,%ebx
 # Var size located in register ebx
 # Var $result located in register rsi
-# [137] result := nil;
+# [131] result := nil;
 	xorl	%esi,%esi
+	.balign 8,0x90
 .Lj14:
-# [138] _xmemchunksbegin;
+# [132] _xmemchunksbegin;
 	leaq	TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION(%rip),%rcx
 	movl	$1,%edx
 	call	XMM_$$__ATOMIC32$LONGINT$LONGINT$$LONGINT
 	testl	%eax,%eax
 	jne	.Lj14
-# [141] if result = nil then begin
+# [135] if result = nil then begin
 	testq	%rsi,%rsi
 	jne	.Lj18
-# [142] for i := 0 to high(xmemchunks) do begin
+# [136] for i := 0 to high(xmemchunks) do begin
 	movl	$-1,%eax
+	.balign 8,0x90
 .Lj19:
-	incl	%eax
-# [143] if xmemchunks[i].h.size = 0 then begin
+	addl	$1,%eax
+# [137] if xmemchunks[i].h.size = 0 then begin
 	movl	%eax,%edx
 	imulq	$552,%rdx,%rcx
 	leaq	U_$XMM_$$_XMEMCHUNKS(%rip),%rdx
 	cmpq	$0,8(%rdx,%rcx)
 	jne	.Lj23
-# [145] result := @xmemchunks[i].data[0];
+# [139] result := @xmemchunks[i].data[0];
 	movl	%eax,%edx
 	imulq	$552,%rdx,%rdx
 	leaq	U_$XMM_$$_XMEMCHUNKS(%rip),%rcx
 	leaq	40(%rcx,%rdx),%rsi
-# [146] break;
+# [140] break;
 	jmp	.Lj21
+	.balign 4,0x90
 .Lj23:
 	cmpl	$8191,%eax
 	jnge	.Lj19
 .Lj21:
+	.balign 4,0x90
 .Lj18:
-# [151] if result <> nil then begin
+# [145] if result <> nil then begin
 	testq	%rsi,%rsi
 	je	.Lj25
-# [153] pxmemchunk(result-sizeof(txmemheader))^.h.size := size;
+# [147] pxmemchunk(result-sizeof(txmemheader))^.h.size := size;
 	andl	%ebx,%ebx
 	movq	%rbx,-32(%rsi)
+	.balign 4,0x90
 .Lj25:
-# [157] _xmemchunksend;
+# [151] _xmemchunksend;
 	leaq	TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION(%rip),%rcx
 	xorl	%edx,%edx
 	call	XMM_$$__ATOMIC32$LONGINT$LONGINT$$LONGINT
-# [158] end;
+# [152] end;
 	movq	%rsi,%rax
 	nop
 	leaq	40(%rsp),%rsp
@@ -151,11 +162,12 @@ XMM_$$__XGETMEMCHUNK$LONGWORD$$POINTER:
 .Lc13:
 
 .section .text.n_xmm_$$_xgetmem$qword$$pointer,"x"
+	.balign 16,0x90
 .globl	XMM_$$_XGETMEM$QWORD$$POINTER
 XMM_$$_XGETMEM$QWORD$$POINTER:
 .Lc15:
 .seh_proc XMM_$$_XGETMEM$QWORD$$POINTER
-# [161] begin
+# [155] begin
 	pushq	%rbx
 .seh_pushreg %rbx
 	pushq	%rdi
@@ -172,16 +184,17 @@ XMM_$$_XGETMEM$QWORD$$POINTER:
 	movq	%rcx,%rbx
 # Var size located in register rbx
 # Var $result located in register rdi
-# [166] result := nil;
+# [160] result := nil;
 	xorl	%edi,%edi
-# [169] if (size > 0) and (size <= XMMCHUNKSIZE) then begin
+# [163] if (size > 0) and (size <= XMMCHUNKSIZE) then begin
 	testq	%rbx,%rbx
 	jna	.Lj29
 	cmpq	$512,%rbx
 	jnbe	.Lj29
-# [170] result := _xgetmemchunk(size);
+# [164] result := _xgetmemchunk(size);
 	movl	%ebx,%esi
 	xorq	%r12,%r12
+	.balign 8,0x90
 .Lj32:
 	leaq	TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION(%rip),%rcx
 	movl	$1,%edx
@@ -191,8 +204,9 @@ XMM_$$_XGETMEM$QWORD$$POINTER:
 	testq	%r12,%r12
 	jne	.Lj36
 	movl	$-1,%eax
+	.balign 8,0x90
 .Lj37:
-	incl	%eax
+	addl	$1,%eax
 	movl	%eax,%edx
 	imulq	$552,%rdx,%rdx
 	leaq	U_$XMM_$$_XMEMCHUNKS(%rip),%rcx
@@ -203,38 +217,44 @@ XMM_$$_XGETMEM$QWORD$$POINTER:
 	leaq	U_$XMM_$$_XMEMCHUNKS(%rip),%rcx
 	leaq	40(%rcx,%rdx),%r12
 	jmp	.Lj39
+	.balign 4,0x90
 .Lj41:
 	cmpl	$8191,%eax
 	jnge	.Lj37
 .Lj39:
+	.balign 4,0x90
 .Lj36:
 	testq	%r12,%r12
 	je	.Lj43
 	andl	%esi,%esi
 	movq	%rsi,-32(%r12)
+	.balign 4,0x90
 .Lj43:
 	leaq	TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION(%rip),%rcx
 	xorl	%edx,%edx
 	call	XMM_$$__ATOMIC32$LONGINT$LONGINT$$LONGINT
 	movq	%r12,%rdi
-# [171] if result <> nil then exit; // succeeded
+# [165] if result <> nil then exit; // succeeded
 	testq	%r12,%r12
 	jne	.Lj26
+	.balign 4,0x90
+	.balign 4,0x90
 .Lj29:
-# [175] result := VirtualAlloc(nil, size+sizeof(txmemheader), MEM_COMMIT or MEM_RESERVE, PAGE_READWRITE);
+# [169] result := VirtualAlloc(nil, size+sizeof(txmemheader), MEM_COMMIT or MEM_RESERVE, PAGE_READWRITE);
 	leaq	40(%rbx),%rdx
 	movl	$4,%r9d
 	movl	$12288,%r8d
 	xorl	%ecx,%ecx
 	call	_$dll$kernel32$VirtualAlloc
 	movq	%rax,%rdi
-# [176] if result = nil then exit;
+# [170] if result = nil then exit;
 	testq	%rax,%rax
 	je	.Lj26
+	.balign 4,0x90
 # Var size located in register rbx
-# [179] pxmemheader(result)^.size := size;
+# [173] pxmemheader(result)^.size := size;
 	movq	%rbx,8(%rdi)
-# [181] pxmemheader(result)^.realsize := ((int64(size) div 4096)+1)*4096-sizeof(txmemheader); // align to 4096 bytes (OS alignment), subtract the header size
+# [175] pxmemheader(result)^.realsize := ((int64(size) div 4096)+1)*4096-sizeof(txmemheader); // align to 4096 bytes (OS alignment), subtract the header size
 	movq	%rbx,%rax
 	sarq	$63,%rax
 	andq	$4095,%rax
@@ -244,16 +264,16 @@ XMM_$$_XGETMEM$QWORD$$POINTER:
 	shlq	$12,%rax
 	subq	$40,%rax
 	movq	%rax,16(%rdi)
-# [186] pxmemheader(result)^.wasallocated := true; // memory allocated by OS; must be freed using VirtualFree
+# [180] pxmemheader(result)^.wasallocated := true; // memory allocated by OS; must be freed using VirtualFree
 	movb	$1,(%rdi)
-# [187] pxmemheader(result)^.prev := nil; // not used currently; may be removed if it offers no performance gain
+# [181] pxmemheader(result)^.prev := nil; // not used currently; may be removed if it offers no performance gain
 	movq	$0,24(%rdi)
-# [188] pxmemheader(result)^.next := nil; // not used currently; may be removed if it offers no performance gain
+# [182] pxmemheader(result)^.next := nil; // not used currently; may be removed if it offers no performance gain
 	movq	$0,32(%rdi)
-# [191] result := result + sizeof(txmemheader);
+# [185] result := result + sizeof(txmemheader);
 	addq	$40,%rdi
 .Lj26:
-# [192] end;
+# [186] end;
 	movq	%rdi,%rax
 	nop
 	leaq	40(%rsp),%rsp
@@ -266,11 +286,12 @@ XMM_$$_XGETMEM$QWORD$$POINTER:
 .Lc16:
 
 .section .text.n_xmm_$$_xallocmem$qword$$pointer,"x"
+	.balign 16,0x90
 .globl	XMM_$$_XALLOCMEM$QWORD$$POINTER
 XMM_$$_XALLOCMEM$QWORD$$POINTER:
 .Lc18:
 .seh_proc XMM_$$_XALLOCMEM$QWORD$$POINTER
-# [195] begin
+# [189] begin
 	pushq	%rbx
 .seh_pushreg %rbx
 	pushq	%rdi
@@ -286,7 +307,7 @@ XMM_$$_XALLOCMEM$QWORD$$POINTER:
 # Var $result located in register rbx
 	movq	%rcx,%rsi
 # Var size located in register rsi
-# [199] result := xgetmem(size);
+# [193] result := xgetmem(size);
 	xorl	%ebx,%ebx
 	testq	%rsi,%rsi
 	jna	.Lj52
@@ -294,6 +315,7 @@ XMM_$$_XALLOCMEM$QWORD$$POINTER:
 	jnbe	.Lj52
 	movl	%esi,%edi
 	xorq	%r12,%r12
+	.balign 8,0x90
 .Lj55:
 	leaq	TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION(%rip),%rcx
 	movl	$1,%edx
@@ -303,8 +325,9 @@ XMM_$$_XALLOCMEM$QWORD$$POINTER:
 	testq	%r12,%r12
 	jne	.Lj59
 	movl	$-1,%eax
+	.balign 8,0x90
 .Lj60:
-	incl	%eax
+	addl	$1,%eax
 	movl	%eax,%edx
 	imulq	$552,%rdx,%rdx
 	leaq	U_$XMM_$$_XMEMCHUNKS(%rip),%rcx
@@ -315,15 +338,18 @@ XMM_$$_XALLOCMEM$QWORD$$POINTER:
 	leaq	U_$XMM_$$_XMEMCHUNKS(%rip),%rcx
 	leaq	40(%rcx,%rdx),%r12
 	jmp	.Lj62
+	.balign 4,0x90
 .Lj64:
 	cmpl	$8191,%eax
 	jnge	.Lj60
 .Lj62:
+	.balign 4,0x90
 .Lj59:
 	testq	%r12,%r12
 	je	.Lj66
 	andl	%edi,%edi
 	movq	%rdi,-32(%r12)
+	.balign 4,0x90
 .Lj66:
 	leaq	TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION(%rip),%rcx
 	xorl	%edx,%edx
@@ -331,6 +357,8 @@ XMM_$$_XALLOCMEM$QWORD$$POINTER:
 	movq	%r12,%rbx
 	testq	%r12,%r12
 	jne	.Lj50
+	.balign 4,0x90
+	.balign 4,0x90
 .Lj52:
 	leaq	40(%rsi),%rdx
 	movl	$4,%r9d
@@ -340,6 +368,7 @@ XMM_$$_XALLOCMEM$QWORD$$POINTER:
 	movq	%rax,%rbx
 	testq	%rax,%rax
 	je	.Lj50
+	.balign 4,0x90
 	movq	%rsi,8(%rbx)
 	movq	%rsi,%rax
 	movq	%rax,%rdx
@@ -347,7 +376,7 @@ XMM_$$_XALLOCMEM$QWORD$$POINTER:
 	andq	$4095,%rdx
 	addq	%rdx,%rax
 	sarq	$12,%rax
-	incq	%rax
+	addq	$1,%rax
 	shlq	$12,%rax
 	subq	$40,%rax
 	movq	%rax,16(%rbx)
@@ -356,16 +385,17 @@ XMM_$$_XALLOCMEM$QWORD$$POINTER:
 	movq	$0,32(%rbx)
 	addq	$40,%rbx
 .Lj50:
-# [200] if result = nil then exit;
+# [194] if result = nil then exit;
 	testq	%rbx,%rbx
 	je	.Lj48
-# [202] xfillmem(result, size, 0);
+	.balign 4,0x90
+# [196] xfillmem(result, size, 0);
 	movq	%rsi,%rdx
 	movq	%rbx,%rcx
 	xorl	%r8d,%r8d
-	call	XMM_$$_XFILLMEM$POINTER$QWORD$EXCEPTCLSPROC$$QWORD
+	call	XMM_$$_XFILLMEM$POINTER$QWORD$BYTE$$QWORD
 .Lj48:
-# [203] end;
+# [197] end;
 	movq	%rbx,%rax
 	nop
 	leaq	40(%rsp),%rsp
@@ -378,11 +408,12 @@ XMM_$$_XALLOCMEM$QWORD$$POINTER:
 .Lc19:
 
 .section .text.n_xmm_$$_xreallocmem$pointer$qword$$pointer,"x"
+	.balign 16,0x90
 .globl	XMM_$$_XREALLOCMEM$POINTER$QWORD$$POINTER
 XMM_$$_XREALLOCMEM$POINTER$QWORD$$POINTER:
 .Lc21:
 .seh_proc XMM_$$_XREALLOCMEM$POINTER$QWORD$$POINTER
-# [209] begin
+# [203] begin
 	pushq	%rbx
 .seh_pushreg %rbx
 	pushq	%rdi
@@ -407,27 +438,29 @@ XMM_$$_XREALLOCMEM$POINTER$QWORD$$POINTER:
 	movq	%rdx,%rsi
 # Var size located in register rsi
 # Var $result located in register r12
-# [214] result := nil;
+# [208] result := nil;
 	movq	$0,%r12
-# [217] if size = 0 then begin
+# [211] if size = 0 then begin
 	testq	%rsi,%rsi
 	jne	.Lj76
-# [218] if p <> nil then xfreemem(p);
+# [212] if p <> nil then xfreemem(p);
 	cmpq	$0,(%rbx)
 	je	.Lj78
 	movq	(%rbx),%rcx
 	call	XMM_$$_XFREEMEM$POINTER$$QWORD
+	.balign 4,0x90
 .Lj78:
-# [219] p := nil;
+# [213] p := nil;
 	movq	$0,(%rbx)
-# [220] exit(nil);
+# [214] exit(nil);
 	xorq	%r12,%r12
 	jmp	.Lj73
+	.balign 4,0x90
 .Lj76:
-# [224] if p = nil then begin
+# [218] if p = nil then begin
 	cmpq	$0,(%rbx)
 	jne	.Lj80
-# [225] p := xgetmem(size);
+# [219] p := xgetmem(size);
 	xorq	%r13,%r13
 	testq	%rsi,%rsi
 	jna	.Lj83
@@ -435,6 +468,7 @@ XMM_$$_XREALLOCMEM$POINTER$QWORD$$POINTER:
 	jnbe	.Lj83
 	movl	%esi,%edi
 	xorq	%r14,%r14
+	.balign 8,0x90
 .Lj86:
 	leaq	TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION(%rip),%rcx
 	movl	$1,%edx
@@ -444,8 +478,9 @@ XMM_$$_XREALLOCMEM$POINTER$QWORD$$POINTER:
 	testq	%r14,%r14
 	jne	.Lj90
 	movl	$-1,%eax
+	.balign 8,0x90
 .Lj91:
-	incl	%eax
+	addl	$1,%eax
 	movl	%eax,%edx
 	imulq	$552,%rdx,%rdx
 	leaq	U_$XMM_$$_XMEMCHUNKS(%rip),%rcx
@@ -456,15 +491,18 @@ XMM_$$_XREALLOCMEM$POINTER$QWORD$$POINTER:
 	leaq	U_$XMM_$$_XMEMCHUNKS(%rip),%rcx
 	leaq	40(%rcx,%rdx),%r14
 	jmp	.Lj93
+	.balign 4,0x90
 .Lj95:
 	cmpl	$8191,%eax
 	jnge	.Lj91
 .Lj93:
+	.balign 4,0x90
 .Lj90:
 	testq	%r14,%r14
 	je	.Lj97
 	andl	%edi,%edi
 	movq	%rdi,-32(%r14)
+	.balign 4,0x90
 .Lj97:
 	leaq	TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION(%rip),%rcx
 	xorl	%edx,%edx
@@ -472,6 +510,8 @@ XMM_$$_XREALLOCMEM$POINTER$QWORD$$POINTER:
 	movq	%r14,%r13
 	testq	%r14,%r14
 	jne	.Lj81
+	.balign 4,0x90
+	.balign 4,0x90
 .Lj83:
 	leaq	40(%rsi),%rdx
 	movl	$4,%r9d
@@ -481,6 +521,7 @@ XMM_$$_XREALLOCMEM$POINTER$QWORD$$POINTER:
 	movq	%rax,%r13
 	testq	%rax,%rax
 	je	.Lj81
+	.balign 4,0x90
 	movq	%rsi,8(%r13)
 	movq	%rsi,%rax
 	movq	%rax,%rdx
@@ -488,7 +529,7 @@ XMM_$$_XREALLOCMEM$POINTER$QWORD$$POINTER:
 	andq	$4095,%rdx
 	addq	%rdx,%rax
 	sarq	$12,%rax
-	incq	%rax
+	addq	$1,%rax
 	shlq	$12,%rax
 	subq	$40,%rax
 	movq	%rax,16(%r13)
@@ -498,50 +539,55 @@ XMM_$$_XREALLOCMEM$POINTER$QWORD$$POINTER:
 	addq	$40,%r13
 .Lj81:
 	movq	%r13,(%rbx)
-# [226] exit(p);
+# [220] exit(p);
 	movq	%r13,%r12
 	jmp	.Lj73
+	.balign 4,0x90
 .Lj80:
-# [230] h := p-sizeof(txmemheader);
+# [224] h := p-sizeof(txmemheader);
 	movq	(%rbx),%rax
 	leaq	-40(%rax),%rdi
+	.balign 8,0x90
 .Lj102:
-# [233] _xmemchunksbegin;
+# [227] _xmemchunksbegin;
 	leaq	TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION(%rip),%rcx
 	movl	$1,%edx
 	call	XMM_$$__ATOMIC32$LONGINT$LONGINT$$LONGINT
 	testl	%eax,%eax
 	jne	.Lj102
-# [234] if not h^.wasallocated then begin
+# [228] if not h^.wasallocated then begin
 	cmpb	$0,(%rdi)
 	jne	.Lj106
-# [235] if size < XMMCHUNKSIZE then begin
+# [229] if size < XMMCHUNKSIZE then begin
 	cmpq	$512,%rsi
 	jnb	.Lj108
-# [236] h^.size := size;
+# [230] h^.size := size;
 	movq	%rsi,8(%rdi)
-# [237] result := p;
+# [231] result := p;
 	movq	(%rbx),%r12
+	.balign 4,0x90
 .Lj108:
+	.balign 4,0x90
 .Lj106:
-# [240] _xmemchunksend;
+# [234] _xmemchunksend;
 	leaq	TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION(%rip),%rcx
 	xorl	%edx,%edx
 	call	XMM_$$__ATOMIC32$LONGINT$LONGINT$$LONGINT
-# [244] if (result = nil) and (size < h^.realsize) then begin
+# [238] if (result = nil) and (size < h^.realsize) then begin
 	testq	%r12,%r12
 	jne	.Lj110
 	cmpq	16(%rdi),%rsi
 	jnb	.Lj110
-# [246] h^.size := size;
+# [240] h^.size := size;
 	movq	%rsi,8(%rdi)
-# [247] result := p;
+# [241] result := p;
 	movq	(%rbx),%r12
+	.balign 4,0x90
 .Lj110:
-# [250] if result = nil then begin
+# [244] if result = nil then begin
 	testq	%r12,%r12
 	jne	.Lj113
-# [252] result := xgetmem(size);
+# [246] result := xgetmem(size);
 	xorq	%r13,%r13
 	testq	%rsi,%rsi
 	jna	.Lj116
@@ -549,6 +595,7 @@ XMM_$$_XREALLOCMEM$POINTER$QWORD$$POINTER:
 	jnbe	.Lj116
 	movl	%esi,%edi
 	xorq	%r14,%r14
+	.balign 8,0x90
 .Lj119:
 	leaq	TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION(%rip),%rcx
 	movl	$1,%edx
@@ -558,8 +605,9 @@ XMM_$$_XREALLOCMEM$POINTER$QWORD$$POINTER:
 	testq	%r14,%r14
 	jne	.Lj123
 	movl	$-1,%eax
+	.balign 8,0x90
 .Lj124:
-	incl	%eax
+	addl	$1,%eax
 	movl	%eax,%edx
 	imulq	$552,%rdx,%rcx
 	leaq	U_$XMM_$$_XMEMCHUNKS(%rip),%rdx
@@ -570,15 +618,18 @@ XMM_$$_XREALLOCMEM$POINTER$QWORD$$POINTER:
 	leaq	U_$XMM_$$_XMEMCHUNKS(%rip),%rcx
 	leaq	40(%rcx,%rdx),%r14
 	jmp	.Lj126
+	.balign 4,0x90
 .Lj128:
 	cmpl	$8191,%eax
 	jnge	.Lj124
 .Lj126:
+	.balign 4,0x90
 .Lj123:
 	testq	%r14,%r14
 	je	.Lj130
 	andl	%edi,%edi
 	movq	%rdi,-32(%r14)
+	.balign 4,0x90
 .Lj130:
 	leaq	TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION(%rip),%rcx
 	xorl	%edx,%edx
@@ -586,6 +637,8 @@ XMM_$$_XREALLOCMEM$POINTER$QWORD$$POINTER:
 	movq	%r14,%r13
 	testq	%r14,%r14
 	jne	.Lj114
+	.balign 4,0x90
+	.balign 4,0x90
 .Lj116:
 	leaq	40(%rsi),%rdx
 	movl	$4,%r9d
@@ -595,6 +648,7 @@ XMM_$$_XREALLOCMEM$POINTER$QWORD$$POINTER:
 	movq	%rax,%r13
 	testq	%rax,%rax
 	je	.Lj114
+	.balign 4,0x90
 	movq	%rsi,8(%r13)
 	movq	%rsi,%rax
 	movq	%rax,%rdx
@@ -602,7 +656,7 @@ XMM_$$_XREALLOCMEM$POINTER$QWORD$$POINTER:
 	andq	$4095,%rdx
 	addq	%rdx,%rax
 	sarq	$12,%rax
-	incq	%rax
+	addq	$1,%rax
 	shlq	$12,%rax
 	subq	$40,%rax
 	movq	%rax,16(%r13)
@@ -612,31 +666,34 @@ XMM_$$_XREALLOCMEM$POINTER$QWORD$$POINTER:
 	addq	$40,%r13
 .Lj114:
 	movq	%r13,%r12
-# [253] if result <> nil then begin
+# [247] if result <> nil then begin
 	testq	%r13,%r13
 	je	.Lj136
-# [255] n := size;
+# [249] n := size;
 	movq	%rsi,%r8
-# [256] if pxmemheader(p)^.size < n then n := pxmemheader(p)^.size;
+# [250] if pxmemheader(p)^.size < n then n := pxmemheader(p)^.size;
 	movq	(%rbx),%rax
 	cmpq	8(%rax),%r8
 	jna	.Lj138
 	movq	(%rbx),%rax
 	movq	8(%rax),%r8
+	.balign 4,0x90
 .Lj138:
-# [258] xmovemem(p, result, n);
+# [252] xmovemem(p, result, n);
 	movq	(%rbx),%rcx
 	movq	%r12,%rdx
 	call	XMM_$$_XMOVEMEM$POINTER$POINTER$QWORD$$QWORD
+	.balign 4,0x90
 .Lj136:
-# [262] xfreemem(p);
+# [256] xfreemem(p);
 	movq	(%rbx),%rcx
 	call	XMM_$$_XFREEMEM$POINTER$$QWORD
-# [263] p := result;
+# [257] p := result;
 	movq	%r12,(%rbx)
+	.balign 4,0x90
 .Lj113:
 .Lj73:
-# [265] end;
+# [259] end;
 	movq	%r12,%rax
 	nop
 	leaq	40(%rsp),%rsp
@@ -651,11 +708,12 @@ XMM_$$_XREALLOCMEM$POINTER$QWORD$$POINTER:
 .Lc22:
 
 .section .text.n_xmm_$$_xclone$pointer$$pointer,"x"
+	.balign 16,0x90
 .globl	XMM_$$_XCLONE$POINTER$$POINTER
 XMM_$$_XCLONE$POINTER$$POINTER:
 .Lc24:
 .seh_proc XMM_$$_XCLONE$POINTER$$POINTER
-# [270] begin
+# [264] begin
 	pushq	%rbx
 .seh_pushreg %rbx
 	pushq	%rdi
@@ -675,11 +733,11 @@ XMM_$$_XCLONE$POINTER$$POINTER:
 	movq	%rcx,%rsi
 # Var p located in register rsi
 # Var p located in register rsi
-# [274] u := xmemsize(p);
+# [268] u := xmemsize(p);
 	call	XMM_$$_XMEMSIZE$POINTER$$QWORD
 	movq	%rax,%rdi
 # Var u located in register rdi
-# [275] result := xgetmem(u);
+# [269] result := xgetmem(u);
 	xorl	%ebx,%ebx
 	testq	%rdi,%rdi
 	jna	.Lj143
@@ -687,6 +745,7 @@ XMM_$$_XCLONE$POINTER$$POINTER:
 	jnbe	.Lj143
 	movl	%edi,%r12d
 	xorq	%r13,%r13
+	.balign 8,0x90
 .Lj146:
 	leaq	TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION(%rip),%rcx
 	movl	$1,%edx
@@ -696,8 +755,9 @@ XMM_$$_XCLONE$POINTER$$POINTER:
 	testq	%r13,%r13
 	jne	.Lj150
 	movl	$-1,%eax
+	.balign 8,0x90
 .Lj151:
-	incl	%eax
+	addl	$1,%eax
 	movl	%eax,%edx
 	imulq	$552,%rdx,%rdx
 	leaq	U_$XMM_$$_XMEMCHUNKS(%rip),%rcx
@@ -708,15 +768,18 @@ XMM_$$_XCLONE$POINTER$$POINTER:
 	leaq	U_$XMM_$$_XMEMCHUNKS(%rip),%rcx
 	leaq	40(%rcx,%rdx),%r13
 	jmp	.Lj153
+	.balign 4,0x90
 .Lj155:
 	cmpl	$8191,%eax
 	jnge	.Lj151
 .Lj153:
+	.balign 4,0x90
 .Lj150:
 	testq	%r13,%r13
 	je	.Lj157
 	andl	%r12d,%r12d
 	movq	%r12,-32(%r13)
+	.balign 4,0x90
 .Lj157:
 	leaq	TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION(%rip),%rcx
 	xorl	%edx,%edx
@@ -724,6 +787,8 @@ XMM_$$_XCLONE$POINTER$$POINTER:
 	movq	%r13,%rbx
 	testq	%r13,%r13
 	jne	.Lj141
+	.balign 4,0x90
+	.balign 4,0x90
 .Lj143:
 	leaq	40(%rdi),%rdx
 	movl	$4,%r9d
@@ -733,6 +798,7 @@ XMM_$$_XCLONE$POINTER$$POINTER:
 	movq	%rax,%rbx
 	testq	%rax,%rax
 	je	.Lj141
+	.balign 4,0x90
 	movq	%rdi,8(%rbx)
 	movq	%rdi,%rax
 	movq	%rax,%rdx
@@ -740,7 +806,7 @@ XMM_$$_XCLONE$POINTER$$POINTER:
 	andq	$4095,%rdx
 	addq	%rdx,%rax
 	sarq	$12,%rax
-	incq	%rax
+	addq	$1,%rax
 	shlq	$12,%rax
 	subq	$40,%rax
 	movq	%rax,16(%rbx)
@@ -749,12 +815,12 @@ XMM_$$_XCLONE$POINTER$$POINTER:
 	movq	$0,32(%rbx)
 	addq	$40,%rbx
 .Lj141:
-# [276] xmovemem(p, result, u);
+# [270] xmovemem(p, result, u);
 	movq	%rdi,%r8
 	movq	%rbx,%rdx
 	movq	%rsi,%rcx
 	call	XMM_$$_XMOVEMEM$POINTER$POINTER$QWORD$$QWORD
-# [277] end;
+# [271] end;
 	movq	%rbx,%rax
 	nop
 	leaq	32(%rsp),%rsp
@@ -768,57 +834,61 @@ XMM_$$_XCLONE$POINTER$$POINTER:
 .Lc25:
 
 .section .text.n_xmm_$$_xmemsize$pointer$$qword,"x"
+	.balign 16,0x90
 .globl	XMM_$$_XMEMSIZE$POINTER$$QWORD
 XMM_$$_XMEMSIZE$POINTER$$QWORD:
 .Lc27:
 # Var $result located in register rax
 # Var p located in register rcx
-# [280] begin
+# [274] begin
 # Var p located in register rcx
 # Var $result located in register rax
-# [284] result := pxmemheader(p-sizeof(txmemheader))^.size;
+# [278] result := pxmemheader(p-sizeof(txmemheader))^.size;
 	movq	-32(%rcx),%rax
-# [285] end;
+# [279] end;
 	ret
 .Lc28:
 
 .section .text.n_xmm_$$_xmemrealsize$pointer$$qword,"x"
+	.balign 16,0x90
 .globl	XMM_$$_XMEMREALSIZE$POINTER$$QWORD
 XMM_$$_XMEMREALSIZE$POINTER$$QWORD:
 .Lc29:
 # Var $result located in register rax
 # Var p located in register rcx
-# [288] begin
+# [282] begin
 # Var p located in register rcx
-# [292] result := pxmemheader(p-sizeof(txmemheader))^.realsize+sizeof(txmemheader);
+# [286] result := pxmemheader(p-sizeof(txmemheader))^.realsize+sizeof(txmemheader);
 	movq	-24(%rcx),%rax
 	addq	$40,%rax
 # Var $result located in register rax
-# [293] end;
+# [287] end;
 	ret
 .Lc30:
 
 .section .text.n_xmm_$$_xmemavailsize$pointer$$qword,"x"
+	.balign 16,0x90
 .globl	XMM_$$_XMEMAVAILSIZE$POINTER$$QWORD
 XMM_$$_XMEMAVAILSIZE$POINTER$$QWORD:
 .Lc31:
 # Var $result located in register rax
 # Var p located in register rcx
-# [296] begin
+# [290] begin
 # Var p located in register rcx
 # Var $result located in register rax
-# [300] result := pxmemheader(p-sizeof(txmemheader))^.realsize;
+# [294] result := pxmemheader(p-sizeof(txmemheader))^.realsize;
 	movq	-24(%rcx),%rax
-# [301] end;
+# [295] end;
 	ret
 .Lc32:
 
 .section .text.n_xmm_$$_xfreemem$pointer$$qword,"x"
+	.balign 16,0x90
 .globl	XMM_$$_XFREEMEM$POINTER$$QWORD
 XMM_$$_XFREEMEM$POINTER$$QWORD:
 .Lc33:
 .seh_proc XMM_$$_XFREEMEM$POINTER$$QWORD
-# [307] begin
+# [300] begin
 	pushq	%rbx
 .seh_pushreg %rbx
 	pushq	%rsi
@@ -831,43 +901,45 @@ XMM_$$_XFREEMEM$POINTER$$QWORD:
 # Var h located in register rax
 	movq	%rcx,%rbx
 # Var p located in register rbx
+	.balign 8,0x90
 .Lj170:
-# [312] _xmemchunksbegin;
+# [305] _xmemchunksbegin;
 	leaq	TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION(%rip),%rcx
 	movl	$1,%edx
 	call	XMM_$$__ATOMIC32$LONGINT$LONGINT$$LONGINT
 	testl	%eax,%eax
 	jne	.Lj170
-# [315] h := p-sizeof(txmemheader);
+# [308] h := p-sizeof(txmemheader);
 	subq	$40,%rbx
 # Var h located in register rbx
 # Var h located in register rbx
 # Var $result located in register rsi
-# [318] result := h^.realsize;
+# [311] result := h^.realsize;
 	movq	16(%rbx),%rsi
-# [320] if h^.wasallocated then result := result + sizeof(txmemheader);
+# [313] if h^.wasallocated then result := result + sizeof(txmemheader);
 	cmpb	$0,(%rbx)
 	je	.Lj174
 	addq	$40,%rsi
+	.balign 4,0x90
 .Lj174:
-# [322] if h^.wasallocated then begin
+# [315] if h^.wasallocated then begin
 	cmpb	$0,(%rbx)
 	je	.Lj176
-# [324] VirtualFree(h, 0, MEM_RELEASE);
+# [317] VirtualFree(h, 0, MEM_RELEASE);
 	movq	%rbx,%rcx
 	movl	$32768,%r8d
 	xorl	%edx,%edx
 	call	_$dll$kernel32$VirtualFree
 	jmp	.Lj177
 .Lj176:
-# [327] h^.size := 0;
+# [320] h^.size := 0;
 	movq	$0,8(%rbx)
 .Lj177:
-# [330] _xmemchunksend;
+# [323] _xmemchunksend;
 	leaq	TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION(%rip),%rcx
 	xorl	%edx,%edx
 	call	XMM_$$__ATOMIC32$LONGINT$LONGINT$$LONGINT
-# [331] end;
+# [324] end;
 	movq	%rsi,%rax
 	nop
 	leaq	40(%rsp),%rsp
@@ -878,11 +950,12 @@ XMM_$$_XFREEMEM$POINTER$$QWORD:
 .Lc34:
 
 .section .text.n_xmm_$$_xzeromem$pointer$qword$$qword,"x"
+	.balign 16,0x90
 .globl	XMM_$$_XZEROMEM$POINTER$QWORD$$QWORD
 XMM_$$_XZEROMEM$POINTER$QWORD$$QWORD:
 .Lc36:
 .seh_proc XMM_$$_XZEROMEM$POINTER$QWORD$$QWORD
-# [335] begin
+# [327] begin
 	leaq	-40(%rsp),%rsp
 .Lc38:
 .seh_stackalloc 40
@@ -892,11 +965,11 @@ XMM_$$_XZEROMEM$POINTER$QWORD$$QWORD:
 # Var len located in register rdx
 # Var len located in register rdx
 # Var p located in register rcx
-# [339] result := xfillmem(p, len, 0);
+# [331] result := xfillmem(p, len, 0);
 	xorl	%r8d,%r8d
-	call	XMM_$$_XFILLMEM$POINTER$QWORD$EXCEPTCLSPROC$$QWORD
+	call	XMM_$$_XFILLMEM$POINTER$QWORD$BYTE$$QWORD
 # Var $result located in register rax
-# [340] end;
+# [332] end;
 	nop
 	leaq	40(%rsp),%rsp
 	ret
@@ -904,11 +977,12 @@ XMM_$$_XZEROMEM$POINTER$QWORD$$QWORD:
 .Lc37:
 
 .section .text.n_xmm_$$_xmovemem$pointer$pointer$qword$$qword,"x"
+	.balign 16,0x90
 .globl	XMM_$$_XMOVEMEM$POINTER$POINTER$QWORD$$QWORD
 XMM_$$_XMOVEMEM$POINTER$POINTER$QWORD$$QWORD:
 .Lc39:
 .seh_proc XMM_$$_XMOVEMEM$POINTER$POINTER$QWORD$$QWORD
-# [343] begin
+# [335] begin
 	pushq	%rbx
 .seh_pushreg %rbx
 	leaq	-32(%rsp),%rsp
@@ -923,16 +997,16 @@ XMM_$$_XMOVEMEM$POINTER$POINTER$QWORD$$QWORD:
 	movq	%r8,%rbx
 # Var len located in register rbx
 # Var len located in register rbx
-# [347] RtlMoveMemory(dst, src, len);
+# [339] RtlMoveMemory(dst, src, len);
 	movq	%rax,%rdx
 # Var src located in register rdx
 # Var dst located in register rcx
 	call	_$dll$kernel32$RtlMoveMemory
 # Var $result located in register rax
-# [348] result := len;
+# [340] result := len;
 	movq	%rbx,%rax
 # Var len located in register rax
-# [349] end;
+# [341] end;
 	nop
 	leaq	32(%rsp),%rsp
 	popq	%rbx
@@ -940,12 +1014,13 @@ XMM_$$_XMOVEMEM$POINTER$POINTER$QWORD$$QWORD:
 .seh_endproc
 .Lc40:
 
-.section .text.n_xmm_$$_xfillmem$pointer$qword$exceptclsproc$$qword,"x"
-.globl	XMM_$$_XFILLMEM$POINTER$QWORD$EXCEPTCLSPROC$$QWORD
-XMM_$$_XFILLMEM$POINTER$QWORD$EXCEPTCLSPROC$$QWORD:
+.section .text.n_xmm_$$_xfillmem$pointer$qword$byte$$qword,"x"
+	.balign 16,0x90
+.globl	XMM_$$_XFILLMEM$POINTER$QWORD$BYTE$$QWORD
+XMM_$$_XFILLMEM$POINTER$QWORD$BYTE$$QWORD:
 .Lc42:
-.seh_proc XMM_$$_XFILLMEM$POINTER$QWORD$EXCEPTCLSPROC$$QWORD
-# [352] begin
+.seh_proc XMM_$$_XFILLMEM$POINTER$QWORD$BYTE$$QWORD
+# [344] begin
 	pushq	%rbx
 .seh_pushreg %rbx
 	leaq	-32(%rsp),%rsp
@@ -957,17 +1032,17 @@ XMM_$$_XFILLMEM$POINTER$QWORD$EXCEPTCLSPROC$$QWORD:
 	movq	%rdx,%rbx
 # Var len located in register rbx
 # Var v located in register r8b
-# [356] RtlFillMemory(p, len, v);
-	movzbl	%r8b,%r8d
+# [348] RtlFillMemory(p, len, v);
+	andl	$255,%r8d
 # Var len located in register rbx
 	movq	%rbx,%rdx
 # Var p located in register rcx
 	call	_$dll$kernel32$RtlFillMemory
 # Var $result located in register rax
-# [357] result := len;
+# [349] result := len;
 	movq	%rbx,%rax
 # Var len located in register rax
-# [358] end;
+# [350] end;
 	nop
 	leaq	32(%rsp),%rsp
 	popq	%rbx
@@ -976,10 +1051,11 @@ XMM_$$_XFILLMEM$POINTER$QWORD$EXCEPTCLSPROC$$QWORD:
 .Lc43:
 
 .section .text.n_xmm_$$_xfillmem$pointer$qword$char$$qword,"x"
+	.balign 16,0x90
 XMM_$$_XFILLMEM$POINTER$QWORD$CHAR$$QWORD:
 .Lc45:
 .seh_proc XMM_$$_XFILLMEM$POINTER$QWORD$CHAR$$QWORD
-# [361] begin
+# [353] begin
 	pushq	%rbx
 .seh_pushreg %rbx
 	leaq	-32(%rsp),%rsp
@@ -991,17 +1067,17 @@ XMM_$$_XFILLMEM$POINTER$QWORD$CHAR$$QWORD:
 	movq	%rdx,%rbx
 # Var len located in register rbx
 # Var v located in register r8b
-# [365] RtlFillMemory(p, len, ord(v));
-	movzbl	%r8b,%r8d
+# [357] RtlFillMemory(p, len, ord(v));
+	andl	$255,%r8d
 # Var len located in register rbx
 	movq	%rbx,%rdx
 # Var p located in register rcx
 	call	_$dll$kernel32$RtlFillMemory
 # Var $result located in register rax
-# [366] result := len;
+# [358] result := len;
 	movq	%rbx,%rax
 # Var len located in register rax
-# [367] end;
+# [359] end;
 	nop
 	leaq	32(%rsp),%rsp
 	popq	%rbx
@@ -1010,11 +1086,12 @@ XMM_$$_XFILLMEM$POINTER$QWORD$CHAR$$QWORD:
 .Lc46:
 
 .section .text.n_xmm_$$_xmemdiffat$pointer$pointer$qword$$qword,"x"
+	.balign 16,0x90
 .globl	XMM_$$_XMEMDIFFAT$POINTER$POINTER$QWORD$$QWORD
 XMM_$$_XMEMDIFFAT$POINTER$POINTER$QWORD$$QWORD:
 .Lc48:
 .seh_proc XMM_$$_XMEMDIFFAT$POINTER$POINTER$QWORD$$QWORD
-# [370] begin
+# [362] begin
 	leaq	-40(%rsp),%rsp
 .Lc50:
 .seh_stackalloc 40
@@ -1026,22 +1103,23 @@ XMM_$$_XMEMDIFFAT$POINTER$POINTER$QWORD$$QWORD:
 # Var len located in register r8
 # Var p2 located in register rdx
 # Var p1 located in register rcx
-# [374] result := RtlCompareMemory(p1, p2, len);
+# [366] result := RtlCompareMemory(p1, p2, len);
 	call	_$dll$ntdll$RtlCompareMemory
 # Var $result located in register rax
-# [375] end;
+# [367] end;
 	nop
 	leaq	40(%rsp),%rsp
 	ret
 .seh_endproc
 .Lc49:
 
-.section .text.n_xmm_$$_xmemcompare$pointer$pointer$qword$$exceptaddrstack,"x"
-.globl	XMM_$$_XMEMCOMPARE$POINTER$POINTER$QWORD$$EXCEPTADDRSTACK
-XMM_$$_XMEMCOMPARE$POINTER$POINTER$QWORD$$EXCEPTADDRSTACK:
+.section .text.n_xmm_$$_xmemcompare$pointer$pointer$qword$$boolean,"x"
+	.balign 16,0x90
+.globl	XMM_$$_XMEMCOMPARE$POINTER$POINTER$QWORD$$BOOLEAN
+XMM_$$_XMEMCOMPARE$POINTER$POINTER$QWORD$$BOOLEAN:
 .Lc51:
-.seh_proc XMM_$$_XMEMCOMPARE$POINTER$POINTER$QWORD$$EXCEPTADDRSTACK
-# [378] begin
+.seh_proc XMM_$$_XMEMCOMPARE$POINTER$POINTER$QWORD$$BOOLEAN
+# [370] begin
 	pushq	%rbx
 .seh_pushreg %rbx
 	leaq	-32(%rsp),%rsp
@@ -1053,12 +1131,12 @@ XMM_$$_XMEMCOMPARE$POINTER$POINTER$QWORD$$EXCEPTADDRSTACK:
 # Var p2 located in register rdx
 	movq	%r8,%rbx
 # Var len located in register rbx
-# [382] result := RtlCompareMemory(p1, p2, len) = len;
+# [374] result := RtlCompareMemory(p1, p2, len) = len;
 	call	_$dll$ntdll$RtlCompareMemory
 	cmpq	%rbx,%rax
 # Var $result located in register al
 	seteb	%al
-# [383] end;
+# [375] end;
 	nop
 	leaq	32(%rsp),%rsp
 	popq	%rbx
@@ -1067,11 +1145,12 @@ XMM_$$_XMEMCOMPARE$POINTER$POINTER$QWORD$$EXCEPTADDRSTACK:
 .Lc52:
 
 .section .text.n_xmm_$$_xgetfreechunks$$longint,"x"
+	.balign 16,0x90
 .globl	XMM_$$_XGETFREECHUNKS$$LONGINT
 XMM_$$_XGETFREECHUNKS$$LONGINT:
 .Lc54:
 .seh_proc XMM_$$_XGETFREECHUNKS$$LONGINT
-# [388] begin
+# [380] begin
 	pushq	%rbx
 .seh_pushreg %rbx
 	leaq	-32(%rsp),%rsp
@@ -1081,34 +1160,37 @@ XMM_$$_XGETFREECHUNKS$$LONGINT:
 # Var $result located in register eax
 # Var i located in register eax
 # Var $result located in register ebx
-# [392] result := 0;
+# [384] result := 0;
 	xorl	%ebx,%ebx
+	.balign 8,0x90
 .Lj192:
-# [393] _xmemchunksbegin;
+# [385] _xmemchunksbegin;
 	leaq	TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION(%rip),%rcx
 	movl	$1,%edx
 	call	XMM_$$__ATOMIC32$LONGINT$LONGINT$$LONGINT
 	testl	%eax,%eax
 	jne	.Lj192
 # Var i located in register eax
-# [394] for i := 0 to high(xmemchunks) do if xmemchunks[i].h.size = 0 then result := result + 1;
+# [386] for i := 0 to high(xmemchunks) do if xmemchunks[i].h.size = 0 then result := result + 1;
 	movl	$-1,%eax
+	.balign 8,0x90
 .Lj195:
-	incl	%eax
+	addl	$1,%eax
 	movl	%eax,%edx
 	imulq	$552,%rdx,%rcx
 	leaq	U_$XMM_$$_XMEMCHUNKS(%rip),%rdx
 	cmpq	$0,8(%rdx,%rcx)
 	jne	.Lj199
-	incl	%ebx
+	addl	$1,%ebx
+	.balign 4,0x90
 .Lj199:
 	cmpl	$8191,%eax
 	jnge	.Lj195
-# [395] _xmemchunksend;
+# [387] _xmemchunksend;
 	leaq	TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION(%rip),%rcx
 	xorl	%edx,%edx
 	call	XMM_$$__ATOMIC32$LONGINT$LONGINT$$LONGINT
-# [396] end;
+# [388] end;
 	movl	%ebx,%eax
 	nop
 	leaq	32(%rsp),%rsp
@@ -1118,37 +1200,41 @@ XMM_$$_XGETFREECHUNKS$$LONGINT:
 .Lc55:
 
 .section .text.n_xmm_$$_xmminit,"x"
+	.balign 16,0x90
 .globl	XMM_$$_XMMINIT
 XMM_$$_XMMINIT:
 .Lc57:
 .seh_proc XMM_$$_XMMINIT
-# [401] begin
+# [393] begin
 	leaq	-40(%rsp),%rsp
 .Lc59:
 .seh_stackalloc 40
 .seh_endprologue
 # Var i located in register eax
-# [407] if xmemchunks_init_done then exit;
+# [399] if xmemchunks_init_done then exit;
 	cmpb	$0,TC_$XMM_$$_XMEMCHUNKS_INIT_DONE(%rip)
 	jne	.Lj200
+	.balign 4,0x90
+	.balign 8,0x90
 .Lj204:
-# [410] _xmemchunksbegin;
+# [402] _xmemchunksbegin;
 	leaq	TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION(%rip),%rcx
 	movl	$1,%edx
 	call	XMM_$$__ATOMIC32$LONGINT$LONGINT$$LONGINT
 	testl	%eax,%eax
 	jne	.Lj204
-# [413] RtlFillMemory(@xmemchunks[0], sizeof(xmemchunks), 0);
+# [405] RtlFillMemory(@xmemchunks[0], sizeof(xmemchunks), 0);
 	leaq	U_$XMM_$$_XMEMCHUNKS(%rip),%rcx
 	xorl	%r8d,%r8d
 	movl	$4521984,%edx
 	call	_$dll$kernel32$RtlFillMemory
 # Var i located in register eax
-# [415] for i := low(xmemchunks) to high(xmemchunks) do begin
+# [407] for i := low(xmemchunks) to high(xmemchunks) do begin
 	movl	$-1,%eax
+	.balign 8,0x90
 .Lj207:
 	addl	$1,%eax
-# [417] if i <> low(xmemchunks)  then xmemchunks[i].h.prev := @xmemchunks[i-1]; // set previous chunk pointer
+# [409] if i <> low(xmemchunks)  then xmemchunks[i].h.prev := @xmemchunks[i-1]; // set previous chunk pointer
 	je	.Lj211
 	leaq	U_$XMM_$$_XMEMCHUNKS(%rip),%rdx
 	movslq	%eax,%rcx
@@ -1157,8 +1243,9 @@ XMM_$$_XMMINIT:
 	movl	%eax,%ecx
 	imulq	$552,%rcx,%rcx
 	movq	%r8,24(%rdx,%rcx)
+	.balign 4,0x90
 .Lj211:
-# [418] if i <> high(xmemchunks) then xmemchunks[i].h.next := @xmemchunks[i+1]; // set next chunk pointer
+# [410] if i <> high(xmemchunks) then xmemchunks[i].h.next := @xmemchunks[i+1]; // set next chunk pointer
 	cmpl	$8191,%eax
 	je	.Lj213
 	leaq	U_$XMM_$$_XMEMCHUNKS(%rip),%rdx
@@ -1168,22 +1255,23 @@ XMM_$$_XMMINIT:
 	movl	%eax,%ecx
 	imulq	$552,%rcx,%rcx
 	movq	%r8,32(%rdx,%rcx)
+	.balign 4,0x90
 .Lj213:
-# [421] xmemchunks[i].h.realsize := sizeof(xmemchunks[i].data);
+# [413] xmemchunks[i].h.realsize := sizeof(xmemchunks[i].data);
 	movl	%eax,%edx
 	imulq	$552,%rdx,%rdx
 	leaq	U_$XMM_$$_XMEMCHUNKS(%rip),%rcx
 	movq	$512,16(%rcx,%rdx)
 	cmpl	$8191,%eax
 	jnge	.Lj207
-# [425] xmemchunks_init_done := true;
+# [417] xmemchunks_init_done := true;
 	movb	$1,TC_$XMM_$$_XMEMCHUNKS_INIT_DONE(%rip)
-# [428] _xmemchunksend;
+# [420] _xmemchunksend;
 	leaq	TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION(%rip),%rcx
 	xorl	%edx,%edx
 	call	XMM_$$__ATOMIC32$LONGINT$LONGINT$$LONGINT
 .Lj200:
-# [429] end;
+# [421] end;
 	nop
 	leaq	40(%rsp),%rsp
 	ret
@@ -1191,20 +1279,21 @@ XMM_$$_XMMINIT:
 .Lc58:
 
 .section .text.n_xmm_$$_init$,"x"
+	.balign 16,0x90
 .globl	INIT$_$XMM
 INIT$_$XMM:
 .globl	XMM_$$_init$
 XMM_$$_init$:
 .Lc60:
 .seh_proc XMM_$$_init$
-# [437] initialization
+# [423] initialization
 	leaq	-40(%rsp),%rsp
 .Lc62:
 .seh_stackalloc 40
 .seh_endprologue
-# [439] xmminit;
+# [425] xmminit;
 	call	XMM_$$_XMMINIT
-# [441] end.
+# [427] end.
 	nop
 	leaq	40(%rsp),%rsp
 	ret
@@ -1215,21 +1304,22 @@ XMM_$$_init$:
 
 .section .bss
 	.balign 8
-# [101] xmemchunks: array[0..XMMCHUNKCOUNT-1] of txmemchunk;
+# [96] xmemchunks: array[0..XMMCHUNKCOUNT-1] of txmemchunk;
 U_$XMM_$$_XMEMCHUNKS:
 	.zero 4521984
 # End asmlist al_globals
 # Begin asmlist al_typedconsts
 
 .section .data.n_TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION,"d"
+	.balign 4
 TC_$XMM_$$_XMEMCHUNKS_CRITICAL_SECTION:
 	.long	0
-# [103] xmemchunks_init_done: boolean = false;
+# [98] xmemchunks_init_done: boolean = false;
 
 .section .data.n_TC_$XMM_$$_XMEMCHUNKS_INIT_DONE,"d"
 TC_$XMM_$$_XMEMCHUNKS_INIT_DONE:
 	.byte	0
-# [106] function _atomic32(var target: integer; val: integer): integer; assembler;
+# [101] function _atomic32(var target: integer; val: integer): integer; assembler;
 # End asmlist al_typedconsts
 # Begin asmlist al_dwarf_frame
 

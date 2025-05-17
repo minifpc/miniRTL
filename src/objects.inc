@@ -36,10 +36,11 @@ type
     function GetIID: PGUID; inline;
     function GetIIDStr: pshortstring; inline;
   public
+    property IID: PGUID read GetIID;
+    property IIDStr: pshortstring read GetIIDStr;
+  public
     IIDRef: ^PGUID; { if assigned(IID) then Com else Corba}
     VTable: Pointer;
-    IID: PGUID;
-    IIDStr: pshortstring;
     case integer of
       1: (
         IOffset: sizeuint;
@@ -200,8 +201,6 @@ type
 { ****************************************
   funcs
   **************************************** }
-
-const RTLDLL = 'rtllib.dll';
 
 procedure fpc_intf_assign(var d: pointer; const s: pointer); compilerproc;
 function fpc_class_as_intf(const s: pointer; const iid: TGUID): IInterface; compilerproc;

@@ -27,7 +27,7 @@ TApplication_Create:
 	jne	.Lj6
 # [82] ShowMessage('Error: could not access TApplication.');
 	leaq	_$QAPPLICATIONPASCAL$_Ld1(%rip),%rcx
-	call	SYSTEM_$$_SHOWMESSAGE$PCHAR
+	call	DIALOGS_$$_SHOWMESSAGE$PCHAR
 # [83] ExitProcess(1)
 	movl	$1,%ecx
 	call	_$dll$kernel32$ExitProcess
@@ -113,7 +113,7 @@ TApplication_Create2:
 .Lc9:
 .seh_stackalloc 56
 .seh_endprologue
-# Var $result located in register rax
+# Var $result located in register rdx
 # Var cmdline located in register rax
 # Var ArgsCount located at rsp+32, size=OS_S32
 # Var S located at rsp+40, size=OS_64
@@ -202,6 +202,7 @@ TApplication_Create2:
 	movq	48(%rsp),%rcx
 	call	SYSUTILS_$$_STRDISPOSE$PCHAR
 # [134] end;
+	movq	%rdx,%rax
 	nop
 	leaq	56(%rsp),%rsp
 	popq	%rsi

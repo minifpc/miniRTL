@@ -924,26 +924,25 @@ SYSUTILS_$$_UINTTOSTRA$QWORD$$ANSISTRING:
 # Var $result located in register rcx
 	movq	%rdx,%r8
 # Var Value located in register r8
-# Var i located in register r9d
+# Var i located in register eax
 # [312] i := High(temp);
-	movl	$31,%r9d
+	movl	$31,%eax
 # [313] temp[i] := #0;
-	movl	%r9d,%eax
-	movb	$0,32(%rsp,%rax,1)
-# [314] Dec(i);
-	subl	$1,%r9d
+	movb	$0,63(%rsp)
+# Var i located in register r10d
+	movl	$30,%r10d
 	.balign 8,0x90
 .Lj93:
 # [317] temp[i] := Char(Ord('0') + (Value mod 10));
-	movq	%r8,%r10
+	movq	%r8,%r9
 	movq	$-3689348814741910323,%rax
-	mulq	%r10
+	mulq	%r9
 	shrq	$3,%rdx
 	movl	$10,%eax
 	imulq	%rax,%rdx
-	subq	%rdx,%r10
-	leaq	48(%r10),%rax
-	movl	%r9d,%edx
+	subq	%rdx,%r9
+	leaq	48(%r9),%rax
+	movl	%r10d,%edx
 	movb	%al,32(%rsp,%rdx,1)
 # [318] Value := Value div 10;
 	movq	%r8,%rdx
@@ -952,13 +951,13 @@ SYSUTILS_$$_UINTTOSTRA$QWORD$$ANSISTRING:
 	shrq	$3,%rdx
 	movq	%rdx,%r8
 # [319] Dec(i);
-	subl	$1,%r9d
+	subl	$1,%r10d
 # [320] until Value = 0;
 	testq	%r8,%r8
 	jne	.Lj93
 # [322] Result := AnsiString(@temp[i + 1]);
-	movslq	%r9d,%r9
-	leaq	33(%rsp,%r9,1),%rdx
+	movslq	%r10d,%r10
+	leaq	33(%rsp,%r10,1),%rdx
 	call	fpc_ansistr_assign
 # [323] end;
 	nop
@@ -1064,10 +1063,9 @@ SYSUTILS_$$_COMMANDLINETOARGVA$PANSICHAR$LONGINT$$PPANSICHAR:
 # Var _argv located in register rcx
 # [364] argc := 0;
 	movl	$0,(%rsi)
-# [365] argv[argc] := _argv;
-	movslq	(%rsi),%r8
 # Var _argv located in register rcx
-	movq	%rcx,(%rax,%r8,8)
+# [365] argv[argc] := _argv;
+	movq	%rcx,(%rax)
 # Var in_QM located in register r13b
 # [367] in_QM := False;
 	xorb	%r13b,%r13b

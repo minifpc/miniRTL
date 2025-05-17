@@ -1,37 +1,38 @@
 // ---------------------------------------------------------------------------------------
 // Copyright(c) 2025 @paule32 and @fibonacci
 // ---------------------------------------------------------------------------------------
-program test;
 {$mode objfpc}{$H+}
+{$define DLLIMPORT}
+program test;
 
-{$L main.o}
-{$L xmm.o}
-{$L system.o}
-{$L global.o}
-{$L exceptions.o}
-{$L Locales.o}
-{$L Dialogs.o}
-{$L windows.o}
-{$L SysUtils.o}
-{$L sysinitpas.o}
-{$L QApplicationPascal.o}
+uses
+  Windows, Dialogs, SysUtils, StrUtils, Exceptions,
+  Locales, global,
+  RtlLibImport, QApplicationPascal;
 
-{$LinkLib kernel32}
-{$LinkLib msvcrt}
+{$ifdef DLLIMPORT}
+var
+  sInformation: AnsiString; external RTLDLL;
+  sError: AnsiString; external RTLDLL;
+  sHello: AnsiString; external RTLDLL;
+{$endif DLLIMPORT}
 
-uses Windows, Exceptions, SysUtils, QApplicationPascal, main;
-
-function  StrAlloc(Size: Cardinal): PChar; stdcall; external 'rtllib.dll';
-function GetCommandLineA: LPSTR; stdcall; external kernel32;
-function xmemsize(const p: pointer): ptruint; external;
-
-procedure _start; stdcall; external name '_START';
-
-function TApplication_Create(p: TApplication): TApplication; stdcall; external;
-function TApplication_Create2(p: TApplication; var ArgCount: Integer; var Args: PPChar): TApplication; stdcall; external 'rtllib.dll';
-procedure TApplication_Destroy(P: TApplication); stdcall; external 'rtllib.dll';
-
+var
+  rtl    : TRtl;
+  s1, s2 : String;
+  app    : QApplication;
 begin
-writeln('start');
-_start;
+  app := QApplication.Create;
+  try
+    s1 := 'hallo welt';
+    s2 := StringReplace(s1, 'hallo', 'dudu', TReplaceFlags([rfReplaceAll]));
+    ShowMessage(PChar(sError));
+    ShowMessage(LPCSTR(s2));
+    raise Exception.Create('teker', 123);
+  except
+    MessageBoxA(0, PChar(sError), PChar(sError), 0);
+  end;
+  rtl := TRTL.Create;
+  rtl.Free;
+  app.Free;
 end.

@@ -353,33 +353,43 @@ EXCEPTIONS_$$_INITEXCEPTIONS:
 # [99] exception_classes[203] := EOutOfMemory;
 	leaq	VMT_$EXCEPTIONS_$$_EOUTOFMEMORY(%rip),%rax
 	movq	%rax,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+24(%rip)
-# Var i located in register eax
-# [101] for i := 204 to 215 do
-	movl	$203,%eax
-	.balign 8,0x90
-.Lj44:
-	addl	$1,%eax
 # [102] exception_classes[i] := nil;
-	movl	%eax,%edx
-	leaq	U_$EXCEPTIONS_$$_EXCEPTION_CLASSES(%rip),%rcx
-	movq	$0,-1600(%rcx,%rdx,8)
-	cmpl	$215,%eax
-	jnge	.Lj44
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+32(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+40(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+48(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+56(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+64(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+72(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+80(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+88(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+96(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+104(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+112(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+120(%rip)
 # [104] exception_classes[216] := EAccessViolation;
 	leaq	VMT_$EXCEPTIONS_$$_EACCESSVIOLATION(%rip),%rax
 	movq	%rax,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+128(%rip)
-# Var i located in register eax
-# [106] for i := 217 to 236 do
-	movl	$216,%eax
-	.balign 8,0x90
-.Lj47:
-	addl	$1,%eax
 # [107] exception_classes[i] := nil;
-	movl	%eax,%edx
-	leaq	U_$EXCEPTIONS_$$_EXCEPTION_CLASSES(%rip),%rcx
-	movq	$0,-1600(%rcx,%rdx,8)
-	cmpl	$236,%eax
-	jnge	.Lj47
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+136(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+144(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+152(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+160(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+168(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+176(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+184(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+192(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+200(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+208(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+216(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+224(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+232(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+240(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+248(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+256(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+264(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+272(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+280(%rip)
+	movq	$0,U_$EXCEPTIONS_$$_EXCEPTION_CLASSES+288(%rip)
 # [108] end;
 	ret
 .Lc27:

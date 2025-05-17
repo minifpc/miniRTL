@@ -1,107 +1,119 @@
 // ---------------------------------------------------------------------------------------
 // Copyright(c) 2025 @paule32 and @fibonacci
 // ---------------------------------------------------------------------------------------
-{$mode objfpc}{$H+}
-{$linklib rtllib_dll}
+{$mode delphi}
 unit QApplicationPascal;
+
 interface
-uses
-  Windows, SysUtils;
+uses Windows, Dialogs, SysUtils, QObjectPascalExport;
 
 function GetCommandLineA: LPSTR; stdcall; external kernel32;
 function StrAlloc(Size: Cardinal): PChar; stdcall; external RTLDLL;
 
 type
-  ///
-  /// <class>
-  /// <name>QApplication</name>
-  /// <parent>
-  ///   QObject
-  /// </parent>
-  /// <brief>
-  ///   The QApplication class manages the GUI application's control flow and main settings.
-  /// </brief>
-  /// <details>
-  ///   QApplication specializes QGuiApplication with some functionality needed for
-  ///   QWidget-based applications. It handles widget specific initialization, and
-  ///   finalization.
-  ///
-  ///   For any GUI application using Qt, there is precisely one QApplication object,
-  ///   no matter whether the application has 0, 1, 2 or more windows at any given
-  ///   time.
-  ///   For non-QWidget based Qt applications, use QGuiApplication instead, as it does
-  ///   not depend on the QtWidgets library.
-  ///
-  ///   Some GUI applications provide a special batch mode ie. provide command line
-  ///   arguments for executing tasks without manual intervention. In such non-GUI mode,
-  ///   it is often sufficient to instantiate a plain QCoreApplication to avoid unnecessarily
-  ///   initializing resources needed for a graphical user interface.
-  ///
-  ///   The following example shows how to dynamically create an appropriate type of
-  ///   application instance:
-  /// </details>
-  TApplication = class
-  private
+  (**
+   * \class   QApplication
+   * \brief   The QApplication class manages the GUI application's control flow and main settings.
+   * \details QApplication specializes QGuiApplication with some functionality needed for
+   *          QWidget-based applications. It handles widget specific initialization, and
+   *          finalization.
+   *
+   *          For any GUI application using Qt, there is precisely one QApplication object,
+   *          no matter whether the application has 0, 1, 2 or more windows at any given
+   *          time.
+   *          For non-QWidget based Qt applications, use QGuiApplication instead, as it does
+   *          not depend on the QtWidgets library.
+   *
+   *          Some GUI applications provide a special batch mode ie. provide command line
+   *          arguments for executing tasks without manual intervention. In such non-GUI mode,
+   *          it is often sufficient to instantiate a plain QCoreApplication to avoid unnecessarily
+   *          initializing resources needed for a graphical user interface.
+   *
+   *          The following example shows how to dynamically create an appropriate type of
+   *          application instance:
+   *)
+  QApplication = class(QObject)
   public
-    /// <constructor>
-    /// <brief>
-    ///   This is the Pascal constructor for class QApplication.
-    /// </brief>
-    /// </constructor>
-    constructor Create(var ArgCount: Integer; var Args: PPChar); overload;
+    (**
+     * \brief This is the Pascal constructor for class QApplication.
+     *)
+    constructor Create(ArgCount: Integer; Args: PPChar); overload;
     constructor Create; overload;
     
-    /// <destructor>
-    /// <brief>
-    ///   This ist the Pascal destructor for class QApplication.
-    /// </brief>
-    /// </destructor>
+    (**
+     * \brief This ist the Pascal destructor for class QApplication.
+     *)
     destructor Destroy;
   end;
-  /// </class>
-
-{$ifdef DLLIMPORT}
-function TApplication_Create(p: TApplication): TApplication; stdcall; external 'rtllib.dll';
-procedure TApplication_Destroy(P: TApplication); stdcall; external 'rtllib.dll';
-
-function TApplication_Create2(p: TApplication; var ArgCount: Integer; var Args: PPChar): TApplication; stdcall; external 'rtllib.dll';
-{$else}
-function TApplication_Create(p: TApplication): TApplication; stdcall; export;
-procedure TApplication_Destroy(P: TApplication); stdcall; export;
-
-function TApplication_Create2(p: TApplication; var ArgCount: Integer; var Args: PPChar): TApplication; stdcall;
-{$endif}
 
 implementation
 
 {$ifdef DLLEXPORT}
-function TApplication_Create(p: TApplication): TApplication; stdcall; [public, alias: 'TApplication_Create'];
+function QApplication_Create(var p: QApplication): QApplication; export;
 begin
+  p := QApplication.Create;
   if p = nil then
   begin
-    ShowMessage('Error: could not access TApplication.');
+    ShowMessage('Error: could not create QApplication.');
     ExitProcess(1)
   end;
-  writeln('__init__');
   Exit(p);
 end;
-procedure TApplication_Destroy(P: TApplication); stdcall; [public, alias: 'TApplication_Destroy']; export;
+procedure QApplication_Destroy(p: QApplication); export;
 begin
-  writeln('delter');
   p.Free;
 end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function  QApplication_Create(var p: QApplication): QApplication; external RTLDLL;
+procedure QApplication_Destroy(P: QApplication); external RTLDLL;
+{$endif DLLIMPORT}
 
-function TApplication_Create2(p: TApplication; var ArgCount: Integer; var Args: PPChar): TApplication; stdcall; [public, alias: 'TApplication_Create2'];
+(**
+ * \brief CTOR Create of QApplication
+ * \param ArgCount - Integer
+ * \param Args     - Array of String
+ *)
+{$ifdef DLLEXPORT}
+constructor QApplication.Create(
+  ArgCount: Integer;
+  Args: PPChar);
+begin
+  inherited Create;
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+constructor QApplication.Create(
+  ArgCount: Integer;
+  Args: PPChar);
+begin
+end;
+{$endif DLLIMPORT}
+
+constructor QApplication.Create;
+begin
+  inherited Create;
+  writeln('qapp');
+end;
+
+destructor QApplication.Destroy;
+begin
+  inherited Destroy;
+end;
+
+{$ifdef DLLEXPORT}
+function  QApplication__Create: QApplication; stdcall; export;
 var
   cmdline   : PAnsiChar;
+  Args      : PPAnsiChar;
   ArgsCount : Integer;
   S, R      : PChar;
   TotalLen  : Integer;
   
+  P : QApplication;
   I : Integer;
 begin
-  writeln('halplo');
-
+  result  := nil;
   CmdLine := GetCommandLineA;
   Args    := CommandLineToArgvA(CmdLine, ArgsCount);
   
@@ -130,35 +142,15 @@ begin
   
   StrDispose(R);
   
-  //Exit(QApplication.Create(ArgsCount, Args));
+  Exit(QApplication.Create(ArgsCount, Args));
 end;
-{$endif}
-
-constructor TApplication.Create;
-begin
-  writeln('cccccc');
-  //inherited Create;
-  TAPPLICATION_CREATE(self);
-end;
-
-constructor TApplication.Create(var ArgCount: Integer; var Args: PPChar);
-begin
-  TApplication_Create2(self, ArgCount, Args);
-end;
-
-destructor TApplication.Destroy;
-begin
-  writeln('destroyer');
-  TApplication_Destroy(self);
-  //inherited Destroy;
-end;
+{$endif DLLEXPORT}
 
 {$ifdef DLLEXPORT}
 exports
-  TApplication_Create,
-  TApplication_Create2,
-  TApplication_Destroy
+  QApplication_Create  name 'QApplication_Create',
+  QApplication_Destroy name 'QApplication_Create'
   ;
-{$endif}
- 
+{$endif DLLEXPORT}
+
 end.

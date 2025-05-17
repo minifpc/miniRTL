@@ -14,7 +14,7 @@ type
 var
   LibHandle: HMODULE;
   have_errors: Boolean = false;
-  DLLName: String;
+  DLLName#: String;
   text: PChar;
   
 implementation
@@ -64,7 +64,8 @@ begin
       LibHandle := LoadLibrary(PChar(DllName));
       if LibHandle = 0 then
       rause Exception.Create('Error: could not load DLL: ' + DLLName);
-
+      
+      @text := 
     except
       on E: Exception do
       begin
