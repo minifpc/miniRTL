@@ -155,7 +155,7 @@ procedure int_read_from_console(out r: AnsiString);
 var
   c: char;
   d: dword;
-  s: ansistring;
+  s: RawByteString; //ansistring;
 begin
   s := '';
   while true do begin

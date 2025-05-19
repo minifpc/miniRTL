@@ -23,7 +23,6 @@ function  StrCat (var Dest: PChar; Source: PChar): PChar; stdcall; export;
 function UIntToStrA(Value: UInt64): AnsiString; stdcall; export;
 
 function StrCopy_(var Dest: PChar; Source: PChar): PChar; stdcall; export;
-function StrCat_ (var Dest: PChar; Source: PChar): PChar; stdcall; export;
 
 { Ansi-Version }
 function StrPas(P: PAnsiChar): AnsiString; overload;
@@ -67,7 +66,7 @@ function  CharArrToAnsiStr(P: PAnsiChar; BufLen: Integer): AnsiString;          
 
 //function UIntToStrA(Value: UInt64): AnsiString; stdcall; external RTLDLL;
 //function StrCopy_(var Dest: PChar; Source: PChar): PChar; stdcall; external RTLDLL;
-//function StrCat_ (var Dest: PChar; Source: PChar): PChar; stdcall; external RTLDLL;
+function StrCat(var Dest: PChar; Source: PChar): PChar; stdcall; external RTLDLL;
 
 //Function fpc_chararray_to_ansistr(const arr: array of char; zerobased: boolean = true): ansistring; compilerproc;
 {$endif DLLIMPORT}
@@ -114,21 +113,23 @@ end;
 {$ifdef DLLEXPORT}
 function ChATAStr1(const A: array of AnsiChar): AnsiString; overload; stdcall; export;
 var
-  len : Integer;
+  len: Integer;
+  p: PAnsiChar;
 begin
-  result := '';
-  if Length(A) = 0 then
+  len := Length(A);
+  if len = 0 then
   begin
-    MessageBoxA(0,'Error: Char Array empty.', 'Error', 0);
-    Exit('');
+    Pointer(Result) := nil;
+    Exit;
   end;
-  len := 0;
-  repeat
-    result := result + A[len];
-    inc(len);
-  until len = Length(A);
-  
-  Exit(StrPas(PAnsiChar(@A[0])));
+
+  // Speicher manuell allokieren (+1 für Nullterminator)
+  GetMem(p, len + 1);
+  Move(A[0], p^, len);
+  p[len] := #0;  // Null-Terminierung setzen
+
+  Pointer(Result) := p;
+  // Hinweis: Result ist jetzt ein unsicherer String, ohne RefCount-Header!
 end;
 {$endif DLLEXPORT}
 
@@ -198,42 +199,46 @@ end;
 {$endif DLLIMPORT}
 
 {$ifdef DLLEXPORT}
-function StrCat_(var Dest: PChar; Source: PChar): PChar; stdcall; export;
+function StrCat(var Dest: PChar; Source: PChar): PChar; stdcall; export;
 var
   D       : PChar;
   L, I, J : Integer;
-begin
-  L := StrLen(Dest) + StrLen(Source) + 1;
-  D := StrAlloc(L);
-  
-  for i := 0 to StrLen(Dest) - 1 do
-  D[i] := Dest[i];
-  
-  for J := 0 to StrLen(Source) - 1 do
-  D[i + j + 1] := Source[J];
-  D[i + J + 2] := #0;
-  
-  Dest := D;
-  Exit(D);
-end;
-function StrCat(var Dest: PChar; Source: PChar): PChar; stdcall;
-begin
-  StrCat_(Dest, Source);
-  Exit(Dest);
-end;
-{$endif DLLEXPORT}
-{$ifdef DLLIMPORT}
-function StrCat_(var Dest: PChar; Source: PChar): PChar; stdcall; external RTLDLL;
-function StrCat (var Dest: PChar; Source: PChar): PChar; stdcall;
 begin
   if Dest = nil then
   begin
     MessageBoxA(0,'Error: StrCat Dest not initialized.','Error',0);
     Exit;
   end;
-  Exit(StrCat_(Dest, Source));
+
+  if Strlen(Source) < 1 then
+  begin
+    Dest := '';
+    Exit(Dest);
+  end;
+  
+  L := StrLen(Dest) + StrLen(Source) + 1;
+  D := StrAlloc(L);
+  
+  L := StrLen(Dest);
+  i := 0;
+  repeat
+    D[i] := Dest[i];
+    inc(i);
+  until i = L;
+  
+  L := StrLen(Source);
+  j := 0;
+  repeat
+    D[i + j] := Source[j];
+    inc(j);
+  until j = L;
+
+  D[i + j] := #0;
+  Dest := D;
+  
+  Exit(D);
 end;
-{$endif DLLIMPORT}
+{$endif DLLEXPORT}
 
 {$ifdef DLLEXPORT}
 function IntToStrCRT32(Value: Integer): PChar; stdcall; export;
@@ -415,7 +420,6 @@ exports
   StrAlloc   name 'StrAlloc',
   StrCopy    name 'StrCopy',
   StrCat     name 'StrCat',
-  StrCat_    name 'StrCat_',
   StrDispose name 'StrDispose'
   ;
 {$endif DLLEXPORT}

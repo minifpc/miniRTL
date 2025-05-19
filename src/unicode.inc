@@ -13,7 +13,7 @@
 // decode utf-8 to unicode codepoint
 function utf8decode(var cur: pansichar; curend: pansichar; out codepoint: dword; out size: byte): boolean;
 // encode unicode codepoint to utf-8
-function utf8encode(codepoint: dword): ansistring;
+function utf8encode(codepoint: dword): RawByteString;
 // decode utf-16 to unicode codepoint
 function utf16decode(var cur: pwidechar; curend: pwidechar; out codepoint: dword; out size: byte): boolean;
 // encode unicode codepoint to utf-16
@@ -23,9 +23,9 @@ function utf8toutf16(utf8: ansistring): unicodestring;
 // convert utf-8 ansichar to utf-16 unicodestring
 function utf8toutf16(utf8: pansichar): unicodestring;
 // convert utf-16 unicodestring to utf-8 ansistring
-function utf16toutf8(utf16: unicodestring): ansistring;
+function utf16toutf8(utf16: unicodestring): RawByteString;
 // convert utf-16 unicodechar to utf-8 ansistring
-function utf16toutf8(utf16: pwidechar): ansistring;
+function utf16toutf8(utf16: pwidechar): RawByteString;
 // check if a unicode codepoint represents a newline
 function is_codepoint_newline(u: dword): boolean;
 // get the length of a utf-8 string
@@ -72,7 +72,7 @@ begin
   result := true;
 end;
 
-function utf8encode(codepoint: dword): ansistring; inline;
+function utf8encode(codepoint: dword): RawByteString; inline; // ansistring; inline;
 begin
   if codepoint <= $7F then
     result := ansichar(codepoint)
@@ -160,7 +160,7 @@ begin
   end;
 end;
 
-function utf16toutf8(utf16: unicodestring): ansistring;
+function utf16toutf8(utf16: unicodestring): RawByteString; //ansistring;
 var
   i: integer;
   cur, curend: pwidechar;
@@ -184,7 +184,7 @@ begin
   end;
 end;
 
-function utf16toutf8(utf16: pwidechar): ansistring;
+function utf16toutf8(utf16: pwidechar): RawByteString; //ansistring;
 var
   i: integer;
   cur: pwidechar;

@@ -8,7 +8,9 @@ unit RTLUnit;
 
 interface
 
-uses Windows, global, Dialogs, SysUtils, StrUtils, Exceptions, Locales;
+uses
+  Windows, global, Dialogs, SysUtils, StrUtils, Exceptions, Locales,
+  Forms, QApp;
 
 type
   TByteLookup = array[0..255] of Byte;
@@ -134,7 +136,6 @@ exports
   
   fpctruelyansistrunique  name 'fpctruelyansistrunique',
   
-  fpcshortstrconcat     name 'fpcshortstrconcat',
   fpcshortstrtoansistr  name 'fpcshortstrtoansistr',
   fpcshortstrcopy       name 'fpcshortstrcopy',
   

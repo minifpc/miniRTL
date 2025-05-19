@@ -6,7 +6,6 @@
 
 {$ifdef DLLEXPORT}
 function  fpcshortstrtoansistr(const s2: ShortString; cp: TSystemCodePage): RawByteString; stdcall; export;
-procedure fpcshortstrconcat(var dests: ShortString; const s1, s2: ShortString); stdcall; export;
 function  fpcshortstrcopy(const s: ShortString; index: SizeInt; count: SizeInt): ShortString; stdcall; export;
 
 procedure fpcansistrassign(var dests: pointer; s2: pointer); stdcall; export;
@@ -14,7 +13,6 @@ procedure fpcansistrsetlength(var S: rawbytestring; l: SizeInt; cp: TSystemCodeP
 procedure fpcansistrdecrref(var s: pointer); stdcall; export;
 function  fpcansistrcopy(const s: RawByteString; index, size: SizeInt): RawByteString; stdcall; export;
 function  fpcansistrcompareequal(const s1, s2: RawByteString): SizeInt; stdcall; export;
-procedure fpcansistrconcat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); stdcall; export;
 procedure fpcansistrincrref(s: pointer); stdcall; export;
 
 function  fpcpwidechartoansistr(const p: PWideChar; cp: TSystemCodePage): AnsiString; stdcall; export;
@@ -33,7 +31,14 @@ function  atoi_exp(str: pansichar): integer; stdcall; export;
 function newansistring(len: SizeInt): pointer; stdcall; export;
 function newwidestring(len: SizeInt): pointer; stdcall; export;
 
+procedure fpc_shortstr_concat(var dests: ShortString; const s1, s2: ShortString); stdcall; export;
+//procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); stdcall; export;
 {$endif DLLEXPORT}
+
+{$ifdef DLLIMPORT}
+procedure fpc_shortstr_concat(var dests: ShortString; const s1, s2: ShortString); stdcall; external RTLDLL;
+//procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); stdcall; external RTLDLL;
+{$endif}
 
 function xfreemem(p: pointer): ptruint; stdcall; external RTLDLL;
 
@@ -44,7 +49,6 @@ procedure fpc_shortstr_to_shortstr(out res: ShortString; const sstr: ShortString
 function fpc_val_sint_shortstr(destsize: SizeInt; const s: ShortString; out code: ValSInt): ValSInt; compilerproc;
 procedure fpc_shortstr_sint(v: ValSInt; len: SizeInt; out s: ShortString); compilerproc;
 procedure fpc_ansistr_to_shortstr(out res: ShortString; const s2: RawByteString); compilerproc;
-procedure fpc_shortstr_concat(var dests: ShortString; const s1, s2: ShortString); compilerproc;
 function fpc_shortstr_copy(const s: ShortString; index: SizeInt; count: SizeInt): ShortString; compilerproc;
 
 // AnsiString
@@ -52,7 +56,7 @@ procedure fpc_ansistr_assign(var dests: pointer; s2: pointer); compilerproc;
 procedure fpc_ansistr_setlength(var s: RawByteString; l: SizeInt; cp: TSystemCodePage); compilerproc;
 procedure fpc_ansistr_decr_ref(var s: pointer); compilerproc;
 procedure fpc_ansistr_incr_ref(s: pointer); compilerproc;
-procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); compilerproc;
+
 procedure fpc_ansistr_concat_multi(var dests: RawByteString; const sarr: array of RawByteString; cp: TSystemCodePage); compilerproc;
 function fpc_ansistr_unique(var s: pointer): pointer; compilerproc;
 procedure fpc_ansistr_sint(v: ValSInt; len: SizeInt; out s: RawByteString; cp: TSystemCodePage); compilerproc;
@@ -94,9 +98,26 @@ function atoi(str: pansichar): integer; stdcall;
 // for int64 fix: Error: Unknown compilerproc "fpc_mod_int64". Check if you use the correct run time library.
 function itoa(num: integer; base: integer=10): pansichar; stdcall;
 
+procedure fpc_write_text_pchar_as_pointer(len: LongInt; var f: Text; p: PChar); compilerproc;
 {$endif}
 
 {$ifdef codei}
+
+procedure fpc_write_text_pchar_as_pointer(len: LongInt; var f: Text; p: PChar); compilerproc;
+var
+  idx: Integer;
+begin
+  idx := 0;
+  while p^ <> #0 do
+  begin
+    {$ifdef DLLDEBUG}
+    inc(idx);
+    write('param ' + IntToStr(idx) + ': ');
+    {$endif DLLDEBUG}
+    write(p^);
+    inc(p);
+  end;
+end;
 
 procedure fpc_shortstr_setlength(var s: ShortString; len: SizeInt); [public, alias: 'FPC_SHORTSTR_SETLENGTH']; compilerproc;
 begin
@@ -164,8 +185,8 @@ begin
   move(s2[1], res[1], length(s2));
 end;
 
-{$ifdef DLLEXPORT}
-procedure fpcshortstrconcat(var dests: ShortString; const s1, s2: ShortString); stdcall; export;
+{$ifdef DLLEXPORT__}
+procedure fpc_shortstr_concat(var dests: ShortString; const s1, s2: ShortString); stdcall; export;
 var
   len, cap, m: integer;
 begin
@@ -186,18 +207,7 @@ begin
   // and the new length is...
   dests[0] := chr(len);
 end;
-procedure fpc_shortstr_concat(var dests: ShortString; const s1, s2: ShortString); compilerproc;
-begin
-  fpcshortstrconcat(dests, s1, s2);
-end;
-{$endif DLLEXPORT}
-{$ifdef DLLIMPORT}
-procedure fpcshortstrconcat(var dests: ShortString; const s1, s2: ShortString); stdcall; external RTLDLL;
-procedure fpc_shortstr_concat(var dests: ShortString; const s1, s2: ShortString); compilerproc;
-begin
-  fpcshortstrconcat(dests, s1, s2);
-end;
-{$endif DLLIMPORT}
+{$endif DLLEXPORT__}
 
 {$ifdef DLLEXPORT}
 function fpcshortstrcopy(const s: ShortString; index: SizeInt; count: SizeInt): ShortString; stdcall; export;
@@ -353,29 +363,9 @@ begin
 end;
 {$endif DLLIMPORT}
 
-{$ifdef DLLEXPORT}
-procedure fpcansistrconcat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); stdcall; export;
-begin
-  pointer(dests) := new_ansistring(length(s1)+length(s2));
-  move(s1[1], dests[1], length(s1));
-  move(s2[1], dests[length(s1)+1], length(s2));
-end;
-procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); compilerproc;
-begin
-  fpcansistrconcat(dests, s1, s2, cp);
-end;
-{$endif DLLEXPORT}
-{$ifdef DLLIMPORT}
-procedure fpcansistrconcat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); stdcall; external RTLDLL;
-procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); compilerproc;
-begin
-  fpcansistrconcat(dests, s1, s2, cp);
-end;
-{$endif DLLIMPORT}
-
 procedure fpc_ansistr_concat_multi(var dests: RawByteString; const sarr: array of RawByteString; cp: TSystemCodePage); compilerproc;
 begin
-  writeln('fpc_ansistr_concat_multi');
+//  writeln('fpc_ansistr_concat_multi');
 end;
 
 {$ifdef DLLEXPORT}

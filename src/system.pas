@@ -17,7 +17,7 @@ unit system;
 {$WARN 6058 off : Call to subroutine "$1" marked as inline is not inlined}
 
 interface
-
+  
 const rtllib  = 'rtllib.dll';
 
 type
@@ -142,7 +142,8 @@ function fpc_dynarray_high(p: pointer): tdynarrayindex; compilerproc;
 procedure fpc_dynarray_incr_ref(p: pointer); compilerproc;
 procedure fpc_dynarray_clear(var p: pointer; ti: pointer); compilerproc;
 
-Function fpc_chararray_to_ansistr(const arr: array of char; zerobased: boolean = true): ansistring; compilerproc;
+Function fpc_chararray_to_ansistr(const arr: array of char; zerobased: boolean = true): rawbytestring; compilerproc; //ansistring; compilerproc;
+procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); compilerproc;
 
 // -- console mode support --------------------------
 
@@ -223,7 +224,16 @@ implementation
 
 uses xmm;
 
+function IntToStr(Value: Integer): string; stdcall; external RTLDLL;
+
 procedure HandleError(errno: LongInt); external name 'FPC_HANDLEERROR';
+
+procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); compilerproc;
+begin
+  pointer(dests) := new_ansistring(length(s1)+length(s2));
+  move(s1[1], dests[1], length(s1));
+  move(s2[1], dests[length(s1)+1], length(s2));
+end;
 
 {$ifdef DLLEXPORT}
 procedure wait_for_enter; export;
@@ -254,6 +264,30 @@ procedure wait_for_enter; external RTLDLL;
 {$undef codeh} {$define codei} {$I misc.inc}
 {$undef codeh} {$define codei} {$I constarray.inc}
 {$undef codeh} {$define codei} {$I heap.inc}
+
+{$ifdef DLLEXPORT}
+procedure fpc_shortstr_concat(var dests: ShortString; const s1, s2: ShortString); stdcall; export;
+var
+  len, cap, m: integer;
+begin
+  len := 0;
+  cap := 255;
+  // get first string
+  move(s1[1], dests[1], length(s1));
+  len := length(s1);
+  // left capacity?
+  dec(cap, length(s1));
+  if cap > 0 then begin
+    // get some (or whole) of another string
+    m := length(s2);
+    if m > cap then m := cap;
+    move(s2[1], dests[length(s1)+1], m);
+    inc(len, m);
+  end;
+  // and the new length is...
+  dests[0] := chr(len);
+end;
+{$endif DLLEXPORT}
 
 // -- custom function -------------------------------
 
@@ -880,7 +914,7 @@ begin
   p := nil;
 end;
 
-Function fpc_chararray_to_ansistr(const arr: array of char; zerobased: boolean = true): ansistring; compilerproc;
+Function fpc_chararray_to_ansistr(const arr: array of char; zerobased: boolean = true): rawbytestring; compilerproc; //ansistring; compilerproc;
 var
   i  : SizeInt;
 begin
