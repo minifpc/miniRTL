@@ -137,13 +137,20 @@ type
   end;
 
 procedure fpc_dynarray_setlength(var p: pointer; pti: pointer; dimcount: sizeint; dims: pdynarrayindex); compilerproc;
-function fpc_dynarray_length(p: pointer): tdynarrayindex; compilerproc;
-function fpc_dynarray_high(p: pointer): tdynarrayindex; compilerproc;
+function  fpc_dynarray_length(p: pointer): tdynarrayindex; compilerproc;
+function  fpc_dynarray_high(p: pointer): tdynarrayindex; compilerproc;
 procedure fpc_dynarray_incr_ref(p: pointer); compilerproc;
-procedure fpc_dynarray_clear(var p: pointer; ti: pointer); compilerproc;
 
-Function fpc_chararray_to_ansistr(const arr: array of char; zerobased: boolean = true): rawbytestring; compilerproc; //ansistring; compilerproc;
-procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); compilerproc;
+{$ifdef DLLEXPORT}
+procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); compilerproc; export;
+procedure fpc_dynarray_clear(var p: pointer; ti: pointer); export;
+Function  fpc_chararray_to_ansistr(const arr: array of char; zerobased: boolean = true): rawbytestring; export;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); external RTLDLL;
+procedure fpc_dynarray_clear(var p: pointer; ti: pointer); external RTLDLL;
+Function  fpc_chararray_to_ansistr(const arr: array of char; zerobased: boolean = true): rawbytestring; external RTLDLL;
+{$endif DLLIMPORT}
 
 // -- console mode support --------------------------
 
@@ -228,12 +235,14 @@ function IntToStr(Value: Integer): string; stdcall; external RTLDLL;
 
 procedure HandleError(errno: LongInt); external name 'FPC_HANDLEERROR';
 
-procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); compilerproc;
+{$ifdef DLLEXPORT}
+procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); compilerproc; export;
 begin
   pointer(dests) := new_ansistring(length(s1)+length(s2));
   move(s1[1], dests[1], length(s1));
   move(s2[1], dests[length(s1)+1], length(s2));
 end;
+{$endif DLLEXPORT}
 
 {$ifdef DLLEXPORT}
 procedure wait_for_enter; export;
@@ -895,7 +904,8 @@ begin
     inc(d^.refcount);
 end;
 
-procedure fpc_dynarray_clear(var p: pointer; ti: pointer); compilerproc; [public,alias:'FPC_DYNARRAY_CLEAR'];
+{$ifdef DLLEXPORT}
+procedure fpc_dynarray_clear(var p: pointer; ti: pointer); [public,alias:'FPC_DYNARRAY_CLEAR']; export;
 var
   d: pdynarray;
 begin
@@ -913,8 +923,10 @@ begin
   end;
   p := nil;
 end;
+{$endif DLLEXPORT}
 
-Function fpc_chararray_to_ansistr(const arr: array of char; zerobased: boolean = true): rawbytestring; compilerproc; //ansistring; compilerproc;
+{$ifdef DLLEXPORT}
+Function fpc_chararray_to_ansistr(const arr: array of char; zerobased: boolean = true): rawbytestring; export; //ansistring; compilerproc;
 var
   i  : SizeInt;
 begin
@@ -947,7 +959,7 @@ begin
     Move (arr[0],Pointer(fpc_CharArray_To_AnsiStr)^,i);
   end;
 end;
-
+{$endif DLLEXPORT}
 
 {$asmmode intel}
 function InterlockedDecrement(var Addend: LongInt): LongInt; assembler;
@@ -1060,7 +1072,10 @@ end;
 
 {$ifdef DLLEXPORT}
 exports
-  wait_for_enter name 'wait_for_enter'
+  wait_for_enter name 'wait_for_enter',
+  int_read_from_console name 'int_read_from_console',
+  fpc_chararray_to_ansistr name 'fpc_chararray_to_ansistr',
+  fpc_dynarray_clear name 'fpc_dynarray_clear'
   ;
 {$endif DLLEXPORT}
 

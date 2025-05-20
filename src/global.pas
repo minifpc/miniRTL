@@ -14,9 +14,6 @@ const
   KERNEL32 = 'kenrel32.dll';
   RTLDLL   = 'rtllib.dll';
 
-var
-  QApplication_Counter: DWORD32;
-
 type
   PDLLerror = ^TDLLerror;
   TDLLerror = record

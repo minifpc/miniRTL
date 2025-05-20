@@ -24,6 +24,13 @@ procedure fpc_write_text_unicodestr(len: LongInt; var f: Text; const s: UnicodeS
 
 //procedure fpc_write_text_unicodestr(len :longint; var f: Text; const s: UnicodeString); compilerproc;
 
+{$ifdef DLLEXPORT}
+procedure int_read_from_console(out r: AnsiString); export;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+procedure int_read_from_console(out r: AnsiString); external RTLDLL;
+{$endif}
+
 // pchar
 // no idea what is the use of fpc_write_text_pchar_as_array
 //procedure fpc_write_text_pchar_as_array(len: longint; var f: Text; const s: array of ansichar; zerobased: boolean = true); compilerproc;
@@ -151,7 +158,8 @@ begin
   WriteConsoleA(StdOut, @s[1], length(s), @d, nil);
 end;
 
-procedure int_read_from_console(out r: AnsiString);
+{$ifdef DLLEXPORT}
+procedure int_read_from_console(out r: AnsiString); export;
 var
   c: char;
   d: dword;
@@ -169,6 +177,7 @@ begin
   r := s;
   int_write_to_console(#13#10);
 end;
+{$endif DLLEXPORT}
 
 procedure fpc_readln_end(var f: Text); [public, alias: 'FPC_READLN_END']; compilerproc;
 begin

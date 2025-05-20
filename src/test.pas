@@ -7,13 +7,13 @@ program test;
 
 uses
   Windows, Dialogs, SysUtils, StrUtils, Exceptions, Forms,
-  QApp, Locales, global;
+  Application, Locales, global;
 
 var
-  app    : QApplication;
+  app    : TApplication;
   form   : TForm;
 begin
-  app  := QApplication.Create;
+  app  := TApplication.Create;
   form := TForm.Create;
   try
     app.exec(form);

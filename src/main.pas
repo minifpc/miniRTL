@@ -7,7 +7,7 @@ procedure _start; stdcall;
 
 implementation
 uses
-  Dialogs, QApplicationPascal;
+  Dialogs, App
 
 procedure _start; [public, alias: '_START']; stdcall;
 var
