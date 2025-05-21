@@ -9,6 +9,7 @@ unit Windows;
 interface
 
 type
+  ATOM = Word;
   PHANDLE = ^HANDLE;
   LONG = Longint;
   PLONG = ^LONG;
@@ -48,8 +49,8 @@ type
     y: LONG;
   end;
        
-  LPMSG = ^MSG;
-  MSG = record
+  LPMSG = ^TMSG;
+  TMSG = record
     hwnd: HWND;
     message: UINT;
     wParam: WPARAM;
@@ -57,7 +58,7 @@ type
     time: DWORD;
     pt: POINT;
   end;
-
+  
   TIMERPROC = procedure(hWnd: HWND; uMsg: UINT; idEvent: UINT_PTR; dwTime: DWORD); stdcall;
 
   STARTUPINFOA = record
@@ -231,14 +232,14 @@ const
   MB_ICONINFORMATION = MB_ICONASTERISK;
 
   // Allocation types
-  MEM_COMMIT     = $00001000;
-  MEM_RESERVE    = $00002000;
-  MEM_DECOMMIT   = $00004000;
-  MEM_RELEASE    = $00008000;
-  MEM_RESET      = $00080000;
-  MEM_TOP_DOWN   = $00100000;
+  MEM_COMMIT      = $00001000;
+  MEM_RESERVE     = $00002000;
+  MEM_DECOMMIT    = $00004000;
+  MEM_RELEASE     = $00008000;
+  MEM_RESET       = $00080000;
+  MEM_TOP_DOWN    = $00100000;
   MEM_WRITE_WATCH = $00200000;
-  MEM_PHYSICAL   = $00400000;
+  MEM_PHYSICAL    = $00400000;
 
   // Memory protection options
   PAGE_NOACCESS          = $01;
@@ -252,6 +253,248 @@ const
   PAGE_GUARD             = $100;
   PAGE_NOCACHE           = $200;
   PAGE_WRITECOMBINE      = $400;
+
+// ---------------------------------------------------------------------------------------
+// windows styles ...
+// ---------------------------------------------------------------------------------------
+const
+  WS_BORDER             = $00000000;
+  WS_CAPTION            = $00CD0000;
+  WS_CHILD              = $40000000;
+  WS_CHILDWINDOW        = $40000000;
+  WS_CLIPCHILDREN       = $02000000;
+  WS_CLIPSIBLINGS       = $04000000;
+  WS_DISABLED           = $08000000;
+  WS_DLGFRAME           = $00400000;
+  WS_GROUP              = $00020000;
+  WS_HSCROLL            = $00100000;
+  WS_ICONIC             = $20000000;
+  WS_MAXIMZE            = $01000000;
+  WS_MAXIMIZEBOX        = $00010000;
+  WS_MINIMIZE           = $20000000;
+  WS_MINIMIZEBOX        = $00020000;
+  WS_OVERLAPPED         = $00000000;
+  WS_SYSMENU            = $00080000;
+  WS_THICKFRAME         = $00040000;
+  WS_OVERLAPPEDWINDOW   = ( WS_OVERLAPPED or WS_CAPTION or WS_SYSMENU or WS_THICKFRAME or WS_MINIMIZEBOX or WS_MAXIMIZEBOX );
+  WS_POPUP              = $80000000;
+  
+  WS_POPUPWINDOW        = ( WS_POPUP or WS_BORDER or WS_SYSMENU );
+  WS_SIZEBOX            = $00040000;
+  WS_TABSTOP            = $00010000;
+  WS_TILED              = $00000000;
+  
+  WS_TILEDWINDOW        = ( WS_OVERLAPPED or WS_CAPTION or WS_SYSMENU or WS_THICKFRAME or WS_MINIMIZEBOX or WS_MAXIMIZEBOX );
+  WS_VISIBLE            = $10000000;
+  WS_VSCROLL            = $00200000;
+  
+// ---------------------------------------------------------------------------------------
+// extended windows style templates ...
+// ---------------------------------------------------------------------------------------
+const
+  WS_EX_ACCEPTFILES     = $00000010;
+  WS_EX_APPWINDOW       = $00040000;
+  WS_EX_CLIENTEDGE      = $00000200;
+  WS_EX_COMPOSITED      = $02000000;
+  WS_EX_CONTEXTHELP     = $00000400;
+
+// ---------------------------------------------------------------------------------------
+// class styles ...
+// ---------------------------------------------------------------------------------------
+const
+  CS_BYTEALIGNCLIENT    = $1000;
+  CS_BYTEALIGNWINDOW    = $2000;
+
+// ---------------------------------------------------------------------------------------
+// windows messages ...
+// ---------------------------------------------------------------------------------------
+const
+  WM_DESTROY            = $0002;
+  WM_NCCREATE           = $0081;
+
+// ---------------------------------------------------------------------------------------
+// show window poperties ...
+// ---------------------------------------------------------------------------------------
+const
+  SW_NORMAL             = 1;
+
+type
+  TPoint = packed record
+    X: Longint;
+    Y: LongInt;
+  end;
+
+type
+  THandle   = LongWord;
+  HINST     = THandle;  // oder HINSTANCE
+  HICON     = THandle;
+  HCURSOR   = HICON;     // Cursor ist eigentlich auch ein Icon
+  HBRUSH    = THandle;
+
+type
+  TFNWndProc = function(id: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
+
+type
+  PWndClassEx = ^TWndClassEx;
+  TWndClassEx = packed record
+    cbSize: UINT;
+    style: UINT;
+    lpfnWndProc: TFNWndProc;
+    cbClsExtra: Integer;
+    cbWndExtra: Integer;
+    hInstance: HINST;
+    hIcon: HICON;
+    hCursor: HCURSOR;
+    hbrBackground: HBRUSH;
+    lpszMenuName: LPCWSTR;
+    lpszClassName: LPCWSTR;
+    hIconSm: HICON;
+  end;
+
+// ---------------------------------------------------------------------------------------
+// system display colors ...
+// ---------------------------------------------------------------------------------------
+const
+  COLOR_WINDOW = 5;
+
+const
+  GWLP_USERDATA     = -21;
+
+/// <function name="CreateWindowExA">
+///   <param name="dwExStyle" type="DWORD">
+///     <details>
+///       <lang name="enu">
+///       </lang>
+///       <lang name="deu">
+///       </lang>
+///     </details>
+///   </param>
+///   <param name="lpClassName" type="LPCSTR">
+///     <details>
+///       <lang name="enu">
+///       </lang>
+///       <lang name="deu">
+///       </lang>
+///     </details>
+///   </param>
+///   <param name="lpWindowName" type="LPCSTR">
+///     <details>
+///       <lang name="enu">
+///       </lang>
+///       <lang name="deu">
+///       </lang>
+///     </details>
+///   </param>
+///   <param name="dwStyle" type="DWORD">
+///     <details>
+///       <lang name="enu">
+///       </lang>
+///       <lang name="deu">
+///       </lang>
+///     </details>
+///   </param>
+///   <param name="X" type="Integer">
+///     <details>
+///       <lang name="enu">
+///       </lang>
+///       <lang name="deu">
+///       </lang>
+///     </details>
+///   </param>
+///   <param name="Y" type="Integer">
+///     <details>
+///       <lang name="enu">
+///       </lang>
+///       <lang name="deu">
+///       </lang>
+///     </details>
+///   </param>
+///   <param name="nWidth" type="Integer">
+///     <details>
+///       <lang name="enu">
+///       </lang>
+///       <lang name="deu">
+///       </lang>
+///     </details>
+///   </param>
+///   <param name="nHeight" type="Integer">
+///     <details>
+///       <lang name="enu">
+///       </lang>
+///       <lang name="deu">
+///       </lang>
+///     </details>
+///   </param>
+///   <param name="hWndParent" type="HWND">
+///     <details>
+///       <lang name="enu">
+///       </lang>
+///       <lang name="deu">
+///       </lang>
+///     </details>
+///   </param>
+///   <param name="hMenu" type="HMENU">
+///     <details>
+///       <lang name="enu">
+///       </lang>
+///       <lang name="deu">
+///       </lang>
+///     </details>
+///   </param>
+///   <param name="hInstance" type="HINSTANCE">
+///     <details>
+///       <lang name="enu">
+///       </lang>
+///       <lang name="deu">
+///       </lang>
+///     </details>
+///   </param>
+///   <param name="lpParam" type="LPVOID">
+///     <details>
+///       <lang name="enu">
+///       </lang>
+///       <lang name="deu">
+///       </lang>
+///     </details>
+///   </param>
+///   <return name="HWND" callconv="stdcall" external="user32.dll" />
+/// </function>
+function CreateWindowExA(
+  dwExStyle       : DWORD;
+  lpClassName     : LPCSTR;
+  lpWindowName    : LPCSTR;
+  dwStyle         : DWORD;
+  X               : Integer;
+  Y               : Integer;
+  nWidth          : Integer;
+  nHeight         : Integer;
+  hWndParent      : HWND;
+  hMenu           : HMENU;
+  hInstance       : HINSTANCE;
+  lpParam         : LPVOID
+): HWND; stdcall; external 'user32.dll' name 'CreateWindowExA';
+
+function GetClassInfoEx(
+  hInst     : HINSTANCE;
+  lpszClass : LPCSTR;
+  lpwcx     : PWNDCLASSEX
+): BOOL; stdcall; external 'user32.dll' name 'GetClassInfoExA';
+
+function LoadIconW(hInst: HINST; lpIconName: LPCWSTR): HICON; stdcall; external 'user32.dll' name 'LoadIconW';
+function LoadIconA(hInst: HINST; lpIconName: LPCSTR ): HICON; stdcall; external 'user32.dll' name 'LoadIconA';
+
+function LoadCursorW(hInst: HINSTANCE; lpCursorName: LPCWSTR): HCURSOR; stdcall; external 'user32.dll' name 'LoadCursorW';
+function LoadCursorA(hInst: HINSTANCE; lpCursorName: LPCSTR ): HCURSOR; stdcall; external 'user32.dll' name 'LoadCursorA';
+
+function GetSysColorBrush(nIndex: Integer): HBRUSH; stdcall; external 'user32.dll' name 'GetSysColorBrush';
+
+function GetModuleHandleA(lpModuleName: LPCSTR): HMODULE; stdcall; external 'kernel32.dll' name 'GetModuleHandleA';
+function RegisterClassExA(const Param1: PWNDCLASSEX): ATOM; stdcall; external 'user32.dll' name 'RegisterClassExA';
+
+function GetWindowLongPtrA(id: HWND; nIndex: Integer): NativeInt; stdcall; external 'user32.dll' name 'GetWindowLongPtrA';
+function SetWindowLongPtrA(id: HWND; nIndex: Integer; dwNewLong: NativeInt): NativeInt; stdcall; external 'user32.dll' name 'SetWindowLongPtrA';
+
+function IsWindow(id: HWND): BOOL; stdcall; external 'user32.dll';
 
 procedure Sleep(dwMilliseconds: DWORD); stdcall; external 'kernel32.dll';
 function GetTickCount: DWORD; stdcall; external 'kernel32.dll';
@@ -308,14 +551,14 @@ function GetCurrentThread: HANDLE; stdcall; external 'kernel32.dll';
 function SuspendThread(hThread: HANDLE): DWORD; stdcall; external 'kernel32.dll';
 function ResumeThread(hThread: HANDLE): DWORD; stdcall; external 'kernel32.dll';
 
-function CreateWindowExA(dwExStyle: DWORD; lpClassName, lpWindowName: LPCSTR; dwStyle: DWORD;
+(*function CreateWindowExA(dwExStyle: DWORD; lpClassName, lpWindowName: LPCSTR; dwStyle: DWORD;
   X, Y, nWidth, nHeight: Integer; hWndParent: HWND; hMenu_: HMENU;
-  hInstance_: HINSTANCE; lpParam: LPVOID): HWND; stdcall; external 'user32.dll' name 'CreateWindowExA';
+  hInstance_: HINSTANCE; lpParam: LPVOID): HWND; stdcall; external 'user32.dll' name 'CreateWindowExA';*)
 function CreateWindowExW(dwExStyle: DWORD; lpClassName, lpWindowName: LPCWSTR; dwStyle: DWORD;
   X, Y, nWidth, nHeight: Integer; hWndParent: HWND; hMenu_: HMENU;
   hInstance_: HINSTANCE; lpParam: LPVOID): HWND; stdcall; external 'user32.dll' name 'CreateWindowExW';
 function DestroyWindow(hWnd: HWND): BOOL; stdcall; external 'user32.dll';
-function ShowWindow(hWnd: HWND; nCmdShow: Integer): BOOL; stdcall; external 'user32.dll';
+function ShowWindow(id: HWND; nCmdShow: Integer): BOOL; stdcall; external 'user32.dll';
 function UpdateWindow(hWnd: HWND): BOOL; stdcall; external 'user32.dll';
 function SetWindowTextA(hWnd: HWND; lpString: LPCSTR): BOOL; stdcall; external 'user32.dll' name 'SetWindowTextA';
 function SetWindowTextW(hWnd: HWND; lpString: LPCWSTR): BOOL; stdcall; external 'user32.dll' name 'SetWindowTextW';
@@ -325,11 +568,11 @@ function CloseWindow(hWnd: HWND): BOOL; stdcall; external 'user32.dll';
 function PostQuitMessage(nExitCode: Integer): VOID; stdcall; external 'user32.dll';
 function DefWindowProcA(hWnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; external 'user32.dll' name 'DefWindowProcA';
 function DefWindowProcW(hWnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; external 'user32.dll' name 'DefWindowProcW';
-function GetMessageA(lpMsg_: LPMSG; hWnd: HWND; wMsgFilterMin, wMsgFilterMax: UINT): BOOL; stdcall; external 'user32.dll' name 'GetMessageA';
-function GetMessageW(lpMsg_: LPMSG; hWnd: HWND; wMsgFilterMin, wMsgFilterMax: UINT): BOOL; stdcall; external 'user32.dll' name 'GetMessageW';
-function DispatchMessageA(const lpMsg: MSG): LRESULT; stdcall; external 'user32.dll' name 'DispatchMessageA';
-function DispatchMessageW(const lpMsg: MSG): LRESULT; stdcall; external 'user32.dll' name 'DispatchMessageW';
-function TranslateMessage(const lpMsg: MSG): BOOL; stdcall; external 'user32.dll';
+function GetMessageA(lpMsg_: TMSG; hWnd: HWND; wMsgFilterMin, wMsgFilterMax: UINT): BOOL; stdcall; external 'user32.dll' name 'GetMessageA';
+function GetMessageW(lpMsg_: TMSG; hWnd: HWND; wMsgFilterMin, wMsgFilterMax: UINT): BOOL; stdcall; external 'user32.dll' name 'GetMessageW';
+function DispatchMessageA(const lpMsg: TMSG): LRESULT; stdcall; external 'user32.dll' name 'DispatchMessageA';
+function DispatchMessageW(const lpMsg: TMSG): LRESULT; stdcall; external 'user32.dll' name 'DispatchMessageW';
+function TranslateMessage(const lpMsg: TMSG): BOOL; stdcall; external 'user32.dll';
 function SendMessageA(hWnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; external 'user32.dll' name 'SendMessageA';
 function SendMessageW(hWnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; external 'user32.dll' name 'SendMessageW';
 function PostMessageA(hWnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): BOOL; stdcall; external 'user32.dll' name 'PostMessageA';
