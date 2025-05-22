@@ -6,14 +6,14 @@
 
 {$mode delphi}
 {$WARN IMPLICIT_STRING_CAST_LOSS OFF}
-library RTLLib;
+library rtllib;
 
 uses
   Windows, global, RTLUnit, StrUtils;
 
 var
   DllProc: procedure(hinstDLL: HINSTANCE; Reason: DWORD; lpReserved: Pointer);
-  
+
 function DllMain(
   hinstDLL   : HINSTANCE;
   fdwReason  : DWORD;
@@ -24,7 +24,7 @@ begin
     begin
       // DLL wird geladen
       write('DLL attach: ');
-      
+
       if hinstDLL <> 0 then writeln('ok');
       hInstanceDLL := hInstDLL;
     end;
@@ -49,7 +49,10 @@ exports
   DllMain name 'DllMain'
   ;
 
+{$R *.res}
+
 begin
   DllProc := @DllMain;
   DllMain(GetModuleHandleA('rtllib.dll'), DLL_PROCESS_ATTACH, nil);
 end.
+

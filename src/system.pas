@@ -229,7 +229,8 @@ procedure fpcdynarraysetlength(var p: pointer; pti: pointer; dimcount: sizeint; 
 
 implementation
 
-uses xmm;
+uses
+  Windows, xmm;
 
 function IntToStr(Value: Integer): string; stdcall; external RTLDLL;
 

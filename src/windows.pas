@@ -304,6 +304,9 @@ const
 const
   CS_BYTEALIGNCLIENT    = $1000;
   CS_BYTEALIGNWINDOW    = $2000;
+  
+  CS_HREDRAW            = $0002;
+  CS_VREDRAW            = $0001;
 
 // ---------------------------------------------------------------------------------------
 // windows messages ...
@@ -325,19 +328,22 @@ type
   end;
 
 type
+  {$ifdef CPU64}
+  THandle   = NativeInt;
+  {$else}
   THandle   = LongWord;
+  {$endif}
   HINST     = THandle;  // oder HINSTANCE
   HICON     = THandle;
   HCURSOR   = HICON;     // Cursor ist eigentlich auch ein Icon
   HBRUSH    = THandle;
 
 type
-  TFNWndProc = function(id: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
+  TFNWndProc = function(hWnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
 
 type
-  PWndClassEx = ^TWndClassEx;
-  TWndClassEx = packed record
-    cbSize: UINT;
+  PWndClassA = ^TWndClassA;
+  TWndClassA = packed record
     style: UINT;
     lpfnWndProc: TFNWndProc;
     cbClsExtra: Integer;
@@ -346,9 +352,42 @@ type
     hIcon: HICON;
     hCursor: HCURSOR;
     hbrBackground: HBRUSH;
-    lpszMenuName: LPCWSTR;
-    lpszClassName: LPCWSTR;
-    hIconSm: HICON;
+    lpszMenuName: PAnsiChar;
+    lpszClassName: PAnsiChar;
+  end;
+
+type
+  PWndClassExA = ^TWndClassExA;
+  TWndClassExA = packed record
+    cbSize          : UINT;
+    style           : UINT;
+    lpfnWndProc     : TFNWndProc;
+    cbClsExtra      : Integer;
+    cbWndExtra      : Integer;
+    hInstance       : HINST;
+    hIcon           : HICON;
+    hCursor         : HCURSOR;
+    hbrBackground   : HBRUSH;
+    lpszMenuName    : LPCSTR;
+    lpszClassName   : LPCSTR;
+    hIconSm         : HICON;
+  end;
+
+type
+  PCreateStructA = ^TCreateStructA;
+  TCreateStructA = packed record
+    lpCreateParams: Pointer;    // custom data (objects)
+    hInstance: HINST;
+    hMenu: HMENU;
+    hwndParent: HWND;
+    cy: Integer;
+    cx: Integer;
+    y: Integer;
+    x: Integer;
+    style: Longint;
+    lpszName: PAnsiChar;
+    lpszClass: PAnsiChar;
+    dwExStyle: Longint;
   end;
 
 // ---------------------------------------------------------------------------------------
@@ -359,6 +398,18 @@ const
 
 const
   GWLP_USERDATA     = -21;
+
+// ---------------------------------------------------------------------------------------
+// DLL process constants ...
+// ---------------------------------------------------------------------------------------
+const
+  DLL_PROCESS_ATTACH = 1;
+  DLL_PROCESS_DETACH = 0;
+  DLL_THREAD_ATTACH  = 2;
+  DLL_THREAD_DETACH  = 3;
+
+var
+  hInstanceDLL: HINSTANCE;
 
 /// <function name="CreateWindowExA">
 ///   <param name="dwExStyle" type="DWORD">
@@ -469,15 +520,15 @@ function CreateWindowExA(
   nWidth          : Integer;
   nHeight         : Integer;
   hWndParent      : HWND;
-  hMenu           : HMENU;
-  hInstance       : HINSTANCE;
+  hMenu_          : HMENU;
+  hInstance_      : HINSTANCE;
   lpParam         : LPVOID
 ): HWND; stdcall; external 'user32.dll' name 'CreateWindowExA';
 
-function GetClassInfoEx(
+function GetClassInfoExA(
   hInst     : HINSTANCE;
   lpszClass : LPCSTR;
-  lpwcx     : PWNDCLASSEX
+  lpwcx     : PWNDCLASSEXA
 ): BOOL; stdcall; external 'user32.dll' name 'GetClassInfoExA';
 
 function LoadIconW(hInst: HINST; lpIconName: LPCWSTR): HICON; stdcall; external 'user32.dll' name 'LoadIconW';
@@ -488,13 +539,28 @@ function LoadCursorA(hInst: HINSTANCE; lpCursorName: LPCSTR ): HCURSOR; stdcall;
 
 function GetSysColorBrush(nIndex: Integer): HBRUSH; stdcall; external 'user32.dll' name 'GetSysColorBrush';
 
-function GetModuleHandleA(lpModuleName: LPCSTR): HMODULE; stdcall; external 'kernel32.dll' name 'GetModuleHandleA';
-function RegisterClassExA(const Param1: PWNDCLASSEX): ATOM; stdcall; external 'user32.dll' name 'RegisterClassExA';
+function GetModuleHandleA(lpModuleName: PAnsiChar): HMODULE; stdcall; external 'kernel32.dll' name 'GetModuleHandleA';
+
+function RegisterClassExA(const Param1: PWNDCLASSEXA): ATOM; stdcall; external 'user32.dll' name 'RegisterClassExA';
+function RegisterClassA(const lpWndClass: PWNDCLASSA): ATOM; stdcall; external 'user32.dll' name 'RegisterClassA';
+
+function UnregisterClassA(lpClassName: LPCSTR; hInst: HINSTANCE): BOOL stdcall; external 'user32.dll' name 'UnregisterClassA';
 
 function GetWindowLongPtrA(id: HWND; nIndex: Integer): NativeInt; stdcall; external 'user32.dll' name 'GetWindowLongPtrA';
 function SetWindowLongPtrA(id: HWND; nIndex: Integer; dwNewLong: NativeInt): NativeInt; stdcall; external 'user32.dll' name 'SetWindowLongPtrA';
 
 function IsWindow(id: HWND): BOOL; stdcall; external 'user32.dll';
+function GetLastError: DWORD; stdcall; external 'kernel32.dll';
+
+function GetClassInfoA(hInst: HINSTANCE; lpClassName: LPCSTR; lpWndClass: PWNDCLASSA): BOOL; stdcall; external 'user32.dll';
+
+function ReadConsoleA(
+  hConsoleInput       : HANDLE;
+  lpBuffer            : LPVOID;
+  nNumberOfCharsToRead: DWORD;
+  lpNumberOfCharsRead : LPDWORD;
+  pInputControl       : LPVOID
+): BOOL; stdcall; external 'kernel32.dll' name 'ReadConsoleA';
 
 procedure Sleep(dwMilliseconds: DWORD); stdcall; external 'kernel32.dll';
 function GetTickCount: DWORD; stdcall; external 'kernel32.dll';
@@ -553,10 +619,10 @@ function ResumeThread(hThread: HANDLE): DWORD; stdcall; external 'kernel32.dll';
 
 (*function CreateWindowExA(dwExStyle: DWORD; lpClassName, lpWindowName: LPCSTR; dwStyle: DWORD;
   X, Y, nWidth, nHeight: Integer; hWndParent: HWND; hMenu_: HMENU;
-  hInstance_: HINSTANCE; lpParam: LPVOID): HWND; stdcall; external 'user32.dll' name 'CreateWindowExA';*)
+  hInstance_: HINSTANCE; lpParam: LPVOID): HWND; stdcall; external 'user32.dll' name 'CreateWindowExA';
 function CreateWindowExW(dwExStyle: DWORD; lpClassName, lpWindowName: LPCWSTR; dwStyle: DWORD;
   X, Y, nWidth, nHeight: Integer; hWndParent: HWND; hMenu_: HMENU;
-  hInstance_: HINSTANCE; lpParam: LPVOID): HWND; stdcall; external 'user32.dll' name 'CreateWindowExW';
+  hInstance_: HINSTANCE; lpParam: LPVOID): HWND; stdcall; external 'user32.dll' name 'CreateWindowExW';*)
 function DestroyWindow(hWnd: HWND): BOOL; stdcall; external 'user32.dll';
 function ShowWindow(id: HWND; nCmdShow: Integer): BOOL; stdcall; external 'user32.dll';
 function UpdateWindow(hWnd: HWND): BOOL; stdcall; external 'user32.dll';

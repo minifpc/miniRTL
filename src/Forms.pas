@@ -225,6 +225,8 @@ procedure TForm_Show      (p: TForm); stdcall; export;
 procedure TForm_ShowModal (p: TForm); stdcall; export;
 
 procedure TForm_ShowBool  (p: TForm ; modal: Boolean); stdcall; export;
+
+function GlobalWndProc(hWnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; export;
 {$endif DLLEXPORT}
 
 // ---------------------------------------------------------------------------------------
@@ -269,11 +271,16 @@ procedure TForm_Destroy(p: TForm); stdcall; external RTLDLL;
 procedure TForm_Show      (p: TForm); stdcall; external RTLDLL;
 procedure TForm_ShowModal (p: TForm); stdcall; external RTLDLL;
 procedure TForm_ShowBool  (p: TForm ; modal: Boolean); stdcall; external RTLDLL;
+
+function GlobalWndProc(id: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; external RTLDLL;
 {$endif DLLIMPORT}
 
 implementation
 
 {$ifdef DLLEXPORT}
+var
+  CLASS_NAME: AnsiString;
+
 { TPersistent }
 function TPersistent_Create(p: TPersistent): TPersistent; stdcall; export;
 begin
@@ -414,30 +421,37 @@ end;
 
 { TWinControl }
 
-function GlobalWndProc(id: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; export;
+function GlobalWndProc(hWnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; export;
 var
   winCtrl: TWinControl;
+  cs: PCREATESTRUCTA;
 begin
-  // Pointer aus Fensterdaten holen (z.B. aus GWL_USERDATA)
   if msg = WM_NCCREATE then
   begin
-    winCtrl := TWinControl(GetWindowLongPtrA(id, GWLP_USERDATA));
-    SetWindowLongPtrA(id, GWLP_USERDATA, NativeInt(winCtrl));
-    winCtrl.FHandle := id;
-  end else
-  winCtrl := TWinControl(GetWindowLongPtrA(id, GWLP_USERDATA));
+    cs := PCREATESTRUCTA(lParam);
+    winCtrl := TWinControl(cs^.lpCreateParams);
+    
+    if Assigned(winCtrl) then
+    begin
+      SetWindowLongPtrA(hwnd, GWLP_USERDATA, NativeInt(winCtrl));
+      winCtrl.FHandle := hWnd;
+      Exit(DefWindowProcA(hWnd, Msg, wParam, lParam));
+    end;
+  end;
+  
+  winCtrl := TWinControl(GetWindowLongPtrA(hWnd, GWLP_USERDATA));
   
   if Assigned(winCtrl) then
-  Result := winCtrl.HandleMessage (id, Msg, wParam, lParam) else
-  Result := DefWindowProcA        (id, Msg, wParam, lParam) ;
+  Exit(winCtrl.HandleMessage(hWnd, Msg, wParam, lParam)) else
+  Exit(DefWindowProcA(hWnd, Msg, wParam, lParam));
 end;
 
 function TWinControl_Create(p: TWinControl): TWinControl; stdcall; export;
 var
   _msg: TMsg;
-  cls : TWndClassEx;
-  wrd : WordBool;
-  hin : HINSTANCE;
+  err : DWORD;
+  WndClass: TWndClassExA;
+  FHandle : HWND;
 begin
   {$ifdef DLLDEBUG}
   writeln('TWinControl: Create');
@@ -449,45 +463,46 @@ begin
     exit(nil);
   end;
   
-  hin := GetModuleHandleA(nil);
+  CLASS_NAME := PAnsiChar('MyWindowClass');
   
-  FillChar(cls, sizeof(cls), 0);
-  cls.cbSize          := sizeof(cls);        { must be initialized   }
+  FillChar(WndClass, sizeof(WndClass), 0);
+  WndClass.cbSize          := sizeof(WndClass);
+  WndClass.style           := CS_HREDRAW or CS_VREDRAW;
+  WndClass.lpfnWndProc     := @GlobalWndProc;
+  WndClass.cbClsExtra      := 0;
+  WndClass.cbWndExtra      := 0;
+  WndClass.hInstance       := hInstanceDLL;
+  WndClass.hIcon           := LoadIconA  (0, PAnsiChar(32512));
+  WndClass.hCursor         := LoadCursorA(0, PAnsiChar(32512));
+  WndClass.hbrBackground   := HBRUSH(COLOR_WINDOW + 1);
+  WndClass.lpszMenuName    := nil;
+  WndClass.lpszClassName   := PAnsiChar(CLASS_NAME);
+  WndClass.hIconSm         := WndClass.hIcon;
+
+writeln('last error   : ' + IntToStr(GetLastError));
+writeln('cbSize       : ' + IntToStr(WndClass.cbSize));
+writeln('lpfnWndProc  : ' + IntToStr(Integer(PtrUInt(@WndClass.lpfnWndProc))));
+writeln('lpszClassName: ' + WndClass.lpszClassName);
+writeln('hInstance    : ' + IntToStr(Integer(WndClass.hInstance)));
   
-  if not GetClassInfoEx (hin, 'AppName', @cls) then
+  if GetClassInfoExA(hInstanceDLL, WndClass.lpszClassName, @WndClass) = True then
   begin
-    with cls do
-    begin
-      style           := CS_BYTEALIGNCLIENT;
-      lpfnWndProc     := @GlobalWndProc;              { window class handler  }
-      cbClsExtra      := 0;
-      cbWndExtra      := 0;
-      hInstance       := hin;                         { qualify instance!     }
-      //hIcon           := LoadIconA(hin, 'APPICON');
-      //hCursor         := LoadCursorA(0, 'idc_arrow');
-      hbrBackground   := GetSysColorBrush(COLOR_WINDOW);
-      lpszMenuName    := 'APPMENU';                   { Menu name             }
-      lpszClassName   := 'AppName';                   { Window Class name     }
-      (*hIconSm         := LoadImage(
-      hin,
-      APPICON,
-      IMAGE_ICON,
-      16,
-      16,
-      LR_DEFAULTCOLOR*
-      );*)
-    end;
- 
-    if RegisterClassExA(@cls) = 0 then
-    begin
-      ShowError('regois error.');
-      Halt(255);
-    end;
+    writeln('GetClass error: ' + IntToStr(GetLastError));
+    writeln('ClassInfo: ' + IntToStr(GetLastError));
+    UnregisterClassA(WndClass.lpszClassName, hInstanceDLL);
+    writeln('UnRegClass error: ' + IntToStr(GetLastError));
   end;
+
+  if RegisterClassExA(@WndClass) = 0 then
+  begin
+    writeln('DLL error: ' + IntToStr(GetLastError));
+  end;
+writeln('oookl');
+writeln('xxxxx');
 
   p.FHandle := CreateWindowExA(
     WS_EX_CLIENTEDGE,
-    'AppName',
+    PAnsiChar(CLASS_NAME),
     'AppName',
     ws_Overlapped   or
     ws_SysMenu      or
@@ -498,7 +513,7 @@ begin
     50, 50,
     400, 300,
     0, 0,
-    hin, nil
+    hInstanceDLL, nil
   );
   
   if p.FHandle = 0 then
@@ -863,7 +878,9 @@ exports
   TForm_Destroy   name 'TForm_Destroy',
   TForm_Show      name 'TForm_Show',
   TForm_ShowBool  name 'TForm_ShowBool',
-  TForm_ShowModal name 'TForm_ShowModal'
+  TForm_ShowModal name 'TForm_ShowModal',
+  
+  GlobalWndProc   name 'GlobalWndProc'
   ;
 {$endif DLLEXPORT}
 
