@@ -698,6 +698,10 @@ function GetCurrentDirectoryW(nBufferLength: DWORD; lpBuffer: LPWSTR): DWORD; st
 function GetCommandLineW: PWideChar; stdcall; external 'kernel32.dll';
 function CommandLineToArgvW(lpCmdLine: PWideChar; var pNumArgs: Integer): PPWideChar; stdcall; external 'shell32.dll';
 
+{$ifdef DLLIMPORT}
+procedure AddExitProc(Proc: TExitProcedure); stdcall; external RTLDLL;
+{$endif}
+
 implementation
 
 end.

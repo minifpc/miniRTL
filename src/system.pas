@@ -17,7 +17,7 @@ unit system;
 {$WARN 6058 off : Call to subroutine "$1" marked as inline is not inlined}
 
 interface
-  
+
 const rtllib  = 'rtllib.dll';
 
 type
@@ -57,7 +57,24 @@ const
   KERNEL32 = 'kernel32.dll';
   NTDLL    = 'ntdll.dll';
   RTLDLL   = 'rtllib.dll';
-                                             
+
+type
+  TExitProcedure = procedure;
+const
+  MaxExitProcs = 64;
+var
+  ExitProcedure: array[0..MaxExitProcs - 1] of TExitProcedure;
+  ExitProcedureCount: Integer;
+
+{$ifdef DLLEXPORT}
+function GetExitProcedureCount: Integer; stdcall; export;
+function GetExitProcedure(I: Integer): TExitProcedure; stdcall; export;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function GetExitProcedureCount: Integer; stdcall; external RTLDLL;
+function GetExitProcedure(I: Integer): TExitProcedure; stdcall; external RTLDLL;
+{$endif DLLIMPORT}
+
 function MessageBoxA(hWnd: HWND;lpText:LPCSTR; lpCaption: LPCSTR; uType: UINT): longint; stdcall; external USER32;
 procedure ExitProcess(ExitCode: longint); stdcall; external KERNEL32;
 procedure RtlMoveMemory(Destination: PVOID; const Source: PVOID; Length: size_t); stdcall; external KERNEL32;
@@ -142,12 +159,12 @@ function  fpc_dynarray_high(p: pointer): tdynarrayindex; compilerproc;
 procedure fpc_dynarray_incr_ref(p: pointer); compilerproc;
 
 {$ifdef DLLEXPORT}
-procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); compilerproc; export;
+procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); compilerproc;
 procedure fpc_dynarray_clear(var p: pointer; ti: pointer); export;
 Function  fpc_chararray_to_ansistr(const arr: array of char; zerobased: boolean = true): rawbytestring; export;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
-procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); external RTLDLL;
+procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); compilerproc;
 procedure fpc_dynarray_clear(var p: pointer; ti: pointer); external RTLDLL;
 Function  fpc_chararray_to_ansistr(const arr: array of char; zerobased: boolean = true): rawbytestring; external RTLDLL;
 {$endif DLLIMPORT}
@@ -233,17 +250,16 @@ uses
   Windows, xmm;
 
 function IntToStr(Value: Integer): string; stdcall; external RTLDLL;
+function IntToStr32(Value: Integer): string; stdcall; external RTLDLL;
 
 procedure HandleError(errno: LongInt); external name 'FPC_HANDLEERROR';
 
-{$ifdef DLLEXPORT}
 procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); compilerproc; export;
 begin
   pointer(dests) := new_ansistring(length(s1)+length(s2));
   move(s1[1], dests[1], length(s1));
   move(s2[1], dests[length(s1)+1], length(s2));
 end;
-{$endif DLLEXPORT}
 
 {$ifdef DLLEXPORT}
 procedure wait_for_enter; export;
@@ -274,6 +290,32 @@ procedure wait_for_enter; external RTLDLL;
 {$undef codeh} {$define codei} {$I misc.inc}
 {$undef codeh} {$define codei} {$I constarray.inc}
 {$undef codeh} {$define codei} {$I heap.inc}
+
+{$ifdef DLLEXPORT}
+function GetExitProcedureCount: Integer; stdcall; export;
+begin
+  result := ExitProcedureCount;
+end;
+function GetExitProcedure(I: Integer): TExitProcedure; stdcall; export;
+begin
+  result := ExitProcedure[I];
+end;
+{$endif DLLEXPORT}
+
+{$ifdef DLLEXPORT}
+procedure AddExitProc(P: TExitProcedure); stdcall; export;
+begin
+  if ExitProcedureCount < MaxExitProcs then
+  begin
+    ExitProcedure[ExitProcedureCount] := P;
+    inc(ExitProcedureCount);
+  end else
+  begin
+    writeln('too many exit procedures.');
+    Halt(1);
+  end;
+end;
+{$endif DLLEXPORT}
 
 {$ifdef DLLEXPORT}
 procedure fpc_shortstr_concat(var dests: ShortString; const s1, s2: ShortString); stdcall; export;
@@ -389,8 +431,22 @@ Begin
 end;
 
 procedure fpc_do_exit; [public, alias: 'FPC_DO_EXIT'];
+var
+  p: TExitProcedure;
+  tempi: Integer;
 begin
   fpc_finalizeunits;
+  
+  tempi := GetExitProcedureCount;
+  repeat
+    tempi := tempi - 1;
+    p := TExitProcedure(GetExitProcedure(tempi));
+    if Assigned(p) then
+    begin
+      p;
+    end;
+  until tempi = 0;
+  
   ExitProcess(ExitCode);
 end;
 
@@ -1076,7 +1132,11 @@ exports
   wait_for_enter name 'wait_for_enter',
   int_read_from_console name 'int_read_from_console',
   fpc_chararray_to_ansistr name 'fpc_chararray_to_ansistr',
-  fpc_dynarray_clear name 'fpc_dynarray_clear'
+  fpc_dynarray_clear    name 'fpc_dynarray_clear',
+  
+  GetExitProcedureCount name 'GetExitProcedureCount',
+  GetExitProcedure      name 'GetExitProcedure',
+  AddExitProc           name 'AddExitProc'
   ;
 {$endif DLLEXPORT}
 

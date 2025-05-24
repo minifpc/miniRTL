@@ -36,7 +36,9 @@ procedure fpc_ansistr_unique(var s: AnsiString); export;
 {$ifdef DLLIMPORT}
 function StringReplace(const S, OldPattern, NewPattern: string; Flags: TReplaceFlags): string; external RTLDLL;
 function IntToStr(Value: Integer): string; stdcall; external RTLDLL;
+
 function StrToInt(const S: string): Integer; stdcall; external RTLDLL;
+function StrCopy(var Dest: PChar; Source: PChar): PChar; stdcall; external RTLDLL;
 
 function StrPas(p: PChar): AnsiString; stdcall; external RTLDLL;
 

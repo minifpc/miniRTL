@@ -31,6 +31,8 @@ uses global;
     sError_TForm_nil: AnsiString = 'TForm is not allocated.';
     sError_TForm_ref: AnsiString = 'internal Error: TForm not referenced.';
     
+    sError_AddExitProc: AnsiString = 'Too many ExitProcs registered.';
+    
     sHello      : AnsiString = 'Hello World'; export;
   {$endif LANGENU}
 
@@ -57,6 +59,8 @@ uses global;
     
     sError_TForm_nil: AnsiString = 'TForm ist nicht zugewiesen.';
     sError_TForm_ref: AnsiString = 'interner Fehler: TForm nicht referenziert.';
+    
+    sError_AddExitProc: AnsiString = 'zu viele ExitProcs registriert.';
     
     sHello      : AnsiString = 'Hallo Welt'; export;
   {$endif LANGDEU}
@@ -85,6 +89,8 @@ var
   
   sError_TForm_nil: AnsiString; external RTLDLL;
   sError_TForm_ref: AnsiString; external RTLDLL;
+  
+  sError_AddExitProc: AnsiString; external RTLDLL;
   
 {$endif DLLIMPORT}
 

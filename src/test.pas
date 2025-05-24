@@ -12,7 +12,25 @@ uses
 var
   app    : TApplication;
   form   : TForm;
+
+procedure CleanUp1;
 begin
+  WriteLn('cleanup1 called.');
+end;
+
+procedure CleanUp2;
+begin
+  WriteLn('cleanup2 called.');
+end;
+
+begin
+  writeln('start');
+  
+  AddExitProc(@CleanUp1);
+  AddExitProc(@CleanUp2);
+  
+  Halt(2);
+  
   app  := TApplication.Create;
   form := TForm.Create;
   try
