@@ -247,14 +247,14 @@ begin
   // point dests to s2
   dests := s2;
 end;
-procedure fpc_ansistr_assign(var dests: pointer; s2: pointer); [public, alias: 'FPC_ANSISTR_ASSIGN'];
+procedure fpc_ansistr_assign(var dests: pointer; s2: pointer); [public, alias: 'FPC_ANSISTR_ASSIGN']; compilerproc;
 begin
   fpcansistrassign(dests, s2);
 end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
 procedure fpcansistrassign(var dests: pointer; s2: pointer); stdcall; external RTLDLL;
-procedure fpc_ansistr_assign(var dests: pointer; s2: pointer); [public, alias: 'FPC_ANSISTR_ASSIGN'];
+procedure fpc_ansistr_assign(var dests: pointer; s2: pointer); [public, alias: 'FPC_ANSISTR_ASSIGN']; compilerproc;
 begin
   fpcansistrassign(dests, s2);
 end;

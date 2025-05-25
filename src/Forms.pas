@@ -2,11 +2,12 @@
 // Copyright(c) 2025 @paule32 and @fibonacci
 // ---------------------------------------------------------------------------------------
 {$mode delphi}
+{$M-}
 unit Forms;
 
 interface
 uses
-  Windows, Dialogs, SysUtils, Locales, Classes;
+  Windows, Dialogs, SysUtils, StrUtils, Locales, Classes;
 
 type
   // ---------------------------------------------------------------------------------------
@@ -148,6 +149,7 @@ type
 type
   TWinControl = class(TControl)
   private
+    Finitialized: Boolean;
     FHandle: Integer;
   protected
     function HandleMessage(id: HWND; MSG: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT;
@@ -191,7 +193,7 @@ function TComponent_Create              (p: TComponent          ): TComponent;  
 function TControl_Create                (p: TControl            ): TControl;             stdcall; export;
 
 function TWinControl_Create             (p: TWinControl         ): TWinControl;          stdcall; export;
-function TWinControl_HandleMessage      (id: HWND; MSG: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; export;
+function TWinControl_HandleMessage      (p: TWinControl; id: HWND; MSG: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; export;
 
 function TScrollingWinControl_Create    (p: TScrollingWinControl): TScrollingWinControl; stdcall; export;
 function TCustomForm_Create             (p: TCustomForm         ): TCustomForm;          stdcall; export;
@@ -227,6 +229,7 @@ procedure TForm_ShowModal (p: TForm); stdcall; export;
 procedure TForm_ShowBool  (p: TForm ; modal: Boolean); stdcall; export;
 
 function GlobalWndProc(hWnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; export;
+function HitTestToStr(ht: Integer): string; stdcall; export;
 {$endif DLLEXPORT}
 
 // ---------------------------------------------------------------------------------------
@@ -238,7 +241,7 @@ function TComponent_Create           (p: TComponent              ): TComponent; 
 function TControl_Create             (p: TControl                ): TControl;             stdcall; external RTLDLL;
 
 function TWinControl_Create          (p: TWinControl             ): TWinControl;          stdcall; external RTLDLL;
-function TWinControl_HandleMessage   (id: HWND; MSG: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; external RTLDLL;
+function TWinControl_HandleMessage   (p: TWinControl; id: HWND; MSG: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; external RTLDLL;
 
 function TScrollingWinControl_Create (p: TScrollingWinControl    ): TScrollingWinControl; stdcall; external RTLDLL;
 function TCustomForm_Create          (p: TCustomForm             ): TCustomForm;          stdcall; external RTLDLL;
@@ -273,6 +276,7 @@ procedure TForm_ShowModal (p: TForm); stdcall; external RTLDLL;
 procedure TForm_ShowBool  (p: TForm ; modal: Boolean); stdcall; external RTLDLL;
 
 function GlobalWndProc(id: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; external RTLDLL;
+function HitTestToStr(ht: Integer): string; stdcall; external RTLDLL;
 {$endif DLLIMPORT}
 
 implementation
@@ -448,8 +452,6 @@ end;
 
 function TWinControl_Create(p: TWinControl): TWinControl; stdcall; export;
 var
-  _msg: TMsg;
-  err : DWORD;
   WndClass: TWndClassExA;
   FHandle : HWND;
 begin
@@ -479,12 +481,6 @@ begin
   WndClass.lpszClassName   := PAnsiChar(CLASS_NAME);
   WndClass.hIconSm         := WndClass.hIcon;
 
-writeln('last error   : ' + IntToStr(GetLastError));
-writeln('cbSize       : ' + IntToStr(WndClass.cbSize));
-writeln('lpfnWndProc  : ' + IntToStr(Integer(PtrUInt(@WndClass.lpfnWndProc))));
-writeln('lpszClassName: ' + WndClass.lpszClassName);
-writeln('hInstance    : ' + IntToStr(Integer(WndClass.hInstance)));
-  
   if GetClassInfoExA(hInstanceDLL, WndClass.lpszClassName, @WndClass) = True then
   begin
     writeln('GetClass error: ' + IntToStr(GetLastError));
@@ -496,9 +492,8 @@ writeln('hInstance    : ' + IntToStr(Integer(WndClass.hInstance)));
   if RegisterClassExA(@WndClass) = 0 then
   begin
     writeln('DLL error: ' + IntToStr(GetLastError));
+    Halt(2);
   end;
-writeln('oookl');
-writeln('xxxxx');
 
   p.FHandle := CreateWindowExA(
     WS_EX_CLIENTEDGE,
@@ -522,15 +517,6 @@ writeln('xxxxx');
     Halt(1);
   end;
   
-  ShowWindow  (p.FHandle, SW_NORMAL);
-  UpdateWindow(p.FHandle);
-  
-  while GetMessageA(_msg, 0, 0, 0) do
-  begin
-    TranslateMessage(_msg);
-    DispatchMessageA(_msg);
-  end;
-  
   Exit(p);
 end;
 
@@ -550,8 +536,49 @@ begin
   DestroyWindow(p.FHandle);
 end;
 
-function TWinControl_HandleMessage(id: HWND; MSG: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; export;
+// ---------------------------------------------------------------------------------------
+// window hit test - for debugging ...
+// ---------------------------------------------------------------------------------------
+{$ifdef DLLDEBUG}
+function HitTestToStr(ht: Integer): string; stdcall; export;
 begin
+  result := 'unknown: ';
+  case ht of
+    HTERROR         : Result := 'HTERROR';
+    HTTRANSPARENT   : Result := 'HTTRANSPARENT';
+    HTNOWHERE       : Result := 'HTNOWHERE';
+    HTCLIENT        : Result := 'HTCLIENT';
+    HTCAPTION       : Result := 'HTCAPTION';
+    HTSYSMENU       : Result := 'HTSYSMENU';
+    HTSIZE          : Result := 'HTSIZE / HTGROWBOX';
+    HTMENU          : Result := 'HTMENU';
+    HTHSCROLL       : Result := 'HTHSCROLL';
+    HTVSCROLL       : Result := 'HTVSCROLL';
+    HTMINBUTTON     : Result := 'HTMINBUTTON / HTREDUCE';
+    HTMAXBUTTON     : Result := 'HTMAXBUTTON';
+    HTLEFT          : Result := 'HTLEFT';
+    HTRIGHT         : Result := 'HTRIGHT';
+    HTTOP           : Result := 'HTTOP';
+    HTTOPLEFT       : Result := 'HTTOPLEFT';
+    HTTOPRIGHT      : Result := 'HTTOPRIGHT';
+    HTBOTTOM        : Result := 'HTBOTTOM';
+    HTBOTTOMLEFT    : Result := 'HTBOTTOMLEFT';
+    HTBOTTOMRIGHT   : Result := 'HTBOTTOMRIGHT';
+    HTCLOSE         : Result := 'HTCLOSE';
+    HTHELP          : Result := 'HTHELP';
+  end;
+  result := result + ' : ' + IntToStr(ht);
+end;
+{$endif DLLDEBUG}
+
+function TWinControl_HandleMessage(p: TWinControl; id: HWND; MSG: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; export;
+begin
+  if msg = WM_SYSCOMMAND then
+  begin
+    writeln('quit');
+    p.Free;
+  end;
+  result := DefWindowProcA(id, msg, wParam, lParam);
 end;
 
 { TScrollingWinControl }
@@ -660,6 +687,8 @@ begin
 end;
 
 procedure TForm_ShowModal(p: TForm); stdcall; export;
+var
+  _msg: TMsg;
 begin
   {$ifdef DLLDEBUG}
   writeln('TForm: ShowModal');
@@ -670,6 +699,18 @@ begin
     ShowError(sError_TForm_ref);
     exit;
   end;
+  
+  ShowWindow  (p.FHandle, SW_NORMAL);
+  UpdateWindow(p.FHandle);
+  
+  while GetMessageA(_msg, 0, 0, 0) do
+  begin
+    TranslateMessage(_msg);
+    DispatchMessageA(_msg);
+    p.HandleMessage(p.FHandle, _msg.Message, _msg.wParam, _msg.lParam);
+  end;
+writeln('the end.');
+
 end;
 
 procedure TForm_ShowBool(p: TForm; modal: Boolean); stdcall; export;
@@ -769,6 +810,7 @@ end;
 constructor TWinControl.Create;
 begin
   inherited Create;
+  Finitialized := false;
   TWinControl_Create(self);
 end;
 destructor TWinControl.Destroy;
@@ -778,13 +820,38 @@ end;
 
 function TWinControl.HandleMessage(id: HWND; MSG: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT;
 begin
+  writeln('wmsg: ' + IntToStr(msg)); // HiWord(wParam)));
   case msg of
+    WM_NCLBUTTONDOWN: begin
+      writeln('HT_TEST -> ' + HitTestToStr(LoWord(wParam)));
+      writeln('wParam lo: ' + IntToStr(LoWord(wParam)));
+      writeln('wParam hi: ' + IntToStr(HiWord(wParam)));
+      writeln('-----------');
+      writeln('lParam lo: ' + IntToStr(LoWord(lParam)));
+      writeln('lParam hi: ' + IntToStr(HiWord(lParam)));
+      if LoWord(wParam) = HTCLOSE then
+      begin
+        writeln('fenster zu');
+        Halt(1);
+      end;
+    end;
+    WM_COMMAND: begin
+      writeln('control-ID: ' + IntToStr(LoWord(wParam)));
+      writeln('code: ' + intToStr(HiWord(wParam)));
+    end;
+    WM_CLOSE: begin
+      writeln('close');
+      DestroyWindow(id);
+    end;
     WM_DESTROY: begin
+      writeln('des');
       PostQuitMessage(0);
-      exit(0);
+      Halt(0);
+    end else begin
+      result := DefWindowProcA(id, msg, wParam, lParam);
     end;
   end;
-  Exit(DefWindowProcA(id, msg, wParam, lParam));
+  result := 0;
 end;
 
 
@@ -880,7 +947,8 @@ exports
   TForm_ShowBool  name 'TForm_ShowBool',
   TForm_ShowModal name 'TForm_ShowModal',
   
-  GlobalWndProc   name 'GlobalWndProc'
+  GlobalWndProc   name 'GlobalWndProc',
+  HitTestToStr    name 'HitTestToStr'
   ;
 {$endif DLLEXPORT}
 

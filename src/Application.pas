@@ -2,6 +2,7 @@
 // Copyright(c) 2025 @paule32 and @fibonacci
 // ---------------------------------------------------------------------------------------
 {$mode delphi}
+{$M-}
 unit Application;
 
 interface
@@ -170,7 +171,7 @@ begin
   end;
   
   form.ShowModal;
-  Exit(0);
+  Halt(0);
 end;
 {$endif DLLEXPORT}
 

@@ -45,18 +45,36 @@ type
   end;
 
   POINT = record
-    x: LONG;
-    y: LONG;
+    x: LongInt;
+    y: LongInt;
   end;
-       
+  
+  TPoint = POINT;
+ 
+  LRESULT = LONG_PTR;
+  RECT = record
+    left: LONG;
+    top: LONG;
+    right: LONG;
+    bottom: LONG;
+  end;
+
+  TMessage = record
+    Msg     : Cardinal;
+    WParam  : WPARAM;
+    LParam  : LPARAM;
+    Result  : LRESULT;
+  end;
+
   LPMSG = ^TMSG;
   TMSG = record
-    hwnd: HWND;
-    message: UINT;
-    wParam: WPARAM;
-    lParam: LPARAM;
-    time: DWORD;
-    pt: POINT;
+    hwnd    : HWND  ;
+    message : UINT  ;
+    wParam  : WPARAM;
+    lParam  : LPARAM;
+    time    : DWORD ;
+    pt      : TPoint;
+    lPrivate: DWORD ;
   end;
   
   TIMERPROC = procedure(hWnd: HWND; uMsg: UINT; idEvent: UINT_PTR; dwTime: DWORD); stdcall;
@@ -113,14 +131,6 @@ type
 
   LPTHREAD_START_ROUTINE = function(lpParameter: LPVOID): DWORD; stdcall;
   LPVOID = Pointer;
-
-  LRESULT = LONG_PTR;
-  RECT = record
-    left: LONG;
-    top: LONG;
-    right: LONG;
-    bottom: LONG;
-  end;
 
   HGLOBAL = THandle;
   LARGE_INTEGER = record
@@ -253,6 +263,12 @@ const
   PAGE_GUARD             = $100;
   PAGE_NOCACHE           = $200;
   PAGE_WRITECOMBINE      = $400;
+  
+// ---------------------------------------------------------------------------------------
+// WM_SYSCOMMAND ...
+// ---------------------------------------------------------------------------------------
+const
+  SC_CLOSE              = $f060;
 
 // ---------------------------------------------------------------------------------------
 // windows styles ...
@@ -309,23 +325,63 @@ const
   CS_VREDRAW            = $0001;
 
 // ---------------------------------------------------------------------------------------
+// windows messages - hit test HT
+// ---------------------------------------------------------------------------------------
+const
+  HTERROR               = -2;   // Fehlerhafte Rückgabe
+  HTTRANSPARENT         = -1;   // überlagertes Fenster im selben Thread
+  HTNOWHERE             =  0;   // Bildschirmhintergrund oder Trennliene v. Fenstern
+  HTCLIENT              =  1;   // Client-Bereich (Fensterinhalt)
+  HTCAPTION             =  2;   // Titelleiste
+  HTSYSMENU             =  3;   // Systemmenü (Icon links oben)
+  HTSIZE                =  4;   // identisch mit HTGROWBOX
+  HTGROWBOX             =  4;   // identisch mit HTSIZE
+  HTMENU                =  5;   // menü
+  HTHSCROLL             =  6;   // horizontale Bildlaufleiste
+  HTVSCROLL             =  7;   // vertikale Bildlaufleiste
+  HTMINBUTTON           =  8;   // minimieren Schaltfläche des Fensters
+  HTREDUCE              =  8;   // entspricht HTMINBUTTON
+  HTMAXBUTTON           =  9;   // maximieren Schaltfläche des Fensters
+  HTLEFT                = 10;   // Linker Fensterrand (Resize)
+  HTRIGHT               = 11;   // Rechter Fensterrand
+  HTTOP                 = 12;   // Oberer Fensterrand
+  HTTOPLEFT             = 13;   // Ecke oben links
+  HTTOPRIGHT            = 14;   // Ecke oben rechts
+  HTBOTTOM              = 15;   // Unterer Fensterrand
+  HTBOTTOMLEFT          = 16;   // Ecke unten links
+  HTBOTTOMRIGHT         = 17;   // Ecke unten rechts
+  HTCLOSE               = 20;   // Schließen-Button ("X")
+  HTHELP                = 21;   // Hilfe-Button (wenn vorhanden)
+
+// ---------------------------------------------------------------------------------------
+// windows messages - non client area ...
+// ---------------------------------------------------------------------------------------
+const
+  WM_NCCREATE           = $0081;
+  WM_NCDESTROY          = $0002;
+  WM_NCHITTEST          = $0084;
+  WM_NCPAINT            = $0085;
+  WM_NCACTIVATE         = $0086;
+  WM_NCMOUSEMOVE        = $00A0;
+  WM_NCLBUTTONDOWN      = $00A1;
+  WM_NCLBUTTONUP        = $00A2;
+  WM_NCLBUTTONDBLCLK    = $00A3;
+  
+// ---------------------------------------------------------------------------------------
 // windows messages ...
 // ---------------------------------------------------------------------------------------
 const
+  WM_CLOSE              = $0010;
+  WM_COMMAND            = $0111;
   WM_DESTROY            = $0002;
-  WM_NCCREATE           = $0081;
+  WM_QUIT               = $0012;
+  WM_SYSCOMMAND         = $0112;
 
 // ---------------------------------------------------------------------------------------
 // show window poperties ...
 // ---------------------------------------------------------------------------------------
 const
   SW_NORMAL             = 1;
-
-type
-  TPoint = packed record
-    X: Longint;
-    Y: LongInt;
-  end;
 
 type
   {$ifdef CPU64}
@@ -410,6 +466,16 @@ const
 
 var
   hInstanceDLL: HINSTANCE;
+
+{$ifdef DLLEXPORT}
+function LoWord(Value: DWORD): Word; stdcall; export;
+function HiWord(Value: DWORD): Word; stdcall; export;
+{$endif DLLEXPORT}
+
+{$ifdef DLLIMPORT}
+function LoWord(Value: DWORD): Word; stdcall; external RTLDLL;
+function HiWord(Value: DWORD): Word; stdcall; external RTLDLL;
+{$endif DLLIMPORT}
 
 /// <function name="CreateWindowExA">
 ///   <param name="dwExStyle" type="DWORD">
@@ -703,5 +769,17 @@ procedure AddExitProc(Proc: TExitProcedure); stdcall; external RTLDLL;
 {$endif}
 
 implementation
+
+{$ifdef DLLEXPORT}
+function HiWord(Value: DWORD): Word; stdcall; export;
+begin
+  Result := (Value shr 16) and $FFFF;
+end;
+
+function LoWord(Value: DWORD): Word; stdcall; export;
+begin
+  Result := Value and $FFFF;
+end;
+{$endif DLLEXPORT}
 
 end.

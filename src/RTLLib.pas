@@ -9,7 +9,7 @@
 library RTLLib;
 
 uses
-  Windows, global, RTLUnit, StrUtils;
+  Windows, global, StrUtils, RTLUnit;
 
 var
   DllProc: procedure(hinstDLL: HINSTANCE; Reason: DWORD; lpReserved: Pointer);

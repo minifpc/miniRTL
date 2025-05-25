@@ -309,13 +309,6 @@ begin
 end;
 //function IntToStr(Value:   Int64): PChar; stdcall; overload; begin result := IntToStr64(Value); end;
 {$endif DLLEXPORT}
-{$ifdef DLLIMPORT}
-//function IntToStr32(Value: Integer): PChar; stdcall; external RTLDLL;
-//function IntToStr64(Value:   Int64): PChar; stdcall; external RTLDLL;
-
-//function IntToStr(Value: Integer): string; overload; stdcall; begin result := IntToStr32(Value); end;
-//function IntToStr(Value:   Int64): PChar; overload; stdcall; begin result := IntToStr64(Value); end;
-{$endif DLLIMPORT}
 
 
 {$ifdef DLLEXPORT}
@@ -453,11 +446,6 @@ exports
   ChATAStr3 name 'ChATAStr3',
   
   UIntToStr  name 'UIntToStr',
-  StrAlloc   name 'StrAlloc',
-  StrCopy    name 'StrCopy',
-  StrCat     name 'StrCat',
-  StrDispose name 'StrDispose',
-  
   IntToStr32 name 'IntToStr32'
   ;
 {$endif DLLEXPORT}

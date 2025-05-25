@@ -17,15 +17,24 @@ type
 // the internal "export" function's and procedure's ...
 // ---------------------------------------------------------------------------------------
 {$ifdef DLLEXPORT}
+function  StrAlloc(Size: Cardinal): PChar; stdcall; export;
+procedure StrDispose(P: PChar); stdcall; export;
+
+function  StrCopy(var Dest: PChar; Source: PChar): PChar; stdcall; export;
+function  StrCat (var Dest: PChar; Source: PChar): PChar; stdcall; export;
+
 function StringReplace(const S, OldPattern, NewPattern: string; Flags: TReplaceFlags): string; stdcall; export;
-function IntToStr(Value: Integer): string; stdcall; export;
+
+function IntToStr (Value: Integer): string; export;
+function IntToStrA(Value: Integer): string; export;
+function IntToStrB(Value: UInt64 ): string; export;
+
 function StrToInt(const S: string): Integer; stdcall; export;
 
 function StrPas(p: PChar): AnsiString; stdcall; export;
 
 function  fpc_char_to_ansistr(ch: PChar): AnsiString; export;
 procedure fpc_ansistr_setlength(var s: AnsiString; newlen: SizeInt); export;
-procedure fpc_ansistr_assign(var Dest: AnsiString; const Source: AnsiString); export;
 procedure fpc_ansistr_unique(var s: AnsiString); export;
 
 {$endif DLLEXPORT}
@@ -34,17 +43,24 @@ procedure fpc_ansistr_unique(var s: AnsiString); export;
 // the internal "import" function's and procedure's ...
 // ---------------------------------------------------------------------------------------
 {$ifdef DLLIMPORT}
+function  StrAlloc(Size: Cardinal): PChar; stdcall; external RTLDLL;
+procedure StrDispose(P: PChar); stdcall; external RTLDLL;
+
+function  StrCopy(var Dest: PChar; Source: PChar): PChar; stdcall; external RTLDLL;
+function  StrCat (var Dest: PChar; Source: PChar): PChar; stdcall; external RTLDLL;
+
 function StringReplace(const S, OldPattern, NewPattern: string; Flags: TReplaceFlags): string; external RTLDLL;
-function IntToStr(Value: Integer): string; stdcall; external RTLDLL;
+
+function IntToStr (Value: Integer): string; overload; external RTLDLL name 'IntToStrA';
+function IntToStrA(Value: Integer): string; external RTLDLL;
+function IntToStrB(Value: UInt64 ): string; external RTLDLL;
 
 function StrToInt(const S: string): Integer; stdcall; external RTLDLL;
-function StrCopy(var Dest: PChar; Source: PChar): PChar; stdcall; external RTLDLL;
 
 function StrPas(p: PChar): AnsiString; stdcall; external RTLDLL;
 
 function  fpc_char_to_ansistr(ch: PChar): AnsiString; external RTLDLL;
 procedure fpc_ansistr_setlength(var s: AnsiString; newlen: SizeInt); external RTLDLL;
-procedure fpc_ansistr_assign(var Dest: AnsiString; const Source: AnsiString); external RTLDLL;
 procedure fpc_ansistr_unique(var s: AnsiString); external RTLDLL;
 procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); stdcall; external RTLDLL;
 {$endif DLLIMPORT}
@@ -52,6 +68,7 @@ procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteStri
 implementation
 
 uses SysUtils;
+
 {$ifdef DLLEXPORT}
 function Min(a, b: Integer): Integer;
 begin
@@ -59,6 +76,70 @@ begin
     Result := a
   else
     Result := b;
+end;
+
+function StrAlloc(Size: Cardinal): PChar; stdcall; export;
+begin
+  GetMem(result, Size + 1); // +1 für Nullterminator
+  result[0] := #0;          // sicherstellen, dass String leer initialisiert ist
+end;
+procedure StrDispose(P: PChar); stdcall; export;
+begin
+  if P <> nil then
+    FreeMem(P);
+end;
+function StrCopy(var Dest: PChar; Source: PChar): PChar; stdcall; export;
+var
+  I : Integer;
+  L : Integer;
+begin
+  L      := StrLen(Source);
+  Dest   := StrAlloc(L + 1);
+  
+  for I := 0 to L - 1 do
+  Dest  [i] := Source[i];
+  Dest  [L] := #0;
+  
+  Exit(Dest);
+end;
+function StrCat(var Dest: PChar; Source: PChar): PChar; stdcall; export;
+var
+  D       : PChar;
+  L, I, J : Integer;
+begin
+  if Dest = nil then
+  begin
+    MessageBoxA(0,'Error: StrCat Dest not initialized.','Error',0);
+    Exit;
+  end;
+
+  if Strlen(Source) < 1 then
+  begin
+    Dest := '';
+    Exit(Dest);
+  end;
+  
+  L := StrLen(Dest) + StrLen(Source) + 1;
+  D := StrAlloc(L);
+  
+  L := StrLen(Dest);
+  i := 0;
+  repeat
+    D[i] := Dest[i];
+    inc(i);
+  until i = L;
+  
+  L := StrLen(Source);
+  j := 0;
+  repeat
+    D[i + j] := Source[j];
+    inc(j);
+  until j = L;
+
+  D[i + j] := #0;
+  Dest := D;
+  
+  Exit(D);
 end;
 
 procedure fpc_ansistr_unique(var s: AnsiString); export;
@@ -97,35 +178,6 @@ begin
     // neuen Zeiger setzen
     Pointer(s) := PChar(Pointer(newMem) + 8);
   end;
-end;
-
-procedure fpc_ansistr_assign(var Dest: AnsiString; const Source: AnsiString); export;
-var
-  len: SizeInt;
-  p: PByte;
-begin
-  // Alten Inhalt von Dest freigeben (optional, wenn du Speicher sauber halten willst)
-  if Pointer(Dest) <> nil then
-    FreeMem(Pointer(Dest));
-
-  len := 0;
-  if Pointer(Source) <> nil then
-  begin
-    // Länge berechnen (bis null-Terminierung, oder mit Length(Source))
-    while PByte(@Source[1])[len] <> 0 do
-      Inc(len);
-  end;
-
-  if len > 0 then
-  begin
-    // neuen Speicher allokieren (+1 für #0)
-    GetMem(p, len + 1);
-    Move(Source[1], p^, len);
-    p[len] := 0; // Null-Terminierung setzen
-    Pointer(Dest) := p;
-  end
-  else
-    Pointer(Dest) := nil;
 end;
 
 procedure fpc_ansistr_setlength(var s: AnsiString; newlen: SizeInt); export;
@@ -196,33 +248,65 @@ begin
   Temp := NewStr;
 end;
 
-function IntToStr(Value: Integer): string; stdcall; export;
+function IntToStr(Value: Integer): string; stdcall; begin result := IntToStrA(Value); end;
+//function IntToStr(Value: UInt64 ): string; overload; stdcall; begin result := IntToStrB(Value); end;
+
+function IntToStrA(Value: Integer): string; stdcall; export;
 var
-  Temp, tmp: PChar;
+  Buffer: array[0..31] of Char;
+  Temp: PChar;
   Negative: Boolean;
   Digit: Integer;
+  Len: Integer;
+  I: Integer;
+  P: PAnsiChar;
 begin
-  Temp := '';
-  Negative := Value < 0;
+  Len := 0;
+  Buffer[0] := #0;
 
+  Negative := Value < 0;
   if Negative then
     Value := -Value;
 
   repeat
     Digit := Value mod 10;
-    PrependDigitCharUsingStrCat(Digit, Temp);
-    //Temp := Chr(Ord('0') + Digit) + Temp;
+    Move(Buffer[0], Buffer[1], Len + 1);
+    Buffer[0] := Chr(Ord('0') + Digit);
+    Inc(Len);
     Value := Value div 10;
   until Value = 0;
 
   if Negative then
   begin
-    StrCopy(tmp, Temp);
-    StrCopy(Temp, '-');
-    StrCat (Temp, tmp);
+    Move(Buffer[0], Buffer[1], Len + 1);
+    Buffer[0] := '-';
+    Inc(Len);
   end;
+  
+  I := 0;
+  
+  GetMem(P, Len + 1);
+  Move(Buffer[i], P^, Len);
+  P[Len] := #0;
+  Result := P;
+  //SetString(Result, Buffer, Len);
+end;
+function IntToStrB(Value: UInt64): string; stdcall; export;
+var
+  temp: array[0..31] of Char;
+  i: Integer;
+begin
+  i := High(temp);
+  temp[i] := #0;
+  Dec(i);
 
-  Result := Temp;
+  repeat
+    temp[i] := Char(Ord('0') + (Value mod 10));
+    Value := Value div 10;
+    Dec(i);
+  until Value = 0;
+
+  Result := AnsiString(@temp[i + 1]);
 end;
 
 function StrToInt(const S: string): Integer; stdcall; export;
@@ -306,20 +390,24 @@ begin
 
   Exit(ResultStr);
 end;
-{$endif DLLEXPORT}
-{$ifdef DLLIMPORT}
-{$endif DLLIMPORT}
 
-{$ifdef DLLEXPORT}
 exports
   StringReplace  name 'StringReplace',
-  IntToStr       name 'IntToStr',
-  StrToInt       name 'StrToInt',
+  
+  StrAlloc          name 'StrAlloc',
+  StrCat            name 'StrCat',
+  StrCopy           name 'StrCopy',
+  StrDispose        name 'StrDispose',
+  StrToInt          name 'StrToInt',
+  
+  IntToStrA         name 'IntToStrA',
+  IntToStrB         name 'IntToStrB',
+  IntToStr          name 'IntToStr',
   
   fpc_char_to_ansistr   name 'fpc_char_to_ansistr',
   fpc_ansistr_setlength name 'fpc_ansistr_setlength',
-  fpc_ansistr_unique    name 'fpc_ansistr_unique',
-  fpc_ansistr_assign    name 'fpc_ansistr_assign'
+  fpc_ansistr_unique    name 'fpc_ansistr_unique'
+  //fpc_ansistr_assign    name 'fpc_ansistr_assign'
   ;
 {$endif DLLEXPORT}
 

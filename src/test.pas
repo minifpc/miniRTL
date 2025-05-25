@@ -2,6 +2,7 @@
 // Copyright(c) 2025 @paule32 and @fibonacci
 // ---------------------------------------------------------------------------------------
 {$mode objfpc}{$H+}
+{$M-}
 {$define DLLIMPORT}
 program test;
 
@@ -28,8 +29,6 @@ begin
   
   AddExitProc(@CleanUp1);
   AddExitProc(@CleanUp2);
-  
-  Halt(2);
   
   app  := TApplication.Create;
   form := TForm.Create;

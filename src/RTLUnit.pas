@@ -154,8 +154,6 @@ exports
   
 //  makeuniqueansistring  name 'makeuniqueansistring',
     
-  UIntToStrA            name 'UIntToStrA',
-  
   itoa_exp              name 'itoa_exp',
   atoi_exp              name 'atoi_exp',
   
