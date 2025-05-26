@@ -408,6 +408,7 @@ procedure fpc_finalizeunits; [public, alias: 'FPC_FINALIZEUNITS'];
 var
   i: integer;
 begin
+  writeln('final table count: ' + inttostr(InitFinalTable.TableCount));
   for i := 1 to InitFinalTable.TableCount do begin
     if InitFinalTable.Procs[i].FinalProc <> nil then begin
       InitFinalTable.Procs[i].FinalProc();
@@ -447,6 +448,7 @@ begin
     end;
   until tempi = 0;
   
+  writeln('end exit');
   ExitProcess(ExitCode);
 end;
 

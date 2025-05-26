@@ -88,6 +88,57 @@ type
   // ---------------------------------------------------------------------------------------
 
 type
+  // -----------------------------------------------------------------------------------------------
+  /// <class>
+  /// <name>TApplication</name>
+  /// <parent>
+  ///   QObject
+  /// </parent>
+  /// <brief>
+  ///   The TApplication class manages the GUI application's control flow and main settings.
+  /// </brief>
+  /// <details>
+  ///   TApplication specializes QGuiApplication with some functionality needed for
+  ///   QWidget-based applications. It handles widget specific initialization, and
+  ///   finalization.
+  ///
+  ///   For any GUI application using Qt, there is precisely one TApplication object,
+  ///   no matter whether the application has 0, 1, 2 or more windows at any given
+  ///   time.
+  ///   For non-QWidget based Qt applications, use QGuiApplication instead, as it does
+  ///   not depend on the QtWidgets library.
+  ///
+  ///   Some GUI applications provide a special batch mode ie. provide command line
+  ///   arguments for executing tasks without manual intervention. In such non-GUI mode,
+  ///   it is often sufficient to instantiate a plain QCoreApplication to avoid unnecessarily
+  ///   initializing resources needed for a graphical user interface.
+  ///
+  ///   The following example shows how to dynamically create an appropriate type of
+  ///   application instance:
+  /// </details>
+  // -----------------------------------------------------------------------------------------------
+  TApplication = class(QObject)
+  public
+    /// <constructor>
+    /// <brief>
+    ///   This is the Pascal constructor for class TApplication.
+    /// </brief>
+    /// </constructor>
+    constructor Create(ArgCount: Integer; Args: PPChar); overload;
+    constructor Create; overload;
+    
+    /// <destructor>
+    /// <brief>
+    ///   This ist the Pascal destructor for class TApplication.
+    /// </brief>
+    /// </destructor>
+    destructor Destroy;
+    
+    function exec(form: Pointer): Integer;
+  end;
+  /// </class>
+
+type
   TPersistent = class(TObject)
   public
     constructor Create;
@@ -149,7 +200,6 @@ type
 type
   TWinControl = class(TControl)
   private
-    Finitialized: Boolean;
     FHandle: Integer;
   protected
     function HandleMessage(id: HWND; MSG: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT;
@@ -188,15 +238,24 @@ type
 // the internal "export" function's and procedure's ...
 // ---------------------------------------------------------------------------------------
 {$ifdef DLLEXPORT}
-function TPersistent_Create             (p: TPersistent         ): TPersistent;          stdcall; export;
-function TComponent_Create              (p: TComponent          ): TComponent;           stdcall; export;
-function TControl_Create                (p: TControl            ): TControl;             stdcall; export;
+var
+  Application: TApplication;
 
-function TWinControl_Create             (p: TWinControl         ): TWinControl;          stdcall; export;
-function TWinControl_HandleMessage      (p: TWinControl; id: HWND; MSG: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; export;
+function  TApplication_Create1(p: TApplication                                 ): TApplication; overload; export;
+function  TApplication_Create2(p: TApplication; ArgCount: Integer; Args: PPChar): TApplication; overload; export;
 
-function TScrollingWinControl_Create    (p: TScrollingWinControl): TScrollingWinControl; stdcall; export;
-function TCustomForm_Create             (p: TCustomForm         ): TCustomForm;          stdcall; export;
+procedure TApplication_Destroy(P: TApplication); stdcall; export;
+function  TApplication_exec(p: TApplication; form: TForm): Integer; stdcall; export;
+// ---------------------------------------------------------------------------------------
+function  TPersistent_Create             (p: TPersistent         ): TPersistent;          stdcall; export;
+function  TComponent_Create              (p: TComponent          ): TComponent;           stdcall; export;
+function  TControl_Create                (p: TControl            ): TControl;             stdcall; export;
+
+function  TWinControl_Create             (p: TWinControl         ): TWinControl;          stdcall; export;
+function  TWinControl_HandleMessage      (p: TWinControl; id: HWND; MSG: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; export;
+
+function  TScrollingWinControl_Create    (p: TScrollingWinControl): TScrollingWinControl; stdcall; export;
+function  TCustomForm_Create             (p: TCustomForm         ): TCustomForm;          stdcall; export;
 // ---------------------------------------------------------------------------------------
 procedure TPersistent_Destroy           (p: TPersistent         ); stdcall; export;
 procedure TComponent_Destroy            (p: TComponent          ); stdcall; export;
@@ -236,15 +295,24 @@ function HitTestToStr(ht: Integer): string; stdcall; export;
 // the internal "import" function's and procedure's ...
 // ---------------------------------------------------------------------------------------
 {$ifdef DLLIMPORT}
-function TPersistent_Create          (p: TPersistent             ): TPersistent;          stdcall; external RTLDLL;
-function TComponent_Create           (p: TComponent              ): TComponent;           stdcall; external RTLDLL;
-function TControl_Create             (p: TControl                ): TControl;             stdcall; external RTLDLL;
+var
+  Application: TApplication;
 
-function TWinControl_Create          (p: TWinControl             ): TWinControl;          stdcall; external RTLDLL;
-function TWinControl_HandleMessage   (p: TWinControl; id: HWND; MSG: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; external RTLDLL;
+function  TApplication_Create1(p: TApplication                                 ): TApplication; overload; stdcall; external RTLDLL;
+function  TApplication_Create2(p: TApplication; ArgCount: Integer; Args: PPChar): TApplication; overload; stdcall; external RTLDLL;
 
-function TScrollingWinControl_Create (p: TScrollingWinControl    ): TScrollingWinControl; stdcall; external RTLDLL;
-function TCustomForm_Create          (p: TCustomForm             ): TCustomForm;          stdcall; external RTLDLL;
+procedure TApplication_Destroy(P: TApplication); stdcall; external RTLDLL;
+function  TApplication_exec(p: TApplication; form: TForm): Integer; stdcall; external RTLDLL;
+// ---------------------------------------------------------------------------------------
+function  TPersistent_Create          (p: TPersistent             ): TPersistent;          stdcall; external RTLDLL;
+function  TComponent_Create           (p: TComponent              ): TComponent;           stdcall; external RTLDLL;
+function  TControl_Create             (p: TControl                ): TControl;             stdcall; external RTLDLL;
+
+function  TWinControl_Create          (p: TWinControl             ): TWinControl;          stdcall; external RTLDLL;
+function  TWinControl_HandleMessage   (p: TWinControl; id: HWND; MSG: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; external RTLDLL;
+
+function  TScrollingWinControl_Create (p: TScrollingWinControl    ): TScrollingWinControl; stdcall; external RTLDLL;
+function  TCustomForm_Create          (p: TCustomForm             ): TCustomForm;          stdcall; external RTLDLL;
 // ---------------------------------------------------------------------------------------
 procedure TPersistent_Destroy          (p: TPersistent          ); stdcall; external RTLDLL;
 procedure TComponent_Destroy           (p: TComponent           ); stdcall; external RTLDLL;
@@ -284,6 +352,92 @@ implementation
 {$ifdef DLLEXPORT}
 var
   CLASS_NAME: AnsiString;
+
+function TApplication_Create2(p: TApplication; ArgCount: Integer; Args: PPChar): TApplication; stdcall; export;
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TApplication: Create(ArgCount, Args)');
+  {$endif DLLDEBUG}
+  
+  if p = nil then
+  begin
+    ShowError(sError_TApplication_ref);
+    Exit(nil);
+  end;
+end;
+
+function TApplication_Create1(p: TApplication): TApplication; stdcall; export;
+var
+  cmdline   : PAnsiChar;
+  Args      : PPAnsiChar;
+  ArgsCount : Integer;
+  S, R      : PChar;
+  TotalLen  : Integer;
+  I : Integer;
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TApplication: Create');
+  {$endif DLLDEBUG}
+  
+  if p = nil then
+  begin
+    ShowError(sError_TApplication_nil);
+    Exit(nil);
+  end;
+  
+  result  := nil;
+  CmdLine := GetCommandLineA;
+  Args    := CommandLineToArgvA(CmdLine, ArgsCount);
+  
+  if Args = nil then
+  begin
+    ShowError(sError_TApplication_parseArgs);
+    ExitProcess(1);
+  end;
+  
+  while Args^ <> nil do
+  begin
+    WriteLn(Args^);
+    Inc(Args);
+  end;
+  
+  p := TApplication.Create(ArgsCount, Args);
+  result := p;
+end;
+procedure TApplication_Destroy(p: TApplication); stdcall; export;
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TApplication: Destroy');
+  {$endif DLLDEBUG}
+  
+  if p = nil then
+  begin
+    ShowError(sError_TApplication_ref);
+    Exit;
+  end;
+end;
+
+function TApplication_exec(p: TApplication; form: TForm): Integer; stdcall; export;
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TApplication: exec');
+  {$endif DLLDEBUG}
+  
+  if p = nil then
+  begin
+    ShowError(sError_TApplication_ref);
+    Exit(1);
+  end;
+  
+  if form = nil then
+  begin
+    ShowError(sError_TForm_nil);
+    Exit(1);
+  end;
+  
+  form.ShowModal;
+  writeln('TApplication: after show modal');
+end;
 
 { TPersistent }
 function TPersistent_Create(p: TPersistent): TPersistent; stdcall; export;
@@ -342,8 +496,6 @@ begin
     ShowError(sError_TComponent_ref);
     exit;
   end;
-  
-  p.Free;
 end;
 
 function TComponent_GetComponentCount(p: TComponent): Integer; stdcall; export;
@@ -395,8 +547,6 @@ begin
     ShowError(sError_TControl_ref);
     exit;
   end;
-  
-  p.Free;
 end;
 
 function TControl_GetClientHeight(p: TControl): Integer; stdcall; export;
@@ -707,10 +857,8 @@ begin
   begin
     TranslateMessage(_msg);
     DispatchMessageA(_msg);
-    p.HandleMessage(p.FHandle, _msg.Message, _msg.wParam, _msg.lParam);
+    if p.HandleMessage(p.FHandle, _msg.Message, _msg.wParam, _msg.lParam) = -100 then break;
   end;
-writeln('the end.');
-
 end;
 
 procedure TForm_ShowBool(p: TForm; modal: Boolean); stdcall; export;
@@ -724,6 +872,53 @@ end;
 {$endif DLLEXPORT}
 
 
+(**
+ * \brief CTOR Create of TApplication
+ * \param ArgCount - Integer
+ * \param Args     - Array of String
+ *)
+constructor TApplication.Create(
+  ArgCount: Integer;
+  Args: PPChar);
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TApplication: Create Args');
+  {$endif DLLDEBUG}
+  inherited Create;
+  TApplication_Create2(self, ArgCount, Args);
+end;
+
+constructor TApplication.Create;
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TApplication: Create');
+  {$endif DLLDEBUG}
+
+  inherited Create;
+  TApplication_Create1(self);
+end;
+
+destructor TApplication.Destroy;
+begin
+  TApplication_Destroy(self);
+  inherited Destroy;
+end;
+
+function TApplication.exec(form: Pointer): Integer; stdcall;
+var
+  R: Integer;
+begin
+  if TForm(form) = nil then
+  begin
+    writeln('Pointer not TForm.');
+    Halt(2);
+  end;
+  
+  R := TApplication_exec(self, TForm(form));
+  result := 2;
+end;
+
+
 { TPersistent }
 
 constructor TPersistent.Create;
@@ -734,6 +929,7 @@ end;
 destructor TPersistent.Destroy;
 begin
   TPersistent_Destroy(self);
+  //inherited Destroy;
 end;
 
 
@@ -747,6 +943,7 @@ end;
 destructor TComponent.Destroy;
 begin
   TComponent_Destroy(self);
+  inherited Destroy;
 end;
 
 function TComponent.GetComponentCount: Integer;
@@ -779,6 +976,7 @@ end;
 destructor TControl.Destroy;
 begin
   TControl_Destroy(self);
+  inherited Destroy;
 end;
 
 function TControl.GetClientHeight: Integer;
@@ -810,17 +1008,19 @@ end;
 constructor TWinControl.Create;
 begin
   inherited Create;
-  Finitialized := false;
   TWinControl_Create(self);
 end;
 destructor TWinControl.Destroy;
 begin
   TWinControl_Destroy(self);
+  inherited Destroy;
 end;
+
+procedure fpc_do_exit; external name 'FPC_DO_EXIT';
 
 function TWinControl.HandleMessage(id: HWND; MSG: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT;
 begin
-  writeln('wmsg: ' + IntToStr(msg)); // HiWord(wParam)));
+  //writeln('wmsg: ' + IntToStr(msg)); // HiWord(wParam)));
   case msg of
     WM_NCLBUTTONDOWN: begin
       writeln('HT_TEST -> ' + HitTestToStr(LoWord(wParam)));
@@ -831,8 +1031,11 @@ begin
       writeln('lParam hi: ' + IntToStr(HiWord(lParam)));
       if LoWord(wParam) = HTCLOSE then
       begin
-        writeln('fenster zu');
-        Halt(1);
+        writeln('window closed');
+        result := -100;
+        exit;
+        //Application.Free;
+        //Halt(1);
       end;
     end;
     WM_COMMAND: begin
@@ -865,6 +1068,7 @@ end;
 destructor TScrollingWinControl.Destroy;
 begin
   TScrollingWinControl_Destroy(self);
+  inherited Destroy;
 end;
 
 
@@ -879,7 +1083,7 @@ end;
 destructor TCustomForm.Destroy;
 begin
   TCustomForm_Destroy(self);
-  //inherited Destroy;
+  inherited Destroy;
 end;
 
 
@@ -894,7 +1098,7 @@ end;
 destructor TForm.Destroy;
 begin
   TForm_Destroy(self);
-  //inherited Destroy;
+  inherited Destroy;
 end;
 
 procedure TForm.Show;
@@ -914,6 +1118,12 @@ end;
 
 {$ifdef DLLEXPORT}
 exports
+  TApplication_Create1  name 'TApplication_Create1',
+  TApplication_Create2  name 'TApplication_Create2',
+  TApplication_Destroy  name 'TApplication_Destroy',
+  
+  TApplication_exec     name 'TApplication_exec',
+
   TPersistent_Create              name 'TPersistent_Create',
   TComponent_Create               name 'TComponent_Create',
   TControl_Create                 name 'TControl_Create',
@@ -953,3 +1163,5 @@ exports
 {$endif DLLEXPORT}
 
 end.
+
+/// </file>

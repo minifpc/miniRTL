@@ -761,6 +761,7 @@ function SetFileTime(hFile: THandle; lpCreationTime: PFILETIME; lpLastAccessTime
 function GetFileAttributesA(lpFileName: LPCSTR): DWORD; stdcall; external 'kernel32.dll';
 function GetFileAttributesW(lpFileName: LPCWSTR): DWORD; stdcall; external 'kernel32.dll';
 function GetCurrentDirectoryW(nBufferLength: DWORD; lpBuffer: LPWSTR): DWORD; stdcall; external 'kernel32.dll';
+function GetCommandLineA: LPSTR; stdcall; external kernel32;
 function GetCommandLineW: PWideChar; stdcall; external 'kernel32.dll';
 function CommandLineToArgvW(lpCmdLine: PWideChar; var pNumArgs: Integer): PPWideChar; stdcall; external 'shell32.dll';
 

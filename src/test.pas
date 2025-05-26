@@ -8,7 +8,7 @@ program test;
 
 uses
   Windows, Dialogs, SysUtils, StrUtils, Exceptions, Forms,
-  Application, Locales, global;
+  Locales, global;
 
 var
   app    : TApplication;
@@ -34,8 +34,11 @@ begin
   form := TForm.Create;
   try
     app.exec(form);
+    writeln('after exec');
   finally
     form.Free;
     app.Free;
+    writeln('after finally)');
   end;
+  writeln('at end');
 end.

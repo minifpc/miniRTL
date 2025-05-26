@@ -10,7 +10,7 @@ interface
 
 uses
   Windows, global, Dialogs, SysUtils, StrUtils, Exceptions, Locales,
-  Forms, Application;
+  Forms;
 
 type
   TByteLookup = array[0..255] of Byte;
