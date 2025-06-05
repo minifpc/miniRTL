@@ -126,7 +126,7 @@ type
     class function InitInstance(Instance: Pointer): TObject;
     class function ClassType: TClass;
     class function ClassInfo: Pointer;
-    class function ClassName: ShortString;
+    class function ClassName: String; virtual;
     class function ClassParent: TClass;
     class function InstanceSize: SizeInt;
     class function InheritsFrom(aclass: TClass): Boolean;
@@ -355,7 +355,7 @@ begin
   result := PVmt(Self)^.vTypeInfo;
 end;
 
-class function TObject.ClassName: ShortString;
+class function TObject.ClassName: String;
 begin
   result := PVmt(Self)^.vClassName^;
 end;

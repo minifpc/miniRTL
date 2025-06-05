@@ -6,6 +6,9 @@ unit StrUtils;
 
 interface
 
+uses
+  Exceptions;
+  
 type
   TReplaceFlag  = (
     rfReplaceAll,
@@ -33,6 +36,9 @@ function StrToInt(const S: string): Integer; stdcall; export;
 
 function StrPas(p: PChar): AnsiString; stdcall; export;
 
+function FloatToStr(Value: Double): string; stdcall; export;
+function Format(const FormatStr: string; const Args: array of const): string; stdcall; export;
+
 function  fpc_char_to_ansistr(ch: PChar): AnsiString; export;
 procedure fpc_ansistr_setlength(var s: AnsiString; newlen: SizeInt); export;
 procedure fpc_ansistr_unique(var s: AnsiString); export;
@@ -56,8 +62,10 @@ function IntToStrA(Value: Integer): string; external RTLDLL;
 function IntToStrB(Value: UInt64 ): string; external RTLDLL;
 
 function StrToInt(const S: string): Integer; stdcall; external RTLDLL;
-
 function StrPas(p: PChar): AnsiString; stdcall; external RTLDLL;
+
+function FloatToStr(Value: Double): string; stdcall; external RTLDLL;
+function Format(const FormatStr: string; const Args: array of const): string; stdcall; external RTLDLL;
 
 function  fpc_char_to_ansistr(ch: PChar): AnsiString; external RTLDLL;
 procedure fpc_ansistr_setlength(var s: AnsiString; newlen: SizeInt); external RTLDLL;
@@ -391,6 +399,80 @@ begin
   Exit(ResultStr);
 end;
 
+function FloatToStr(Value: Double): string; stdcall; export;
+var
+  IntPart, FracPart: Int64;
+  S: string;
+  I: Integer;
+begin
+  if Value = 0 then
+    Exit('0');
+
+  if Value < 0 then
+    Result := '-' + FloatToStr(-Value)
+  else
+  begin
+    IntPart  := Trunc(Value);
+    FracPart := Round((Value - IntPart) * 1000000);  // 6 Nachkommastellen
+    Str(IntPart, S);
+    Result := S;
+
+    if FracPart > 0 then
+    begin
+      Result := Result + '.';
+      S := '';
+      // führende Nullen in der Nachkommazahl sicherstellen
+      for I := 5 downto 0 do
+        if FracPart < Round(10 * I) then
+          S := S + '0';
+      Str(FracPart, S);
+      Result := Result + S;
+    end;
+  end;
+end;
+
+function Format(const FormatStr: string; const Args: array of const): string; stdcall; export;
+var
+  I, ArgIndex: Integer;
+  Ch: Char;
+  ResultStr: string;
+begin
+  ResultStr := '';
+  ArgIndex := 0;
+  I := 1;
+
+  while I <= Length(FormatStr) do
+  begin
+    Ch := FormatStr[I];
+
+    if (Ch = '%') and (I < Length(FormatStr)) then
+    begin
+      Inc(I);
+      Ch := FormatStr[I];
+
+      if ArgIndex >= Length(Args) then
+      raise Exception.Create('Nicht genügend Argumente für Format-String');
+
+      case Ch of
+        'd': ResultStr := ResultStr + IntToStr(Args[ArgIndex].VInteger);
+        's': ResultStr := ResultStr + string(Args[ArgIndex].VString^);
+        'f': ResultStr := ResultStr + FloatToStr(Args[ArgIndex].VExtended^);
+        else
+        raise Exception.Create('Unbekanntes Formatzeichen: ' + Ch);
+      end;
+
+      Inc(ArgIndex);
+    end else
+    begin
+      ResultStr := ResultStr + Ch;
+    end;
+
+    Inc(I);
+  end;
+
+  Result := ResultStr;
+end;
+
 exports
   StringReplace  name 'StringReplace',
   
@@ -403,6 +485,9 @@ exports
   IntToStrA         name 'IntToStrA',
   IntToStrB         name 'IntToStrB',
   IntToStr          name 'IntToStr',
+  
+  FloatToStr        name 'FloatToStr',
+  Format            name 'Format',
   
   fpc_char_to_ansistr   name 'fpc_char_to_ansistr',
   fpc_ansistr_setlength name 'fpc_ansistr_setlength',

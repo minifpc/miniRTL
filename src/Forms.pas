@@ -117,7 +117,7 @@ type
   ///   application instance:
   /// </details>
   // -----------------------------------------------------------------------------------------------
-  TApplication = class(QObject)
+  TApplication = class(TObject)
   public
     /// <constructor>
     /// <brief>
@@ -127,12 +127,14 @@ type
     constructor Create(ArgCount: Integer; Args: PPChar); overload;
     constructor Create; overload;
     
+    class function ClassName: String; stdcall; virtual;
+    
     /// <destructor>
     /// <brief>
     ///   This ist the Pascal destructor for class TApplication.
     /// </brief>
     /// </destructor>
-    destructor Destroy;
+    destructor Destroy; override;
     
     function exec(form: Pointer): Integer;
   end;
@@ -143,23 +145,30 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    
+    class function ClassName: String; stdcall; virtual;
   end;
 
 type
   TComponent = class(TPersistent)
   private
+    FArray: array of TComponent;
     FOwner: TComponent;
     FIndex: Integer;
     FTag: NativeInt;
   protected
-    function GetComponent(I: Integer): TComponent;
-    function GetComponentCount: Integer;
-    function GetComponentIndex: Integer;
+    function  GetComponent(I: Integer): TComponent;
+    function  GetComponentCount: Integer;
+    function  GetComponentIndex: Integer;
+    function  GetComponentOwner: TComponent;
     
     procedure SetComponentIndex(AValue: Integer);
+    procedure SetComponentOwner(AOwner: TComponent);
   public
-    constructor Create;
+    constructor Create(AOwner: TComponent); virtual;
     destructor Destroy; override;
+    
+    class function ClassName: String; stdcall; virtual;
   published
     property ComponentCount: Integer read GetComponentCount;
     property ComponentIndex: Integer read GetComponentIndex write SetComponentIndex;
@@ -187,8 +196,10 @@ type
     
     procedure SetAlign(AValue: TAlign);
   public
-    constructor Create;
+    constructor Create(AOwner: TComponent);
     destructor Destroy; override;
+    
+    class function ClassName: String; stdcall; virtual;
   published
     property Align: TAlign read FAlign write SetAlign default alNone;
     property Height: Integer read FHeight write FHeight;
@@ -201,11 +212,16 @@ type
   TWinControl = class(TControl)
   private
     FHandle: Integer;
+    class function WndProcStatic(hWnd: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; static;
+    function WndProc(hWnd: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
   protected
+    procedure CreateHandle; virtual;
     function HandleMessage(id: HWND; MSG: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT;
   public
-    constructor Create;
+    constructor Create(AOwner: TComponent);
     destructor Destroy; override;
+    
+    class function ClassName: String; stdcall; virtual;
   published
     property Handle: Integer read FHandle;
   end;
@@ -214,12 +230,16 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    
+    class function ClassName: String; stdcall; virtual;
   end;
   
   TCustomForm = class(TScrollingWinControl)
   public
     constructor Create;
     destructor Destroy; override;
+    
+    class function ClassName: String; stdcall; virtual;
   end;
 
 type
@@ -228,10 +248,29 @@ type
     constructor Create;
     destructor Destroy; override;
     
-    procedure ShowModal;
+    class function ClassName: String; stdcall; virtual;
     
+    procedure ShowModal;
     procedure Show(modal: Boolean); overload;
     procedure Show; overload;
+  end;
+
+type
+  TButtonControl = class(TWinControl)
+  public
+    constructor Create(AOwner: TComponent);
+    destructor Destroy; override;
+    
+    class function ClassName: String; stdcall; virtual;
+  end;
+
+type
+  TButton = class(TButtonControl)
+  public
+    constructor Create(AOwner: TComponent);
+    destructor Destroy; override;
+    
+    class function ClassName: String; stdcall; virtual;
   end;
 
 // ---------------------------------------------------------------------------------------
@@ -247,28 +286,37 @@ function  TApplication_Create2(p: TApplication; ArgCount: Integer; Args: PPChar)
 procedure TApplication_Destroy(P: TApplication); stdcall; export;
 function  TApplication_exec(p: TApplication; form: TForm): Integer; stdcall; export;
 // ---------------------------------------------------------------------------------------
-function  TPersistent_Create             (p: TPersistent         ): TPersistent;          stdcall; export;
-function  TComponent_Create              (p: TComponent          ): TComponent;           stdcall; export;
-function  TControl_Create                (p: TControl            ): TControl;             stdcall; export;
+function  TPersistent_Create            (p: TPersistent            ): TPersistent;          stdcall; export;
+// ---------------------------------------------------------------------------------------
+function  TComponent_Create             (p: TComponent ; AOwner: TComponent): TComponent;  stdcall; export;
+procedure TComponent_Destroy            (p: TComponent             );              stdcall; export;
+function  TComponent_GetComponent       (p: TComponent ; I: Integer): TComponent;  stdcall; export;
+function  TComponent_GetComponentCount  (p: TComponent             ): Integer;     stdcall; export;
+function  TComponent_GetComponentIndex  (p: TComponent             ): Integer;     stdcall; export;
+function  TComponent_GetComponentOwner  (p: TComponent ; AOwner: TComponent): TComponent;  stdcall; export;
+procedure TComponent_SetComponentIndex  (p: TComponent ; AValue: Integer   );      stdcall; export;
+procedure TComponent_SetComponentOwner  (p: TComponent ; AOwner: TComponent);      stdcall; export;
+// ---------------------------------------------------------------------------------------
+function  TControl_Create               (p: TControl   ; AOwner: TComponent): TControl;             stdcall; export;
+// ---------------------------------------------------------------------------------------
+function  TWinControl_Create            (p: TWinControl; AOwner: TComponent): TWinControl;          stdcall; export;
+procedure TWinControl_CreateHandle      (p: TWinControl         );                       stdcall; export;
 
-function  TWinControl_Create             (p: TWinControl         ): TWinControl;          stdcall; export;
-function  TWinControl_HandleMessage      (p: TWinControl; id: HWND; MSG: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; export;
-
-function  TScrollingWinControl_Create    (p: TScrollingWinControl): TScrollingWinControl; stdcall; export;
-function  TCustomForm_Create             (p: TCustomForm         ): TCustomForm;          stdcall; export;
+function  TScrollingWinControl_Create   (p: TScrollingWinControl): TScrollingWinControl; stdcall; export;
+function  TCustomForm_Create            (p: TCustomForm         ): TCustomForm;          stdcall; export;
+// ---------------------------------------------------------------------------------------
+function  TButtonControl_Create         (p: TButtonControl; AOwner: TComponent ): TButtonControl;       stdcall; export;
+function  TButton_Create                (p: TButton       ; AOwner: TComponent ): TButton;              stdcall; export;
 // ---------------------------------------------------------------------------------------
 procedure TPersistent_Destroy           (p: TPersistent         ); stdcall; export;
-procedure TComponent_Destroy            (p: TComponent          ); stdcall; export;
 procedure TControl_Destroy              (p: TControl            ); stdcall; export;
 procedure TWinControl_Destroy           (p: TWinControl         ); stdcall; export;
 
 procedure TScrollingWinControl_Destroy  (p: TScrollingWinControl); stdcall; export;
 procedure TCustomForm_Destroy           (p: TCustomForm         ); stdcall; export;
-
-function  TComponent_GetComponentCount(p: TComponent): Integer; stdcall; export;
-function  TComponent_GetComponentIndex(p: TComponent): Integer; stdcall; export;
-function  TComponent_GetComponent(p: TComponent; I: Integer): TComponent; stdcall; export;
-procedure TComponent_SetComponentIndex(p: TComponent; AValue: Integer); stdcall; export;
+// ---------------------------------------------------------------------------------------
+procedure TButtonControl_Destroy        (p: TButtonControl      ); stdcall; export;
+procedure TButton_Destroy               (p: TButton             ); stdcall; export;
 // ---------------------------------------------------------------------------------------
 function  TControl_GetClientHeight(p: TControl): Integer; stdcall; export;
 function  TControl_GetClientWidth (p: TControl): Integer; stdcall; export;
@@ -286,8 +334,7 @@ procedure TForm_Show      (p: TForm); stdcall; export;
 procedure TForm_ShowModal (p: TForm); stdcall; export;
 
 procedure TForm_ShowBool  (p: TForm ; modal: Boolean); stdcall; export;
-
-function GlobalWndProc(hWnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; export;
+// ---------------------------------------------------------------------------------------
 function HitTestToStr(ht: Integer): string; stdcall; export;
 {$endif DLLEXPORT}
 
@@ -305,11 +352,11 @@ procedure TApplication_Destroy(P: TApplication); stdcall; external RTLDLL;
 function  TApplication_exec(p: TApplication; form: TForm): Integer; stdcall; external RTLDLL;
 // ---------------------------------------------------------------------------------------
 function  TPersistent_Create          (p: TPersistent             ): TPersistent;          stdcall; external RTLDLL;
-function  TComponent_Create           (p: TComponent              ): TComponent;           stdcall; external RTLDLL;
-function  TControl_Create             (p: TControl                ): TControl;             stdcall; external RTLDLL;
+function  TComponent_Create           (p: TComponent ; AOwner: TComponent): TComponent;    stdcall; external RTLDLL;
+function  TControl_Create             (p: TControl   ; AOwner: TComponent): TControl;      stdcall; external RTLDLL;
 
-function  TWinControl_Create          (p: TWinControl             ): TWinControl;          stdcall; external RTLDLL;
-function  TWinControl_HandleMessage   (p: TWinControl; id: HWND; MSG: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; external RTLDLL;
+function  TWinControl_Create          (p: TWinControl; AOwner: TComponent): TWinControl;   stdcall; external RTLDLL;
+procedure TWinControl_CreateHandle    (p: TWinControl             );                       stdcall; external RTLDLL;
 
 function  TScrollingWinControl_Create (p: TScrollingWinControl    ): TScrollingWinControl; stdcall; external RTLDLL;
 function  TCustomForm_Create          (p: TCustomForm             ): TCustomForm;          stdcall; external RTLDLL;
@@ -321,10 +368,12 @@ procedure TWinControl_Destroy          (p: TWinControl          ); stdcall; exte
 procedure TScrollingWinControl_Destroy (p: TScrollingWinControl ); stdcall; external RTLDLL;
 procedure TCustomForm_Destroy          (p: TCustomForm          ); stdcall; external RTLDLL;
 
-function  TComponent_GetComponentCount(p: TComponent): Integer; stdcall; external RTLDLL;
-function  TComponent_GetComponentIndex(p: TComponent): Integer; stdcall; external RTLDLL;
-function  TComponent_GetComponent(p: TComponent; I: Integer): TComponent; external RTLDLL;
-procedure TComponent_SetComponentIndex(p: TComponent; AValue: Integer); stdcall; external RTLDLL;
+function  TComponent_GetComponentCount (p: TComponent                     ): Integer;     stdcall; external RTLDLL;
+function  TComponent_GetComponentIndex (p: TComponent                     ): Integer;     stdcall; external RTLDLL;
+function  TComponent_GetComponentOwner (p: TComponent; AOwner: TComponent ): TComponent;  stdcall; external RTLDLL;
+function  TComponent_GetComponent      (p: TComponent; I: Integer         ): TComponent;  stdcall; external RTLDLL;
+procedure TComponent_SetComponentIndex (p: TComponent; AValue: Integer    );              stdcall; external RTLDLL;
+procedure TComponent_SetComponentOwner (p: TComponent; AOwner: TComponent );              stdcall; external RTLDLL;
 
 // ---------------------------------------------------------------------------------------
 function  TControl_GetClientHeight(p: TControl): Integer; stdcall; external RTLDLL;
@@ -342,12 +391,19 @@ procedure TForm_Destroy(p: TForm); stdcall; external RTLDLL;
 procedure TForm_Show      (p: TForm); stdcall; external RTLDLL;
 procedure TForm_ShowModal (p: TForm); stdcall; external RTLDLL;
 procedure TForm_ShowBool  (p: TForm ; modal: Boolean); stdcall; external RTLDLL;
-
-function GlobalWndProc(id: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; external RTLDLL;
+// ---------------------------------------------------------------------------------------
+function  TButtonControl_Create         (p: TButtonControl; AOwner: TComponent ): TButtonControl;       stdcall; external RTLDLL;
+function  TButton_Create                (p: TButton       ; AOwner: TComponent ): TButton;              stdcall; external RTLDLL;
+// ---------------------------------------------------------------------------------------
+procedure TButtonControl_Destroy        (p: TButtonControl      ); stdcall; external RTLDLL;
+procedure TButton_Destroy               (p: TButton             ); stdcall; external RTLDLL;
+// ---------------------------------------------------------------------------------------
 function HitTestToStr(ht: Integer): string; stdcall; external RTLDLL;
 {$endif DLLIMPORT}
 
 implementation
+
+procedure fpc_do_exit; external name 'FPC_DO_EXIT';
 
 {$ifdef DLLEXPORT}
 var
@@ -470,7 +526,7 @@ end;
 
 { TComponent }
 
-function TComponent_Create(p: TComponent): TComponent; stdcall; export;
+function TComponent_Create(p: TComponent; AOwner: TComponent): TComponent; stdcall; export;
 begin
   {$ifdef DLLDEBUG}
   writeln('TComponent: Create');
@@ -482,7 +538,20 @@ begin
     exit;
   end;
   
-  Exit(p);
+  if AOwner = nil then
+  begin
+  writeln('owner: nil');
+    if p.GetComponentOwner = nil then
+    begin
+      writeln('owner: not allocated');
+      halt(2);
+    end;
+    AOwner := TComponent.Create(p.GetComponentOwner);
+    p.SetComponentOwner(AOwner);
+  writeln('owner: ok');
+  end;
+  
+  result := p;
 end;
 
 procedure TComponent_Destroy(p: TComponent); stdcall; export;
@@ -498,9 +567,19 @@ begin
   end;
 end;
 
+function TComponent_GetComponentOwner(p: TComponent; AOwner: TComponent): TComponent; stdcall; export;
+begin
+  result := AOwner;
+end;
+
 function TComponent_GetComponentCount(p: TComponent): Integer; stdcall; export;
 begin
-  Exit(0);
+  if p = nil then
+  begin
+    ShowError(sError_TComponent_ref);
+    exit;
+  end;
+  result := Length(p.FArray);
 end;
 
 function TComponent_GetComponentIndex(p: TComponent): Integer; stdcall; export;
@@ -510,7 +589,12 @@ end;
 
 function TComponent_GetComponent(p: TComponent; I: Integer): TComponent; stdcall; export;
 begin
-  Exit(p);
+  if p = nil then
+  begin
+    ShowError(sError_TComponent_ref);
+    exit;
+  end;
+  //result := p.FIndex;
 end;
 
 procedure TComponent_SetComponentIndex(p: TComponent; AValue: Integer); stdcall; export;
@@ -518,10 +602,20 @@ begin
   p.FIndex := AValue;
 end;
 
+procedure TComponent_SetComponentOwner(p: TComponent; AOwner: TComponent); stdcall; export;
+begin
+  if p = nil then
+  begin
+    ShowError(sError_TComponent_noOwner);
+    exit;
+  end;
+  p.FOwner := AOwner;
+end;
+
 
 { TControl }
 
-function TControl_Create(p: TControl): TControl; stdcall; export;
+function TControl_Create(p: TControl; AOwner: TComponent): TControl; stdcall; export;
 begin
   {$ifdef DLLDEBUG}
   writeln('TControl: Create');
@@ -529,7 +623,7 @@ begin
   
   if p = nil then
   begin
-    ShowError(sError_TControl_ref);
+    ShowError(Format('%s: TControl: %s', [sError_Internal, sError_ref]));
     exit;
   end;
   
@@ -575,35 +669,11 @@ end;
 
 { TWinControl }
 
-function GlobalWndProc(hWnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; export;
-var
-  winCtrl: TWinControl;
-  cs: PCREATESTRUCTA;
-begin
-  if msg = WM_NCCREATE then
-  begin
-    cs := PCREATESTRUCTA(lParam);
-    winCtrl := TWinControl(cs^.lpCreateParams);
-    
-    if Assigned(winCtrl) then
-    begin
-      SetWindowLongPtrA(hwnd, GWLP_USERDATA, NativeInt(winCtrl));
-      winCtrl.FHandle := hWnd;
-      Exit(DefWindowProcA(hWnd, Msg, wParam, lParam));
-    end;
-  end;
-  
-  winCtrl := TWinControl(GetWindowLongPtrA(hWnd, GWLP_USERDATA));
-  
-  if Assigned(winCtrl) then
-  Exit(winCtrl.HandleMessage(hWnd, Msg, wParam, lParam)) else
-  Exit(DefWindowProcA(hWnd, Msg, wParam, lParam));
-end;
-
-function TWinControl_Create(p: TWinControl): TWinControl; stdcall; export;
+function TWinControl_Create(p: TWinControl; AOwner: TComponent): TWinControl; stdcall; export;
 var
   WndClass: TWndClassExA;
   FHandle : HWND;
+  tc: TComponent;
 begin
   {$ifdef DLLDEBUG}
   writeln('TWinControl: Create');
@@ -620,7 +690,7 @@ begin
   FillChar(WndClass, sizeof(WndClass), 0);
   WndClass.cbSize          := sizeof(WndClass);
   WndClass.style           := CS_HREDRAW or CS_VREDRAW;
-  WndClass.lpfnWndProc     := @GlobalWndProc;
+  WndClass.lpfnWndProc     := @p.WndProcStatic;
   WndClass.cbClsExtra      := 0;
   WndClass.cbWndExtra      := 0;
   WndClass.hInstance       := hInstanceDLL;
@@ -645,21 +715,35 @@ begin
     Halt(2);
   end;
 
-  p.FHandle := CreateWindowExA(
-    WS_EX_CLIENTEDGE,
-    PAnsiChar(CLASS_NAME),
-    'AppName',
-    ws_Overlapped   or
-    ws_SysMenu      or
-    ws_MinimizeBox  or
-    ws_ClipSiblings or
-    ws_ClipChildren or
-    ws_Visible,
-    50, 50,
-    400, 300,
-    0, 0,
-    hInstanceDLL, nil
-  );
+  if AOwner = nil then
+  begin
+    {$ifdef DLLDEBUG}
+    writeln('AOwner: nil in ' + p.ClassName);
+    {$endif DLLDEBUG}
+    
+    tc := TComponent.Create(nil);
+    p.SetComponentOwner(tc);
+    
+    p.FHandle := CreateWindowExA(
+      WS_EX_CLIENTEDGE,
+      PAnsiChar(CLASS_NAME),
+      'AppName',
+      ws_Overlapped   or
+      ws_SysMenu      or
+      ws_MinimizeBox  or
+      ws_ClipSiblings or
+      ws_ClipChildren or
+      ws_Visible,
+      50, 50,
+      400, 300,
+      0, 0,
+      hInstanceDLL, nil
+    );
+  end else
+  begin
+    
+    p.SetComponentOwner(AOwner);
+  end;
   
   if p.FHandle = 0 then
   begin
@@ -667,7 +751,16 @@ begin
     Halt(1);
   end;
   
-  Exit(p);
+  result := p;
+end;
+
+procedure TWinControl_CreateHandle(p: TWinControl);
+begin
+  if p.FHandle = 0 then
+  begin
+    ShowError(sError_TWinControl_noWindoeHandle);
+    Halt(1);
+  end;
 end;
 
 procedure TWinControl_Destroy(p: TWinControl); stdcall; export;
@@ -721,15 +814,6 @@ begin
 end;
 {$endif DLLDEBUG}
 
-function TWinControl_HandleMessage(p: TWinControl; id: HWND; MSG: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; export;
-begin
-  if msg = WM_SYSCOMMAND then
-  begin
-    writeln('quit');
-    p.Free;
-  end;
-  result := DefWindowProcA(id, msg, wParam, lParam);
-end;
 
 { TScrollingWinControl }
 
@@ -776,9 +860,7 @@ begin
     exit;
   end;
   
-  
-  
-  Exit(p);
+  result := p;
 end;
 
 procedure TCustomForm_Destroy(p: TCustomForm); stdcall; export;
@@ -808,6 +890,8 @@ begin
     ShowError(sError_TForm_ref);
     exit;
   end;
+  
+  result := p;
 end;
 
 procedure TForm_Destroy(p: TForm); stdcall; export;
@@ -857,7 +941,7 @@ begin
   begin
     TranslateMessage(_msg);
     DispatchMessageA(_msg);
-    if p.HandleMessage(p.FHandle, _msg.Message, _msg.wParam, _msg.lParam) = -100 then break;
+    if p.WndProc(p.FHandle, _msg.Message, _msg.wParam, _msg.lParam) = -100 then break;
   end;
 end;
 
@@ -869,8 +953,58 @@ begin
     exit;
   end;
 end;
-{$endif DLLEXPORT}
 
+
+{ TButtonControl }
+
+function TButtonControl_Create(p: TButtonControl; AOwner: TComponent): TButtonControl;
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TButtonControl: Create');
+  {$endif DLLDEBUG}
+  
+  if p = nil then
+  begin
+    ShowError(sError_TButtonControl_ref);
+    exit;
+  end;
+  
+  result := p;
+end;
+
+procedure TButtonControl_Destroy(p: TButtonControl);
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TButtonControl: Destroy');
+  {$endif DLLDEBUG}
+end;
+
+
+{ TButton }
+
+function TButton_Create(p: TButton; AOwner: TComponent): TButton;
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TButton: Create');
+  {$endif DLLDEBUG}
+  
+  if p = nil then
+  begin
+    ShowError(sError_TButton_ref);
+    exit;
+  end;
+  
+  result := p;
+end;
+
+procedure TButton_Destroy(p: TButton);
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TButton: Destroy');
+  {$endif DLLDEBUG}
+end;
+
+{$endif DLLEXPORT}
 
 (**
  * \brief CTOR Create of TApplication
@@ -884,6 +1018,7 @@ begin
   {$ifdef DLLDEBUG}
   writeln('TApplication: Create Args');
   {$endif DLLDEBUG}
+  
   inherited Create;
   TApplication_Create2(self, ArgCount, Args);
 end;
@@ -902,6 +1037,11 @@ destructor TApplication.Destroy;
 begin
   TApplication_Destroy(self);
   inherited Destroy;
+end;
+
+class function TApplication.ClassName: String; stdcall;
+begin
+  result := 'TApplication';
 end;
 
 function TApplication.exec(form: Pointer): Integer; stdcall;
@@ -929,16 +1069,21 @@ end;
 destructor TPersistent.Destroy;
 begin
   TPersistent_Destroy(self);
-  //inherited Destroy;
+  inherited Destroy;
+end;
+
+class function TPersistent.ClassName: String; stdcall;
+begin
+  result := 'TPersistent';
 end;
 
 
 { TComponent }
 
-constructor TComponent.Create;
+constructor TComponent.Create(AOwner: TComponent);
 begin
   inherited Create;
-  TComponent_Create(self);
+  TComponent_Create(self, AOwner);
 end;
 destructor TComponent.Destroy;
 begin
@@ -946,9 +1091,14 @@ begin
   inherited Destroy;
 end;
 
+class function TComponent.ClassName: String; stdcall;
+begin
+  result := 'TComponent';
+end;
+
 function TComponent.GetComponentCount: Integer;
 begin
-  Exit(TComponent_GetComponentCount(self));
+  result := TComponent_GetComponentCount(self);
 end;
 
 function TComponent.GetComponentIndex: Integer;
@@ -961,22 +1111,38 @@ begin
   Exit(TComponent_GetComponent(self, I));
 end;
 
+function TComponent.GetComponentOwner: TComponent;
+begin
+  result := TComponent_GetComponentOwner(self, Owner);
+end;
+
 procedure TComponent.SetComponentIndex(AValue: Integer);
 begin
   TComponent_SetComponentIndex(self, AValue);
 end;
 
+procedure TComponent.SetComponentOwner(AOwner: TComponent);
+begin
+  TComponent_SetComponentOwner(self, AOwner);
+end;
+
+
 { TControl }
 
-constructor TControl.Create;
+constructor TControl.Create(AOwner: TComponent);
 begin
-  inherited Create;
-  TControl_Create(self);
+  inherited Create(AOwner);
+  TControl_Create(self, AOwner);
 end;
 destructor TControl.Destroy;
 begin
   TControl_Destroy(self);
   inherited Destroy;
+end;
+
+class function TControl.ClassName: String; stdcall;
+begin
+  result := 'TControl';
 end;
 
 function TControl.GetClientHeight: Integer;
@@ -1005,10 +1171,10 @@ end;
 
 { TWinControl }
 
-constructor TWinControl.Create;
+constructor TWinControl.Create(AOwner: TComponent);
 begin
-  inherited Create;
-  TWinControl_Create(self);
+  inherited Create(AOwner);
+  TWinControl_Create(self, AOwner);
 end;
 destructor TWinControl.Destroy;
 begin
@@ -1016,12 +1182,41 @@ begin
   inherited Destroy;
 end;
 
-procedure fpc_do_exit; external name 'FPC_DO_EXIT';
+procedure TWinControl.CreateHandle;
+begin
+end;
+
+class function TWinControl.ClassName: String; stdcall;
+begin
+  result := 'TWinControl';
+end;
 
 function TWinControl.HandleMessage(id: HWND; MSG: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT;
 begin
-  //writeln('wmsg: ' + IntToStr(msg)); // HiWord(wParam)));
-  case msg of
+  result := 0;
+end;
+
+class function TWinControl.WndProcStatic(hWnd: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
+var
+  Window: TWinControl;
+begin
+  if uMsg = WM_NCCREATE then
+  begin
+    // get "self" pointer out from lParam
+    // put it in GWL_USERDATA
+    Window := TWinControl(PCREATESTRUCTA(lParam)^.lpCreateParams);
+    SetWindowLongPtrA(hWnd, GWL_USERDATA, LONG_PTR(Window));
+  end else
+  Window := TWinControl(GetWindowLongPtrA(hwnd, GWL_USERDATA));
+  
+  if Assigned(Window) then
+  result := Window.WndProc(hWnd, uMsg, wParam, lParam) else
+  result := DefWindowProcA(hWnd, uMsg, wParam, lParam) ;
+end;
+
+function TWinControl.WndProc(hWnd: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
+begin
+  case uMsg of
     WM_NCLBUTTONDOWN: begin
       writeln('HT_TEST -> ' + HitTestToStr(LoWord(wParam)));
       writeln('wParam lo: ' + IntToStr(LoWord(wParam)));
@@ -1044,17 +1239,16 @@ begin
     end;
     WM_CLOSE: begin
       writeln('close');
-      DestroyWindow(id);
+      DestroyWindow(hWnd);
+      result := -100;
     end;
     WM_DESTROY: begin
-      writeln('des');
       PostQuitMessage(0);
-      Halt(0);
+      Result := -100;
     end else begin
-      result := DefWindowProcA(id, msg, wParam, lParam);
+      result := DefWindowProcA(hWnd, uMsg, wParam, lParam);
     end;
   end;
-  result := 0;
 end;
 
 
@@ -1062,13 +1256,18 @@ end;
 
 constructor TScrollingWinControl.Create;
 begin
-  inherited Create;
+  inherited Create(nil);  // todo
   TScrollingWinControl_Create(self);
 end;
 destructor TScrollingWinControl.Destroy;
 begin
   TScrollingWinControl_Destroy(self);
   inherited Destroy;
+end;
+
+class function TScrollingWinControl.ClassName: String; stdcall;
+begin
+  result := 'TScrollingWinControl';
 end;
 
 
@@ -1086,6 +1285,11 @@ begin
   inherited Destroy;
 end;
 
+class function TCustomForm.ClassName: String; stdcall;
+begin
+  result := 'TCustomForm';
+end;
+
 
 { TCustomForm }
 
@@ -1100,6 +1304,12 @@ begin
   TForm_Destroy(self);
   inherited Destroy;
 end;
+
+class function TForm.ClassName: String; stdcall;
+begin
+  result := 'TForm';
+end;
+
 
 procedure TForm.Show;
 begin
@@ -1116,48 +1326,98 @@ begin
   TForm_ShowBool(self, modal);
 end;
 
+
+{ TButtonControl }
+constructor TButtonControl.Create(AOwner: TComponent);
+begin
+  inherited Create(nil);  // todo
+  TButtonControl_Create(self, AOwner);
+  TWinControl_CreateHandle(self);
+end;
+
+destructor TButtonControl.Destroy;
+begin
+  TButtonControl_Destroy(self);
+  inherited Destroy;
+end;
+
+class function TButtonControl.ClassName: String; stdcall;
+begin
+  result := 'TButtonControl';
+end;
+
+
+{ TButton }
+
+constructor TButton.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  TButton_Create(self, AOwner);
+end;
+
+destructor TButton.Destroy;
+begin
+  TButton_Destroy(self);
+  inherited Destroy;
+end;
+
+class function TButton.ClassName: String; stdcall;
+begin
+  result := 'TButton';
+end;
+
+
 {$ifdef DLLEXPORT}
 exports
-  TApplication_Create1  name 'TApplication_Create1',
-  TApplication_Create2  name 'TApplication_Create2',
-  TApplication_Destroy  name 'TApplication_Destroy',
+  TApplication_Create1              name 'TApplication_Create1',
+  TApplication_Create2              name 'TApplication_Create2',
+  TApplication_Destroy              name 'TApplication_Destroy',
   
-  TApplication_exec     name 'TApplication_exec',
+  TApplication_exec                 name 'TApplication_exec',
 
-  TPersistent_Create              name 'TPersistent_Create',
-  TComponent_Create               name 'TComponent_Create',
-  TControl_Create                 name 'TControl_Create',
-  TWinControl_Create              name 'TWinControl_Create',
-  TScrollingWinControl_Create     name 'TScrollingWinControl_Create',
-  TCustomForm_Create              name 'TCustomForm_Create',
+  TPersistent_Create                name 'TPersistent_Create',
+  TComponent_Create                 name 'TComponent_Create',
+  
+  TWinControl_Create                name 'TWinControl_Create',
+  TWinControl_CreateHandle          name 'TWinControl_CreateHandle',
+  
+  TScrollingWinControl_Create       name 'TScrollingWinControl_Create',
+  TCustomForm_Create                name 'TCustomForm_Create',
 
-  TPersistent_Destroy             name 'TPersistent_Destroy',
-  TComponent_Destroy              name 'TComponent_Destroy',
-  TControl_Destroy                name 'TControl_Destroy',
-  TWinControl_Destroy             name 'TWinControl_Destroy',
-  TScrollingWinControl_Destroy    name 'TScrollingWinControl_Destroy',
-  TCustomForm_Destroy             name 'TCustomForm_Destroy',
+  TPersistent_Destroy               name 'TPersistent_Destroy',
+  TComponent_Destroy                name 'TComponent_Destroy',
+  TControl_Destroy                  name 'TControl_Destroy',
+  TWinControl_Destroy               name 'TWinControl_Destroy',
+  TScrollingWinControl_Destroy      name 'TScrollingWinControl_Destroy',
+  TCustomForm_Destroy               name 'TCustomForm_Destroy',
   
-  TComponent_GetComponentCount    name 'TComponent_GetComponentCount',
-  TComponent_GetComponentIndex    name 'TComponent_GetComponentIndex',
-  TComponent_GetComponent         name 'TComponent_GetComponent',
-  TComponent_SetComponentIndex    name 'TComponent_SetComponentIndex',
-  
-  TControl_GetClientHeight        name 'TControl_GetClientHeight',
-  TControl_SetClientWidth         name 'TControl_SetClientWidth',
-  TControl_SetClientHeight        name 'TControl_SetClientHeight',
+  TComponent_GetComponentCount      name 'TComponent_GetComponentCount',
+  TComponent_GetComponentIndex      name 'TComponent_GetComponentIndex',
+  TComponent_GetComponentOwner      name 'TComponent_GetComponentOwner',
   //
-  TControl_SetAlign               name 'TControl_SetAlign',
-
-  TWinControl_HandleMessage       name 'TWinControl_HandleMessage',
+  TComponent_GetComponent           name 'TComponent_GetComponent',
+  TComponent_SetComponentIndex      name 'TComponent_SetComponentIndex',
+  TComponent_SetComponentOwner      name 'TComponent_SetComponentOwner',
   
-  TForm_Create    name 'TForm_Create',
-  TForm_Destroy   name 'TForm_Destroy',
-  TForm_Show      name 'TForm_Show',
-  TForm_ShowBool  name 'TForm_ShowBool',
-  TForm_ShowModal name 'TForm_ShowModal',
+  TControl_Create                   name 'TControl_Create',
+  TControl_GetClientHeight          name 'TControl_GetClientHeight',
+  TControl_SetClientWidth           name 'TControl_SetClientWidth',
+  TControl_SetClientHeight          name 'TControl_SetClientHeight',
+  //
+  TControl_SetAlign                 name 'TControl_SetAlign',
   
-  GlobalWndProc   name 'GlobalWndProc',
+  TButtonControl_Create             name 'TButtonControl_Create',
+  TButtonControl_Destroy            name 'TButtonControl_Destroy',
+  
+  TButton_Create                    name 'TButton_Create',
+  TButton_Destroy                   name 'TButton_Destroy',
+  
+  TForm_Create                      name 'TForm_Create',
+  TForm_Destroy                     name 'TForm_Destroy',
+  TForm_Show                        name 'TForm_Show',
+  TForm_ShowBool                    name 'TForm_ShowBool',
+  TForm_ShowModal                   name 'TForm_ShowModal',
+  
   HitTestToStr    name 'HitTestToStr'
   ;
 {$endif DLLEXPORT}

@@ -453,7 +453,7 @@ const
   COLOR_WINDOW = 5;
 
 const
-  GWLP_USERDATA     = -21;
+  GWL_USERDATA      = -21;
 
 // ---------------------------------------------------------------------------------------
 // DLL process constants ...

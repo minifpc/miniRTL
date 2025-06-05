@@ -63,10 +63,10 @@ uses Locales;
 
 {$ifdef DLLEXPORT}
 procedure ShowMessage_PChar  (msg: PChar); stdcall; export; begin MessageBoxA(0, msg, PChar(' '),          MB_OK); end;
-procedure ShowInfo_PChar     (msg: PChar); stdcall; export; begin MessageBoxA(0, msg, PChar(sInformation), MB_OK); end;
-procedure ShowError_PChar    (msg: PChar); stdcall; export; begin MessageBoxA(0, msg, PChar(sError),       MB_OK); end;
-procedure ShowWarning_PChar  (msg: PChar); stdcall; export; begin MessageBoxA(0, msg, PChar(sWarning),     MB_OK); end;
-procedure ShowCritical_PChar (msg: PChar); stdcall; export; begin MessageBoxA(0, msg, PChar(sCritical),    MB_OK); end;
+procedure ShowInfo_PChar     (msg: PChar); stdcall; export; begin MessageBoxA(0, msg, PChar('Information'), MB_OK); end;
+procedure ShowError_PChar    (msg: PChar); stdcall; export; begin MessageBoxA(0, msg, PChar('Error'),       MB_OK); end;
+procedure ShowWarning_PChar  (msg: PChar); stdcall; export; begin MessageBoxA(0, msg, PChar('Warning'),     MB_OK); end;
+procedure ShowCritical_PChar (msg: PChar); stdcall; export; begin MessageBoxA(0, msg, PChar('Critical'),    MB_OK); end;
 
 procedure ShowMessage_AnsiString  (msg: AnsiString); stdcall; export; begin ShowMessage_PChar  (PChar(msg)); end;
 procedure ShowInfo_AnsiString     (msg: AnsiString); stdcall; export; begin ShowInfo_PChar     (PChar(msg)); end;

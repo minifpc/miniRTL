@@ -17,7 +17,7 @@ var
 function DllMain(
   hinstDLL   : HINSTANCE;
   fdwReason  : DWORD;
-  lpReserved : Pointer): BOOL; stdcall;
+  lpReserved : Pointer): BOOL; stdcall; [public, alias: 'DLLMAIN' ];
 begin
   case fdwReason of
     DLL_PROCESS_ATTACH:
