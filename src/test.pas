@@ -10,35 +10,34 @@ uses
   Windows, Dialogs, SysUtils, StrUtils, Exceptions, Forms,
   Locales, global;
 
+type
+  TForm1 = class(TForm)
+  private
+    FButton: TButton;
+  public
+    constructor Create;
+  end;
+
 var
-  app    : TApplication;
-  form   : TForm;
+  Form1: TForm1;
 
-procedure CleanUp1;
-begin
-  WriteLn('cleanup1 called.');
-end;
+procedure CleanUp_1; begin WriteLn('cleanup1 called.'); end;
+procedure CleanUp_2; begin WriteLn('cleanup2 called.'); end;
 
-procedure CleanUp2;
+constructor TForm1.Create;
 begin
-  WriteLn('cleanup2 called.');
+  FButton := TButton.Create(Form1);
 end;
 
 begin
   writeln('start');
   
-  AddExitProc(@CleanUp1);
-  AddExitProc(@CleanUp2);
+  AddExitProc(@CleanUp_1);
+  AddExitProc(@CleanUp_2);
   
-  app  := TApplication.Create;
-  form := TForm.Create;
-  try
-    app.exec(form);
-    writeln('after exec');
-  finally
-    form.Free;
-    app.Free;
-    writeln('after finally)');
-  end;
-  writeln('at end');
+  Application.Initialize;
+  Application.CreateForm(TForm1, Form1);
+  Application.Run;
+  
+  writeln('end.');
 end.
