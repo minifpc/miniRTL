@@ -40,6 +40,17 @@ uses global;
     sError_TCheckBox_ref            : AnsiString = 'internal Error: TCheckBox is not referenced.'; export;
     sError_TRadioBox_ref            : AnsiString = 'internal Error: TRadioBox is not referenced.'; export;
     sError_TProgressBar_ref         : AnsiString = 'internal Error: TProgressBar is not referenced.'; export;
+    sError_TComboBox_ref            : AnsiString = 'internal Error: TComboBox is not referenced.'; export;
+    
+    sError_TSpinCalendar_ref        : AnsiString = 'internal Error: TSpinCalendar is not referenced.'; export;
+    sError_TSpinTime_ref            : AnsiString = 'internal Error: TSpinTime is not referenced.'; export;
+    
+    sError_TMemo_ref                : AnsiString = 'internal Error: TMemo is not referenced.'; export;
+    sError_TMemo_noOwner            : AnsiString = 'TMemo missing handle.'; export;
+    
+    sError_TComboBox_noOwner        : AnsiString = 'TComboBox missing handle.'; export;
+    sError_TSpinDate_noOwner        : AnsiString = 'TSpinDate missing handle.'; export;
+    sError_TSpinTime_noOwner        : AnsiString = 'TSpinTime missing handle.'; export;
 
     sError_TWinControl_noWindoeHandle : AnsiString = 'internal Error: No Window-Handle available.'; export;
     
@@ -84,6 +95,17 @@ uses global;
     sError_TCheckBox_ref            : AnsiString = 'interner Fehler: TCheckBox ist nicht zugewiesen.'; export;
     sError_TRadioBox_ref            : AnsiString = 'interner Fehler: TRadioBox ist nicht zugewiesen.'; export;
     sError_TProgressBar_ref         : AnsiString = 'interner Fehler: TProgressBar ist nicht zugewiesen.'; export;
+    
+    sError_TComboBox_ref            : AnsiString = 'interner Fehler: TComboBox ist nicht zugewiesen.'; export;
+    sError_TSpinDate_ref            : AnsiString = 'interner Fehler: TSpinDate ist nicht zugewiesen.'; export;
+    sError_TSpinTime_ref            : AnsiString = 'interner Fehler: TSpinTime ist nicht zugewiesen.'; export;
+    
+    sError_TMemo_ref                : AnsiString = 'interner Fehler: TMemo ist nicht zugewiesen.'; export;
+    sError_TMemo_noOwner            : AnsiString = 'TMemo besitzt keinen AOwner.'; export;
+    
+    sError_TComboBox_noOwner        : AnsiString = 'TComboBox besitzt keinen AOwner.'; export;
+    sError_TSpinDate_noOwner        : AnsiString = 'TSpinDate besitzt keinen AOwner.'; export;
+    sError_TSpinTime_noOwner        : AnsiString = 'TSpinTime besitzt keinen AOwner.'; export;
     
     sError_TWinControl_noWindoeHandle : AnsiString = 'interner Fehler: kein Fenster-Handle verfügbar.'; export;
     
@@ -130,6 +152,17 @@ var
   sError_TRadioBox_ref              : AnsiString; external RTLDLL;
   sError_TProgressBar_ref           : AnsiString; external RTLDLL;
   
+  sError_TComboBox_ref              : AnsiString; external RTLDLL;
+  sError_TSpinDate_ref              : AnsiString; external RTLDLL;
+  sError_TSpinTime_ref              : AnsiString; external RTLDLL;
+  
+  sError_TComboBox_noOwner          : AnsiString; external RTLDLL;
+  sError_TSpinDate_noOwner          : AnsiString; external RTLDLL;
+  sError_TSpinTime_noOwner          : AnsiString; external RTLDLL;
+  
+  sError_TMemo_ref                  : AnsiString; external RTLDLL;
+  sError_TMemo_noOwner              : AnsiString; external RTLDLL;
+  
   sError_TWinControl_noWindoeHandle : AnsiString; external RTLDLL;
   
   sError_TForm_nil: AnsiString      ; external RTLDLL;
@@ -172,6 +205,17 @@ exports
   sError_TCheckBox_ref              name 'sError_TCheckBox_ref',
   sError_TRadioBox_ref              name 'sError_TRadioBox_ref',
   sError_TProgressBar_ref           name 'sError_TProgressBar_ref',
+  
+  sError_TComboBox_ref              name 'sError_TComboBox_ref',
+  sError_TSpinDate_ref              name 'sError_TSpinDate_ref',
+  sError_TSpinTime_ref              name 'sError_TSpinTime_ref',
+  
+  sError_TComboBox_noOwner          name 'sError_TComboBox_noOwner',
+  sError_TSpinDate_noOwner          name 'sError_TSpinDate_noOwner',
+  sError_TSpinTime_noOwner          name 'sError_TSpinTime_noOwner',
+  
+  sError_TMemo_noOwner              name 'sError_TMemo_noOwner',
+  sError_TMemo_ref                  name 'sError_TMemo_ref',
   
   sError_TWinControl_noWindoeHandle name 'sError_TWinControl_noWindoeHandle',
   

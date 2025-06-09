@@ -25,6 +25,10 @@ var
   FCheckBox: TCheckBox;
   FRadioBox: TRadioBox;
   FProgressBar: TProgressBar;
+  FComboBox: TComboBox;
+  FSpinDate: TSpinDate;
+  FSpinTime: TSpinTime;
+  FMemo: TMemo;
 
 procedure CleanUp_1; begin WriteLn('cleanup1 called.'); end;
 procedure CleanUp_2; begin WriteLn('cleanup2 called.'); end;
@@ -78,6 +82,30 @@ begin
   FProgressBar.Left   :=  20;
   FProgressBar.Width  := 180;
   FProgressBar.Height :=  24;
+  
+  FComboBox := TComboBox.Create(Form1);
+  FComboBox.Top    := 232;
+  FComboBox.Left   :=  20;
+  FComboBox.Width  := 140;
+  FComboBox.Height := 104;
+  
+  FSpinDate := TSpinDate.Create(Form1);
+  FSpinDate.Top    :=  20;
+  FSpinDate.Left   := 290;
+  FSpinDate.Width  := 100;
+  FSpinDate.Height :=  26;
+  
+  FSpinTime := TSpinTime.Create(Form1);
+  FSpinTime.Top    :=  56;
+  FSpinTime.Left   := 290;
+  FSpinTime.Width  := 100;
+  FSpinTime.Height :=  26;
+  
+  FMemo := TMemo.Create(Form1);
+  FMemo.Top    := 200;
+  FMemo.Left   := 230;
+  FMemo.Width  := 180;
+  FMemo.Height :=  84;
   
   Form1.ShowModal;
   

@@ -330,6 +330,38 @@ type
     class function ClassName: String; stdcall; virtual;
   end;
 
+  TComboBox = class(TWinControl)
+  public
+    constructor Create(AOwner: TComponent);
+    destructor Destroy; override;
+    
+    class function ClassName: String; stdcall; virtual;
+  end;
+
+  TSpinDate = class(TWinControl)
+  public
+    constructor Create(AOwner: TComponent);
+    destructor Destroy; override;
+    
+    class function ClassName: String; stdcall; virtual;
+  end;
+  
+  TSpinTime = class(TWinControl)
+  public
+    constructor Create(AOwner: TComponent);
+    destructor Destroy; override;
+    
+    class function ClassName: String; stdcall; virtual;
+  end;
+  
+  TMemo = class(TWinControl)
+  public
+    constructor Create(AOwner: TComponent);
+    destructor Destroy; override;
+    
+    class function ClassName: String; stdcall; virtual;
+  end;
+
 // ---------------------------------------------------------------------------------------
 // the internal "export" function's and procedure's ...
 // ---------------------------------------------------------------------------------------
@@ -374,6 +406,10 @@ function  TButton_Create                (p: TButton       ; AOwner: TComponent )
 function  TCheckBox_Create              (p: TCheckBox     ; AOwner: TComponent ): TCheckBox;        stdcall; export;
 function  TRadioBox_Create              (p: TRadioBox     ; AOwner: TComponent ): TRadioBox;        stdcall; export;
 function  TProgressBar_Create           (p: TProgressBar  ; AOwner: TComponent ): TProgressBar;     stdcall; export;
+function  TComboBox_Create              (p: TComboBox     ; AOwner: TComponent ): TComboBox;        stdcall; export;
+function  TSpinDate_Create              (p: TSpinDate     ; AOwner: TComponent ): TSpinDate;        stdcall; export;
+function  TSpinTime_Create              (p: TSpinTime     ; AOwner: TComponent ): TSpinTime;        stdcall; export;
+function  TMemo_Create                  (p: TMemo         ; AOwner: TComponent ): TMemo;            stdcall; export;
 // ---------------------------------------------------------------------------------------
 procedure TPersistent_Destroy           (p: TPersistent         ); stdcall; export;
 procedure TControl_Destroy              (p: TControl            ); stdcall; export;
@@ -387,6 +423,10 @@ procedure TButton_Destroy               (p: TButton             ); stdcall; expo
 procedure TCheckBox_Destroy             (p: TCheckBox           ); stdcall; export;
 procedure TRadioBox_Destroy             (p: TRadioBox           ); stdcall; export;
 procedure TProgressBar_Destroy          (p: TProgressBar        ); stdcall; export;
+procedure TComboBox_Destroy             (p: TComboBox           ); stdcall; export;
+procedure TSpinDate_Destroy             (p: TSpinDate           ); stdcall; export;
+procedure TSpinTime_Destroy             (p: TSpinTime           ); stdcall; export;
+procedure TMemo_Destroy                 (p: TMemo               ); stdcall; export;
 // ---------------------------------------------------------------------------------------
 function  TControl_GetClientHeight      (p: TControl): Integer; stdcall; export;
 function  TControl_GetClientWidth       (p: TControl): Integer; stdcall; export;
@@ -473,12 +513,20 @@ function  TButton_Create                (p: TButton       ; AOwner: TComponent )
 function  TCheckBox_Create              (p: TCheckBox     ; AOwner: TComponent ): TCheckBox;       stdcall; external RTLDLL;
 function  TRadioBox_Create              (p: TRadioBox     ; AOwner: TComponent ): TRadioBox;       stdcall; external RTLDLL;
 function  TProgressBar_Create           (p: TProgressBar  ; AOwner: TComponent ): TProgressBar;    stdcall; external RTLDLL;
+function  TComboBox_Create              (p: TComboBox     ; AOwner: TComponent ): TComboBox;       stdcall; external RTLDLL;
+function  TSpinDate_Create              (p: TSpinDate     ; AOwner: TComponent ): TSpinDate;       stdcall; external RTLDLL;
+function  TSpinTime_Create              (p: TSpinTime     ; AOwner: TComponent ): TSpinTime;       stdcall; external RTLDLL;
+function  TMemo_Create                  (p: TMemo         ; AOwner: TComponent ): TMemo;           stdcall; external RTLDLL;
 // ---------------------------------------------------------------------------------------
 procedure TButtonControl_Destroy        (p: TButtonControl      ); stdcall; external RTLDLL;
 procedure TButton_Destroy               (p: TButton             ); stdcall; external RTLDLL;
 procedure TCheckBox_Destroy             (p: TCheckBox           ); stdcall; external RTLDLL;
 procedure TRadioBox_Destroy             (p: TRadioBox           ); stdcall; external RTLDLL;
 procedure TProgressBar_Destroy          (p: TProgressBar        ); stdcall; external RTLDLL;
+procedure TComboBox_Destroy             (p: TComboBox           ); stdcall; external RTLDLL;
+procedure TSpinDate_Destroy             (p: TSpinDate           ); stdcall; external RTLDLL;
+procedure TSpinTime_Destroy             (p: TSpinTime           ); stdcall; external RTLDLL;
+procedure TMemo_Destroy                 (p: TMemo               ); stdcall; external RTLDLL;
 // ---------------------------------------------------------------------------------------
 function HitTestToStr(ht: Integer): string; stdcall; external RTLDLL;
 {$endif DLLIMPORT}
@@ -1391,6 +1439,185 @@ begin
   {$endif DLLDEBUG}
 end;
 
+
+{ TComboBox }
+
+function TComboBox_Create(p: TComboBox; AOwner: TComponent): TComboBox; stdcall; export;
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TComboBox: Create');
+  {$endif DLLDEBUG}
+  
+  if p = nil then
+  begin
+    ShowError(sError_TComboBox_ref);
+    halt(2);
+  end;
+  
+  if AOwner.FHandle = 0 then
+  begin
+    ShowError(sError_TComboBox_noOwner);
+    halt(2);
+  end;
+  
+  p.FHandle := CreateWindowExA(
+  0, 'COMBOBOX', nil,
+  WS_CHILD or WS_VISIBLE or CBS_DROPDOWNLIST or WS_VSCROLL,
+  20, 20, 150, 24,
+  AOwner.FHandle, 0,
+  hInstanceDLL, nil);
+  
+  if p.Handle = 0 then
+  begin
+    ShowError(sError_TComboBox_ref);
+    halt(2);
+  end;
+
+  // Einträge hinzufügen
+  SendMessageA(p.FHandle, CB_ADDSTRING, 0, LPARAM(PChar('Item 1')));
+  SendMessageA(p.FHandle, CB_ADDSTRING, 0, LPARAM(PChar('Item 2')));
+  SendMessageA(p.FHandle, CB_ADDSTRING, 0, LPARAM(PChar('Item 3')));
+  
+  SendMessageA(p.FHandle, CB_SETCURSEL, 0, 0);  // Standardauswahl
+  result := p;
+end;
+procedure TComboBox_Destroy(p: TComboBox); stdcall; export;
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TComboBox: Destroy');
+  {$endif DLLDEBUG}
+end;
+
+
+{ TSpinDate }
+
+function TSpinDate_Create(p: TSpinDate; AOwner: TComponent): TSpinDate; stdcall; export;
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TSpinDate: Create');
+  {$endif DLLDEBUG}
+  
+  if p = nil then
+  begin
+    ShowError(sError_TSpinDate_ref);
+    halt(2);
+  end;
+  
+  if AOwner.FHandle = 0 then
+  begin
+    ShowError(sError_TSpinDate_noOwner);
+    halt(2);
+  end;
+  
+  p.FHandle := CreateWindowExA(
+  0, 'SysDateTimePick32', nil,
+  WS_CHILD or WS_VISIBLE or DTS_SHORTDATEFORMAT or DTS_UPDOWN,
+  20, 20, 150, 24,
+  AOwner.FHandle, 0,
+  hInstanceDLL, nil);
+  
+  if p.Handle = 0 then
+  begin
+    ShowError(sError_TSpinDate_ref);
+    halt(2);
+  end;
+
+  result := p;
+end;
+procedure TSpinDate_Destroy(p: TSpinDate); stdcall; export;
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TSpinDate: Destroy');
+  {$endif DLLDEBUG}
+end;
+
+
+{ TSpinTime }
+
+function TSpinTime_Create(p: TSpinTime; AOwner: TComponent): TSpinTime; stdcall; export;
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TSpinTime: Create');
+  {$endif DLLDEBUG}
+  
+  if p = nil then
+  begin
+    ShowError(sError_TSpinTime_ref);
+    halt(2);
+  end;
+  
+  if AOwner.FHandle = 0 then
+  begin
+    ShowError(sError_TSpinTime_noOwner);
+    halt(2);
+  end;
+  
+  p.FHandle := CreateWindowExA(
+  0, 'SysDateTimePick32', nil,
+  WS_CHILD or WS_VISIBLE or DTS_TIMEFORMAT,
+  20, 20, 150, 24,
+  AOwner.FHandle, 0,
+  hInstanceDLL, nil);
+  
+  if p.Handle = 0 then
+  begin
+    ShowError(sError_TSpinTime_ref);
+    halt(2);
+  end;
+
+  result := p;
+end;
+procedure TSpinTime_Destroy(p: TSpinTime); stdcall; export;
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TSpinTime: Destroy');
+  {$endif DLLDEBUG}
+end;
+
+
+{ TMemo }
+
+function TMemo_Create(p: TMemo; AOwner: TComponent): TMemo; stdcall; export;
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TMemo: Create');
+  {$endif DLLDEBUG}
+  
+  if p = nil then
+  begin
+    ShowError(sError_TMemo_ref);
+    halt(2);
+  end;
+  
+  if AOwner.FHandle = 0 then
+  begin
+    ShowError(sError_TMemo_noOwner);
+    halt(2);
+  end;
+  
+  p.FHandle := CreateWindowExA(
+  WS_EX_CLIENTEDGE, 'EDIT', nil,
+  WS_CHILD or WS_VISIBLE   or WS_VSCROLL or
+  ES_LEFT  or ES_MULTILINE or ES_AUTOVSCROLL,
+  20, 20, 150, 24,
+  AOwner.FHandle, 0,
+  hInstanceDLL, nil);
+  
+  if p.Handle = 0 then
+  begin
+    ShowError(sError_TMemo_ref);
+    halt(2);
+  end;
+
+  result := p;
+end;
+procedure TMemo_Destroy(p: TMemo); stdcall; export;
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TMemo: Destroy');
+  {$endif DLLDEBUG}
+end;
+
 {$endif DLLEXPORT}
 
 (**
@@ -1792,6 +2019,78 @@ begin
   result := 'TProgressBar';
 end;
 
+
+{ TComboBox }
+
+constructor TComboBox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  TComboBox_Create(self, AOwner);
+end;
+destructor TComboBox.Destroy;
+begin
+  TComboBox_Destroy(self);
+  inherited Destroy;
+end;
+class function TComboBox.ClassName: String; stdcall;
+begin
+  result := 'TComboBox';
+end;
+
+
+{ TSpinDate }
+
+constructor TSpinDate.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  TSpinDate_Create(self, AOwner);
+end;
+destructor TSpinDate.Destroy;
+begin
+  TSpinDate_Destroy(self);
+  inherited Destroy;
+end;
+class function TSpinDate.ClassName: String; stdcall;
+begin
+  result := 'TSpinDate';
+end;
+
+
+{ TSpinTime }
+
+constructor TSpinTime.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  TSpinTime_Create(self, AOwner);
+end;
+destructor TSpinTime.Destroy;
+begin
+  TSpinTime_Destroy(self);
+  inherited Destroy;
+end;
+class function TSpinTime.ClassName: String; stdcall;
+begin
+  result := 'TSpinTime';
+end;
+
+
+{ TMemo }
+
+constructor TMemo.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  TMemo_Create(self, AOwner);
+end;
+destructor TMemo.Destroy;
+begin
+  TMemo_Destroy(self);
+  inherited Destroy;
+end;
+class function TMemo.ClassName: String; stdcall;
+begin
+  result := 'TMemo';
+end;
+
 {$ifdef DLLEXPORT}
 exports
   TApplication_Create1              name 'TApplication_Create1',
@@ -1852,6 +2151,18 @@ exports
   
   TProgressBar_Create               name 'TProgressBar_Create',
   TProgressBar_Destroy              name 'TProgressBar_Destroy',
+  
+  TComboBox_Create                  name 'TComboBox_Create',
+  TComboBox_Destroy                 name 'TComboBox_Destroy',
+  
+  TSpinDate_Create                  name 'TSpinDate_Create',
+  TSpinDate_Destroy                 name 'TSpinDate_Destroy',
+  
+  TSpinTime_Create                  name 'TSpinTime_Create',
+  TSpinTime_Destroy                 name 'TSpinTime_Destroy',
+  
+  TMemo_Create                      name 'TMemo_Create',
+  TMemo_Destroy                     name 'TMemo_Destroy',
   
   TForm_Create                      name 'TForm_Create',
   TForm_Destroy                     name 'TForm_Destroy',
