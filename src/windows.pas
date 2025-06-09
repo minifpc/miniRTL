@@ -270,6 +270,17 @@ const
 const
   BS_PUSHBUTTON         = $00000000;
   BS_DEFPUSHBUTTON      = $00000001;
+  BS_AUTOCHECKBOX       = $00000003;
+  BS_AUTORADIOBUTTON    = $00000009;
+
+// ---------------------------------------------------------------------------------------
+// PBS - progress bar style ...
+// ---------------------------------------------------------------------------------------
+const
+  PBS_SMOOTH            = $01;
+// ---------------------------------------------------------------------------------------
+  PBM_SETPOS            = $0402;
+  PBM_SETRANGE          = $0401;
 
 // ---------------------------------------------------------------------------------------
 // WM_SYSCOMMAND ...
@@ -280,6 +291,9 @@ const
 // ---------------------------------------------------------------------------------------
 // windows styles ...
 // ---------------------------------------------------------------------------------------
+const
+  CW_USEDEFAULT         = $80000000;
+
 const
   WS_BORDER             = $00000000;
   WS_CAPTION            = $00CD0000;
@@ -493,6 +507,8 @@ var
 {$ifdef DLLEXPORT}
 function LoWord(Value: DWORD): Word; stdcall; export;
 function HiWord(Value: DWORD): Word; stdcall; export;
+
+function MAKELPARAM(wLow, wHigh: Word): LPARAM; stdcall; export;
 {$endif DLLEXPORT}
 
 {$ifdef DLLIMPORT}
@@ -651,6 +667,8 @@ function ReadConsoleA(
   pInputControl       : LPVOID
 ): BOOL; stdcall; external 'kernel32.dll' name 'ReadConsoleA';
 
+procedure InitCommonControls; stdcall; external 'comctl32.dll' name 'InitCommonControls';
+
 procedure Sleep(dwMilliseconds: DWORD); stdcall; external 'kernel32.dll';
 function GetTickCount: DWORD; stdcall; external 'kernel32.dll';
 function Beep(dwFreq, dwDuration: DWORD): BOOL; stdcall; external 'kernel32.dll';
@@ -793,6 +811,7 @@ function CommandLineToArgvW(lpCmdLine: PWideChar; var pNumArgs: Integer): PPWide
 
 {$ifdef DLLIMPORT}
 procedure AddExitProc(Proc: TExitProcedure); stdcall; external RTLDLL;
+function MAKELPARAM(wLow, wHigh: Word): LPARAM; stdcall; external RTLDLL;
 {$endif}
 
 implementation
@@ -808,9 +827,16 @@ begin
   Result := Value and $FFFF;
 end;
 
+function MAKELPARAM(wLow, wHigh: Word): LPARAM; stdcall; export;
+begin
+  Result := LPARAM(LongInt(wHigh) shl 16 or wLow);
+end;
+
 exports
-  LoWord name 'LoWord',
-  HiWord name 'HiWord';
+  LoWord      name 'LoWord',
+  HiWord      name 'HiWord',
+  MAKELPARAM  name 'MAKELPARAM'
+  ;
 {$endif DLLEXPORT}
 
 end.

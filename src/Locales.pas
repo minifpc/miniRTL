@@ -36,6 +36,10 @@ uses global;
     
     sError_TButtonControl_ref       : AnsiString = 'internal Error: TButtonControl is not referenced.'; export;
     sError_TButton_ref              : AnsiString = 'internal Error: TButton is not referenced.'; export;
+    
+    sError_TCheckBox_ref            : AnsiString = 'internal Error: TCheckBox is not referenced.'; export;
+    sError_TRadioBox_ref            : AnsiString = 'internal Error: TRadioBox is not referenced.'; export;
+    sError_TProgressBar_ref         : AnsiString = 'internal Error: TProgressBar is not referenced.'; export;
 
     sError_TWinControl_noWindoeHandle : AnsiString = 'internal Error: No Window-Handle available.'; export;
     
@@ -77,6 +81,10 @@ uses global;
     sError_TButtonControl_ref       : AnsiString = 'interner Fehler: TButtonControl ist nicht zugewiesen.'; export;
     sError_TButton_ref              : AnsiString = 'interner Fehler: TButton ist nicht zugewiesen.'; export;
     
+    sError_TCheckBox_ref            : AnsiString = 'interner Fehler: TCheckBox ist nicht zugewiesen.'; export;
+    sError_TRadioBox_ref            : AnsiString = 'interner Fehler: TRadioBox ist nicht zugewiesen.'; export;
+    sError_TProgressBar_ref         : AnsiString = 'interner Fehler: TProgressBar ist nicht zugewiesen.'; export;
+    
     sError_TWinControl_noWindoeHandle : AnsiString = 'interner Fehler: kein Fenster-Handle verfügbar.'; export;
     
     sError_TForm_nil: AnsiString = 'TForm ist nicht zugewiesen.'; export;
@@ -116,7 +124,11 @@ var
   sError_TCustomForm_ref            : AnsiString; external RTLDLL;
   
   sError_TButtonControl_ref         : AnsiString; external RTLDLL;
+  
   sError_TButton_ref                : AnsiString; external RTLDLL;
+  sError_TCheckBox_ref              : AnsiString; external RTLDLL;
+  sError_TRadioBox_ref              : AnsiString; external RTLDLL;
+  sError_TProgressBar_ref           : AnsiString; external RTLDLL;
   
   sError_TWinControl_noWindoeHandle : AnsiString; external RTLDLL;
   
@@ -157,6 +169,9 @@ exports
   
   sError_TButtonControl_ref         name 'sError_TButtonControl_ref',
   sError_TButton_ref                name 'sError_TButton_ref',
+  sError_TCheckBox_ref              name 'sError_TCheckBox_ref',
+  sError_TRadioBox_ref              name 'sError_TRadioBox_ref',
+  sError_TProgressBar_ref           name 'sError_TProgressBar_ref',
   
   sError_TWinControl_noWindoeHandle name 'sError_TWinControl_noWindoeHandle',
   
