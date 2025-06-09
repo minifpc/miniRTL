@@ -62,33 +62,38 @@ function pos(const needle: widestring; const haystack: widestring; offset: sizei
 function AtomicExchange(var target: integer; val: integer): integer; assembler;
 asm
   mov    eax, val
-  lock   xchg [target], eax
+  //lock   
+  xchg dword ptr [target], eax
 end;
 
 function AtomicExchange(var target: int64; val: int64): int64; assembler;
 asm
   mov    rax, val
-  lock   xchg [target], rax
+  //lock  
+  xchg qword ptr [target], rax
 end;
 
 function AtomicIncrement(var target: integer): integer; assembler;
 asm
   mov eax, 1
-  lock xadd [target], eax
+  //lock 
+  xadd dword ptr [target], eax
   inc eax
 end;
 
 function AtomicIncrement(var target: int64): int64; assembler;
 asm
   mov rax, 1
-  lock xadd [target], rax
+  //lock 
+  xadd qword ptr [target], rax
   inc rax
 end;
 
 function AtomicDecrement(var target: integer): integer; assembler;
 asm
   mov eax, -1
-  lock xadd [target], eax
+  //lock 
+  xadd dword ptr [target], eax
   dec eax
 end;
 

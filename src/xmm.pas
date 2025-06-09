@@ -148,7 +148,8 @@ function _atomic32(var target: integer; val: integer): integer; assembler; expor
 asm
   {$ifdef CPU64}
   mov    eax, val
-  lock   xchg [target], eax
+//  lock
+  xchg dword ptr [target], eax
   {$else}
   mov    eax, target
   xchg   [target], val

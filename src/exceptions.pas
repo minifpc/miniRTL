@@ -23,6 +23,7 @@ type
     Message: string;
     Code: integer;
     constructor Create(const msg: string; const errcode: integer);
+    constructor Create(const msg: string);
   end;
 
   EDivByZero       = class(Exception) end;  
@@ -82,6 +83,12 @@ constructor Exception.Create(const msg: string; const errcode: integer);
 begin
   Message := msg;
   Code := errcode;
+end;
+
+constructor Exception.Create(const msg: string);
+begin
+  Message := msg;
+  Code := 100;
 end;
 
 {$ifdef DLLIMPORT}

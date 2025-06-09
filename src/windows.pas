@@ -263,7 +263,14 @@ const
   PAGE_GUARD             = $100;
   PAGE_NOCACHE           = $200;
   PAGE_WRITECOMBINE      = $400;
-  
+
+// ---------------------------------------------------------------------------------------
+// BS - button style ...
+// ---------------------------------------------------------------------------------------
+const
+  BS_PUSHBUTTON         = $00000000;
+  BS_DEFPUSHBUTTON      = $00000001;
+
 // ---------------------------------------------------------------------------------------
 // WM_SYSCOMMAND ...
 // ---------------------------------------------------------------------------------------
@@ -383,6 +390,14 @@ const
 const
   SW_NORMAL             = 1;
 
+const
+  SWP_NOZORDER          = $0004;
+  SWP_NOMOVE            = $0002;
+  SWP_NOSIZE            = $0001;
+  SWP_NOACTIVATE        = $0010;
+  SWP_SHOWWINDOW        = $0040;
+  SWP_HIDEWINDOW        = $0080;
+  
 type
   {$ifdef CPU64}
   THandle   = NativeInt;
@@ -446,6 +461,14 @@ type
     dwExStyle: Longint;
   end;
 
+type
+  TRect = record
+    Left  : LongInt;
+    Top   : LongInt;
+    Right : LongInt;
+    Bottom: LongInt;
+  end;
+
 // ---------------------------------------------------------------------------------------
 // system display colors ...
 // ---------------------------------------------------------------------------------------
@@ -453,7 +476,7 @@ const
   COLOR_WINDOW = 5;
 
 const
-  GWLP_USERDATA     = -21;
+  GWL_USERDATA      = -21;
 
 // ---------------------------------------------------------------------------------------
 // DLL process constants ...
@@ -633,6 +656,9 @@ function GetTickCount: DWORD; stdcall; external 'kernel32.dll';
 function Beep(dwFreq, dwDuration: DWORD): BOOL; stdcall; external 'kernel32.dll';
 function MessageBoxA(hWnd: HWND; lpText, lpCaption: LPCSTR; uType: UINT): Integer; stdcall; external 'user32.dll' name 'MessageBoxA';
 function MessageBoxW(hWnd: HWND; lpText, lpCaption: LPCWSTR; uType: UINT): Integer; stdcall; external 'user32.dll' name 'MessageBoxW';
+function GetParent(hWnd: HWND): HWND; stdcall; external 'user32.dll' name 'GetParent';
+function ScreenToClient(hWnd: HWND; var lpPoint: TPoint): BOOL; stdcall; external 'user32.dll' name 'ScreenToClient';
+function GetDesktopWindow: HWND; stdcall; external 'user32.dll' name 'GetDesktopWindow';
 
 function CreateMutexA(lpMutexAttributes: LPSECURITY_ATTRIBUTES; bInitialOwner: BOOL; lpName: LPCSTR): HANDLE; stdcall; external 'kernel32.dll' name 'CreateMutexA';
 function CreateMutexW(lpMutexAttributes: LPSECURITY_ATTRIBUTES; bInitialOwner: BOOL; lpName: LPCWSTR): HANDLE; stdcall; external 'kernel32.dll' name 'CreateMutexW';
@@ -781,6 +807,10 @@ function LoWord(Value: DWORD): Word; stdcall; export;
 begin
   Result := Value and $FFFF;
 end;
+
+exports
+  LoWord name 'LoWord',
+  HiWord name 'HiWord';
 {$endif DLLEXPORT}
 
 end.

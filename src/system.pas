@@ -67,10 +67,14 @@ var
   ExitProcedureCount: Integer;
 
 {$ifdef DLLEXPORT}
+procedure AddExitProc(P: TExitProcedure); stdcall; export;
+
 function GetExitProcedureCount: Integer; stdcall; export;
 function GetExitProcedure(I: Integer): TExitProcedure; stdcall; export;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
+procedure AddExitProc(P: TExitProcedure); stdcall; external RTLDLL;
+
 function GetExitProcedureCount: Integer; stdcall; external RTLDLL;
 function GetExitProcedure(I: Integer): TExitProcedure; stdcall; external RTLDLL;
 {$endif DLLIMPORT}

@@ -31,10 +31,11 @@ function BsrQWord(const avalue: qword): cardinal; {$ifdef SYSTEMINLINE}inline;{$
 //function Sin(d: ValReal): ValReal; [internproc: fpc_in_sin_real];
 //function Cos(d: ValReal): ValReal; [internproc: fpc_in_cos_real];
 //function Exp(d: ValReal): ValReal; [internproc: fpc_in_exp_real];
-//function Round(d: ValReal): int64; [internproc: fpc_in_round_real];
+function Round(d: ValReal): int64; [internproc: fpc_in_round_real];
 //function Frac(d: ValReal): ValReal; [internproc: fpc_in_frac_real];
 //function Int(d: ValReal): ValReal; [internproc: fpc_in_int_real];
-//function Trunc(d: ValReal): int64; [internproc: fpc_in_trunc_real];
+////function IntPower(d: int64): int64; [internproc: fpc_in_pow_int64];
+function Trunc (d: ValReal): int64; [internproc: fpc_in_trunc_real];
 
 function Abs(l: LongInt): LongInt; [internproc: fpc_in_abs_long];
 
