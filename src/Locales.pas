@@ -15,32 +15,34 @@ uses global;
     sCritical   : AnsiString = 'Critical'; export;
     sError      : AnsiString = 'Error'; export;
     
-    sError_TApplication_nil      : AnsiString = 'TApplication is not allocated.';
-    sError_TApplication_ref      : AnsiString = 'internal Error: TApplication is not referenced.';
-    sError_TApplication_parseArgs: AnsiString = 'can not parse command line.';
+    sError_TApplication_nil      : AnsiString = 'TApplication is not allocated.'; export;
+    sError_TApplication_ref      : AnsiString = 'internal Error: TApplication is not referenced.'; export;
+    sError_TApplication_parseArgs: AnsiString = 'can not parse command line.'; export;
     
-    sError_Internal                 : AnsiString = 'internel error: ';
-    sError_ref                      : AnsiString = 'is not referenced.';
+    sError_Internal                 : AnsiString = 'internel error: '; export;
+    sError_ref                      : AnsiString = 'is not referenced.'; export;
     
-    sError_TPersistent_ref          : AnsiString = 'internal Error: TPersistent is not referenced.';
+    sError_TPersistent_ref          : AnsiString = 'internal Error: TPersistent is not referenced.'; export;
     
-    sError_TComponent_ref           : AnsiString = 'internal Error: TComponent is not referenced.';
-    sError_TComponent_noOwner       : AnsiString = 'TComponent missing AOwner.';
+    sError_TComponent_ref           : AnsiString = 'internal Error: TComponent is not referenced.'; exporit;
+    sError_TComponent_noOwner       : AnsiString = 'TComponent missing AOwner.'; export;
     
-    sError_TControl_ref             : AnsiString = 'internal Error: TControl is not referenced.';
-    sError_TWinControl_ref          : AnsiString = 'internal Error: TWinControl is not referenced.';
-    sError_TScrollingWinControl_ref : AnsiString = 'internal Error: TScrollingWinControl is not referenced.';
-    sError_TCustomForm_ref          : AnsiString = 'internal Error: TCustomForm is not referenced.';
+    sError_TControl_ref             : AnsiString = 'internal Error: TControl is not referenced.'; export;
+    sError_TControl_noHandle        : AnsiString = 'TControl missing handle.'; export;
     
-    sError_TButtonControl_ref       : AnsiString = 'internal Error: TButtonControl is not referenced.';
-    sError_TButton_ref              : AnsiString = 'internal Error: TButton is not referenced.';
+    sError_TWinControl_ref          : AnsiString = 'internal Error: TWinControl is not referenced.'; export;
+    sError_TScrollingWinControl_ref : AnsiString = 'internal Error: TScrollingWinControl is not referenced.'; export;
+    sError_TCustomForm_ref          : AnsiString = 'internal Error: TCustomForm is not referenced.'; export;
+    
+    sError_TButtonControl_ref       : AnsiString = 'internal Error: TButtonControl is not referenced.'; export;
+    sError_TButton_ref              : AnsiString = 'internal Error: TButton is not referenced.'; export;
 
-    sError_TWinControl_noWindoeHandle : AnsiString = 'internal Error: No Window-Handle available.';
+    sError_TWinControl_noWindoeHandle : AnsiString = 'internal Error: No Window-Handle available.'; export;
     
-    sError_TForm_nil: AnsiString = 'TForm is not allocated.';
-    sError_TForm_ref: AnsiString = 'internal Error: TForm not referenced.';
+    sError_TForm_nil: AnsiString = 'TForm is not allocated.'; export;
+    sError_TForm_ref: AnsiString = 'internal Error: TForm not referenced.'; export;
     
-    sError_AddExitProc: AnsiString = 'Too many ExitProcs registered.';
+    sError_AddExitProc: AnsiString = 'Too many ExitProcs registered.'; export;
     
     sHello      : AnsiString = 'Hello World'; export;
   {$endif LANGENU}
@@ -53,32 +55,34 @@ uses global;
     sCritical   : AnsiString = 'Kritisch'; export;
     sError      : AnsiString = 'Fehler'; export;
     
-    sError_TApplication_nil      : AnsiString = 'TApplication ist nicht zugewiesen.';
-    sError_TApplication_ref      : AnsiString = 'internal Error: TApplication ist nichtt referenziert.';
-    sError_TApplication_parseArgs: AnsiString = 'kann Kommandozeile nicht ermitteln.';
+    sError_TApplication_nil      : AnsiString = 'TApplication ist nicht zugewiesen.'; export;
+    sError_TApplication_ref      : AnsiString = 'internal Error: TApplication ist nichtt referenziert.'; export;
+    sError_TApplication_parseArgs: AnsiString = 'kann Kommandozeile nicht ermitteln.'; export;
     
-    sError_Internal                 : AnsiString = 'interner Fehler: ';
-    sError_ref                      : AnsiString = 'ist nicht zugewiesen.';
+    sError_Internal                 : AnsiString = 'interner Fehler: '; export;
+    sError_ref                      : AnsiString = 'ist nicht zugewiesen.'; export;
     
-    sError_TPersistent_ref          : AnsiString = 'interner Fehler: TPersistent ist nicht zugewiesen.';
+    sError_TPersistent_ref          : AnsiString = 'interner Fehler: TPersistent ist nicht zugewiesen.'; export;
     
-    sError_TComponent_ref           : AnsiString = 'interner Fehler: TComponent ist nicht zugewiesen.';
-    sError_TComponent_noOwner       : AnsiString = 'TComponent besitzt keinen AOwner.';
+    sError_TComponent_ref           : AnsiString = 'interner Fehler: TComponent ist nicht zugewiesen.'; export;
+    sError_TComponent_noOwner       : AnsiString = 'TComponent besitzt keinen AOwner.'; export;
     
-    sError_TControl_ref             : AnsiString = 'interner Fehler: TControl ist nicht zugewiesen.';
-    sError_TWinControl_ref          : AnsiString = 'interner Fehler: TWinControl ist nicht zugewiesen.';
-    sError_TScrollingWinControl_ref : AnsiString = 'interner Fehler: TScrollingWinControl ist nicht zugewiesen.';
-    sError_TCustomForm_ref          : AnsiString = 'interner Fehler: TCustomForm ist nicht zugewiesen.';
+    sError_TControl_ref             : AnsiString = 'interner Fehler: TControl ist nicht zugewiesen.'; export;
+    sError_TControl_noHandle        : AnsiString = 'interner Fehler: TControl kein Handle'; export;
     
-    sError_TButtonControl_ref       : AnsiString = 'interner Fehler: TButtonControl ist nicht zugewiesen.';
-    sError_TButton_ref              : AnsiString = 'interner Fehler: TButton ist nicht zugewiesen.';
+    sError_TWinControl_ref          : AnsiString = 'interner Fehler: TWinControl ist nicht zugewiesen.'; export;
+    sError_TScrollingWinControl_ref : AnsiString = 'interner Fehler: TScrollingWinControl ist nicht zugewiesen.'; export;
+    sError_TCustomForm_ref          : AnsiString = 'interner Fehler: TCustomForm ist nicht zugewiesen.'; export;
     
-    sError_TWinControl_noWindoeHandle : AnsiString = 'interner Fehler: kein Fenster-Handle verfügbar.';
+    sError_TButtonControl_ref       : AnsiString = 'interner Fehler: TButtonControl ist nicht zugewiesen.'; export;
+    sError_TButton_ref              : AnsiString = 'interner Fehler: TButton ist nicht zugewiesen.'; export;
     
-    sError_TForm_nil: AnsiString = 'TForm ist nicht zugewiesen.';
-    sError_TForm_ref: AnsiString = 'interner Fehler: TForm nicht referenziert.';
+    sError_TWinControl_noWindoeHandle : AnsiString = 'interner Fehler: kein Fenster-Handle verfügbar.'; export;
     
-    sError_AddExitProc: AnsiString = 'zu viele ExitProcs registriert.';
+    sError_TForm_nil: AnsiString = 'TForm ist nicht zugewiesen.'; export;
+    sError_TForm_ref: AnsiString = 'interner Fehler: TForm nicht referenziert.'; export;
+    
+    sError_AddExitProc: AnsiString = 'zu viele ExitProcs registriert.'; export;
     
     sHello      : AnsiString = 'Hallo Welt'; export;
   {$endif LANGDEU}
@@ -105,6 +109,8 @@ var
   sError_TComponent_noOwner         : AnsiString; external RTLDLL;
   
   sError_TControl_ref               : AnsiString; external RTLDLL;
+  sError_TControl_noHandle          : AnsiString; external RTLDLL;
+  
   sError_TWinControl_ref            : AnsiString; external RTLDLL;
   sError_TScrollingWinControl_ref   : AnsiString; external RTLDLL;
   sError_TCustomForm_ref            : AnsiString; external RTLDLL;
@@ -143,6 +149,8 @@ exports
   sError_TComponent_noOwner         name 'sError_TComponent_noOwner',
   
   sError_TControl_ref               name 'sError_TControl_ref',
+  sError_TControl_noHandle          name 'sError_TControl_noHandle',
+  
   sError_TWinControl_ref            name 'sError_TWinControl_ref',
   sError_TScrollingWinControl_ref   name 'sError_TScrollingWinControl_ref',
   sError_TCustomForm_ref            name 'sError_TCustomForm_ref',

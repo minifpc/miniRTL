@@ -101,6 +101,7 @@ type
   /// </type>
   // ---------------------------------------------------------------------------------------
   TComponentClass = class of TComponent;
+  TWinControl     = class;
   TControl        = class;
   TForm           = class;
   
@@ -174,8 +175,9 @@ type
   
   TComponent = class(TPersistent)
   private
+    FHandle: HWND;
+    FWinControl: TWinControl;
     FArray: array of TComponent;
-    FControl: TControl;
     FOwner: TComponent;
     FIndex: Integer;
     FTag: NativeInt;
@@ -187,6 +189,7 @@ type
     
     procedure SetComponentIndex(AValue: Integer);
     procedure SetComponentOwner(AOwner: TComponent);
+    procedure SetComponentHandle(AHandle: HWND);
   public
     constructor Create(AOwner: TComponent); virtual;
     destructor Destroy; override;
@@ -197,6 +200,7 @@ type
     property ComponentIndex: Integer read GetComponentIndex write SetComponentIndex;
     property Components[I: Integer]: TComponent read GetComponent;
     property Owner: TComponent read FOwner;
+    property Handle: HWND read FHandle;
     property Tag: NativeInt read FTag write FTag default 0;
   end;
 
@@ -216,6 +220,11 @@ type
     procedure SetClientHeight(AValue: Integer);
     procedure SetClientWidth (AValue: Integer);
     
+    procedure SetControlHeight(AValue: Integer);
+    procedure SetControlLeft  (AValue: Integer);
+    procedure SetControlTop   (AValue: Integer);
+    procedure SetControlWidth (AValue: Integer);
+    
     procedure SetAlign(AValue: TAlign);
   public
     constructor Create(AOwner: TComponent);
@@ -223,16 +232,16 @@ type
     
     class function ClassName: String; stdcall; virtual;
   published
-    property Align: TAlign read FAlign write SetAlign default alNone;
-    property Height: Integer read FHeight write FHeight;
-    property Left: Integer read FLeft write FLeft;
-    property Top: Integer read FTop write FTop;
-    property Width: Integer read FWidth write FWidth;
+    property Align  : TAlign  read FAlign   write SetAlign default alNone;
+    property Height : Integer read FHeight  write SetControlHeight;
+    property Left   : Integer read FLeft    write SetControlLeft;
+    property Top    : Integer read FTop     write SetControlTop;
+    property Width  : Integer read FWidth   write SetControlWidth;
+    property Handle;
   end;
 
   TWinControl = class(TControl)
   private
-    FHandle: HWND;
     class function WndProcStatic(hWnd: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; static;
     function WndProc(hWnd: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
   protected
@@ -244,23 +253,27 @@ type
     
     class function ClassName: String; stdcall; virtual;
   published
-    property Handle: HWND read FHandle;
+    property Handle;
   end;
   
   TScrollingWinControl = class(TWinControl)
   public
-    constructor Create;
+    constructor Create(AOwner: TComponent);
     destructor Destroy; override;
     
     class function ClassName: String; stdcall; virtual;
+  published
+    property Handle;
   end;
   
   TCustomForm = class(TScrollingWinControl)
   public
-    constructor Create;
+    constructor Create(p: TForm);
     destructor Destroy; override;
     
     class function ClassName: String; stdcall; virtual;
+  published
+    property Handle;
   end;
 
   TForm = class(TCustomForm)
@@ -273,6 +286,8 @@ type
     procedure ShowModal;
     procedure Show(modal: Boolean); overload;
     procedure Show; overload;
+  published
+    property Handle;
   end;
 
   TButtonControl = class(TWinControl)
@@ -319,12 +334,16 @@ procedure TComponent_SetComponentIndex  (p: TComponent ; AValue: Integer    );  
 procedure TComponent_SetComponentOwner  (p: TComponent ; AOwner: TComponent );     stdcall; export;
 // ---------------------------------------------------------------------------------------
 function  TControl_Create               (p: TControl   ; AOwner: TComponent): TControl;             stdcall; export;
+procedure TControl_SetControlHeight     (p: TControl   ; AValue: Integer); stdcall; export;
+procedure TControl_SetControlLeft       (p: TControl   ; AValue: Integer); stdcall; export;
+procedure TControl_SetControlTop        (p: TControl   ; AValue: Integer); stdcall; export;
+procedure TControl_SetControlWidth      (p: TControl   ; AValue: Integer); stdcall; export;
 // ---------------------------------------------------------------------------------------
 function  TWinControl_Create            (p: TWinControl; AOwner: TComponent): TWinControl;          stdcall; export;
-procedure TWinControl_CreateHandle      (p: TWinControl         );                       stdcall; export;
+procedure TWinControl_CreateHandle      (p: TWinControl           );                       stdcall; export;
 
-function  TScrollingWinControl_Create   (p: TScrollingWinControl): TScrollingWinControl; stdcall; export;
-function  TCustomForm_Create            (p: TCustomForm         ): TCustomForm;          stdcall; export;
+function  TScrollingWinControl_Create   (p: TScrollingWinControl  ): TScrollingWinControl; stdcall; export;
+function  TCustomForm_Create            (p: TCustomForm; f: TForm ): TCustomForm;          stdcall; export;
 // ---------------------------------------------------------------------------------------
 function  TButtonControl_Create         (p: TButtonControl; AOwner: TComponent ): TButtonControl;       stdcall; export;
 function  TButton_Create                (p: TButton       ; AOwner: TComponent ): TButton;              stdcall; export;
@@ -375,13 +394,18 @@ procedure TApplication_Initialize      (p: TApplication             );          
 // ---------------------------------------------------------------------------------------
 function  TPersistent_Create           (p: TPersistent             ): TPersistent;          stdcall; external RTLDLL;
 function  TComponent_Create            (p: TComponent ; AOwner: TComponent): TComponent;    stdcall; external RTLDLL;
+// ---------------------------------------------------------------------------------------
 function  TControl_Create              (p: TControl   ; AOwner: TComponent): TControl;      stdcall; external RTLDLL;
-
+procedure TControl_SetControlHeight    (p: TControl   ; AValue: Integer); stdcall; external RTLDLL;
+procedure TControl_SetControlLeft      (p: TControl   ; AValue: Integer); stdcall; external RTLDLL;
+procedure TControl_SetControlTop       (p: TControl   ; AValue: Integer); stdcall; external RTLDLL;
+procedure TControl_SetControlWidth     (p: TControl   ; AValue: Integer); stdcall; external RTLDLL;
+// ---------------------------------------------------------------------------------------
 function  TWinControl_Create           (p: TWinControl; AOwner: TComponent): TWinControl;   stdcall; external RTLDLL;
 procedure TWinControl_CreateHandle     (p: TWinControl             );                       stdcall; external RTLDLL;
 
 function  TScrollingWinControl_Create  (p: TScrollingWinControl    ): TScrollingWinControl; stdcall; external RTLDLL;
-function  TCustomForm_Create           (p: TCustomForm             ): TCustomForm;          stdcall; external RTLDLL;
+function  TCustomForm_Create           (p: TCustomForm; f: TForm   ): TCustomForm;          stdcall; external RTLDLL;
 // ---------------------------------------------------------------------------------------
 procedure TPersistent_Destroy          (p: TPersistent          ); stdcall; external RTLDLL;
 procedure TComponent_Destroy           (p: TComponent           ); stdcall; external RTLDLL;
@@ -425,13 +449,12 @@ function HitTestToStr(ht: Integer): string; stdcall; external RTLDLL;
 
 implementation
 
-procedure fpc_do_exit; external name 'FPC_DO_EXIT';
-
-{$ifdef DLLEXPORT}
 var
   CLASS_NAME: AnsiString;
 
+procedure fpc_do_exit; external name 'FPC_DO_EXIT';
 
+{$ifdef DLLEXPORT}
 function TApplication_Create2(p: TApplication; ArgCount: Integer; Args: PPChar): TApplication; stdcall; export;
 begin
   {$ifdef DLLDEBUG}
@@ -440,7 +463,6 @@ begin
   
   if not Assigned(p) then
   begin
-  showmessage('pppppoooooooooo');
     ShowError(sError_TApplication_ref);
     Exit(nil);
   end;
@@ -493,7 +515,6 @@ begin
   
   if Application = nil then
   begin
-  showmessage('destroyyer');
     ShowError(sError_TApplication_ref);
     Exit;
   end;
@@ -510,6 +531,8 @@ begin
   end;
 end;
 procedure TApplication_CreateForm(p: TApplication; InstanceClass: TComponentClass; out Referenz ); stdcall;
+var
+  WndClass: TWndClassExA;
 begin
   {$ifdef DLLDEBUG}
   writeln('TApplication: CreateForm');
@@ -517,14 +540,47 @@ begin
   
   if not Assigned(Application) then
   begin
-    showmessage('AAAAAAaaaaaa');
     ShowError(sError_TApplication_ref);
     Exit;
   end;
 
-  TForm(Referenz) := TForm(InstanceClass.Create);
-  Application.FAppForm := TForm(Referenz);
-  writeln('vvvvvvvvvvvvvvvvvv oooooooooooooo');
+  writeln('------> ' + TForm(InstanceClass).ClassName);
+
+  TForm(Referenz) := TForm(InstanceClass).Create;
+writeln('-------------------------------------');
+  if not Assigned(Application.FAppForm) then
+  begin
+    ShowError(sError_TApplication_ref);
+    halt(2);
+  end;
+  
+  TForm(Referenz).FHandle := 0;
+  //TForm(Referenz).ööööööööö
+  
+  CLASS_NAME := PAnsiChar('MyWindowClass');
+  
+  FillChar(WndClass, sizeof(WndClass), 0);
+  WndClass.cbSize          := sizeof(WndClass);
+  WndClass.style           := CS_HREDRAW or CS_VREDRAW;
+  //WndClass.lpfnWndProc     := @WndProcStatic;
+  WndClass.cbClsExtra      := 0;
+  WndClass.cbWndExtra      := 0;
+  WndClass.hInstance       := hInstanceDLL;
+  WndClass.hIcon           := LoadIconA  (0, PAnsiChar(32512));
+  WndClass.hCursor         := LoadCursorA(0, PAnsiChar(32512));
+  WndClass.hbrBackground   := HBRUSH(COLOR_WINDOW + 1);
+  WndClass.lpszMenuName    := nil;
+  WndClass.lpszClassName   := PAnsiChar(CLASS_NAME);
+  WndClass.hIconSm         := WndClass.hIcon;
+
+  //if not GetClassInfoExA(hInstanceDLL, WndClass.lpszClassName, @WndClass) then
+  begin
+    if RegisterClassExA(@WndClass) = 0 then
+    begin
+      writeln('DLL error: ' + IntToStr(GetLastError));
+      Halt(2);
+    end;
+  end;
 end;
 function TApplication_Run2(p: TApplication; form: TForm): Integer; stdcall; export;
 begin
@@ -534,7 +590,6 @@ begin
   
   if p = nil then
   begin
-  showMessage('AAAAAA');
     ShowError(sError_TApplication_ref);
     Exit(1);
   end;
@@ -544,7 +599,6 @@ begin
     ShowError(sError_TForm_nil);
     Exit(1);
   end;
-  writeln('öööö ööö ööö');
   form.ShowModal;
   writeln('TApplication: after show modal');
 end;
@@ -552,7 +606,6 @@ function TApplication_Run1(p: TApplication): Integer; stdcall; export;
 begin
   if not Assigned(Application) then
   begin
-  showMessage('AAAAAA CCCC');
     ShowError(sError_TApplication_ref);
     Exit(1);
   end;
@@ -613,16 +666,6 @@ begin
     exit;
   end;
   
-//  p.SetComponentOwner(AOwner);
-  if AOwner = nil then
-  begin
-  writeln('owner: nil');
-    if p.GetComponentOwner = nil then
-    AOwner := TComponent.Create(p);
-    p.SetComponentOwner(AOwner);
-  writeln('owner: ok');
-  end;
-  
   result := p;
 end;
 
@@ -681,6 +724,7 @@ begin
     ShowError(sError_TComponent_noOwner);
     exit;
   end;
+  
   p.FOwner := AOwner;
 end;
 
@@ -723,7 +767,6 @@ function TControl_GetClientWidth(p: TControl): Integer; stdcall; export;
 begin
   Exit(p.FClientWidth);
 end;
-
 procedure TControl_SetClientHeight(p: TControl; AValue: Integer); stdcall; export;
 begin
   p.FClientHeight := AValue;
@@ -732,10 +775,127 @@ procedure TControl_SetClientWidth(p: TControl; AValue: Integer); stdcall; export
 begin
   p.FClientWidth := AValue;
 end;
-
 procedure TControl_SetAlign(p: TControl; AValue: TAlign); stdcall; export;
 begin
   p.FAlign := AValue;
+end;
+procedure TControl_check(p: TControl);
+begin
+  if not Assigned(p) then
+  begin
+    ShowError(sError_TControl_ref);
+    halt(2);
+  end;
+end;
+procedure TControl_SetControlHeight(p: TControl; AValue: Integer); stdcall; export;
+var
+  windowID: HWND;
+  r: Rect;
+  pt: Point;
+begin
+  TControl_check(p);
+  GetWindowRect(p.FHandle, r);
+  
+  pt.x := p.Left;
+  pt.y := p.Top;
+  
+  // Bildschirmkoordinaten in Clientkoordinaten umrechnen
+  ScreenToClient(p.FHandle, pt);
+  
+  // Höhe setzen auf Pixel, Breite bleibt gleich
+  SetWindowPos(
+    p.FHandle, 0,
+    p.FLeft,
+    p.FTop,
+    p.FWidth - p.Left,
+    AValue,
+    SWP_NOZORDER or SWP_NOACTIVATE
+  );
+  //p.Height := AValue;
+end;
+procedure TControl_SetControlLeft(p: TControl; AValue: Integer); stdcall; export;
+var
+  windowID: HWND;
+  r: Rect;
+  pt: Point;
+begin
+  TControl_check(p);
+  GetWindowRect(p.FHandle, r);
+  
+  pt.x := p.Left;
+  pt.y := p.Top;
+  
+  p.FLeft := AValue;
+  
+  // Bildschirmkoordinaten in Clientkoordinaten umrechnen
+  ScreenToClient(p.FHandle, pt);
+  
+  // Position ändern, Breite und Höhe beibehalten
+  SetWindowPos(
+    p.FHandle, 0,
+    AValue,
+    p.Top,
+    p.FWidth  - p.FLeft,
+    p.FHeight - p.FTop,
+    SWP_NOZORDER or SWP_NOACTIVATE
+  );
+  //p.Left := AValue;
+end;
+procedure TControl_SetControlTop(p: TControl; AValue: Integer); stdcall; export;
+var
+  windowID: HWND;
+  r: Rect;
+  pt: Point;
+begin
+  TControl_check(p);
+  GetWindowRect(p.FHandle, r);
+
+  pt.x   := p.Left;
+  pt.y   := AValue;
+
+  p.FTop := AValue;
+  
+  // Bildschirmkoordinaten in Clientkoordinaten umrechnen
+  ScreenToClient(p.FHandle, pt);
+
+  if not SetWindowPos(
+    p.FHandle, 0,
+    p.Left,
+    AValue,
+    p.FWidth  - p.Left,
+    p.FHeight - p.Top,
+    SWP_NOZORDER or SWP_NOACTIVATE) then begin
+    writeln('no change22');
+    halt(2);
+  end;
+  //p.Top := AValue;
+end;
+procedure TControl_SetControlWidth(p: TControl; AValue: Integer); stdcall; export;
+var
+  windowID: HWND;
+  r: Rect;
+  pt: Point;
+begin
+  TControl_check(p);
+  GetWindowRect(p.FHandle, r);
+  
+  pt.x := p.Left;
+  pt.y := p.Top;
+  
+  p.FWidth := AValue;
+  
+  // Bildschirmkoordinaten in Clientkoordinaten umrechnen
+  ScreenToClient(GetParent(windowID), pt);
+  
+  SetWindowPos(
+    p.FHandle, 0,
+    p.Left,
+    p.Top,
+    AValue,
+    r.Bottom - r.Top,
+    SWP_NOZORDER or SWP_NOACTIVATE
+  );
+  //p.Width := AValue;
 end;
 
 
@@ -755,85 +915,37 @@ begin
     ShowError(sError_TWinControl_ref);
     exit(nil);
   end;
-  
-  CLASS_NAME := PAnsiChar('MyWindowClass');
-  
-  FillChar(WndClass, sizeof(WndClass), 0);
-  WndClass.cbSize          := sizeof(WndClass);
-  WndClass.style           := CS_HREDRAW or CS_VREDRAW;
-  WndClass.lpfnWndProc     := @p.WndProcStatic;
-  WndClass.cbClsExtra      := 0;
-  WndClass.cbWndExtra      := 0;
-  WndClass.hInstance       := hInstanceDLL;
-  WndClass.hIcon           := LoadIconA  (0, PAnsiChar(32512));
-  WndClass.hCursor         := LoadCursorA(0, PAnsiChar(32512));
-  WndClass.hbrBackground   := HBRUSH(COLOR_WINDOW + 1);
-  WndClass.lpszMenuName    := nil;
-  WndClass.lpszClassName   := PAnsiChar(CLASS_NAME);
-  WndClass.hIconSm         := WndClass.hIcon;
-
-  if GetClassInfoExA(hInstanceDLL, WndClass.lpszClassName, @WndClass) = True then
-  begin
-    writeln('GetClass error: ' + IntToStr(GetLastError));
-    writeln('ClassInfo: ' + IntToStr(GetLastError));
-    UnregisterClassA(WndClass.lpszClassName, hInstanceDLL);
-    writeln('UnRegClass error: ' + IntToStr(GetLastError));
-  end;
-
-  if RegisterClassExA(@WndClass) = 0 then
-  begin
-    writeln('DLL error: ' + IntToStr(GetLastError));
-    Halt(2);
-  end;
-
-  if AOwner = nil then
-  begin
-    {$ifdef DLLDEBUG}
-    writeln('AOwner: nil in ' + p.ClassName);
-    {$endif DLLDEBUG}
-    halt(2);
-  end;
-    
-  tc := TComponent.Create(nil);
-  p.SetComponentOwner(tc);
-  
-  
-  
-  //p.SetComponentOwner(AOwner);
   result := p;
 end;
 
 procedure TWinControl_CreateHandle(p: TWinControl);
 var
   WndClass: TWndClassExA;
-  //FHandle: HWND;
 begin
   if p.FHandle = 0 then
   begin
-    ShowError(sError_TWinControl_noWindoeHandle);
-    Halt(1);
-  end;
-  writeln('CREATE HANDLE');
-  p.FHandle := CreateWindowExA(
-    WS_EX_CLIENTEDGE,
-    PAnsiChar(CLASS_NAME),
-    'AppName',
-    ws_Overlapped   or
-    ws_SysMenu      or
-    ws_MinimizeBox  or
-    ws_ClipSiblings or
-    ws_ClipChildren or
-    ws_Visible,
-    50, 50,
-    400, 300,
-    0, 0,
-    hInstanceDLL, nil
-  );
+    writeln('CREATE HANDLE');
+    p.FHandle := CreateWindowExA(
+      WS_EX_CLIENTEDGE,
+      PAnsiChar(CLASS_NAME),
+      'AppName',
+      ws_Overlapped   or
+      ws_SysMenu      or
+      ws_MinimizeBox  or
+      ws_ClipSiblings or
+      ws_ClipChildren or
+      ws_Visible,
+      50, 50,
+      400, 300,
+      0, 0,
+      hInstanceDLL, nil
+    );
   
-  if p.FHandle = 0 then
-  begin
-    ShowError(sError_TWinControl_noWindoeHandle);
-    Halt(1);
+    if p.FHandle = 0 then
+    begin
+      ShowError(sError_TWinControl_noWindoeHandle);
+      Halt(1);
+    end;
   end;
 end;
 
@@ -922,7 +1034,10 @@ end;
 
 { TCustomForm }
 
-function TCustomForm_Create(p: TCustomForm): TCustomForm; stdcall; export;
+function TCustomForm_Create(p: TCustomForm; f: TForm): TCustomForm; stdcall; export;
+var
+  WndClass: TWndClassExA;
+  FHandle: HWND;
 begin
   {$ifdef DLLDEBUG}
   writeln('TCustomForm: Create');
@@ -956,20 +1071,13 @@ end;
 function TForm_Create(p: TForm): HWND; stdcall; export;
 var
   WndClass: TWndClassExA;
-  FHandle: HWND;
 begin
   {$ifdef DLLDEBUG}
   writeln('TForm: Create');
   {$endif DLLDEBUG}
-  
-  if p = nil then
-  begin
-    ShowError(sError_TForm_ref);
-    exit;
-  end;
-  
+
   CLASS_NAME := PAnsiChar('MyWindowClass');
-  
+
   FillChar(WndClass, sizeof(WndClass), 0);
   WndClass.cbSize          := sizeof(WndClass);
   WndClass.style           := CS_HREDRAW or CS_VREDRAW;
@@ -981,27 +1089,22 @@ begin
   WndClass.hCursor         := LoadCursorA(0, PAnsiChar(32512));
   WndClass.hbrBackground   := HBRUSH(COLOR_WINDOW + 1);
   WndClass.lpszMenuName    := nil;
-  WndClass.lpszClassName   := PAnsiChar(CLASS_NAME);
+  WndClass.lpszClassName   := LPCSTR('MyWindowClass');
   WndClass.hIconSm         := WndClass.hIcon;
 
-  if GetClassInfoExA(hInstanceDLL, PChar(CLASS_NAME), @WndClass) = True then
+  if not GetClassInfoExA(hInstanceDLL, LPCSTR('MyWindowClass'), @WndClass) then
   begin
-    writeln('GetClass error: ' + IntToStr(GetLastError));
-    writeln('ClassInfo: ' + IntToStr(GetLastError));
-    UnregisterClassA(WndClass.lpszClassName, hInstanceDLL);
-    writeln('UnRegClass error: ' + IntToStr(GetLastError));
+    if RegisterClassExA(@WndClass) = 0 then
+    begin
+      writeln('class register error: ' + IntToStr(GetLastError));
+      Halt(2);
+    end;
   end;
 
-  if RegisterClassExA(@WndClass) = 0 then
-  begin
-    writeln('DLL error: ' + IntToStr(GetLastError));
-    Halt(2);
-  end;
-
-  FHandle := CreateWindowExA(
-    WS_EX_CLIENTEDGE,
-    PAnsiChar(CLASS_NAME),
-    'AppName',
+  p.FHandle := CreateWindowExA(
+    0,
+    LPCSTR('MyWindowClass'),
+    LPCSTR('AppName'),
     ws_Overlapped   or
     ws_SysMenu      or
     ws_MinimizeBox  or
@@ -1010,20 +1113,12 @@ begin
     ws_Visible,
     50, 50,
     400, 300,
-    0, 0,
-    hInstanceDLL, nil
+    GetDesktopWindow,
+    0, hInstanceDLL, nil
   );
-
-  if FHandle = 0 then
-  begin
-    ShowError(sError_TWinControl_noWindoeHandle);
-    Halt(1);
-  end;
+  writeln('ok: ' + inttostr(p.FHandle));
   
-  ShowWindow  (FHandle, SW_NORMAL);
-  UpdateWindow(FHandle);
-  
-  result := FHandle;
+  result := p.FHandle;
 end;
 
 procedure TForm_Destroy(p: TForm); stdcall; export;
@@ -1055,7 +1150,6 @@ end;
 procedure TForm_ShowModal(p: TForm); stdcall; export;
 var
   _msg: TMsg;
-  hw: HWND;
 begin
   {$ifdef DLLDEBUG}
   writeln('TForm: ShowModal');
@@ -1067,13 +1161,11 @@ begin
     halt(2);
   end;
   
-  hw := TForm_Create(p);
-    
   while GetMessageA(_msg, 0, 0, 0) do
   begin
     TranslateMessage(_msg);
     DispatchMessageA(_msg);
-    if p.WndProc(hw, _msg.Message, _msg.wParam, _msg.lParam) = -100 then break;
+    if p.WndProc(p.Handle, _msg.Message, _msg.wParam, _msg.lParam) = -100 then break;
   end;
   Application.Free;
 end;
@@ -1091,6 +1183,8 @@ end;
 { TButtonControl }
 
 function TButtonControl_Create(p: TButtonControl; AOwner: TComponent): TButtonControl;
+var
+  winid: HWND;
 begin
   {$ifdef DLLDEBUG}
   writeln('TButtonControl: Create');
@@ -1102,13 +1196,18 @@ begin
     exit;
   end;
 
-  writeln('676767');
-  p.FHandle := CreateWindowExA(
-    0, 'BUTTON', 'Click Me',
-    WS_CHILD or WS_VISIBLE or BS_DEFPUSHBUTTON,
-    50, 50, 150, 30,
-    p.FHandle, 0, hInstanceDLL, nil);
+  if not Assigned(AOwner) then
+  begin
+    ShowError(sError_TComponent_ref);
+    halt(2);
+  end;
 
+  if AOwner.FHandle = 0 then
+  begin
+    ShowError(sError_TWinControl_noWindoeHandle);
+    Halt(2);
+  end;
+  
   result := p;
 end;
 
@@ -1123,6 +1222,8 @@ end;
 { TButton }
 
 function TButton_Create(p: TButton; AOwner: TComponent): TButton;
+var
+  FHandle: HWND;
 begin
   {$ifdef DLLDEBUG}
   writeln('TButton: Create');
@@ -1133,6 +1234,13 @@ begin
     ShowError(sError_TButton_ref);
     exit;
   end;
+
+  p.FHandle := CreateWindowExA(
+  0, 'BUTTON', 'Click Me',
+  WS_CHILD or WS_VISIBLE or BS_DEFPUSHBUTTON,
+  50, 50, 150, 30,
+  AOwner.FHandle, 0,
+  hInstanceDLL, nil);
   
   result := p;
 end;
@@ -1160,7 +1268,7 @@ begin
 end;
 procedure TApplication.CreateForm(InstanceClass: TComponentClass; out Referenz); stdcall;
 begin
-  inherited Create;
+  //inherited Create;
   TApplication_CreateForm(self, InstanceClass, Referenz);
 end;
 constructor TApplication.Create;
@@ -1191,7 +1299,6 @@ begin
 end;
 function TApplication.Run: Integer; stdcall;
 begin
-writeln('AAAAA BBBBB CCCC');
   TApplication_Run1(self);
   //TApplication_Run2(self, FAppForm);
 end;
@@ -1228,40 +1335,37 @@ begin
   TComponent_Destroy(self);
   inherited Destroy;
 end;
-
 class function TComponent.ClassName: String; stdcall;
 begin
   result := 'TComponent';
 end;
-
 function TComponent.GetComponentCount: Integer;
 begin
   result := TComponent_GetComponentCount(self);
 end;
-
 function TComponent.GetComponentIndex: Integer;
 begin
   Exit(TComponent_GetComponentIndex(self));
 end;
-
 function TComponent.GetComponent(I: Integer): TComponent;
 begin
   Exit(TComponent_GetComponent(self, I));
 end;
-
 function TComponent.GetComponentOwner: TComponent;
 begin
   result := TComponent_GetComponentOwner(self, Owner);
 end;
-
 procedure TComponent.SetComponentIndex(AValue: Integer);
 begin
   TComponent_SetComponentIndex(self, AValue);
 end;
-
 procedure TComponent.SetComponentOwner(AOwner: TComponent);
 begin
   TComponent_SetComponentOwner(self, AOwner);
+end;
+procedure TComponent.SetComponentHandle(AHandle: HWND);
+begin
+  FHandle := AHandle;
 end;
 
 
@@ -1277,12 +1381,10 @@ begin
   TControl_Destroy(self);
   inherited Destroy;
 end;
-
 class function TControl.ClassName: String; stdcall;
 begin
   result := 'TControl';
 end;
-
 function TControl.GetClientHeight: Integer;
 begin
   Exit(TControl_GetClientHeight(self));
@@ -1291,7 +1393,6 @@ function TControl.GetClientWidth: Integer;
 begin
   Exit(TControl_GetClientWidth(self));
 end;
-
 procedure TControl.SetClientHeight(AValue: Integer);
 begin
   TControl_SetClientHeight(self, AValue);
@@ -1300,20 +1401,20 @@ procedure TControl.SetClientWidth(AValue: Integer);
 begin
   TControl_SetClientWidth(self, AValue);
 end;
-
 procedure TControl.SetAlign(AValue: TAlign);
 begin
   TControl_SetAlign(self, AValue);
 end;
-
+procedure TControl.SetControlHeight(AValue: Integer); begin TControl_SetControlHeight(self, AValue); end;
+procedure TControl.SetControlLeft  (AValue: Integer); begin TControl_SetControlLeft  (self, AValue); end;
+procedure TControl.SetControlTop   (AValue: Integer); begin TControl_SetControlTop   (self, AValue); end;
+procedure TControl.SetControlWidth (AValue: Integer); begin TControl_SetControlWidth (self, AValue); end;
 
 { TWinControl }
 
 constructor TWinControl.Create(AOwner: TComponent);
 begin
-  //inherited Create(AOwner);
-  FHandle := HWND(0);
-  writeln('oooooooooooooooooooooooooo');
+  inherited Create(AOwner);
   TWinControl_Create(self, AOwner);
 end;
 destructor TWinControl.Destroy;
@@ -1394,9 +1495,9 @@ end;
 
 { TScrollingWinControl }
 
-constructor TScrollingWinControl.Create;
+constructor TScrollingWinControl.Create(AOwner: TComponent);
 begin
-  inherited Create(nil);  // todo
+  inherited Create(AOwner);  // todo
   TScrollingWinControl_Create(self);
 end;
 destructor TScrollingWinControl.Destroy;
@@ -1413,10 +1514,10 @@ end;
 
 { TCustomForm }
 
-constructor TCustomForm.Create;
+constructor TCustomForm.Create(p: TForm);
 begin
-  inherited Create;
-  TCustomForm_Create(self);
+  inherited Create(self);
+  TCustomForm_Create(self, p);
 end;
 
 destructor TCustomForm.Destroy;
@@ -1435,34 +1536,25 @@ end;
 
 constructor TForm.Create;
 begin
-  inherited Create;
-  writeln('lllllllllllllllllll');
-  FHandle := HWND(0);
-  TForm_Create(self);
+  FHandle := TForm_Create(self);
 end;
-
 destructor TForm.Destroy;
 begin
   TForm_Destroy(self);
   inherited Destroy;
 end;
-
 class function TForm.ClassName: String; stdcall;
 begin
   result := 'TForm';
 end;
-
-
 procedure TForm.Show;
 begin
   TForm_Show(self);
 end;
-
 procedure TForm.ShowModal;
 begin
   TForm_ShowModal(self);
 end;
-
 procedure TForm.Show(modal: Boolean);
 begin
   TForm_ShowBool(self, modal);
@@ -1470,12 +1562,11 @@ end;
 
 
 { TButtonControl }
+
 constructor TButtonControl.Create(AOwner: TComponent);
 begin
-  
-  writeln('1 1 1 1 1 1');
-  inherited Create(nil);  // todo
-  CreateHandle;
+  inherited Create(AOwner);  // todo
+  //CreateHandle;
   TButtonControl_Create(self, AOwner);
 end;
 
@@ -1494,12 +1585,8 @@ end;
 { TButton }
 
 constructor TButton.Create(AOwner: TComponent);
-var
-  btn: TButtonControl;
 begin
-writeln('button create');
   inherited Create(AOwner);
-  btn := TButtonControl.Create(AOwner);
   TButton_Create(self, AOwner);
 end;
 
@@ -1552,6 +1639,11 @@ exports
   TControl_GetClientHeight          name 'TControl_GetClientHeight',
   TControl_SetClientWidth           name 'TControl_SetClientWidth',
   TControl_SetClientHeight          name 'TControl_SetClientHeight',
+  //
+  TControl_SetControlHeight         name 'TControl_SetControlHeight',
+  TControl_SetControlLeft           name 'TControl_SetControlLeft',
+  TControl_SetControlTop            name 'TControl_SetControlTop',
+  TControl_SetControlWidth          name 'TControl_SetControlWidth',
   //
   TControl_SetAlign                 name 'TControl_SetAlign',
   

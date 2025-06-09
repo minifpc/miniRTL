@@ -52,9 +52,9 @@ procedure ShowError    (msg: PChar); overload; stdcall; external RTLDLL name 'Sh
 
 procedure ShowMessage  (msg: AnsiString); overload; stdcall; external RTLDLL name 'ShowMessage_AnsoString';
 procedure ShowInfo     (msg: AnsiString); overload; stdcall; external RTLDLL name 'ShowInfo_AnsoString';
-procedure ShowWarning  (msg: AnsiString); overload; stdcall; external RTLDLL name 'ShowWarning_AnsoString';
-procedure ShowCritical (msg: AnsiString); overload; stdcall; external RTLDLL name 'ShowCritical_AnsoString';
-procedure ShowError    (msg: AnsiString); overload; stdcall; external RTLDLL name 'ShowError_AnsoString';
+procedure ShowWarning  (msg: AnsiString); overload; stdcall; external RTLDLL name 'ShowWarning_AnsiString';
+procedure ShowCritical (msg: AnsiString); overload; stdcall; external RTLDLL name 'ShowCritical_AnsiString';
+procedure ShowError    (msg: AnsiString); overload; stdcall; external RTLDLL name 'ShowError_AnsiString';
 {$endif DLLIMPORT}
 
 implementation
