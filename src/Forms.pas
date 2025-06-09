@@ -305,6 +305,30 @@ type
     
     class function ClassName: String; stdcall; virtual;
   end;
+  
+  TCheckBox = class(TWinControl)
+  public
+    constructor Create(AOwner: TComponent);
+    destructor Destroy; override;
+    
+    class function ClassName: String; stdcall; virtual;
+  end;
+
+  TRadioBox = class(TWinControl)
+  public
+    constructor Create(AOwner: TComponent);
+    destructor Destroy; override;
+    
+    class function ClassName: String; stdcall; virtual;
+  end;
+  
+  TProgressBar = class(TWinControl)
+  public
+    constructor Create(AOwner: TComponent);
+    destructor Destroy; override;
+    
+    class function ClassName: String; stdcall; virtual;
+  end;
 
 // ---------------------------------------------------------------------------------------
 // the internal "export" function's and procedure's ...
@@ -345,8 +369,11 @@ procedure TWinControl_CreateHandle      (p: TWinControl           );            
 function  TScrollingWinControl_Create   (p: TScrollingWinControl  ): TScrollingWinControl; stdcall; export;
 function  TCustomForm_Create            (p: TCustomForm; f: TForm ): TCustomForm;          stdcall; export;
 // ---------------------------------------------------------------------------------------
-function  TButtonControl_Create         (p: TButtonControl; AOwner: TComponent ): TButtonControl;       stdcall; export;
-function  TButton_Create                (p: TButton       ; AOwner: TComponent ): TButton;              stdcall; export;
+function  TButtonControl_Create         (p: TButtonControl; AOwner: TComponent ): TButtonControl;   stdcall; export;
+function  TButton_Create                (p: TButton       ; AOwner: TComponent ): TButton;          stdcall; export;
+function  TCheckBox_Create              (p: TCheckBox     ; AOwner: TComponent ): TCheckBox;        stdcall; export;
+function  TRadioBox_Create              (p: TRadioBox     ; AOwner: TComponent ): TRadioBox;        stdcall; export;
+function  TProgressBar_Create           (p: TProgressBar  ; AOwner: TComponent ): TProgressBar;     stdcall; export;
 // ---------------------------------------------------------------------------------------
 procedure TPersistent_Destroy           (p: TPersistent         ); stdcall; export;
 procedure TControl_Destroy              (p: TControl            ); stdcall; export;
@@ -357,6 +384,9 @@ procedure TCustomForm_Destroy           (p: TCustomForm         ); stdcall; expo
 // ---------------------------------------------------------------------------------------
 procedure TButtonControl_Destroy        (p: TButtonControl      ); stdcall; export;
 procedure TButton_Destroy               (p: TButton             ); stdcall; export;
+procedure TCheckBox_Destroy             (p: TCheckBox           ); stdcall; export;
+procedure TRadioBox_Destroy             (p: TRadioBox           ); stdcall; export;
+procedure TProgressBar_Destroy          (p: TProgressBar        ); stdcall; export;
 // ---------------------------------------------------------------------------------------
 function  TControl_GetClientHeight      (p: TControl): Integer; stdcall; export;
 function  TControl_GetClientWidth       (p: TControl): Integer; stdcall; export;
@@ -438,11 +468,17 @@ procedure TForm_Show      (p: TForm); stdcall; external RTLDLL;
 procedure TForm_ShowModal (p: TForm); stdcall; external RTLDLL;
 procedure TForm_ShowBool  (p: TForm ; modal: Boolean); stdcall; external RTLDLL;
 // ---------------------------------------------------------------------------------------
-function  TButtonControl_Create         (p: TButtonControl; AOwner: TComponent ): TButtonControl;       stdcall; external RTLDLL;
-function  TButton_Create                (p: TButton       ; AOwner: TComponent ): TButton;              stdcall; external RTLDLL;
+function  TButtonControl_Create         (p: TButtonControl; AOwner: TComponent ): TButtonControl;  stdcall; external RTLDLL;
+function  TButton_Create                (p: TButton       ; AOwner: TComponent ): TButton;         stdcall; external RTLDLL;
+function  TCheckBox_Create              (p: TCheckBox     ; AOwner: TComponent ): TCheckBox;       stdcall; external RTLDLL;
+function  TRadioBox_Create              (p: TRadioBox     ; AOwner: TComponent ): TRadioBox;       stdcall; external RTLDLL;
+function  TProgressBar_Create           (p: TProgressBar  ; AOwner: TComponent ): TProgressBar;    stdcall; external RTLDLL;
 // ---------------------------------------------------------------------------------------
 procedure TButtonControl_Destroy        (p: TButtonControl      ); stdcall; external RTLDLL;
 procedure TButton_Destroy               (p: TButton             ); stdcall; external RTLDLL;
+procedure TCheckBox_Destroy             (p: TCheckBox           ); stdcall; external RTLDLL;
+procedure TRadioBox_Destroy             (p: TRadioBox           ); stdcall; external RTLDLL;
+procedure TProgressBar_Destroy          (p: TProgressBar        ); stdcall; external RTLDLL;
 // ---------------------------------------------------------------------------------------
 function HitTestToStr(ht: Integer): string; stdcall; external RTLDLL;
 {$endif DLLIMPORT}
@@ -450,7 +486,7 @@ function HitTestToStr(ht: Integer): string; stdcall; external RTLDLL;
 implementation
 
 var
-  CLASS_NAME: AnsiString;
+  CLASS_NAME: AnsiString = 'MyWindowClass';
 
 procedure fpc_do_exit; external name 'FPC_DO_EXIT';
 
@@ -544,20 +580,12 @@ begin
     Exit;
   end;
 
-  writeln('------> ' + TForm(InstanceClass).ClassName);
-
   TForm(Referenz) := TForm(InstanceClass).Create;
-writeln('-------------------------------------');
   if not Assigned(Application.FAppForm) then
   begin
     ShowError(sError_TApplication_ref);
     halt(2);
   end;
-  
-  TForm(Referenz).FHandle := 0;
-  //TForm(Referenz).ööööööööö
-  
-  CLASS_NAME := PAnsiChar('MyWindowClass');
   
   FillChar(WndClass, sizeof(WndClass), 0);
   WndClass.cbSize          := sizeof(WndClass);
@@ -794,10 +822,11 @@ var
   pt: Point;
 begin
   TControl_check(p);
-  GetWindowRect(p.FHandle, r);
   
   pt.x := p.Left;
-  pt.y := p.Top;
+  pt.y := AValue;
+  
+  p.FHeight := AValue;
   
   // Bildschirmkoordinaten in Clientkoordinaten umrechnen
   ScreenToClient(p.FHandle, pt);
@@ -805,10 +834,10 @@ begin
   // Höhe setzen auf Pixel, Breite bleibt gleich
   SetWindowPos(
     p.FHandle, 0,
-    p.FLeft,
-    p.FTop,
-    p.FWidth - p.Left,
-    AValue,
+    p.FLeft  ,
+    p.FTop   ,
+    p.FWidth ,
+    AValue   ,
     SWP_NOZORDER or SWP_NOACTIVATE
   );
   //p.Height := AValue;
@@ -833,10 +862,10 @@ begin
   // Position ändern, Breite und Höhe beibehalten
   SetWindowPos(
     p.FHandle, 0,
-    AValue,
-    p.Top,
-    p.FWidth  - p.FLeft,
-    p.FHeight - p.FTop,
+    p.FLeft  ,
+    p.FTop   ,
+    p.FWidth ,
+    p.FHeight,
     SWP_NOZORDER or SWP_NOACTIVATE
   );
   //p.Left := AValue;
@@ -849,8 +878,8 @@ var
 begin
   TControl_check(p);
   GetWindowRect(p.FHandle, r);
-
-  pt.x   := p.Left;
+  
+  pt.x   := p.FLeft;
   pt.y   := AValue;
 
   p.FTop := AValue;
@@ -860,13 +889,12 @@ begin
 
   if not SetWindowPos(
     p.FHandle, 0,
-    p.Left,
-    AValue,
-    p.FWidth  - p.Left,
-    p.FHeight - p.Top,
+    p.FLeft  ,
+    p.FTop   ,
+    p.FWidth ,
+    p.FHeight,
     SWP_NOZORDER or SWP_NOACTIVATE) then begin
-    writeln('no change22');
-    halt(2);
+    writeln('no change');
   end;
   //p.Top := AValue;
 end;
@@ -889,10 +917,10 @@ begin
   
   SetWindowPos(
     p.FHandle, 0,
-    p.Left,
-    p.Top,
-    AValue,
-    r.Bottom - r.Top,
+    p.Left   ,
+    p.FTop   ,
+    p.FWidth ,
+    p.FHeight,
     SWP_NOZORDER or SWP_NOACTIVATE
   );
   //p.Width := AValue;
@@ -918,7 +946,7 @@ begin
   result := p;
 end;
 
-procedure TWinControl_CreateHandle(p: TWinControl);
+procedure TWinControl_CreateHandle(p: TWinControl); stdcall; export;
 var
   WndClass: TWndClassExA;
 begin
@@ -1076,6 +1104,7 @@ begin
   writeln('TForm: Create');
   {$endif DLLDEBUG}
 
+  InitCommonControls;
   CLASS_NAME := PAnsiChar('MyWindowClass');
 
   FillChar(WndClass, sizeof(WndClass), 0);
@@ -1089,10 +1118,10 @@ begin
   WndClass.hCursor         := LoadCursorA(0, PAnsiChar(32512));
   WndClass.hbrBackground   := HBRUSH(COLOR_WINDOW + 1);
   WndClass.lpszMenuName    := nil;
-  WndClass.lpszClassName   := LPCSTR('MyWindowClass');
+  WndClass.lpszClassName   := LPCSTR(CLASS_NAME);
   WndClass.hIconSm         := WndClass.hIcon;
 
-  if not GetClassInfoExA(hInstanceDLL, LPCSTR('MyWindowClass'), @WndClass) then
+  if not GetClassInfoExA(hInstanceDLL, LPCSTR(CLASS_NAME), @WndClass) then
   begin
     if RegisterClassExA(@WndClass) = 0 then
     begin
@@ -1103,20 +1132,22 @@ begin
 
   p.FHandle := CreateWindowExA(
     0,
-    LPCSTR('MyWindowClass'),
-    LPCSTR('AppName'),
-    ws_Overlapped   or
-    ws_SysMenu      or
-    ws_MinimizeBox  or
-    ws_ClipSiblings or
-    ws_ClipChildren or
-    ws_Visible,
-    50, 50,
-    400, 300,
-    GetDesktopWindow,
-    0, hInstanceDLL, nil
+    LPCSTR(CLASS_NAME),
+    LPCSTR('AppName' ),
+    ws_Overlapped    or
+    ws_SysMenu       or
+    ws_MinimizeBox   or
+    ws_ClipSiblings  or
+    ws_ClipChildren  or
+    ws_Visible       ,
+    CW_USEDEFAULT    ,   // default horizontal position
+    CW_USEDEFAULT    ,   // default vertical position
+    CW_USEDEFAULT    ,   // default Width
+    CW_USEDEFAULT    ,   // default height
+    GetDesktopWindow ,   // owner window/parent
+    0, hInstanceDLL  ,
+    nil
   );
-  writeln('ok: ' + inttostr(p.FHandle));
   
   result := p.FHandle;
 end;
@@ -1211,7 +1242,7 @@ begin
   result := p;
 end;
 
-procedure TButtonControl_Destroy(p: TButtonControl);
+procedure TButtonControl_Destroy(p: TButtonControl); stdcall; export;
 begin
   {$ifdef DLLDEBUG}
   writeln('TButtonControl: Destroy');
@@ -1221,7 +1252,7 @@ end;
 
 { TButton }
 
-function TButton_Create(p: TButton; AOwner: TComponent): TButton;
+function TButton_Create(p: TButton; AOwner: TComponent): TButton; stdcall; export;
 var
   FHandle: HWND;
 begin
@@ -1244,11 +1275,119 @@ begin
   
   result := p;
 end;
-
-procedure TButton_Destroy(p: TButton);
+procedure TButton_Destroy(p: TButton); stdcall; export;
 begin
   {$ifdef DLLDEBUG}
   writeln('TButton: Destroy');
+  {$endif DLLDEBUG}
+end;
+
+
+{ TCheckBox }
+
+function TCheckBox_Create(p: TCheckBox; AOwner: TComponent): TCheckBox; stdcall; export;
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TCheckBox: Create');
+  {$endif DLLDEBUG}
+  
+  if p = nil then
+  begin
+    ShowError(sError_TCheckBox_ref);
+    exit;
+  end;
+  
+  p.FHandle := CreateWindowExA(
+  0, 'BUTTON', 'Click Me',
+  WS_CHILD or WS_VISIBLE or BS_AUTOCHECKBOX,
+  50, 50, 150, 30,
+  AOwner.FHandle, 0,
+  hInstanceDLL, nil);
+  
+  result := p;
+end;
+procedure TCheckBox_Destroy(p: TCheckBox); stdcall; export;
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TCheckBox: Destroy');
+  {$endif DLLDEBUG}
+end;
+
+
+{ TRadioBox }
+
+function TRadioBox_Create(p: TRadioBox; AOwner: TComponent): TRadioBox; stdcall; export;
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TRadioBox: Create');
+  {$endif DLLDEBUG}
+  
+  if p = nil then
+  begin
+    ShowError(sError_TRadioBox_ref);
+    exit;
+  end;
+  
+  p.FHandle := CreateWindowExA(
+  0, 'BUTTON', 'Click Me',
+  WS_CHILD or WS_VISIBLE or BS_AUTORADIOBUTTON,
+  50, 50, 150, 30,
+  AOwner.FHandle, 0,
+  hInstanceDLL, nil);
+  
+  result := p;
+end;
+procedure TRadioBox_Destroy(p: TRadioBox); stdcall; export;
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TRadioBox: Destroy');
+  {$endif DLLDEBUG}
+end;
+
+
+{ TProgressBar }
+
+function TProgressBar_Create(p: TProgressBar; AOwner: TComponent): TProgressBar; stdcall; export;
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TProgressBar: Create');
+  {$endif DLLDEBUG}
+  
+  if p = nil then
+  begin
+    ShowError(sError_TProgressBar_ref);
+    halt(2);
+  end;
+  
+  if AOwner.FHandle = 0 then
+  begin
+    ShowError(sError_TComponent_noOwner);
+    halt(2);
+  end;
+  
+  p.FHandle := CreateWindowExA(
+  0, 'msctls_progress32', nil,
+  WS_CHILD or WS_VISIBLE,
+  20, 20, 150, 24,
+  AOwner.FHandle, 0,
+  hInstanceDLL, nil);
+  
+  if p.Handle = 0 then
+  begin
+    ShowError(sError_TProgressBar_ref);
+    halt(2);
+  end;
+
+  // Bereich setzen (0 - 100)
+  SendMessageA(p.FHandle, PBM_SETRANGE,  0, MAKELPARAM(0, 100));
+  SendMessageA(p.FHandle, PBM_SETPOS  , 32, 0);
+  
+  result := p;
+end;
+procedure TProgressBar_Destroy(p: TProgressBar); stdcall; export;
+begin
+  {$ifdef DLLDEBUG}
+  writeln('TProgressBar: Destroy');
   {$endif DLLDEBUG}
 end;
 
@@ -1589,16 +1728,68 @@ begin
   inherited Create(AOwner);
   TButton_Create(self, AOwner);
 end;
-
 destructor TButton.Destroy;
 begin
   TButton_Destroy(self);
   inherited Destroy;
 end;
-
 class function TButton.ClassName: String; stdcall;
 begin
   result := 'TButton';
+end;
+
+
+{ TCheckBox }
+
+constructor TCheckBox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  TCheckBox_Create(self, AOwner);
+end;
+destructor TCheckBox.Destroy;
+begin
+  TCheckBox_Destroy(self);
+  inherited Destroy;
+end;
+class function TCheckBox.ClassName: String; stdcall;
+begin
+  result := 'TCheckBox';
+end;
+
+
+{ TRadioBox }
+
+constructor TRadioBox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  TRadioBox_Create(self, AOwner);
+end;
+destructor TRadioBox.Destroy;
+begin
+  TRadioBox_Destroy(self);
+  inherited Destroy;
+end;
+class function TRadioBox.ClassName: String; stdcall;
+begin
+  result := 'TRadioBox';
+end;
+
+
+{ TProgressBar }
+
+constructor TProgressBar.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  TProgressBar_Create(self, AOwner);
+end;
+destructor TProgressBar.Destroy;
+begin
+  TProgressBar_Destroy(self);
+  inherited Destroy;
+end;
+class function TProgressBar.ClassName: String; stdcall;
+begin
+  result := 'TProgressBar';
 end;
 
 {$ifdef DLLEXPORT}
@@ -1652,6 +1843,15 @@ exports
   
   TButton_Create                    name 'TButton_Create',
   TButton_Destroy                   name 'TButton_Destroy',
+  
+  TCheckBox_Create                  name 'TCheckBox_Create',
+  TCheckBox_Destroy                 name 'TCheckBox_Destroy',
+  
+  TRadioBox_Create                  name 'TRadioBox_Create',
+  TRadioBox_Destroy                 name 'TRadioBox_Destroy',
+  
+  TProgressBar_Create               name 'TProgressBar_Create',
+  TProgressBar_Destroy              name 'TProgressBar_Destroy',
   
   TForm_Create                      name 'TForm_Create',
   TForm_Destroy                     name 'TForm_Destroy',
