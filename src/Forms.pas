@@ -7,7 +7,7 @@ unit Forms;
 
 interface
 uses
-  Windows, Dialogs, SysUtils, StrUtils, Locales, Classes;
+  Windows, Dialogs, SysUtils, StrUtils, Locales, Classes, ErrorData;
 
 type
   // ---------------------------------------------------------------------------------------
