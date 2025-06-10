@@ -8,7 +8,7 @@ program test;
 
 uses
   Windows, Dialogs, SysUtils, StrUtils, Exceptions, Forms,
-  Locales, global;
+  Locales, global, ErrorData;
 
 type
   TForm1 = class(TForm)
@@ -43,6 +43,8 @@ begin
   
   AddExitProc(@CleanUp_1);
   AddExitProc(@CleanUp_2);
+  
+  InitWindowsErrorCodes;
   
   //Application.Initialize;
   //Application.CreateForm(TForm1, Form1);
