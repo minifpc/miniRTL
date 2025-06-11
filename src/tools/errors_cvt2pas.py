@@ -13,7 +13,7 @@ def generate_pascal_record_file(input_filepath, pascal_output_filepath):
             lines = infile.readlines()
 
         pascal_code_lines = []
-        pascal_code_lines.append("UNIT ErrorDataDEU;")
+        pascal_code_lines.append("UNIT ErrorDataENU;")
         pascal_code_lines.append("")
         pascal_code_lines.append("INTERFACE")
         pascal_code_lines.append("")
@@ -39,16 +39,15 @@ def generate_pascal_record_file(input_filepath, pascal_output_filepath):
         pascal_code_lines.append("{$ifdef DLLEXPORT}")
         pascal_code_lines.append("procedure InitWindowsErrorCodes; stdcall; export;")
         pascal_code_lines.append("begin")
-        
-        i = -1
-        for line in enumerate(lines):
+
+        for i, line in enumerate(lines):
             parts = line.strip().split(',')
             if len(parts) == 4:
                 decimal_code = parts[0]
                 # hex_code = parts[1] # Hexcode wird hier nicht direkt verwendet, aber kann bei Bedarf eingefügt werden
                 designation = parts[2].replace("'", "''") # Escape single quotes for Pascal strings
                 description = parts[3].replace("'", "''") # Escape single quotes for Pascal strings
-                i = i + 1
+
                 pascal_code_lines.append(f"  WindowsErrorCodes[{i}].error_code := {decimal_code};")
                 pascal_code_lines.append(f"  WindowsErrorCodes[{i}].error_name := '{designation}';")
                 pascal_code_lines.append(f"  WindowsErrorCodes[{i}].error_desc := '{description}';")
@@ -77,16 +76,7 @@ def generate_pascal_record_file(input_filepath, pascal_output_filepath):
 if __name__ == "__main__":
     # Angenommen, 'fehlercodes_output.txt' ist die Datei, die im vorherigen Schritt erzeugt wurde.
     # Sie sollte das Format 'Dezimalcode,Hexcode,Bezeichnung,Beschreibung' haben.
-    input_file_for_pascal = "fehler_out.txt"
-    pascal_output_file = "ErrorDataDEU.pas"
+    input_file_for_pascal = "errors_out.txt"
+    pascal_output_file = "ErrorDataENU.pas"
 
     generate_pascal_record_file(input_file_for_pascal, pascal_output_file)
-
-    # Optional: Inhalt der generierten Pascal-Datei anzeigen
-    print("\nInhalt der generierten Pascal-Datei:")
-    try:
-        with open(pascal_output_file, 'r', encoding='utf-8') as f:
-            print(f.read())
-    except FileNotFoundError:
-        print("Pascal-Ausgabedatei nicht gefunden.")
-        
