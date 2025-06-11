@@ -89,6 +89,6 @@ def fehlerliste_erstellen_final(eingabedatei_pfad, ausgabedatei_pfad):
         print(f"Ein unerwarteter Fehler ist aufgetreten: {e}")
 
 if __name__ == "__main__":
-    eingabe = "fehler_in.txt"
-    ausgabe = "fehler_out.txt" # Verwende .csv, da es Komma-separiert ist
+    eingabe = "errors_in.txt"
+    ausgabe = "errors_out.txt" # Verwende .csv, da es Komma-separiert ist
     fehlerliste_erstellen_final(eingabe, ausgabe)

@@ -1,0 +1,1348 @@
+1,0x00000000,ERROR_SUCCESS,The operation completed successfully.
+2,0x00000001,ERROR_INVALID_FUNCTION,Incorrect function.
+3,0x00000002,ERROR_FILE_NOT_FOUND,The system cannot find the file specified.
+4,0x00000003,ERROR_PATH_NOT_FOUND,The system cannot find the path specified.
+5,0x00000004,ERROR_TOO_MANY_OPEN_FILES,The system cannot open the file.
+6,0x00000005,ERROR_ACCESS_DENIED,Access is denied.
+7,0x00000006,ERROR_INVALID_HANDLE,The handle is invalid.
+8,0x00000007,ERROR_ARENA_TRASHED,The storage control blocks were destroyed.
+9,0x00000008,ERROR_NOT_ENOUGH_MEMORY,Not enough memory resources are available to process this command.
+10,0x00000009,ERROR_INVALID_BLOCK,The storage control block address is invalid.
+11,0x0000000A,ERROR_BAD_ENVIRONMENT,The environment is incorrect.
+12,0x0000000B,ERROR_BAD_FORMAT,An attempt was made to load a program with an incorrect format.
+13,0x0000000C,ERROR_INVALID_ACCESS,The access code is invalid.
+14,0x0000000D,ERROR_INVALID_DATA,The data is invalid.
+15,0x0000000E,ERROR_OUTOFMEMORY,Not enough storage is available to complete this operation.
+16,0x0000000F,ERROR_INVALID_DRIVE,The system cannot find the drive specified.
+17,0x00000010,ERROR_CURRENT_DIRECTORY,The directory cannot be removed.
+18,0x00000011,ERROR_NOT_SAME_DEVICE,The system cannot move the file to a different disk drive.
+19,0x00000012,ERROR_NO_MORE_FILES,There are no more files.
+20,0x00000013,ERROR_WRITE_PROTECT,The media is write protected.
+21,0x00000014,ERROR_BAD_UNIT,The system cannot find the device specified.
+22,0x00000015,ERROR_NOT_READY,The device is not ready.
+23,0x00000016,ERROR_BAD_COMMAND,The device does not recognize the command.
+24,0x00000017,ERROR_CRC,Data error (cyclic redundancy check).
+25,0x00000018,ERROR_BAD_LENGTH,The program issued a command but the command length is incorrect.
+26,0x00000019,ERROR_SEEK,The drive cannot locate a specific area or track on the disk.
+27,0x0000001A,ERROR_NOT_DOS_DISK,The specified disk or diskette cannot be accessed.
+28,0x0000001B,ERROR_SECTOR_NOT_FOUND,The drive cannot find the sector requested.
+29,0x0000001C,ERROR_OUT_OF_PAPER,The printer is out of paper.
+30,0x0000001D,ERROR_WRITE_FAULT,The system cannot write to the specified device.
+31,0x0000001E,ERROR_READ_FAULT,The system cannot read from the specified device.
+32,0x0000001F,ERROR_GEN_FAILURE,A device attached to the system is not functioning.
+33,0x00000020,ERROR_SHARING_VIOLATION,The process cannot access the file because it is being used by another process.
+34,0x00000021,ERROR_LOCK_VIOLATION,The process cannot access the file because another process has locked a portion of the file.
+35,0x00000022,ERROR_WRONG_DISK,The wrong diskette is in the drive. Insert %2 (Volume Serial Number: %3) into drive %1.
+36,0x00000024,ERROR_SHARING_BUFFER_EXCEEDED,Too many files opened for sharing.
+37,0x00000026,ERROR_HANDLE_EOF,Reached the end of the file.
+38,0x00000027,ERROR_HANDLE_DISK_FULL,The disk is full.
+39,0x00000032,ERROR_NOT_SUPPORTED,The request is not supported.
+40,0x00000033,ERROR_REM_NOT_LIST,Windows cannot find the network path. Verify that the network path is correct and the destination computer is not busy or turned off. If Windows still cannot find the network path, contact your network administrator.
+41,0x00000034,ERROR_DUP_NAME,You were not connected because a duplicate name exists on the network. If joining a domain, go to System in Control Panel to change the computer name and try again. If joining a workgroup, choose another workgroup name.
+42,0x00000035,ERROR_BAD_NETPATH,The network path was not found.
+43,0x00000036,ERROR_NETWORK_BUSY,The network is busy.
+44,0x00000037,ERROR_DEV_NOT_EXIST,The specified network resource or device is no longer available.
+45,0x00000038,ERROR_TOO_MANY_CMDS,The network BIOS command limit has been reached.
+46,0x00000039,ERROR_ADAP_HDW_ERR,A network adapter hardware error occurred.
+47,0x0000003A,ERROR_BAD_NET_RESP,The specified server cannot perform the requested operation.
+48,0x0000003B,ERROR_UNEXP_NET_ERR,An unexpected network error occurred.
+49,0x0000003C,ERROR_BAD_REM_ADAP,The remote adapter is not compatible.
+50,0x0000003D,ERROR_PRINTQ_FULL,The printer queue is full.
+51,0x0000003E,ERROR_NO_SPOOL_SPACE,Space to store the file waiting to be printed is not available on the server.
+52,0x0000003F,ERROR_PRINT_CANCELLED,Your file waiting to be printed was deleted.
+53,0x00000040,ERROR_NETNAME_DELETED,The specified network name is no longer available.
+54,0x00000041,ERROR_NETWORK_ACCESS_DENIED,Network access is denied.
+55,0x00000042,ERROR_BAD_DEV_TYPE,The network resource type is not correct.
+56,0x00000043,ERROR_BAD_NET_NAME,The network name cannot be found.
+57,0x00000044,ERROR_TOO_MANY_NAMES,The name limit for the local computer network adapter card was exceeded.
+58,0x00000045,ERROR_TOO_MANY_SESS,The network BIOS session limit was exceeded.
+59,0x00000046,ERROR_SHARING_PAUSED,The remote server has been paused or is in the process of being started.
+60,0x00000047,ERROR_REQ_NOT_ACCEP,No more connections can be made to this remote computer at this time because there are already as many connections as the computer can accept.
+61,0x00000048,ERROR_REDIR_PAUSED,The specified printer or disk device has been paused.
+62,0x00000050,ERROR_FILE_EXISTS,The file exists.
+63,0x00000052,ERROR_CANNOT_MAKE,The directory or file cannot be created.
+64,0x00000053,ERROR_FAIL_I24,Fail on INT 24.
+65,0x00000054,ERROR_OUT_OF_STRUCTURES,Storage to process this request is not available.
+66,0x00000055,ERROR_ALREADY_ASSIGNED,The local device name is already in use.
+67,0x00000056,ERROR_INVALID_PASSWORD,The specified network password is not correct.
+68,0x00000057,ERROR_INVALID_PARAMETER,The parameter is incorrect.
+69,0x00000058,ERROR_NET_WRITE_FAULT,A write fault occurred on the network.
+70,0x00000059,ERROR_NO_PROC_SLOTS,The system cannot start another process at this time.
+71,0x00000064,ERROR_TOO_MANY_SEMAPHORES,Cannot create another system semaphore.
+72,0x00000065,ERROR_EXCL_SEM_ALREADY_OWNED,The exclusive semaphore is owned by another process.
+73,0x00000066,ERROR_SEM_IS_SET,The semaphore is set and cannot be closed.
+74,0x00000067,ERROR_TOO_MANY_SEM_REQUESTS,The semaphore cannot be set again.
+75,0x00000068,ERROR_INVALID_AT_INTERRUPT_TIME,Cannot request exclusive semaphores at interrupt time.
+76,0x00000069,ERROR_SEM_OWNER_DIED,The previous ownership of this semaphore has ended.
+77,0x0000006A,ERROR_SEM_USER_LIMIT,Insert the diskette for drive %1.
+78,0x0000006B,ERROR_DISK_CHANGE,The program stopped because an alternate diskette was not inserted.
+79,0x0000006C,ERROR_DRIVE_LOCKED,The disk is in use or locked by another process.
+80,0x0000006D,ERROR_BROKEN_PIPE,The pipe has been ended.
+81,0x0000006E,ERROR_OPEN_FAILED,The system cannot open the device or file specified.
+82,0x0000006F,ERROR_BUFFER_OVERFLOW,The file name is too long.
+83,0x00000070,ERROR_DISK_FULL,There is not enough space on the disk.
+84,0x00000071,ERROR_NO_MORE_SEARCH_HANDLES,No more internal file identifiers available.
+85,0x00000072,ERROR_INVALID_TARGET_HANDLE,The target internal file identifier is incorrect.
+86,0x00000075,ERROR_INVALID_CATEGORY,The IOCTL call made by the application program is not correct.
+87,0x00000076,ERROR_INVALID_VERIFY_SWITCH,The verify-on-write switch parameter value is not correct.
+88,0x00000077,ERROR_BAD_DRIVER_LEVEL,The system does not support the command requested.
+89,0x00000078,ERROR_CALL_NOT_IMPLEMENTED,This function is not supported on this system.
+90,0x00000079,ERROR_SEM_TIMEOUT,The semaphore timeout period has expired.
+91,0x0000007A,ERROR_INSUFFICIENT_BUFFER,The data area passed to a system call is too small.
+92,0x0000007B,ERROR_INVALID_NAME,The filename, directory name, or volume label syntax is incorrect.
+93,0x0000007C,ERROR_INVALID_LEVEL,The system call level is not correct.
+94,0x0000007D,ERROR_NO_VOLUME_LABEL,The disk has no volume label.
+95,0x0000007E,ERROR_MOD_NOT_FOUND,The specified module could not be found.
+96,0x0000007F,ERROR_PROC_NOT_FOUND,The specified procedure could not be found.
+97,0x00000080,ERROR_WAIT_NO_CHILDREN,There are no child processes to wait for.
+98,0x00000081,ERROR_CHILD_NOT_COMPLETE,The %1 application cannot be run in Win32 mode.
+99,0x00000082,ERROR_DIRECT_ACCESS_HANDLE,Attempt to use a file handle to an open disk partition for an operation other than raw disk I/O.
+100,0x00000083,ERROR_NEGATIVE_SEEK,An attempt was made to move the file pointer before the beginning of the file.
+101,0x00000084,ERROR_SEEK_ON_DEVICE,The file pointer cannot be set on the specified device or file.
+102,0x00000085,ERROR_IS_JOIN_TARGET,A JOIN or SUBST command cannot be used for a drive that contains previously joined drives.
+103,0x00000086,ERROR_IS_JOINED,An attempt was made to use a JOIN or SUBST command on a drive that has already been joined.
+104,0x00000087,ERROR_IS_SUBSTED,An attempt was made to use a JOIN or SUBST command on a drive that has already been substituted.
+105,0x00000088,ERROR_NOT_JOINED,The system tried to delete the JOIN of a drive that is not joined.
+106,0x00000089,ERROR_NOT_SUBSTED,The system tried to delete the substitution of a drive that is not substituted.
+107,0x0000008A,ERROR_JOIN_TO_JOIN,The system tried to join a drive to a directory on a joined drive.
+108,0x0000008B,ERROR_SUBST_TO_SUBST,The system tried to substitute a drive to a directory on a substituted drive.
+109,0x0000008C,ERROR_JOIN_TO_SUBST,The system tried to join a drive to a directory on a substituted drive.
+110,0x0000008D,ERROR_SUBST_TO_JOIN,The system tried to SUBST a drive to a directory on a joined drive.
+111,0x0000008E,ERROR_BUSY_DRIVE,The system cannot perform a JOIN or SUBST at this time.
+112,0x0000008F,ERROR_SAME_DRIVE,The system cannot join or substitute a drive to or for a directory on the same drive.
+113,0x00000090,ERROR_DIR_NOT_ROOT,The directory is not a subdirectory of the root directory.
+114,0x00000091,ERROR_DIR_NOT_EMPTY,The directory is not empty.
+115,0x00000092,ERROR_IS_SUBST_PATH,The path specified is being used in a substitute.
+116,0x00000093,ERROR_IS_JOIN_PATH,Not enough resources are available to process this command.
+117,0x00000094,ERROR_PATH_BUSY,The path specified cannot be used at this time.
+118,0x00000095,ERROR_IS_SUBST_TARGET,An attempt was made to join or substitute a drive for which a directory on the drive is the target of a previous substitute.
+119,0x00000096,ERROR_SYSTEM_TRACE,System trace information was not specified in your CONFIG.SYS file, or tracing is disallowed.
+120,0x00000097,ERROR_INVALID_EVENT_COUNT,The number of specified semaphore events for DosMuxSemWait is not correct.
+121,0x00000098,ERROR_TOO_MANY_MUXWAITERS,DosMuxSemWait did not execute; too many semaphores are already set.
+122,0x00000099,ERROR_INVALID_LIST_FORMAT,The DosMuxSemWait list is not correct.
+123,0x0000009A,ERROR_LABEL_TOO_LONG,The volume label you entered exceeds the label character limit of the target file system.
+124,0x0000009B,ERROR_TOO_MANY_TCBS,Cannot create another thread.
+125,0x0000009C,ERROR_SIGNAL_REFUSED,The recipient process has refused the signal.
+126,0x0000009D,ERROR_DISCARDED,The segment is already discarded and cannot be locked.
+127,0x0000009E,ERROR_NOT_LOCKED,The segment is already unlocked.
+128,0x0000009F,ERROR_BAD_THREADID_ADDR,The address for the thread ID is not correct.
+129,0x000000A0,ERROR_BAD_ARGUMENTS,One or more arguments are not correct.
+130,0x000000A1,ERROR_BAD_PATHNAME,The specified path is invalid.
+131,0x000000A2,ERROR_SIGNAL_PENDING,A signal is already pending.
+132,0x000000A4,ERROR_MAX_THRDS_REACHED,No more threads can be created in the system.
+133,0x000000A7,ERROR_LOCK_FAILED,Unable to lock a region of a file.
+134,0x000000AA,ERROR_BUSY,The requested resource is in use.
+135,0x000000AB,ERROR_DEVICE_SUPPORT_IN_PROGRESS,Device's command support detection is in progress.
+136,0x000000AD,ERROR_CANCEL_VIOLATION,A lock request was not outstanding for the supplied cancel region.
+137,0x000000AE,ERROR_ATOMIC_LOCKS_NOT_SUPPORTED,The file system does not support atomic changes to the lock type.
+138,0x000000B4,ERROR_INVALID_SEGMENT_NUMBER,The system detected a segment number that was not correct.
+139,0x000000B6,ERROR_INVALID_ORDINAL,The operating system cannot run %1.
+140,0x000000B7,ERROR_ALREADY_EXISTS,Cannot create a file when that file already exists.
+141,0x000000BA,ERROR_INVALID_FLAG_NUMBER,The flag passed is not correct.
+142,0x000000BB,ERROR_SEM_NOT_FOUND,The specified system semaphore name was not found.
+143,0x000000BC,ERROR_INVALID_STARTING_CODESEG,The operating system cannot run %1.
+144,0x000000BD,ERROR_INVALID_STACKSEG,The operating system cannot run %1.
+145,0x000000BE,ERROR_INVALID_MODULETYPE,The operating system cannot run %1.
+146,0x000000BF,ERROR_INVALID_EXE_SIGNATURE,Cannot run %1 in Win32 mode.
+147,0x000000C0,ERROR_EXE_MARKED_INVALID,The operating system cannot run %1.
+148,0x000000C1,ERROR_BAD_EXE_FORMAT,%1 is not a valid Win32 application.
+149,0x000000C2,ERROR_ITERATED_DATA_EXCEEDS_64k,The operating system cannot run %1.
+150,0x000000C3,ERROR_INVALID_MINALLOCSIZE,The operating system cannot run %1.
+151,0x000000C4,ERROR_DYNLINK_FROM_INVALID_RING,The operating system cannot run this application program.
+152,0x000000C5,ERROR_IOPL_NOT_ENABLED,The operating system is not presently configured to run this application.
+153,0x000000C6,ERROR_INVALID_SEGDPL,The operating system cannot run %1.
+154,0x000000C7,ERROR_AUTODATASEG_EXCEEDS_64k,The operating system cannot run this application program.
+155,0x000000C8,ERROR_RING2SEG_MUST_BE_MOVABLE,The code segment cannot be greater than or equal to 64K.
+156,0x000000C9,ERROR_RELOC_CHAIN_XEEDS_SEGLIM,The operating system cannot run %1.
+157,0x000000CA,ERROR_INFLOOP_IN_RELOC_CHAIN,The operating system cannot run %1.
+158,0x000000CB,ERROR_ENVVAR_NOT_FOUND,The system could not find the environment option that was entered.
+159,0x000000CD,ERROR_NO_SIGNAL_SENT,No process in the command subtree has a signal handler.
+160,0x000000CE,ERROR_FILENAME_EXCED_RANGE,The filename or extension is too long.
+161,0x000000CF,ERROR_RING2_STACK_IN_USE,The ring 2 stack is in use.
+162,0x000000D0,ERROR_META_EXPANSION_TOO_LONG,The global filename characters, * or ?, are entered incorrectly or too many global filename characters are specified.
+163,0x000000D1,ERROR_INVALID_SIGNAL_NUMBER,The signal being posted is not correct.
+164,0x000000D2,ERROR_THREAD_1_INACTIVE,The signal handler cannot be set.
+165,0x000000D4,ERROR_LOCKED,The segment is locked and cannot be reallocated.
+166,0x000000D6,ERROR_TOO_MANY_MODULES,Too many dynamic-link modules are attached to this program or dynamic-link module.
+167,0x000000D7,ERROR_NESTING_NOT_ALLOWED,Cannot nest calls to LoadModule.
+168,0x000000D8,ERROR_EXE_MACHINE_TYPE_MISMATCH,This version of %1 is not compatible with the version of Windows you're running. Check your computer's system information and then contact the software publisher.
+169,0x000000D9,ERROR_EXE_CANNOT_MODIFY_SIGNED_BINARY,The image file %1 is signed, unable to modify.
+170,0x000000DA,ERROR_EXE_CANNOT_MODIFY_STRONG_SIGNED_BINARY,The image file %1 is strong signed, unable to modify.
+171,0x000000DC,ERROR_FILE_CHECKED_OUT,This file is checked out or locked for editing by another user.
+172,0x000000DD,ERROR_CHECKOUT_REQUIRED,The file must be checked out before saving changes.
+173,0x000000DE,ERROR_BAD_FILE_TYPE,The file type being saved or retrieved has been blocked.
+174,0x000000DF,ERROR_FILE_TOO_LARGE,The file size exceeds the limit allowed and cannot be saved.
+175,0x000000E0,ERROR_FORMS_AUTH_REQUIRED,Access Denied. Before opening files in this location, you must first add the web site to your trusted sites list, browse to the web site, and select the option to login automatically.
+176,0x000000E1,ERROR_VIRUS_INFECTED,Operation did not complete successfully because the file contains a virus or potentially unwanted software.
+177,0x000000E2,ERROR_VIRUS_DELETED,This file contains a virus or potentially unwanted software and cannot be opened. Due to the nature of this virus or potentially unwanted software, the file has been removed from this location.
+178,0x000000E5,ERROR_PIPE_LOCAL,The pipe is local.
+179,0x000000E6,ERROR_BAD_PIPE,The pipe state is invalid.
+180,0x000000E7,ERROR_PIPE_BUSY,All pipe instances are busy.
+181,0x000000E8,ERROR_NO_DATA,The pipe is being closed.
+182,0x000000E9,ERROR_PIPE_NOT_CONNECTED,No process is on the other end of the pipe.
+183,0x000000EA,ERROR_MORE_DATA,More data is available.
+184,0x000000F0,ERROR_VC_DISCONNECTED,The session was canceled.
+185,0x000000FE,ERROR_INVALID_EA_NAME,The specified extended attribute name was invalid.
+186,0x000000FF,ERROR_EA_LIST_INCONSISTENT,The extended attributes are inconsistent.
+187,0x00000102,WAIT_TIMEOUT,The wait operation timed out.
+188,0x00000103,ERROR_NO_MORE_ITEMS,No more data is available.
+189,0x0000010A,ERROR_CANNOT_COPY,The copy functions cannot be used.
+190,0x0000010B,ERROR_DIRECTORY,The directory name is invalid.
+191,0x00000113,ERROR_EAS_DIDNT_FIT,The extended attributes did not fit in the buffer.
+192,0x00000114,ERROR_EA_FILE_CORRUPT,The extended attribute file on the mounted file system is corrupt.
+193,0x00000115,ERROR_EA_TABLE_FULL,The extended attribute table file is full.
+194,0x00000116,ERROR_INVALID_EA_HANDLE,The specified extended attribute handle is invalid.
+195,0x0000011A,ERROR_EAS_NOT_SUPPORTED,The mounted file system does not support extended attributes.
+196,0x00000120,ERROR_NOT_OWNER,Attempt to release mutex not owned by caller.
+197,0x0000012A,ERROR_TOO_MANY_POSTS,Too many posts were made to a semaphore.
+198,0x0000012B,ERROR_PARTIAL_COPY,Only part of a ReadProcessMemory or WriteProcessMemory request was completed.
+199,0x0000012C,ERROR_OPLOCK_NOT_GRANTED,The oplock request is denied.
+200,0x0000012D,ERROR_INVALID_OPLOCK_PROTOCOL,An invalid oplock acknowledgment was received by the system.
+201,0x0000012E,ERROR_DISK_TOO_FRAGMENTED,The volume is too fragmented to complete this operation.
+202,0x0000012F,ERROR_DELETE_PENDING,The file cannot be opened because it is in the process of being deleted.
+203,0x00000130,ERROR_INCOMPATIBLE_WITH_GLOBAL_SHORT_NAME_REGISTRY_SETTING,Short name settings may not be changed on this volume due to the global registry setting.
+204,0x00000131,ERROR_SHORT_NAMES_NOT_ENABLED_ON_VOLUME,Short names are not enabled on this volume.
+205,0x00000132,ERROR_SECURITY_STREAM_IS_INCONSISTENT,The security stream for the given volume is in an inconsistent state. Please run CHKDSK on the volume.
+206,0x00000133,ERROR_INVALID_LOCK_RANGE,A requested file lock operation cannot be processed due to an invalid byte range.
+207,0x00000134,ERROR_IMAGE_SUBSYSTEM_NOT_PRESENT,The subsystem needed to support the image type is not present.
+208,0x00000135,ERROR_NOTIFICATION_GUID_ALREADY_DEFINED,The specified file already has a notification GUID associated with it.
+209,0x00000136,ERROR_INVALID_EXCEPTION_HANDLER,An invalid exception handler routine has been detected.
+210,0x00000137,ERROR_DUPLICATE_PRIVILEGES,Duplicate privileges were specified for the token.
+211,0x00000138,ERROR_NO_RANGES_PROCESSED,No ranges for the specified operation were able to be processed.
+212,0x00000139,ERROR_NOT_ALLOWED_ON_SYSTEM_FILE,Operation is not allowed on a file system internal file.
+213,0x0000013A,ERROR_DISK_RESOURCES_EXHAUSTED,The physical resources of this disk have been exhausted.
+214,0x0000013B,ERROR_INVALID_TOKEN,The token representing the data is invalid.
+215,0x0000013C,ERROR_DEVICE_FEATURE_NOT_SUPPORTED,The device does not support the command feature.
+216,0x0000013D,ERROR_MR_MID_NOT_FOUND,The system cannot find message text for message number 0x%1 in the message file for %2.
+217,0x0000013E,ERROR_SCOPE_NOT_FOUND,The scope specified was not found.
+218,0x0000013F,ERROR_UNDEFINED_SCOPE,The Central Access Policy specified is not defined on the target machine.
+219,0x00000140,ERROR_INVALID_CAP,The Central Access Policy obtained from Active Directory is invalid.
+220,0x00000141,ERROR_DEVICE_UNREACHABLE,The device is unreachable.
+221,0x00000142,ERROR_DEVICE_NO_RESOURCES,The target device has insufficient resources to complete the operation.
+222,0x00000143,ERROR_DATA_CHECKSUM_ERROR,A data integrity checksum error occurred. Data in the file stream is corrupt.
+223,0x00000144,ERROR_INTERMIXED_KERNEL_EA_OPERATION,An attempt was made to modify both a KERNEL and normal Extended Attribute (EA) in the same operation.
+224,0x00000146,ERROR_FILE_LEVEL_TRIM_NOT_SUPPORTED,Device does not support file-level TRIM.
+225,0x00000147,ERROR_OFFSET_ALIGNMENT_VIOLATION,The command specified a data offset that does not align to the device's granularity/alignment.
+226,0x00000148,ERROR_INVALID_FIELD_IN_PARAMETER_LIST,The command specified an invalid field in its parameter list.
+227,0x00000149,ERROR_OPERATION_IN_PROGRESS,An operation is currently in progress with the device.
+228,0x0000014A,ERROR_BAD_DEVICE_PATH,An attempt was made to send down the command via an invalid path to the target device.
+229,0x0000014B,ERROR_TOO_MANY_DESCRIPTORS,The command specified a number of descriptors that exceeded the maximum supported by the device.
+230,0x0000014C,ERROR_SCRUB_DATA_DISABLED,Scrub is disabled on the specified file.
+231,0x0000014D,ERROR_NOT_REDUNDANT_STORAGE,The storage device does not provide redundancy.
+232,0x0000014E,ERROR_RESIDENT_FILE_NOT_SUPPORTED,An operation is not supported on a resident file.
+233,0x0000014F,ERROR_COMPRESSED_FILE_NOT_SUPPORTED,An operation is not supported on a compressed file.
+234,0x00000150,ERROR_DIRECTORY_NOT_SUPPORTED,An operation is not supported on a directory.
+235,0x00000151,ERROR_NOT_READ_FROM_COPY,The specified copy of the requested data could not be read.
+236,0x0000015E,ERROR_FAIL_NOACTION_REBOOT,No action was taken as a system reboot is required.
+237,0x0000015F,ERROR_FAIL_SHUTDOWN,The shutdown operation failed.
+238,0x00000160,ERROR_FAIL_RESTART,The restart operation failed.
+239,0x00000161,ERROR_MAX_SESSIONS_REACHED,The maximum number of sessions has been reached.
+240,0x00000190,ERROR_THREAD_MODE_ALREADY_BACKGROUND,The thread is already in background processing mode.
+241,0x00000191,ERROR_THREAD_MODE_NOT_BACKGROUND,The thread is not in background processing mode.
+242,0x00000192,ERROR_PROCESS_MODE_ALREADY_BACKGROUND,The process is already in background processing mode.
+243,0x00000193,ERROR_PROCESS_MODE_NOT_BACKGROUND,The process is not in background processing mode.
+244,0x000001E7,ERROR_INVALID_ADDRESS,Attempt to access invalid address.
+245,0x000001F4,ERROR_USER_PROFILE_LOAD,User profile cannot be loaded.
+246,0x00000216,ERROR_ARITHMETIC_OVERFLOW,Arithmetic result exceeded 32 bits.
+247,0x00000217,ERROR_PIPE_CONNECTED,There is a process on other end of the pipe.
+248,0x00000218,ERROR_PIPE_LISTENING,Waiting for a process to open the other end of the pipe.
+249,0x00000219,ERROR_VERIFIER_STOP,Application verifier has found an error in the current process.
+250,0x0000021A,ERROR_ABIOS_ERROR,An error occurred in the ABIOS subsystem.
+251,0x0000021B,ERROR_WX86_WARNING,A warning occurred in the WX86 subsystem.
+252,0x0000021C,ERROR_WX86_ERROR,An error occurred in the WX86 subsystem.
+253,0x0000021D,ERROR_TIMER_NOT_CANCELED,An attempt was made to cancel or set a timer that has an associated APC and the subject thread is not the thread that originally set the timer with an associated APC routine.
+254,0x0000021E,ERROR_UNWIND,Unwind exception code.
+255,0x0000021F,ERROR_BAD_STACK,An invalid or unaligned stack was encountered during an unwind operation.
+256,0x00000220,ERROR_INVALID_UNWIND_TARGET,An invalid unwind target was encountered during an unwind operation.
+257,0x00000221,ERROR_INVALID_PORT_ATTRIBUTES,Invalid Object Attributes specified to NtCreatePort or invalid Port Attributes specified to NtConnectPort
+258,0x00000222,ERROR_PORT_MESSAGE_TOO_LONG,Length of message passed to NtRequestPort or NtRequestWaitReplyPort was longer than the maximum message allowed by the port.
+259,0x00000223,ERROR_INVALID_QUOTA_LOWER,An attempt was made to lower a quota limit below the current usage.
+260,0x00000224,ERROR_DEVICE_ALREADY_ATTACHED,An attempt was made to attach to a device that was already attached to another device.
+261,0x00000225,ERROR_INSTRUCTION_MISALIGNMENT,An attempt was made to execute an instruction at an unaligned address and the host system does not support unaligned instruction references.
+262,0x00000226,ERROR_PROFILING_NOT_STARTED,Profiling not started.
+263,0x00000227,ERROR_PROFILING_NOT_STOPPED,Profiling not stopped.
+264,0x00000228,ERROR_COULD_NOT_INTERPRET,The passed ACL did not contain the minimum required information.
+265,0x00000229,ERROR_PROFILING_AT_LIMIT,The number of active profiling objects is at the maximum and no more may be started.
+266,0x0000022A,ERROR_CANT_WAIT,Used to indicate that an operation cannot continue without blocking for I/O.
+267,0x0000022B,ERROR_CANT_TERMINATE_SELF,Indicates that a thread attempted to terminate itself by default (called NtTerminateThread with NULL) and it was the last thread in the current process.
+268,0x0000022C,ERROR_UNEXPECTED_MM_CREATE_ERR,If an MM error is returned which is not defined in the standard FsRtl filter, it is converted to one of the following errors which is guaranteed to be in the filter. In this case information is lost, however, the filter correctly handles the exception.
+269,0x0000022D,ERROR_UNEXPECTED_MM_MAP_ERROR,If an MM error is returned which is not defined in the standard FsRtl filter, it is converted to one of the following errors which is guaranteed to be in the filter. In this case information is lost, however, the filter correctly handles the exception.
+270,0x0000022E,ERROR_UNEXPECTED_MM_EXTEND_ERR,If an MM error is returned which is not defined in the standard FsRtl filter, it is converted to one of the following errors which is guaranteed to be in the filter. In this case information is lost, however, the filter correctly handles the exception.
+271,0x0000022F,ERROR_BAD_FUNCTION_TABLE,A malformed function table was encountered during an unwind operation.
+272,0x00000230,ERROR_NO_GUID_TRANSLATION,Indicates that an attempt was made to assign protection to a file system file or directory and one of the SIDs in the security descriptor could not be translated into a GUID that could be stored by the file system. This causes the protection attempt to fail, which may cause a file creation attempt to fail.
+273,0x00000231,ERROR_INVALID_LDT_SIZE,Indicates that an attempt was made to grow an LDT by setting its size, or that the size was not an even number of selectors.
+274,0x00000233,ERROR_INVALID_LDT_OFFSET,Indicates that the starting value for the LDT information was not an integral multiple of the selector size.
+275,0x00000234,ERROR_INVALID_LDT_DESCRIPTOR,Indicates that the user supplied an invalid descriptor when trying to set up Ldt descriptors.
+276,0x00000235,ERROR_TOO_MANY_THREADS,Indicates a process has too many threads to perform the requested action. For example, assignment of a primary token may only be performed when a process has zero or one threads.
+277,0x00000236,ERROR_THREAD_NOT_IN_PROCESS,An attempt was made to operate on a thread within a specific process, but the thread specified is not in the process specified.
+278,0x00000237,ERROR_PAGEFILE_QUOTA_EXCEEDED,Page file quota was exceeded.
+279,0x00000238,ERROR_LOGON_SERVER_CONFLICT,The Netlogon service cannot start because another Netlogon service running in the domain conflicts with the specified role.
+280,0x00000239,ERROR_SYNCHRONIZATION_REQUIRED,The SAM database on a Windows Server is significantly out of synchronization with the copy on the Domain Controller. A complete synchronization is required.
+281,0x0000023A,ERROR_NET_OPEN_FAILED,The NtCreateFile API failed. This error should never be returned to an application, it is a place holder for the Windows Lan Manager Redirector to use in its internal error mapping routines.
+282,0x0000023B,ERROR_IO_PRIVILEGE_FAILED,{Privilege Failed} The I/O permissions for the process could not be changed.
+283,0x0000023C,ERROR_CONTROL_C_EXIT,{Application Exit by CTRL+C} The application terminated as a result of a CTRL+C.
+284,0x0000023D,ERROR_MISSING_SYSTEMFILE,{Missing System File} The required system file %hs is bad or missing.
+285,0x0000023E,ERROR_UNHANDLED_EXCEPTION,{Application Error} The exception %s (0x%08lx) occurred in the application at location 0x%08lx.
+286,0x0000023F,ERROR_APP_INIT_FAILURE,{Application Error} The application was unable to start correctly (0x%lx). Click OK to close the application.
+287,0x00000240,ERROR_PAGEFILE_CREATE_FAILED,{Unable to Create Paging File} The creation of the paging file %hs failed (%lx). The requested size was %ld.
+288,0x00000241,ERROR_INVALID_IMAGE_HASH,Windows cannot verify the digital signature for this file. A recent hardware or software change might have installed a file that is signed incorrectly or damaged, or that might be malicious software from an unknown source.
+289,0x00000242,ERROR_NO_PAGEFILE,{No Paging File Specified} No paging file was specified in the system configuration.
+290,0x00000243,ERROR_ILLEGAL_FLOAT_CONTEXT,{EXCEPTION} A real-mode application issued a floating-point instruction and floating-point hardware is not present.
+291,0x00000244,ERROR_NO_EVENT_PAIR,An event pair synchronization operation was performed using the thread specific client/server event pair object, but no event pair object was associated with the thread.
+292,0x00000245,ERROR_DOMAIN_CTRLR_CONFIG_ERROR,A Windows Server has an incorrect configuration.
+293,0x00000246,ERROR_ILLEGAL_CHARACTER,An illegal character was encountered. For a multi-byte character set this includes a lead byte without a succeeding trail byte. For the Unicode character set this includes the characters 0xFFFF and 0xFFFE.
+294,0x00000247,ERROR_UNDEFINED_CHARACTER,The Unicode character is not defined in the Unicode character set installed on the system.
+295,0x00000248,ERROR_FLOPPY_VOLUME,The paging file cannot be created on a floppy diskette.
+296,0x00000249,ERROR_BIOS_FAILED_TO_CONNECT_INTERRUPT,The system BIOS failed to connect a system interrupt to the device or bus for which the device is connected.
+297,0x0000024A,ERROR_BACKUP_CONTROLLER,This operation is only allowed for the Primary Domain Controller of the domain.
+298,0x0000024B,ERROR_MUTANT_LIMIT_EXCEEDED,An attempt was made to acquire a mutant such that its maximum count would have been exceeded.
+299,0x0000024C,ERROR_FS_DRIVER_REQUIRED,A volume has been accessed for which a file system driver is required that has not yet been loaded.
+300,0x0000024D,ERROR_CANNOT_LOAD_REGISTRY_FILE,{Registry File Failure} The registry cannot load the hive (file): %hs or its log or alternate. It is corrupt, absent, or not writable.
+301,0x0000024E,ERROR_DEBUG_ATTACH_FAILED,{Unexpected Failure in DebugActiveProcess} An unexpected failure occurred while processing a DebugActiveProcess API request. You may choose OK to terminate the process, or Cancel to ignore the error.
+302,0x0000024F,ERROR_SYSTEM_PROCESS_TERMINATED,{Fatal System Error} The %hs system process terminated unexpectedly with a status of 0x%08x (0x%08x 0x%08x). The system has been shut down.
+303,0x00000250,ERROR_DATA_NOT_ACCEPTED,{Data Not Accepted} The TDI client could not handle the data received during an indication.
+304,0x00000251,ERROR_VDM_HARD_ERROR,NTVDM encountered a hard error.
+305,0x00000252,ERROR_DRIVER_CANCEL_TIMEOUT,{Cancel Timeout} The driver %hs failed to complete a cancelled I/O request in the allotted time.
+306,0x00000253,ERROR_REPLY_MESSAGE_MISMATCH,{Reply Message Mismatch} An attempt was made to reply to an LPC message, but the thread specified by the client ID in the message was not waiting on that message.
+307,0x00000254,ERROR_LOST_WRITEBEHIND_DATA,{Delayed Write Failed} Windows was unable to save all the data for the file %hs. The data has been lost. This error may be caused by a failure of your computer hardware or network connection. Please try to save this file elsewhere.
+308,0x00000255,ERROR_CLIENT_SERVER_PARAMETERS_INVALID,The parameter(s) passed to the server in the client/server shared memory window were invalid. Too much data may have been put in the shared memory window.
+309,0x00000256,ERROR_NOT_TINY_STREAM,The stream is not a tiny stream.
+310,0x00000257,ERROR_STACK_OVERFLOW_READ,The request must be handled by the stack overflow code.
+311,0x00000258,ERROR_CONVERT_TO_LARGE,Internal OFS status codes indicating how an allocation operation is handled. Either it is retried after the containing onode is moved or the extent stream is converted to a large stream.
+312,0x00000259,ERROR_FOUND_OUT_OF_SCOPE,The attempt to find the object found an object matching by ID on the volume but it is out of the scope of the handle used for the operation.
+313,0x0000025A,ERROR_ALLOCATE_BUCKET,The bucket array must be grown. Retry transaction after doing so.
+314,0x0000025B,ERROR_MARSHALL_OVERFLOW,The user/kernel marshalling buffer has overflowed.
+315,0x0000025C,ERROR_INVALID_VARIANT,The supplied variant structure contains invalid data.
+316,0x0000025D,ERROR_BAD_COMPRESSION_BUFFER,The specified buffer contains ill-formed data.
+317,0x0000025E,ERROR_AUDIT_FAILED,{Audit Failed} An attempt to generate a security audit failed.
+318,0x0000025F,ERROR_TIMER_RESOLUTION_NOT_SET,The timer resolution was not previously set by the current process.
+319,0x00000260,ERROR_INSUFFICIENT_LOGON_INFO,There is insufficient account information to log you on.
+320,0x00000261,ERROR_BAD_DLL_ENTRYPOINT,{Invalid DLL Entrypoint} The dynamic link library %hs is not written correctly. The stack pointer has been left in an inconsistent state. The entrypoint should be declared as WINAPI or STDCALL. Select YES to fail the DLL load. Select NO to continue execution. Selecting NO may cause the application to operate incorrectly.
+321,0x00000262,ERROR_BAD_SERVICE_ENTRYPOINT,{Invalid Service Callback Entrypoint} The %hs service is not written correctly. The stack pointer has been left in an inconsistent state. The callback entrypoint should be declared as WINAPI or STDCALL. Selecting OK will cause the service to continue operation. However, the service process may operate incorrectly.
+322,0x00000263,ERROR_IP_ADDRESS_CONFLICT1,There is an IP address conflict with another system on the network.
+323,0x00000264,ERROR_IP_ADDRESS_CONFLICT2,There is an IP address conflict with another system on the network.
+324,0x00000265,ERROR_REGISTRY_QUOTA_LIMIT,{Low On Registry Space} The system has reached the maximum size allowed for the system part of the registry. Additional storage requests will be ignored.
+325,0x00000266,ERROR_NO_CALLBACK_ACTIVE,A callback return system service cannot be executed when no callback is active.
+326,0x00000267,ERROR_PWD_TOO_SHORT,The password provided is too short to meet the policy of your user account. Please choose a longer password.
+327,0x00000268,ERROR_PWD_TOO_RECENT,The policy of your user account does not allow you to change passwords too frequently. This is done to prevent users from changing back to a familiar, but potentially discovered, password. If you feel your password has been compromised then please contact your administrator immediately to have a new one assigned.
+328,0x00000269,ERROR_PWD_HISTORY_CONFLICT,You have attempted to change your password to one that you have used in the past. The policy of your user account does not allow this. Please select a password that you have not previously used.
+329,0x0000026A,ERROR_UNSUPPORTED_COMPRESSION,The specified compression format is unsupported.
+330,0x0000026B,ERROR_INVALID_HW_PROFILE,The specified hardware profile configuration is invalid.
+331,0x0000026C,ERROR_INVALID_PLUGPLAY_DEVICE_PATH,The specified Plug and Play registry device path is invalid.
+332,0x0000026D,ERROR_QUOTA_LIST_INCONSISTENT,The specified quota list is internally inconsistent with its descriptor.
+333,0x0000026E,ERROR_EVALUATION_EXPIRATION,{Windows Evaluation Notification} The evaluation period for this installation of Windows has expired. This system will shutdown in 1 hour. To restore access to this installation of Windows, please upgrade this installation using a licensed distribution of this product.
+334,0x0000026F,ERROR_ILLEGAL_DLL_RELOCATION,{Illegal System DLL Relocation} The system DLL %hs was relocated in memory. The application will not run properly. The relocation occurred because the DLL %hs occupied an address range reserved for Windows system DLLs. The vendor supplying the DLL should be contacted for a new DLL.
+335,0x00000270,ERROR_DLL_INIT_FAILED_LOGOFF,{DLL Initialization Failed} The application failed to initialize because the window station is shutting down.
+336,0x00000271,ERROR_VALIDATE_CONTINUE,The validation process needs to continue on to the next step.
+337,0x00000272,ERROR_NO_MORE_MATCHES,There are no more matches for the current index enumeration.
+338,0x00000273,ERROR_RANGE_LIST_CONFLICT,The range could not be added to the range list because of a conflict.
+339,0x00000274,ERROR_SERVER_SID_MISMATCH,The server process is running under a SID different than that required by client.
+340,0x00000275,ERROR_CANT_ENABLE_DENY_ONLY,A group marked use for deny only cannot be enabled.
+341,0x00000276,ERROR_FLOAT_MULTIPLE_FAULTS,{EXCEPTION} Multiple floating point faults.
+342,0x00000277,ERROR_FLOAT_MULTIPLE_TRAPS,{EXCEPTION} Multiple floating point traps.
+343,0x00000278,ERROR_NOINTERFACE,The requested interface is not supported.
+344,0x00000279,ERROR_DRIVER_FAILED_SLEEP,{System Standby Failed} The driver %hs does not support standby mode. Updating this driver may allow the system to go to standby mode.
+345,0x0000027A,ERROR_CORRUPT_SYSTEM_FILE,The system file %1 has become corrupt and has been replaced.
+346,0x0000027B,ERROR_COMMITMENT_MINIMUM,{Virtual Memory Minimum Too Low} Your system is low on virtual memory. Windows is increasing the size of your virtual memory paging file. During this process, memory requests for some applications may be denied. For more information, see Help.
+347,0x0000027C,ERROR_PNP_RESTART_ENUMERATION,A device was removed so enumeration must be restarted.
+348,0x0000027D,ERROR_SYSTEM_IMAGE_BAD_SIGNATURE,{Fatal System Error} The system image %s is not properly signed. The file has been replaced with the signed file. The system has been shut down.
+349,0x0000027E,ERROR_PNP_REBOOT_REQUIRED,Device will not start without a reboot.
+350,0x0000027F,ERROR_INSUFFICIENT_POWER,There is not enough power to complete the requested operation.
+351,0x00000280,ERROR_MULTIPLE_FAULT_VIOLATION,ERROR_MULTIPLE_FAULT_VIOLATION
+352,0x00000281,ERROR_SYSTEM_SHUTDOWN,The system is in the process of shutting down.
+353,0x00000282,ERROR_PORT_NOT_SET,An attempt to remove a processes DebugPort was made, but a port was not already associated with the process.
+354,0x00000283,ERROR_DS_VERSION_CHECK_FAILURE,This version of Windows is not compatible with the behavior version of directory forest, domain or domain controller.
+355,0x00000284,ERROR_RANGE_NOT_FOUND,The specified range could not be found in the range list.
+356,0x00000286,ERROR_NOT_SAFE_MODE_DRIVER,The driver was not loaded because the system is booting into safe mode.
+357,0x00000287,ERROR_FAILED_DRIVER_ENTRY,The driver was not loaded because it failed its initialization call.
+358,0x00000288,ERROR_DEVICE_ENUMERATION_ERROR,The "%hs" encountered an error while applying power or reading the device configuration. This may be caused by a failure of your hardware or by a poor connection.
+359,0x00000289,ERROR_MOUNT_POINT_NOT_RESOLVED,The create operation failed because the name contained at least one mount point which resolves to a volume to which the specified device object is not attached.
+360,0x0000028A,ERROR_INVALID_DEVICE_OBJECT_PARAMETER,The device object parameter is either not a valid device object or is not attached to the volume specified by the file name.
+361,0x0000028B,ERROR_MCA_OCCURED,A Machine Check Error has occurred. Please check the system eventlog for additional information.
+362,0x0000028C,ERROR_DRIVER_DATABASE_ERROR,There was error [%2] processing the driver database.
+363,0x0000028D,ERROR_SYSTEM_HIVE_TOO_LARGE,System hive size has exceeded its limit.
+364,0x0000028E,ERROR_DRIVER_FAILED_PRIOR_UNLOAD,The driver could not be loaded because a previous version of the driver is still in memory.
+365,0x0000028F,ERROR_VOLSNAP_PREPARE_HIBERNATE,{Volume Shadow Copy Service} Please wait while the Volume Shadow Copy Service prepares volume %hs for hibernation.
+366,0x00000290,ERROR_HIBERNATION_FAILURE,The system has failed to hibernate (The error code is %hs). Hibernation will be disabled until the system is restarted.
+367,0x00000291,ERROR_PWD_TOO_LONG,The password provided is too long to meet the policy of your user account. Please choose a shorter password.
+368,0x00000299,ERROR_FILE_SYSTEM_LIMITATION,The requested operation could not be completed due to a file system limitation.
+369,0x0000029C,ERROR_ASSERTION_FAILURE,An assertion failure has occurred.
+370,0x0000029D,ERROR_ACPI_ERROR,An error occurred in the ACPI subsystem.
+371,0x0000029E,ERROR_WOW_ASSERTION,WOW Assertion Error.
+372,0x0000029F,ERROR_PNP_BAD_MPS_TABLE,A device is missing in the system BIOS MPS table. This device will not be used. Please contact your system vendor for system BIOS update.
+373,0x000002A0,ERROR_PNP_TRANSLATION_FAILED,A translator failed to translate resources.
+374,0x000002A1,ERROR_PNP_IRQ_TRANSLATION_FAILED,A IRQ translator failed to translate resources.
+375,0x000002A2,ERROR_PNP_INVALID_ID,Driver %2 returned invalid ID for a child device (%3).
+376,0x000002A3,ERROR_WAKE_SYSTEM_DEBUGGER,{Kernel Debugger Awakened} the system debugger was awakened by an interrupt.
+377,0x000002A4,ERROR_HANDLES_CLOSED,{Handles Closed} Handles to objects have been automatically closed as a result of the requested operation.
+378,0x000002A5,ERROR_EXTRANEOUS_INFORMATION,{Too Much Information} The specified access control list (ACL) contained more information than was expected.
+379,0x000002A6,ERROR_RXACT_COMMIT_NECESSARY,This warning level status indicates that the transaction state already exists for the registry sub-tree, but that a transaction commit was previously aborted. The commit has NOT been completed, but has not been rolled back either (so it may still be committed if desired).
+380,0x000002A7,ERROR_MEDIA_CHECK,{Media Changed} The media may have changed.
+381,0x000002A8,ERROR_GUID_SUBSTITUTION_MADE,{GUID Substitution} During the translation of a global identifier (GUID) to a Windows security ID (SID), no administratively-defined GUID prefix was found. A substitute prefix was used, which will not compromise system security. However, this may provide a more restrictive access than intended.
+382,0x000002A9,ERROR_STOPPED_ON_SYMLINK,The create operation stopped after reaching a symbolic link.
+383,0x000002AA,ERROR_LONGJUMP,A long jump has been executed.
+384,0x000002AB,ERROR_PLUGPLAY_QUERY_VETOED,The Plug and Play query operation was not successful.
+385,0x000002AC,ERROR_UNWIND_CONSOLIDATE,A frame consolidation has been executed.
+386,0x000002AD,ERROR_REGISTRY_HIVE_RECOVERED,{Registry Hive Recovered} Registry hive (file): %hs was corrupted and it has been recovered. Some data might have been lost.
+387,0x000002AE,ERROR_DLL_MIGHT_BE_INSECURE,The application is attempting to run executable code from the module %hs. This may be insecure. An alternative, %hs, is available. Should the application use the secure module %hs?
+388,0x000002AF,ERROR_DLL_MIGHT_BE_INCOMPATIBLE,The application is loading executable code from the module %hs. This is secure, but may be incompatible with previous releases of the operating system. An alternative, %hs, is available. Should the application use the secure module %hs?
+389,0x000002B0,ERROR_DBG_EXCEPTION_NOT_HANDLED,Debugger did not handle the exception.
+390,0x000002B1,ERROR_DBG_REPLY_LATER,Debugger will reply later.
+391,0x000002B2,ERROR_DBG_UNABLE_TO_PROVIDE_HANDLE,Debugger cannot provide handle.
+392,0x000002B3,ERROR_DBG_TERMINATE_THREAD,Debugger terminated thread.
+393,0x000002B4,ERROR_DBG_TERMINATE_PROCESS,Debugger terminated process.
+394,0x000002B5,ERROR_DBG_CONTROL_C,Debugger got control C.
+395,0x000002B6,ERROR_DBG_PRINTEXCEPTION_C,Debugger printed exception on control C.
+396,0x000002B7,ERROR_DBG_RIPEXCEPTION,Debugger received RIP exception.
+397,0x000002B8,ERROR_DBG_CONTROL_BREAK,Debugger received control break.
+398,0x000002B9,ERROR_DBG_COMMAND_EXCEPTION,Debugger command communication exception.
+399,0x000002BA,ERROR_OBJECT_NAME_EXISTS,{Object Exists} An attempt was made to create an object and the object name already existed.
+400,0x000002BB,ERROR_THREAD_WAS_SUSPENDED,{Thread Suspended} A thread termination occurred while the thread was suspended. The thread was resumed, and termination proceeded.
+401,0x000002BC,ERROR_IMAGE_NOT_AT_BASE,{Image Relocated} An image file could not be mapped at the address specified in the image file. Local fixups must be performed on this image.
+402,0x000002BD,ERROR_RXACT_STATE_CREATED,This informational level status indicates that a specified registry sub-tree transaction state did not yet exist and had to be created.
+403,0x000002BE,ERROR_SEGMENT_NOTIFICATION,{Segment Load} A virtual DOS machine (VDM) is loading, unloading, or moving an MS-DOS or Win16 program segment image. An exception is raised so a debugger can load, unload or track symbols and breakpoints within these 16-bit segments.
+404,0x000002BF,ERROR_BAD_CURRENT_DIRECTORY,{Invalid Current Directory} The process cannot switch to the startup current directory %hs. Select OK to set current directory to %hs, or select CANCEL to exit.
+405,0x000002C0,ERROR_FT_READ_RECOVERY_FROM_BACKUP,{Redundant Read} To satisfy a read request, the NT fault-tolerant file system successfully read the requested data from a redundant copy. This was done because the file system encountered a failure on a member of the fault-tolerant volume, but was unable to reassign the failing area of the device.
+406,0x000002C1,ERROR_FT_WRITE_RECOVERY,{Redundant Write} To satisfy a write request, the NT fault-tolerant file system successfully wrote a redundant copy of the information. This was done because the file system encountered a failure on a member of the fault-tolerant volume, but was not able to reassign the failing area of the device.
+407,0x000002C2,ERROR_IMAGE_MACHINE_TYPE_MISMATCH,{Machine Type Mismatch} The image file %hs is valid, but is for a machine type other than the current machine. Select OK to continue, or CANCEL to fail the DLL load.
+408,0x000002C3,ERROR_RECEIVE_PARTIAL,{Partial Data Received} The network transport returned partial data to its client. The remaining data will be sent later.
+409,0x000002C4,ERROR_RECEIVE_EXPEDITED,{Expedited Data Received} The network transport returned data to its client that was marked as expedited by the remote system.
+410,0x000002C5,ERROR_RECEIVE_PARTIAL_EXPEDITED,{Partial Expedited Data Received} The network transport returned partial data to its client and this data was marked as expedited by the remote system. The remaining data will be sent later.
+411,0x000002C6,ERROR_EVENT_DONE,{TDI Event Done} The TDI indication has completed successfully.
+412,0x000002C7,ERROR_EVENT_PENDING,{TDI Event Pending} The TDI indication has entered the pending state.
+413,0x000002C8,ERROR_CHECKING_FILE_SYSTEM,Checking file system on %wZ.
+414,0x000002C9,ERROR_FATAL_APP_EXIT,{Fatal Application Exit} %hs.
+415,0x000002CA,ERROR_PREDEFINED_HANDLE,The specified registry key is referenced by a predefined handle.
+416,0x000002CB,ERROR_WAS_UNLOCKED,{Page Unlocked} The page protection of a locked page was changed to 'No Access' and the page was unlocked from memory and from the process.
+417,0x000002CC,ERROR_SERVICE_NOTIFICATION,%hs
+418,0x000002CD,ERROR_WAS_LOCKED,{Page Locked} One of the pages to lock was already locked.
+419,0x000002CE,ERROR_LOG_HARD_ERROR,Application popup: %1 : %2
+420,0x000002CF,ERROR_ALREADY_WIN32,ERROR_ALREADY_WIN32
+421,0x000002D0,ERROR_IMAGE_MACHINE_TYPE_MISMATCH_EXE,{Machine Type Mismatch} The image file %hs is valid, but is for a machine type other than the current machine.
+422,0x000002D1,ERROR_NO_YIELD_PERFORMED,A yield execution was performed and no thread was available to run.
+423,0x000002D2,ERROR_TIMER_RESUME_IGNORED,The resumable flag to a timer API was ignored.
+424,0x000002D3,ERROR_ARBITRATION_UNHANDLED,The arbiter has deferred arbitration of these resources to its parent.
+425,0x000002D4,ERROR_CARDBUS_NOT_SUPPORTED,The inserted CardBus device cannot be started because of a configuration error on "%hs".
+426,0x000002D5,ERROR_MP_PROCESSOR_MISMATCH,The CPUs in this multiprocessor system are not all the same revision level. To use all processors the operating system restricts itself to the features of the least capable processor in the system. Should problems occur with this system, contact the CPU manufacturer to see if this mix of processors is supported.
+427,0x000002D6,ERROR_HIBERNATED,The system was put into hibernation.
+428,0x000002D7,ERROR_RESUME_HIBERNATION,The system was resumed from hibernation.
+429,0x000002D8,ERROR_FIRMWARE_UPDATED,Windows has detected that the system firmware (BIOS) was updated [previous firmware date = %2, current firmware date %3].
+430,0x000002D9,ERROR_DRIVERS_LEAKING_LOCKED_PAGES,A device driver is leaking locked I/O pages causing system degradation. The system has automatically enabled tracking code in order to try and catch the culprit.
+431,0x000002DA,ERROR_WAKE_SYSTEM,The system has awoken.
+432,0x000002DB,ERROR_WAIT_1,ERROR_WAIT_1
+433,0x000002DC,ERROR_WAIT_2,ERROR_WAIT_2
+434,0x000002DD,ERROR_WAIT_3,ERROR_WAIT_3
+435,0x000002DE,ERROR_WAIT_63,ERROR_WAIT_63
+436,0x000002DF,ERROR_ABANDONED_WAIT_0,ERROR_ABANDONED_WAIT_0
+437,0x000002E0,ERROR_ABANDONED_WAIT_63,ERROR_ABANDONED_WAIT_63
+438,0x000002E1,ERROR_USER_APC,ERROR_USER_APC
+439,0x000002E2,ERROR_KERNEL_APC,ERROR_KERNEL_APC
+440,0x000002E3,ERROR_ALERTED,ERROR_ALERTED
+441,0x000002E4,ERROR_ELEVATION_REQUIRED,The requested operation requires elevation.
+442,0x000002E5,ERROR_REPARSE,A reparse should be performed by the Object Manager since the name of the file resulted in a symbolic link.
+443,0x000002E6,ERROR_OPLOCK_BREAK_IN_PROGRESS,An open/create operation completed while an oplock break is underway.
+444,0x000002E7,ERROR_VOLUME_MOUNTED,A new volume has been mounted by a file system.
+445,0x000002E8,ERROR_RXACT_COMMITTED,This success level status indicates that the transaction state already exists for the registry sub-tree, but that a transaction commit was previously aborted. The commit has now been completed.
+446,0x000002E9,ERROR_NOTIFY_CLEANUP,This indicates that a notify change request has been completed due to closing the handle which made the notify change request.
+447,0x000002EA,ERROR_PRIMARY_TRANSPORT_CONNECT_FAILED,{Connect Failure on Primary Transport} An attempt was made to connect to the remote server %hs on the primary transport, but the connection failed. The computer WAS able to connect on a secondary transport.
+448,0x000002EB,ERROR_PAGE_FAULT_TRANSITION,Page fault was a transition fault.
+449,0x000002EC,ERROR_PAGE_FAULT_DEMAND_ZERO,Page fault was a demand zero fault.
+450,0x000002ED,ERROR_PAGE_FAULT_COPY_ON_WRITE,Page fault was a demand zero fault.
+451,0x000002EE,ERROR_PAGE_FAULT_GUARD_PAGE,Page fault was a demand zero fault.
+452,0x000002EF,ERROR_PAGE_FAULT_PAGING_FILE,Page fault was satisfied by reading from a secondary storage device.
+453,0x000002F0,ERROR_CACHE_PAGE_LOCKED,Cached page was locked during operation.
+454,0x000002F1,ERROR_CRASH_DUMP,Crash dump exists in paging file.
+455,0x000002F2,ERROR_BUFFER_ALL_ZEROS,Specified buffer contains all zeros.
+456,0x000002F3,ERROR_REPARSE_OBJECT,A reparse should be performed by the Object Manager since the name of the file resulted in a symbolic link.
+457,0x000002F4,ERROR_RESOURCE_REQUIREMENTS_CHANGED,The device has succeeded a query-stop and its resource requirements have changed.
+458,0x000002F5,ERROR_TRANSLATION_COMPLETE,The translator has translated these resources into the global space and no further translations should be performed.
+459,0x000002F6,ERROR_NOTHING_TO_TERMINATE,A process being terminated has no threads to terminate.
+460,0x000002F7,ERROR_PROCESS_NOT_IN_JOB,The specified process is not part of a job.
+461,0x000002F8,ERROR_PROCESS_IN_JOB,The specified process is part of a job.
+462,0x000002F9,ERROR_VOLSNAP_HIBERNATE_READY,{Volume Shadow Copy Service} The system is now ready for hibernation.
+463,0x000002FA,ERROR_FSFILTER_OP_COMPLETED_SUCCESSFULLY,A file system or file system filter driver has successfully completed an FsFilter operation.
+464,0x000002FB,ERROR_INTERRUPT_VECTOR_ALREADY_CONNECTED,The specified interrupt vector was already connected.
+465,0x000002FC,ERROR_INTERRUPT_STILL_CONNECTED,The specified interrupt vector is still connected.
+466,0x000002FD,ERROR_WAIT_FOR_OPLOCK,An operation is blocked waiting for an oplock.
+467,0x000002FE,ERROR_DBG_EXCEPTION_HANDLED,Debugger handled exception.
+468,0x000002FF,ERROR_DBG_CONTINUE,Debugger continued.
+469,0x00000300,ERROR_CALLBACK_POP_STACK,An exception occurred in a user mode callback and the kernel callback frame should be removed.
+470,0x00000301,ERROR_COMPRESSION_DISABLED,Compression is disabled for this volume.
+471,0x00000302,ERROR_CANTFETCHBACKWARDS,The data provider cannot fetch backwards through a result set.
+472,0x00000303,ERROR_CANTSCROLLBACKWARDS,The data provider cannot scroll backwards through a result set.
+473,0x00000304,ERROR_ROWSNOTRELEASED,The data provider requires that previously fetched data is released before asking for more data.
+474,0x00000305,ERROR_BAD_ACCESSOR_FLAGS,The data provider was not able to interpret the flags set for a column binding in an accessor.
+475,0x00000306,ERROR_ERRORS_ENCOUNTERED,One or more errors occurred while processing the request.
+476,0x00000307,ERROR_NOT_CAPABLE,The implementation is not capable of performing the request.
+477,0x00000308,ERROR_REQUEST_OUT_OF_SEQUENCE,The client of a component requested an operation which is not valid given the state of the component instance.
+478,0x00000309,ERROR_VERSION_PARSE_ERROR,A version number could not be parsed.
+479,0x0000030A,ERROR_BADSTARTPOSITION,The iterator's start position is invalid.
+480,0x0000030B,ERROR_MEMORY_HARDWARE,The hardware has reported an uncorrectable memory error.
+481,0x0000030C,ERROR_DISK_REPAIR_DISABLED,The attempted operation required self healing to be enabled.
+482,0x0000030D,ERROR_INSUFFICIENT_RESOURCE_FOR_SPECIFIED_SHARED_SECTION_SIZE,The Desktop heap encountered an error while allocating session memory. There is more information in the system event log.
+483,0x0000030E,ERROR_SYSTEM_POWERSTATE_TRANSITION,The system power state is transitioning from %2 to %3.
+484,0x0000030F,ERROR_SYSTEM_POWERSTATE_COMPLEX_TRANSITION,The system power state is transitioning from %2 to %3 but could enter %4.
+485,0x00000310,ERROR_MCA_EXCEPTION,A thread is getting dispatched with MCA EXCEPTION because of MCA.
+486,0x00000311,ERROR_ACCESS_AUDIT_BY_POLICY,Access to %1 is monitored by policy rule %2.
+487,0x00000312,ERROR_ACCESS_DISABLED_NO_SAFER_UI_BY_POLICY,Access to %1 has been restricted by your Administrator by policy rule %2.
+488,0x00000313,ERROR_ABANDON_HIBERFILE,A valid hibernation file has been invalidated and should be abandoned.
+489,0x00000314,ERROR_LOST_WRITEBEHIND_DATA_NETWORK_DISCONNECTED,{Delayed Write Failed} Windows was unable to save all the data for the file %hs; the data has been lost. This error may be caused by network connectivity issues. Please try to save this file elsewhere.
+490,0x00000315,ERROR_LOST_WRITEBEHIND_DATA_NETWORK_SERVER_ERROR,{Delayed Write Failed} Windows was unable to save all the data for the file %hs; the data has been lost. This error was returned by the server on which the file exists. Please try to save this file elsewhere.
+491,0x00000316,ERROR_LOST_WRITEBEHIND_DATA_LOCAL_DISK_ERROR,{Delayed Write Failed} Windows was unable to save all the data for the file %hs; the data has been lost. This error may be caused if the device has been removed or the media is write-protected.
+492,0x00000317,ERROR_BAD_MCFG_TABLE,The resources required for this device conflict with the MCFG table.
+493,0x00000318,ERROR_DISK_REPAIR_REDIRECTED,The volume repair could not be performed while it is online. Please schedule to take the volume offline so that it can be repaired.
+494,0x00000319,ERROR_DISK_REPAIR_UNSUCCESSFUL,The volume repair was not successful.
+495,0x0000031A,ERROR_CORRUPT_LOG_OVERFULL,One of the volume corruption logs is full. Further corruptions that may be detected won't be logged.
+496,0x0000031B,ERROR_CORRUPT_LOG_CORRUPTED,One of the volume corruption logs is internally corrupted and needs to be recreated. The volume may contain undetected corruptions and must be scanned.
+497,0x0000031C,ERROR_CORRUPT_LOG_UNAVAILABLE,One of the volume corruption logs is unavailable for being operated on.
+498,0x0000031D,ERROR_CORRUPT_LOG_DELETED_FULL,One of the volume corruption logs was deleted while still having corruption records in them. The volume contains detected corruptions and must be scanned.
+499,0x0000031E,ERROR_CORRUPT_LOG_CLEARED,One of the volume corruption logs was cleared by chkdsk and no longer contains real corruptions.
+500,0x0000031F,ERROR_ORPHAN_NAME_EXHAUSTED,Orphaned files exist on the volume but could not be recovered because no more new names could be created in the recovery directory. Files must be moved from the recovery directory.
+501,0x00000320,ERROR_OPLOCK_SWITCHED_TO_NEW_HANDLE,The oplock that was associated with this handle is now associated with a different handle.
+502,0x00000321,ERROR_CANNOT_GRANT_REQUESTED_OPLOCK,An oplock of the requested level cannot be granted. An oplock of a lower level may be available.
+503,0x00000322,ERROR_CANNOT_BREAK_OPLOCK,The operation did not complete successfully because it would cause an oplock to be broken. The caller has requested that existing oplocks not be broken.
+504,0x00000323,ERROR_OPLOCK_HANDLE_CLOSED,The handle with which this oplock was associated has been closed. The oplock is now broken.
+505,0x00000324,ERROR_NO_ACE_CONDITION,The specified access control entry (ACE) does not contain a condition.
+506,0x00000325,ERROR_INVALID_ACE_CONDITION,The specified access control entry (ACE) contains an invalid condition.
+507,0x00000326,ERROR_FILE_HANDLE_REVOKED,Access to the specified file handle has been revoked.
+508,0x00000327,ERROR_IMAGE_AT_DIFFERENT_BASE,An image file was mapped at a different address from the one specified in the image file but fixups will still be automatically performed on the image.
+509,0x000003E2,ERROR_EA_ACCESS_DENIED,Access to the extended attribute was denied.
+510,0x000003E3,ERROR_OPERATION_ABORTED,The I/O operation has been aborted because of either a thread exit or an application request.
+511,0x000003E4,ERROR_IO_INCOMPLETE,Overlapped I/O event is not in a signaled state.
+512,0x000003E5,ERROR_IO_PENDING,Overlapped I/O operation is in progress.
+513,0x000003E6,ERROR_NOACCESS,Invalid access to memory location.
+514,0x000003E7,ERROR_SWAPERROR,Error performing inpage operation.
+515,0x000003E9,ERROR_STACK_OVERFLOW,Recursion too deep; the stack overflowed.
+516,0x000003EA,ERROR_INVALID_MESSAGE,The window cannot act on the sent message.
+517,0x000003EB,ERROR_CAN_NOT_COMPLETE,Cannot complete this function.
+518,0x000003EC,ERROR_INVALID_FLAGS,Invalid flags.
+519,0x000003ED,ERROR_UNRECOGNIZED_VOLUME,The volume does not contain a recognized file system. Please make sure that all required file system drivers are loaded and that the volume is not corrupted.
+520,0x000003EE,ERROR_FILE_INVALID,The volume for a file has been externally altered so that the opened file is no longer valid.
+521,0x000003EF,ERROR_FULLSCREEN_MODE,The requested operation cannot be performed in full-screen mode.
+522,0x000003F0,ERROR_NO_TOKEN,An attempt was made to reference a token that does not exist.
+523,0x000003F1,ERROR_BADDB,The configuration registry database is corrupt.
+524,0x000003F2,ERROR_BADKEY,The configuration registry key is invalid.
+525,0x000003F3,ERROR_CANTOPEN,The configuration registry key could not be opened.
+526,0x000003F4,ERROR_CANTREAD,The configuration registry key could not be read.
+527,0x000003F5,ERROR_CANTWRITE,The configuration registry key could not be written.
+528,0x000003F6,ERROR_REGISTRY_RECOVERED,One of the files in the registry database had to be recovered by use of a log or alternate copy. The recovery was successful.
+529,0x000003F7,ERROR_REGISTRY_CORRUPT,The registry is corrupted. The structure of one of the files containing registry data is corrupted, or the system's memory image of the file is corrupted, or the file could not be recovered because the alternate copy or log was absent or corrupted.
+530,0x000003F8,ERROR_REGISTRY_IO_FAILED,An I/O operation initiated by the registry failed unrecoverably. The registry could not read in, or write out, or flush, one of the files that contain the system's image of the registry.
+531,0x000003F9,ERROR_NOT_REGISTRY_FILE,The system has attempted to load or restore a file into the registry, but the specified file is not in a registry file format.
+532,0x000003FA,ERROR_KEY_DELETED,Illegal operation attempted on a registry key that has been marked for deletion.
+533,0x000003FB,ERROR_NO_LOG_SPACE,System could not allocate the required space in a registry log.
+534,0x000003FC,ERROR_KEY_HAS_CHILDREN,Cannot create a symbolic link in a registry key that already has subkeys or values.
+535,0x000003FD,ERROR_CHILD_MUST_BE_VOLATILE,Cannot create a stable subkey under a volatile parent key.
+536,0x000003FE,ERROR_NOTIFY_ENUM_DIR,A notify change request is being completed and the information is not being returned in the caller's buffer. The caller now needs to enumerate the files to find the changes.
+537,0x0000041B,ERROR_DEPENDENT_SERVICES_RUNNING,A stop control has been sent to a service that other running services are dependent on.
+538,0x0000041C,ERROR_INVALID_SERVICE_CONTROL,The requested control is not valid for this service.
+539,0x0000041D,ERROR_SERVICE_REQUEST_TIMEOUT,The service did not respond to the start or control request in a timely fashion.
+540,0x0000041E,ERROR_SERVICE_NO_THREAD,A thread could not be created for the service.
+541,0x0000041F,ERROR_SERVICE_DATABASE_LOCKED,The service database is locked.
+542,0x00000420,ERROR_SERVICE_ALREADY_RUNNING,An instance of the service is already running.
+543,0x00000421,ERROR_INVALID_SERVICE_ACCOUNT,The account name is invalid or does not exist, or the password is invalid for the account name specified.
+544,0x00000422,ERROR_SERVICE_DISABLED,The service cannot be started, either because it is disabled or because it has no enabled devices associated with it.
+545,0x00000423,ERROR_CIRCULAR_DEPENDENCY,Circular service dependency was specified.
+546,0x00000424,ERROR_SERVICE_DOES_NOT_EXIST,The specified service does not exist as an installed service.
+547,0x00000425,ERROR_SERVICE_CANNOT_ACCEPT_CTRL,The service cannot accept control messages at this time.
+548,0x00000426,ERROR_SERVICE_NOT_ACTIVE,The service has not been started.
+549,0x00000427,ERROR_FAILED_SERVICE_CONTROLLER_CONNECT,The service process could not connect to the service controller.
+550,0x00000428,ERROR_EXCEPTION_IN_SERVICE,An exception occurred in the service when handling the control request.
+551,0x00000429,ERROR_DATABASE_DOES_NOT_EXIST,The database specified does not exist.
+552,0x0000042A,ERROR_SERVICE_SPECIFIC_ERROR,The service has returned a service-specific error code.
+553,0x0000042B,ERROR_PROCESS_ABORTED,The process terminated unexpectedly.
+554,0x0000042C,ERROR_SERVICE_DEPENDENCY_FAIL,The dependency service or group failed to start.
+555,0x0000042D,ERROR_SERVICE_LOGON_FAILED,The service did not start due to a logon failure.
+556,0x0000042E,ERROR_SERVICE_START_HANG,After starting, the service hung in a start-pending state.
+557,0x0000042F,ERROR_INVALID_SERVICE_LOCK,The specified service database lock is invalid.
+558,0x00000430,ERROR_SERVICE_MARKED_FOR_DELETE,The specified service has been marked for deletion.
+559,0x00000431,ERROR_SERVICE_EXISTS,The specified service already exists.
+560,0x00000432,ERROR_ALREADY_RUNNING_LKG,The system is currently running with the last-known-good configuration.
+561,0x00000433,ERROR_SERVICE_DEPENDENCY_DELETED,The dependency service does not exist or has been marked for deletion.
+562,0x00000434,ERROR_BOOT_ALREADY_ACCEPTED,The current boot has already been accepted for use as the last-known-good control set.
+563,0x00000435,ERROR_SERVICE_NEVER_STARTED,No attempts to start the service have been made since the last boot.
+564,0x00000436,ERROR_DUPLICATE_SERVICE_NAME,The name is already in use as either a service name or a service display name.
+565,0x00000437,ERROR_DIFFERENT_SERVICE_ACCOUNT,The account specified for this service is different from the account specified for other services running in the same process.
+566,0x00000438,ERROR_CANNOT_DETECT_DRIVER_FAILURE,Failure actions can only be set for Win32 services, not for drivers.
+567,0x00000439,ERROR_CANNOT_DETECT_PROCESS_ABORT,This service runs in the same process as the service control manager. Therefore, the service control manager cannot take action if this service's process terminates unexpectedly.
+568,0x0000043A,ERROR_NO_RECOVERY_PROGRAM,No recovery program has been configured for this service.
+569,0x0000043B,ERROR_SERVICE_NOT_IN_EXE,The executable program that this service is configured to run in does not implement the service.
+570,0x0000043C,ERROR_NOT_SAFEBOOT_SERVICE,This service cannot be started in Safe Mode.
+571,0x0000044C,ERROR_END_OF_MEDIA,The physical end of the tape has been reached.
+572,0x0000044D,ERROR_FILEMARK_DETECTED,A tape access reached a filemark.
+573,0x0000044E,ERROR_BEGINNING_OF_MEDIA,The beginning of the tape or a partition was encountered.
+574,0x0000044F,ERROR_SETMARK_DETECTED,A tape access reached the end of a set of files.
+575,0x00000450,ERROR_NO_DATA_DETECTED,No more data is on the tape.
+576,0x00000451,ERROR_PARTITION_FAILURE,Tape could not be partitioned.
+577,0x00000452,ERROR_INVALID_BLOCK_LENGTH,When accessing a new tape of a multivolume partition, the current block size is incorrect.
+578,0x00000453,ERROR_DEVICE_NOT_PARTITIONED,Tape partition information could not be found when loading a tape.
+579,0x00000454,ERROR_UNABLE_TO_LOCK_MEDIA,Unable to lock the media eject mechanism.
+580,0x00000455,ERROR_UNABLE_TO_UNLOAD_MEDIA,Unable to unload the media.
+581,0x00000456,ERROR_MEDIA_CHANGED,The media in the drive may have changed.
+582,0x00000457,ERROR_BUS_RESET,The I/O bus was reset.
+583,0x00000458,ERROR_NO_MEDIA_IN_DRIVE,No media in drive.
+584,0x00000459,ERROR_NO_UNICODE_TRANSLATION,No mapping for the Unicode character exists in the target multi-byte code page.
+585,0x0000045A,ERROR_DLL_INIT_FAILED,A dynamic link library (DLL) initialization routine failed.
+586,0x0000045B,ERROR_SHUTDOWN_IN_PROGRESS,A system shutdown is in progress.
+587,0x0000045C,ERROR_NO_SHUTDOWN_IN_PROGRESS,Unable to abort the system shutdown because no shutdown was in progress.
+588,0x0000045D,ERROR_IO_DEVICE,The request could not be performed because of an I/O device error.
+589,0x0000045E,ERROR_SERIAL_NO_DEVICE,No serial device was successfully initialized. The serial driver will unload.
+590,0x0000045F,ERROR_IRQ_BUSY,Unable to open a device that was sharing an interrupt request (IRQ) with other devices. At least one other device that uses that IRQ was already opened.
+591,0x00000460,ERROR_MORE_WRITES,A serial I/O operation was completed by another write to the serial port. The IOCTL_SERIAL_XOFF_COUNTER reached zero.)
+592,0x00000461,ERROR_COUNTER_TIMEOUT,A serial I/O operation completed because the timeout period expired. The IOCTL_SERIAL_XOFF_COUNTER did not reach zero.)
+593,0x00000462,ERROR_FLOPPY_ID_MARK_NOT_FOUND,No ID address mark was found on the floppy disk.
+594,0x00000463,ERROR_FLOPPY_WRONG_CYLINDER,Mismatch between the floppy disk sector ID field and the floppy disk controller track address.
+595,0x00000464,ERROR_FLOPPY_UNKNOWN_ERROR,The floppy disk controller reported an error that is not recognized by the floppy disk driver.
+596,0x00000465,ERROR_FLOPPY_BAD_REGISTERS,The floppy disk controller returned inconsistent results in its registers.
+597,0x00000466,ERROR_DISK_RECALIBRATE_FAILED,While accessing the hard disk, a recalibrate operation failed, even after retries.
+598,0x00000467,ERROR_DISK_OPERATION_FAILED,While accessing the hard disk, a disk operation failed even after retries.
+599,0x00000468,ERROR_DISK_RESET_FAILED,While accessing the hard disk, a disk controller reset was needed, but even that failed.
+600,0x00000469,ERROR_EOM_OVERFLOW,Physical end of tape encountered.
+601,0x0000046A,ERROR_NOT_ENOUGH_SERVER_MEMORY,Not enough server storage is available to process this command.
+602,0x0000046B,ERROR_POSSIBLE_DEADLOCK,A potential deadlock condition has been detected.
+603,0x0000046C,ERROR_MAPPED_ALIGNMENT,The base address or the file offset specified does not have the proper alignment.
+604,0x00000474,ERROR_SET_POWER_STATE_VETOED,An attempt to change the system power state was vetoed by another application or driver.
+605,0x00000475,ERROR_SET_POWER_STATE_FAILED,The system BIOS failed an attempt to change the system power state.
+606,0x00000476,ERROR_TOO_MANY_LINKS,An attempt was made to create more links on a file than the file system supports.
+607,0x0000047E,ERROR_OLD_WIN_VERSION,The specified program requires a newer version of Windows.
+608,0x0000047F,ERROR_APP_WRONG_OS,The specified program is not a Windows or MS-DOS program.
+609,0x00000480,ERROR_SINGLE_INSTANCE_APP,Cannot start more than one instance of the specified program.
+610,0x00000481,ERROR_RMODE_APP,The specified program was written for an earlier version of Windows.
+611,0x00000482,ERROR_INVALID_DLL,One of the library files needed to run this application is damaged.
+612,0x00000483,ERROR_NO_ASSOCIATION,No application is associated with the specified file for this operation.
+613,0x00000484,ERROR_DDE_FAIL,An error occurred in sending the command to the application.
+614,0x00000485,ERROR_DLL_NOT_FOUND,One of the library files needed to run this application cannot be found.
+615,0x00000486,ERROR_NO_MORE_USER_HANDLES,The current process has used all of its system allowance of handles for Window Manager objects.
+616,0x00000487,ERROR_MESSAGE_SYNC_ONLY,The message can be used only with synchronous operations.
+617,0x00000488,ERROR_SOURCE_ELEMENT_EMPTY,The indicated source element has no media.
+618,0x00000489,ERROR_DESTINATION_ELEMENT_FULL,The indicated destination element already contains media.
+619,0x0000048A,ERROR_ILLEGAL_ELEMENT_ADDRESS,The indicated element does not exist.
+620,0x0000048B,ERROR_MAGAZINE_NOT_PRESENT,The indicated element is part of a magazine that is not present.
+621,0x0000048C,ERROR_DEVICE_REINITIALIZATION_NEEDED,The indicated device requires reinitialization due to hardware errors.
+622,0x0000048D,ERROR_DEVICE_REQUIRES_CLEANING,The device has indicated that cleaning is required before further operations are attempted.
+623,0x0000048E,ERROR_DEVICE_DOOR_OPEN,The device has indicated that its door is open.
+624,0x0000048F,ERROR_DEVICE_NOT_CONNECTED,The device is not connected.
+625,0x00000490,ERROR_NOT_FOUND,Element not found.
+626,0x00000491,ERROR_NO_MATCH,There was no match for the specified key in the index.
+627,0x00000492,ERROR_SET_NOT_FOUND,The property set specified does not exist on the object.
+628,0x00000493,ERROR_POINT_NOT_FOUND,The point passed to GetMouseMovePoints is not in the buffer.
+629,0x00000494,ERROR_NO_TRACKING_SERVICE,The tracking (workstation) service is not running.
+630,0x00000495,ERROR_NO_VOLUME_ID,The Volume ID could not be found.
+631,0x00000497,ERROR_UNABLE_TO_REMOVE_REPLACED,Unable to remove the file to be replaced.
+632,0x00000498,ERROR_UNABLE_TO_MOVE_REPLACEMENT,Unable to move the replacement file to the file to be replaced. The file to be replaced has retained its original name.
+633,0x00000499,ERROR_UNABLE_TO_MOVE_REPLACEMENT_2,Unable to move the replacement file to the file to be replaced. The file to be replaced has been renamed using the backup name.
+634,0x0000049A,ERROR_JOURNAL_DELETE_IN_PROGRESS,The volume change journal is being deleted.
+635,0x0000049B,ERROR_JOURNAL_NOT_ACTIVE,The volume change journal is not active.
+636,0x0000049C,ERROR_POTENTIAL_FILE_FOUND,A file was found, but it may not be the correct file.
+637,0x0000049D,ERROR_JOURNAL_ENTRY_DELETED,The journal entry has been deleted from the journal.
+638,0x000004A6,ERROR_SHUTDOWN_IS_SCHEDULED,A system shutdown has already been scheduled.
+639,0x000004A7,ERROR_SHUTDOWN_USERS_LOGGED_ON,The system shutdown cannot be initiated because there are other users logged on to the computer.
+640,0x000004B0,ERROR_BAD_DEVICE,The specified device name is invalid.
+641,0x000004B1,ERROR_CONNECTION_UNAVAIL,The device is not currently connected but it is a remembered connection.
+642,0x000004B2,ERROR_DEVICE_ALREADY_REMEMBERED,The local device name has a remembered connection to another network resource.
+643,0x000004B3,ERROR_NO_NET_OR_BAD_PATH,The network path was either typed incorrectly, does not exist, or the network provider is not currently available. Please try retyping the path or contact your network administrator.
+644,0x000004B4,ERROR_BAD_PROVIDER,The specified network provider name is invalid.
+645,0x000004B5,ERROR_CANNOT_OPEN_PROFILE,Unable to open the network connection profile.
+646,0x000004B6,ERROR_BAD_PROFILE,The network connection profile is corrupted.
+647,0x000004B7,ERROR_NOT_CONTAINER,Cannot enumerate a noncontainer.
+648,0x000004B8,ERROR_EXTENDED_ERROR,An extended error has occurred.
+649,0x000004B9,ERROR_INVALID_GROUPNAME,The format of the specified group name is invalid.
+650,0x000004BA,ERROR_INVALID_COMPUTERNAME,The format of the specified computer name is invalid.
+651,0x000004BB,ERROR_INVALID_EVENTNAME,The format of the specified event name is invalid.
+652,0x000004BC,ERROR_INVALID_DOMAINNAME,The format of the specified domain name is invalid.
+653,0x000004BD,ERROR_INVALID_SERVICENAME,The format of the specified service name is invalid.
+654,0x000004BE,ERROR_INVALID_NETNAME,The format of the specified network name is invalid.
+655,0x000004BF,ERROR_INVALID_SHARENAME,The format of the specified share name is invalid.
+656,0x000004C0,ERROR_INVALID_PASSWORDNAME,The format of the specified password is invalid.
+657,0x000004C1,ERROR_INVALID_MESSAGENAME,The format of the specified message name is invalid.
+658,0x000004C2,ERROR_INVALID_MESSAGEDEST,The format of the specified message destination is invalid.
+659,0x000004C3,ERROR_SESSION_CREDENTIAL_CONFLICT,Multiple connections to a server or shared resource by the same user, using more than one user name, are not allowed. Disconnect all previous connections to the server or shared resource and try again.
+660,0x000004C4,ERROR_REMOTE_SESSION_LIMIT_EXCEEDED,An attempt was made to establish a session to a network server, but there are already too many sessions established to that server.
+661,0x000004C5,ERROR_DUP_DOMAINNAME,The workgroup or domain name is already in use by another computer on the network.
+662,0x000004C6,ERROR_NO_NETWORK,The network is not present or not started.
+663,0x000004C7,ERROR_CANCELLED,The operation was canceled by the user.
+664,0x000004C8,ERROR_USER_MAPPED_FILE,The requested operation cannot be performed on a file with a user-mapped section open.
+665,0x000004C9,ERROR_CONNECTION_REFUSED,The remote computer refused the network connection.
+666,0x000004CA,ERROR_GRACEFUL_DISCONNECT,The network connection was gracefully closed.
+667,0x000004CB,ERROR_ADDRESS_ALREADY_ASSOCIATED,The network transport endpoint already has an address associated with it.
+668,0x000004CC,ERROR_ADDRESS_NOT_ASSOCIATED,An address has not yet been associated with the network endpoint.
+669,0x000004CD,ERROR_CONNECTION_INVALID,An operation was attempted on a nonexistent network connection.
+670,0x000004CE,ERROR_CONNECTION_ACTIVE,An invalid operation was attempted on an active network connection.
+671,0x000004CF,ERROR_NETWORK_UNREACHABLE,The network location cannot be reached. For information about network troubleshooting, see Windows Help.
+672,0x000004D0,ERROR_HOST_UNREACHABLE,The network location cannot be reached. For information about network troubleshooting, see Windows Help.
+673,0x000004D1,ERROR_PROTOCOL_UNREACHABLE,The network location cannot be reached. For information about network troubleshooting, see Windows Help.
+674,0x000004D2,ERROR_PORT_UNREACHABLE,No service is operating at the destination network endpoint on the remote system.
+675,0x000004D3,ERROR_REQUEST_ABORTED,The request was aborted.
+676,0x000004D4,ERROR_CONNECTION_ABORTED,The network connection was aborted by the local system.
+677,0x000004D5,ERROR_RETRY,The operation could not be completed. A retry should be performed.
+678,0x000004D6,ERROR_CONNECTION_COUNT_LIMIT,A connection to the server could not be made because the limit on the number of concurrent connections for this account has been reached.
+679,0x000004D7,ERROR_LOGIN_TIME_RESTRICTION,Attempting to log in during an unauthorized time of day for this account.
+680,0x000004D8,ERROR_LOGIN_WKSTA_RESTRICTION,The account is not authorized to log in from this station.
+681,0x000004D9,ERROR_INCORRECT_ADDRESS,The network address could not be used for the operation requested.
+682,0x000004DA,ERROR_ALREADY_REGISTERED,The service is already registered.
+683,0x000004DB,ERROR_SERVICE_NOT_FOUND,The specified service does not exist.
+684,0x000004DC,ERROR_NOT_AUTHENTICATED,The operation being requested was not performed because the user has not been authenticated.
+685,0x000004DD,ERROR_NOT_LOGGED_ON,The operation being requested was not performed because the user has not logged on to the network. The specified service does not exist.
+686,0x000004DE,ERROR_CONTINUE,Continue with work in progress.
+687,0x000004DF,ERROR_ALREADY_INITIALIZED,An attempt was made to perform an initialization operation when initialization has already been completed.
+688,0x000004E0,ERROR_NO_MORE_DEVICES,No more local devices.
+689,0x000004E1,ERROR_NO_SUCH_SITE,The specified site does not exist.
+690,0x000004E2,ERROR_DOMAIN_CONTROLLER_EXISTS,A domain controller with the specified name already exists.
+691,0x000004E3,ERROR_ONLY_IF_CONNECTED,This operation is supported only when you are connected to the server.
+692,0x000004E4,ERROR_OVERRIDE_NOCHANGES,The group policy framework should call the extension even if there are no changes.
+693,0x000004E5,ERROR_BAD_USER_PROFILE,The specified user does not have a valid profile.
+694,0x000004E6,ERROR_NOT_SUPPORTED_ON_SBS,This operation is not supported on a computer running Windows Server 2003 for Small Business Server.
+695,0x000004E7,ERROR_SERVER_SHUTDOWN_IN_PROGRESS,The server machine is shutting down.
+696,0x000004E8,ERROR_HOST_DOWN,The remote system is not available. For information about network troubleshooting, see Windows Help.
+697,0x000004E9,ERROR_NON_ACCOUNT_SID,The security identifier provided is not from an account domain.
+698,0x000004EA,ERROR_NON_DOMAIN_SID,The security identifier provided does not have a domain component.
+699,0x000004EB,ERROR_APPHELP_BLOCK,AppHelp dialog canceled thus preventing the application from starting.
+700,0x000004EC,ERROR_ACCESS_DISABLED_BY_POLICY,This program is blocked by group policy. For more information, contact your system administrator.
+701,0x000004ED,ERROR_REG_NAT_CONSUMPTION,A program attempt to use an invalid register value. Normally caused by an uninitialized register. This error is Itanium specific.
+702,0x000004EE,ERROR_CSCSHARE_OFFLINE,The share is currently offline or does not exist.
+703,0x000004EF,ERROR_PKINIT_FAILURE,The Kerberos protocol encountered an error while validating the KDC certificate during smartcard logon. There is more information in the system event log.
+704,0x000004F0,ERROR_SMARTCARD_SUBSYSTEM_FAILURE,The Kerberos protocol encountered an error while attempting to utilize the smartcard subsystem.
+705,0x000004F1,ERROR_DOWNGRADE_DETECTED,The system cannot contact a domain controller to service the authentication request. Please try again later.
+706,0x000004F7,ERROR_MACHINE_LOCKED,The machine is locked and cannot be shut down without the force option.
+707,0x000004F9,ERROR_CALLBACK_SUPPLIED_INVALID_DATA,An application-defined callback gave invalid data when called.
+708,0x000004FA,ERROR_SYNC_FOREGROUND_REFRESH_REQUIRED,The group policy framework should call the extension in the synchronous foreground policy refresh.
+709,0x000004FB,ERROR_DRIVER_BLOCKED,This driver has been blocked from loading.
+710,0x000004FC,ERROR_INVALID_IMPORT_OF_NON_DLL,A dynamic link library (DLL) referenced a module that was neither a DLL nor the process's executable image.
+711,0x000004FD,ERROR_ACCESS_DISABLED_WEBBLADE,Windows cannot open this program since it has been disabled.
+712,0x000004FE,ERROR_ACCESS_DISABLED_WEBBLADE_TAMPER,Windows cannot open this program because the license enforcement system has been tampered with or become corrupted.
+713,0x000004FF,ERROR_RECOVERY_FAILURE,A transaction recover failed.
+714,0x00000500,ERROR_ALREADY_FIBER,The current thread has already been converted to a fiber.
+715,0x00000501,ERROR_ALREADY_THREAD,The current thread has already been converted from a fiber.
+716,0x00000502,ERROR_STACK_BUFFER_OVERRUN,The system detected an overrun of a stack-based buffer in this application. This overrun could potentially allow a malicious user to gain control of this application.
+717,0x00000503,ERROR_PARAMETER_QUOTA_EXCEEDED,Data present in one of the parameters is more than the function can operate on.
+718,0x00000504,ERROR_DEBUGGER_INACTIVE,An attempt to do an operation on a debug object failed because the object is in the process of being deleted.
+719,0x00000505,ERROR_DELAY_LOAD_FAILED,An attempt to delay-load a .dll or get a function address in a delay-loaded .dll failed.
+720,0x00000506,ERROR_VDM_DISALLOWED,%1 is a 16-bit application. You do not have permissions to execute 16-bit applications. Check your permissions with your system administrator.
+721,0x00000507,ERROR_UNIDENTIFIED_ERROR,Insufficient information exists to identify the cause of failure.
+722,0x00000508,ERROR_INVALID_CRUNTIME_PARAMETER,The parameter passed to a C runtime function is incorrect.
+723,0x00000509,ERROR_BEYOND_VDL,The operation occurred beyond the valid data length of the file.
+724,0x0000050A,ERROR_INCOMPATIBLE_SERVICE_SID_TYPE,The service start failed since one or more services in the same process have an incompatible service SID type setting. A service with restricted service SID type can only coexist in the same process with other services with a restricted SID type. If the service SID type for this service was just configured, the hosting process must be restarted in order to start this service.
+725,0x00002390,DNS_ERROR_NOT_ENOUGH_SIGNING_KEY_DESCRIPTORS,The zone does not have enough signing keys. There must be at least one key signing key (KSK) and at least one zone signing key (ZSK).
+726,0x00002391,DNS_ERROR_UNSUPPORTED_ALGORITHM,The specified algorithm is not supported.
+727,0x00002392,DNS_ERROR_INVALID_KEY_SIZE,The specified key size is not supported.
+728,0x00002393,DNS_ERROR_SIGNING_KEY_NOT_ACCESSIBLE,One or more of the signing keys for a zone are not accessible to the DNS server. Zone signing will not be operational until this error is resolved.
+729,0x00002394,DNS_ERROR_KSP_DOES_NOT_SUPPORT_PROTECTION,The specified key storage provider does not support DPAPI++ data protection. Zone signing will not be operational until this error is resolved.
+730,0x00002395,DNS_ERROR_UNEXPECTED_DATA_PROTECTION_ERROR,An unexpected DPAPI++ error was encountered. Zone signing will not be operational until this error is resolved.
+731,0x00002396,DNS_ERROR_UNEXPECTED_CNG_ERROR,An unexpected crypto error was encountered. Zone signing may not be operational until this error is resolved.
+732,0x00002397,DNS_ERROR_UNKNOWN_SIGNING_PARAMETER_VERSION,The DNS server encountered a signing key with an unknown version. Zone signing will not be operational until this error is resolved.
+733,0x00002398,DNS_ERROR_KSP_NOT_ACCESSIBLE,The specified key service provider cannot be opened by the DNS server.
+734,0x00002399,DNS_ERROR_TOO_MANY_SKDS,The DNS server cannot accept any more signing keys with the specified algorithm and KSK flag value for this zone.
+735,0x0000239A,DNS_ERROR_INVALID_ROLLOVER_PERIOD,The specified rollover period is invalid.
+736,0x0000239B,DNS_ERROR_INVALID_INITIAL_ROLLOVER_OFFSET,The specified initial rollover offset is invalid.
+737,0x0000239C,DNS_ERROR_ROLLOVER_IN_PROGRESS,The specified signing key is already in process of rolling over keys.
+738,0x0000239D,DNS_ERROR_STANDBY_KEY_NOT_PRESENT,The specified signing key does not have a standby key to revoke.
+739,0x0000239E,DNS_ERROR_NOT_ALLOWED_ON_ZSK,This operation is not allowed on a zone signing key (ZSK).
+740,0x0000239F,DNS_ERROR_NOT_ALLOWED_ON_ACTIVE_SKD,This operation is not allowed on an active signing key.
+741,0x000023A0,DNS_ERROR_ROLLOVER_ALREADY_QUEUED,The specified signing key is already queued for rollover.
+742,0x000023A1,DNS_ERROR_NOT_ALLOWED_ON_UNSIGNED_ZONE,This operation is not allowed on an unsigned zone.
+743,0x000023A2,DNS_ERROR_BAD_KEYMASTER,This operation could not be completed because the DNS server listed as the current key master for this zone is down or misconfigured. Resolve the problem on the current key master for this zone or use another DNS server to seize the key master role.
+744,0x000023A3,DNS_ERROR_INVALID_SIGNATURE_VALIDITY_PERIOD,The specified signature validity period is invalid.
+745,0x000023A4,DNS_ERROR_INVALID_NSEC3_ITERATION_COUNT,The specified NSEC3 iteration count is higher than allowed by the minimum key length used in the zone.
+746,0x000023A5,DNS_ERROR_DNSSEC_IS_DISABLED,This operation could not be completed because the DNS server has been configured with DNSSEC features disabled. Enable DNSSEC on the DNS server.
+747,0x000023A6,DNS_ERROR_INVALID_XML,This operation could not be completed because the XML stream received is empty or syntactically invalid.
+748,0x000023A7,DNS_ERROR_NO_VALID_TRUST_ANCHORS,This operation completed, but no trust anchors were added because all of the trust anchors received were either invalid, unsupported, expired, or would not become valid in less than 30 days.
+749,0x000023A8,DNS_ERROR_ROLLOVER_NOT_POKEABLE,The specified signing key is not waiting for parental DS update.
+750,0x000023A9,DNS_ERROR_NSEC3_NAME_COLLISION,Hash collision detected during NSEC3 signing. Specify a different user-provided salt, or use a randomly generated salt, and attempt to sign the zone again.
+751,0x000023AA,DNS_ERROR_NSEC_INCOMPATIBLE_WITH_NSEC3_RSA_SHA1,NSEC is not compatible with the NSEC3-RSA-SHA-1 algorithm. Choose a different algorithm or use NSEC3.
+752,0x0000251D,DNS_INFO_NO_RECORDS,No records found for given DNS query.
+753,0x0000251E,DNS_ERROR_BAD_PACKET,Bad DNS packet.
+754,0x0000251F,DNS_ERROR_NO_PACKET,No DNS packet.
+755,0x00002520,DNS_ERROR_RCODE,DNS error, check rcode.
+756,0x00002521,DNS_ERROR_UNSECURE_PACKET,Unsecured DNS packet.
+757,0x00002522,DNS_REQUEST_PENDING,DNS query request is pending.
+758,0x0000254F,DNS_ERROR_INVALID_TYPE,Invalid DNS type.
+759,0x00002550,DNS_ERROR_INVALID_IP_ADDRESS,Invalid IP address.
+760,0x00002551,DNS_ERROR_INVALID_PROPERTY,Invalid property.
+761,0x00002552,DNS_ERROR_TRY_AGAIN_LATER,Try DNS operation again later.
+762,0x00002553,DNS_ERROR_NOT_UNIQUE,Record for given name and type is not unique.
+763,0x00002554,DNS_ERROR_NON_RFC_NAME,DNS name does not comply with RFC specifications.
+764,0x00002555,DNS_STATUS_FQDN,DNS name is a fully-qualified DNS name.
+765,0x00002556,DNS_STATUS_DOTTED_NAME,DNS name is dotted (multi-label).
+766,0x00002557,DNS_STATUS_SINGLE_PART_NAME,DNS name is a single-part name.
+767,0x00002558,DNS_ERROR_INVALID_NAME_CHAR,DNS name contains an invalid character.
+768,0x00002559,DNS_ERROR_NUMERIC_NAME,DNS name is entirely numeric.
+769,0x0000255A,DNS_ERROR_NOT_ALLOWED_ON_ROOT_SERVER,The operation requested is not permitted on a DNS root server.
+770,0x0000255B,DNS_ERROR_NOT_ALLOWED_UNDER_DELEGATION,The record could not be created because this part of the DNS namespace has been delegated to another server.
+771,0x0000255C,DNS_ERROR_CANNOT_FIND_ROOT_HINTS,The DNS server could not find a set of root hints.
+772,0x0000255D,DNS_ERROR_INCONSISTENT_ROOT_HINTS,The DNS server found root hints but they were not consistent across all adapters.
+773,0x0000255E,DNS_ERROR_DWORD_VALUE_TOO_SMALL,The specified value is too small for this parameter.
+774,0x0000255F,DNS_ERROR_DWORD_VALUE_TOO_LARGE,The specified value is too large for this parameter.
+775,0x00002560,DNS_ERROR_BACKGROUND_LOADING,This operation is not allowed while the DNS server is loading zones in the background. Please try again later.
+776,0x00002561,DNS_ERROR_NOT_ALLOWED_ON_RODC,The operation requested is not permitted on against a DNS server running on a read-only DC.
+777,0x00002562,DNS_ERROR_NOT_ALLOWED_UNDER_DNAME,No data is allowed to exist underneath a DNAME record.
+778,0x00002563,DNS_ERROR_DELEGATION_REQUIRED,This operation requires credentials delegation.
+779,0x00002564,DNS_ERROR_INVALID_POLICY_TABLE,Name resolution policy table has been corrupted. DNS resolution will fail until it is fixed. Contact your network administrator.
+780,0x00002581,DNS_ERROR_ZONE_DOES_NOT_EXIST,DNS zone does not exist.
+781,0x00002582,DNS_ERROR_NO_ZONE_INFO,DNS zone information not available.
+782,0x00002583,DNS_ERROR_INVALID_ZONE_OPERATION,Invalid operation for DNS zone.
+783,0x00002584,DNS_ERROR_ZONE_CONFIGURATION_ERROR,Invalid DNS zone configuration.
+784,0x00002585,DNS_ERROR_ZONE_HAS_NO_SOA_RECORD,DNS zone has no start of authority (SOA) record.
+785,0x00002586,DNS_ERROR_ZONE_HAS_NO_NS_RECORDS,DNS zone has no Name Server (NS) record.
+786,0x00002587,DNS_ERROR_ZONE_LOCKED,DNS zone is locked.
+787,0x00002588,DNS_ERROR_ZONE_CREATION_FAILED,DNS zone creation failed.
+788,0x00002589,DNS_ERROR_ZONE_ALREADY_EXISTS,DNS zone already exists.
+789,0x0000258A,DNS_ERROR_AUTOZONE_ALREADY_EXISTS,DNS automatic zone already exists.
+790,0x0000258B,DNS_ERROR_INVALID_ZONE_TYPE,Invalid DNS zone type.
+791,0x0000258C,DNS_ERROR_SECONDARY_REQUIRES_MASTER_IP,Secondary DNS zone requires master IP address.
+792,0x0000258D,DNS_ERROR_ZONE_NOT_SECONDARY,DNS zone not secondary.
+793,0x0000258E,DNS_ERROR_NEED_SECONDARY_ADDRESSES,Need secondary IP address.
+794,0x0000258F,DNS_ERROR_WINS_INIT_FAILED,WINS initialization failed.
+795,0x00002590,DNS_ERROR_NEED_WINS_SERVERS,Need WINS servers.
+796,0x00002591,DNS_ERROR_NBSTAT_INIT_FAILED,NBTSTAT initialization call failed.
+797,0x00002592,DNS_ERROR_SOA_DELETE_INVALID,Invalid delete of start of authority (SOA).
+798,0x00002593,DNS_ERROR_FORWARDER_ALREADY_EXISTS,A conditional forwarding zone already exists for that name.
+799,0x00002594,DNS_ERROR_ZONE_REQUIRES_MASTER_IP,This zone must be configured with one or more master DNS server IP addresses.
+800,0x00002595,DNS_ERROR_ZONE_IS_SHUTDOWN,The operation cannot be performed because this zone is shut down.
+801,0x00002596,DNS_ERROR_ZONE_LOCKED_FOR_SIGNING,This operation cannot be performed because the zone is currently being signed. Please try again later.
+802,0x000025B3,DNS_ERROR_PRIMARY_REQUIRES_DATAFILE,Primary DNS zone requires datafile.
+803,0x000025B4,DNS_ERROR_INVALID_DATAFILE_NAME,Invalid datafile name for DNS zone.
+804,0x000025B5,DNS_ERROR_DATAFILE_OPEN_FAILURE,Failed to open datafile for DNS zone.
+805,0x000025B6,DNS_ERROR_FILE_WRITEBACK_FAILED,Failed to write datafile for DNS zone.
+806,0x000025B7,DNS_ERROR_DATAFILE_PARSING,Failure while reading datafile for DNS zone.
+807,0x000025E5,DNS_ERROR_RECORD_DOES_NOT_EXIST,DNS record does not exist.
+808,0x000025E6,DNS_ERROR_RECORD_FORMAT,DNS record format error.
+809,0x000025E7,DNS_ERROR_NODE_CREATION_FAILED,Node creation failure in DNS.
+810,0x000025E8,DNS_ERROR_UNKNOWN_RECORD_TYPE,Unknown DNS record type.
+811,0x000025E9,DNS_ERROR_RECORD_TIMED_OUT,DNS record timed out.
+812,0x000025EA,DNS_ERROR_NAME_NOT_IN_ZONE,Name not in DNS zone.
+813,0x000025EB,DNS_ERROR_CNAME_LOOP,CNAME loop detected.
+814,0x000025EC,DNS_ERROR_NODE_IS_CNAME,Node is a CNAME DNS record.
+815,0x000025ED,DNS_ERROR_CNAME_COLLISION,A CNAME record already exists for given name.
+816,0x000025EE,DNS_ERROR_RECORD_ONLY_AT_ZONE_ROOT,Record only at DNS zone root.
+817,0x000025EF,DNS_ERROR_RECORD_ALREADY_EXISTS,DNS record already exists.
+818,0x000025F0,DNS_ERROR_SECONDARY_DATA,Secondary DNS zone data error.
+819,0x000025F1,DNS_ERROR_NO_CREATE_CACHE_DATA,Could not create DNS cache data.
+820,0x000025F2,DNS_ERROR_NAME_DOES_NOT_EXIST,DNS name does not exist.
+821,0x000025F3,DNS_WARNING_PTR_CREATE_FAILED,Could not create pointer (PTR) record.
+822,0x000025F4,DNS_WARNING_DOMAIN_UNDELETED,DNS domain was undeleted.
+823,0x000025F5,DNS_ERROR_DS_UNAVAILABLE,The directory service is unavailable.
+824,0x000025F6,DNS_ERROR_DS_ZONE_ALREADY_EXISTS,DNS zone already exists in the directory service.
+825,0x000025F7,DNS_ERROR_NO_BOOTFILE_IF_DS_ZONE,DNS server not creating or reading the boot file for the directory service integrated DNS zone.
+826,0x000025F8,DNS_ERROR_NODE_IS_DNAME,Node is a DNAME DNS record.
+827,0x000025F9,DNS_ERROR_DNAME_COLLISION,A DNAME record already exists for given name.
+828,0x000025FA,DNS_ERROR_ALIAS_LOOP,An alias loop has been detected with either CNAME or DNAME records.
+829,0x00002617,DNS_INFO_AXFR_COMPLETE,DNS AXFR (zone transfer) complete.
+830,0x00002618,DNS_ERROR_AXFR,DNS zone transfer failed.
+831,0x00002619,DNS_INFO_ADDED_LOCAL_WINS,Added local WINS server.
+832,0x00002649,DNS_STATUS_CONTINUE_NEEDED,Secure update call needs to continue update request.
+833,0x0000267B,DNS_ERROR_NO_TCPIP,TCP/IP network protocol not installed.
+834,0x0000267C,DNS_ERROR_NO_DNS_SERVERS,No DNS servers configured for local system.
+835,0x000026AD,DNS_ERROR_DP_DOES_NOT_EXIST,The specified directory partition does not exist.
+836,0x000026AE,DNS_ERROR_DP_ALREADY_EXISTS,The specified directory partition already exists.
+837,0x000026AF,DNS_ERROR_DP_NOT_ENLISTED,This DNS server is not enlisted in the specified directory partition.
+838,0x000026B0,DNS_ERROR_DP_ALREADY_ENLISTED,This DNS server is already enlisted in the specified directory partition.
+839,0x000026B1,DNS_ERROR_DP_NOT_AVAILABLE,The directory partition is not available at this time. Please wait a few minutes and try again.
+840,0x000026B2,DNS_ERROR_DP_FSMO_ERROR,The operation failed because the domain naming master FSMO role could not be reached. The domain controller holding the domain naming master FSMO role is down or unable to service the request or is not running Windows Server 2003 or later.
+841,0x00002714,WSAEINTR,A blocking operation was interrupted by a call to WSACancelBlockingCall.
+842,0x00002719,WSAEBADF,The file handle supplied is not valid.
+843,0x0000271D,WSAEACCES,An attempt was made to access a socket in a way forbidden by its access permissions.
+844,0x0000271E,WSAEFAULT,The system detected an invalid pointer address in attempting to use a pointer argument in a call.
+845,0x00002726,WSAEINVAL,An invalid argument was supplied.
+846,0x00002728,WSAEMFILE,Too many open sockets.
+847,0x00002733,WSAEWOULDBLOCK,A non-blocking socket operation could not be completed immediately.
+848,0x00002734,WSAEINPROGRESS,A blocking operation is currently executing.
+849,0x00002735,WSAEALREADY,An operation was attempted on a non-blocking socket that already had an operation in progress.
+850,0x00002736,WSAENOTSOCK,An operation was attempted on something that is not a socket.
+851,0x00002737,WSAEDESTADDRREQ,A required address was omitted from an operation on a socket.
+852,0x00002738,WSAEMSGSIZE,A message sent on a datagram socket was larger than the internal message buffer or some other network limit, or the buffer used to receive a datagram into was smaller than the datagram itself.
+853,0x00002739,WSAEPROTOTYPE,A protocol was specified in the socket function call that does not support the semantics of the socket type requested.
+854,0x0000273A,WSAENOPROTOOPT,An unknown, invalid, or unsupported option or level was specified in a getsockopt or setsockopt call.
+855,0x0000273B,WSAEPROTONOSUPPORT,The requested protocol has not been configured into the system, or no implementation for it exists.
+856,0x0000273C,WSAESOCKTNOSUPPORT,The support for the specified socket type does not exist in this address family.
+857,0x0000273D,WSAEOPNOTSUPP,The attempted operation is not supported for the type of object referenced.
+858,0x0000273E,WSAEPFNOSUPPORT,The protocol family has not been configured into the system or no implementation for it exists.
+859,0x0000273F,WSAEAFNOSUPPORT,An address incompatible with the requested protocol was used.
+860,0x00002740,WSAEADDRINUSE,Only one usage of each socket address (protocol/network address/port) is normally permitted.
+861,0x00002741,WSAEADDRNOTAVAIL,The requested address is not valid in its context.
+862,0x00002742,WSAENETDOWN,A socket operation encountered a dead network.
+863,0x00002743,WSAENETUNREACH,A socket operation was attempted to an unreachable network.
+864,0x00002744,WSAENETRESET,The connection has been broken due to keep-alive activity detecting a failure while the operation was in progress.
+865,0x00002745,WSAECONNABORTED,An established connection was aborted by the software in your host machine.
+866,0x00002746,WSAECONNRESET,An existing connection was forcibly closed by the remote host.
+867,0x00002747,WSAENOBUFS,An operation on a socket could not be performed because the system lacked sufficient buffer space or because a queue was full.
+868,0x00002748,WSAEISCONN,A connect request was made on an already connected socket.
+869,0x00002749,WSAENOTCONN,A request to send or receive data was disallowed because the socket is not connected and (when sending on a datagram socket using a sendto call) no address was supplied.
+870,0x0000274A,WSAESHUTDOWN,A request to send or receive data was disallowed because the socket had already been shut down in that direction with a previous shutdown call.
+871,0x0000274B,WSAETOOMANYREFS,Too many references to some kernel object.
+872,0x0000274C,WSAETIMEDOUT,A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.
+873,0x0000274D,WSAECONNREFUSED,No connection could be made because the target machine actively refused it.
+874,0x0000274E,WSAELOOP,Cannot translate name.
+875,0x0000274F,WSAENAMETOOLONG,Name component or name was too long.
+876,0x00002750,WSAEHOSTDOWN,A socket operation failed because the destination host was down.
+877,0x00002751,WSAEHOSTUNREACH,A socket operation was attempted to an unreachable host.
+878,0x00002752,WSAENOTEMPTY,Cannot remove a directory that is not empty.
+879,0x00002753,WSAEPROCLIM,A Windows Sockets implementation may have a limit on the number of applications that may use it simultaneously.
+880,0x00002754,WSAEUSERS,Ran out of quota.
+881,0x00002755,WSAEDQUOT,Ran out of disk quota.
+882,0x00002756,WSAESTALE,File handle reference is no longer available.
+883,0x00002757,WSAEREMOTE,Item is not available locally.
+884,0x0000276B,WSASYSNOTREADY,WSAStartup cannot function at this time because the underlying system it uses to provide network services is currently unavailable.
+885,0x0000276C,WSAVERNOTSUPPORTED,The Windows Sockets version requested is not supported.
+886,0x0000276D,WSANOTINITIALISED,Either the application has not called WSAStartup, or WSAStartup failed.
+887,0x00002775,WSAEDISCON,Returned by WSARecv or WSARecvFrom to indicate the remote party has initiated a graceful shutdown sequence.
+888,0x00002776,WSAENOMORE,No more results can be returned by WSALookupServiceNext.
+889,0x00002777,WSAECANCELLED,A call to WSALookupServiceEnd was made while this call was still processing. The call has been canceled.
+890,0x00002778,WSAEINVALIDPROCTABLE,The procedure call table is invalid.
+891,0x00002779,WSAEINVALIDPROVIDER,The requested service provider is invalid.
+892,0x0000277A,WSAEPROVIDERFAILEDINIT,The requested service provider could not be loaded or initialized.
+893,0x0000277B,WSASYSCALLFAILURE,A system call has failed.
+894,0x0000277C,WSASERVICE_NOT_FOUND,No such service is known. The service cannot be found in the specified name space.
+895,0x0000277D,WSATYPE_NOT_FOUND,The specified class was not found.
+896,0x0000277E,WSA_E_NO_MORE,No more results can be returned by WSALookupServiceNext.
+897,0x0000277F,WSA_E_CANCELLED,A call to WSALookupServiceEnd was made while this call was still processing. The call has been canceled.
+898,0x00002780,WSAEREFUSED,A database query failed because it was actively refused.
+899,0x00002AF9,WSAHOST_NOT_FOUND,No such host is known.
+900,0x00002AFA,WSATRY_AGAIN,This is usually a temporary error during hostname resolution and means that the local server did not receive a response from an authoritative server.
+901,0x00002AFB,WSANO_RECOVERY,A non-recoverable error occurred during a database lookup.
+902,0x00002AFC,WSANO_DATA,The requested name is valid, but no data of the requested type was found.
+903,0x00002AFD,WSA_QOS_RECEIVERS,At least one reserve has arrived.
+904,0x00002AFE,WSA_QOS_SENDERS,At least one path has arrived.
+905,0x00002AFF,WSA_QOS_NO_SENDERS,There are no senders.
+906,0x00002B00,WSA_QOS_NO_RECEIVERS,There are no receivers.
+907,0x00002B01,WSA_QOS_REQUEST_CONFIRMED,Reserve has been confirmed.
+908,0x00002B02,WSA_QOS_ADMISSION_FAILURE,Error due to lack of resources.
+909,0x00002B03,WSA_QOS_POLICY_FAILURE,Rejected for administrative reasons - bad credentials.
+910,0x00002B04,WSA_QOS_BAD_STYLE,Unknown or conflicting style.
+911,0x00002B05,WSA_QOS_BAD_OBJECT,Problem with some part of the filterspec or providerspecific buffer in general.
+912,0x00002B06,WSA_QOS_TRAFFIC_CTRL_ERROR,Problem with some part of the flowspec.
+913,0x00002B07,WSA_QOS_GENERIC_ERROR,General QOS error.
+914,0x00002B08,WSA_QOS_ESERVICETYPE,An invalid or unrecognized service type was found in the flowspec.
+915,0x00002B09,WSA_QOS_EFLOWSPEC,An invalid or inconsistent flowspec was found in the QOS structure.
+916,0x00002B0A,WSA_QOS_EPROVSPECBUF,Invalid QOS provider-specific buffer.
+917,0x00002B0B,WSA_QOS_EFILTERSTYLE,An invalid QOS filter style was used.
+918,0x00002B0C,WSA_QOS_EFILTERTYPE,An invalid QOS filter type was used.
+919,0x00002B0D,WSA_QOS_EFILTERCOUNT,An incorrect number of QOS FILTERSPECs were specified in the FLOWDESCRIPTOR.
+920,0x00002B0E,WSA_QOS_EOBJLENGTH,An object with an invalid ObjectLength field was specified in the QOS provider-specific buffer.
+921,0x00002B0F,WSA_QOS_EFLOWCOUNT,An incorrect number of flow descriptors was specified in the QOS structure.
+922,0x00002B10,WSA_QOS_EUNKOWNPSOBJ,An unrecognized object was found in the QOS provider-specific buffer.
+923,0x00002B11,WSA_QOS_EPOLICYOBJ,An invalid policy object was found in the QOS provider-specific buffer.
+924,0x00002B12,WSA_QOS_EFLOWDESC,An invalid QOS flow descriptor was found in the flow descriptor list.
+925,0x00002B13,WSA_QOS_EPSFLOWSPEC,An invalid or inconsistent flowspec was found in the QOS provider specific buffer.
+926,0x00002B14,WSA_QOS_EPSFILTERSPEC,An invalid FILTERSPEC was found in the QOS provider-specific buffer.
+927,0x00002B15,WSA_QOS_ESDMODEOBJ,An invalid shape discard mode object was found in the QOS provider specific buffer.
+928,0x00002B16,WSA_QOS_ESHAPERATEOBJ,An invalid shaping rate object was found in the QOS provider-specific buffer.
+929,0x00002B17,WSA_QOS_RESERVED_PETYPE,A reserved policy element was found in the QOS provider-specific buffer.
+930,0x00002B18,WSA_SECURE_HOST_NOT_FOUND,No such host is known securely.
+931,0x00002B19,WSA_IPSEC_NAME_POLICY_ERROR,Name based IPSEC policy could not be added.
+932,0x00002EE0,ERROR_INTERNET_*,See Internet Error Codes and WinInet.h.
+933,0x00002EE1,ERROR_WINHTTP_*,See WinHTTP Error Codes and Winhttp.h.
+934,0x000032C8,ERROR_IPSEC_QM_POLICY_EXISTS,The specified quick mode policy already exists.
+935,0x000032C9,ERROR_IPSEC_QM_POLICY_NOT_FOUND,The specified quick mode policy was not found.
+936,0x000032CA,ERROR_IPSEC_QM_POLICY_IN_USE,The specified quick mode policy is being used.
+937,0x000032CB,ERROR_IPSEC_MM_POLICY_EXISTS,The specified main mode policy already exists.
+938,0x000032CC,ERROR_IPSEC_MM_POLICY_NOT_FOUND,The specified main mode policy was not found.
+939,0x000032CD,ERROR_IPSEC_MM_POLICY_IN_USE,The specified main mode policy is being used.
+940,0x000032CE,ERROR_IPSEC_MM_FILTER_EXISTS,The specified main mode filter already exists.
+941,0x000032CF,ERROR_IPSEC_MM_FILTER_NOT_FOUND,The specified main mode filter was not found.
+942,0x000032D0,ERROR_IPSEC_TRANSPORT_FILTER_EXISTS,The specified transport mode filter already exists.
+943,0x000032D1,ERROR_IPSEC_TRANSPORT_FILTER_NOT_FOUND,The specified transport mode filter does not exist.
+944,0x000032D2,ERROR_IPSEC_MM_AUTH_EXISTS,The specified main mode authentication list exists.
+945,0x000032D3,ERROR_IPSEC_MM_AUTH_NOT_FOUND,The specified main mode authentication list was not found.
+946,0x000032D4,ERROR_IPSEC_MM_AUTH_IN_USE,The specified main mode authentication list is being used.
+947,0x000032D5,ERROR_IPSEC_DEFAULT_MM_POLICY_NOT_FOUND,The specified default main mode policy was not found.
+948,0x000032D6,ERROR_IPSEC_DEFAULT_MM_AUTH_NOT_FOUND,The specified default main mode authentication list was not found.
+949,0x000032D7,ERROR_IPSEC_DEFAULT_QM_POLICY_NOT_FOUND,The specified default quick mode policy was not found.
+950,0x000032D8,ERROR_IPSEC_TUNNEL_FILTER_EXISTS,The specified tunnel mode filter exists.
+951,0x000032D9,ERROR_IPSEC_TUNNEL_FILTER_NOT_FOUND,The specified tunnel mode filter was not found.
+952,0x000032DA,ERROR_IPSEC_MM_FILTER_PENDING_DELETION,The Main Mode filter is pending deletion.
+953,0x000032DB,ERROR_IPSEC_TRANSPORT_FILTER_PENDING_DELETION,The transport filter is pending deletion.
+954,0x000032DC,ERROR_IPSEC_TUNNEL_FILTER_PENDING_DELETION,The tunnel filter is pending deletion.
+955,0x000032DD,ERROR_IPSEC_MM_POLICY_PENDING_DELETION,The Main Mode policy is pending deletion.
+956,0x000032DE,ERROR_IPSEC_MM_AUTH_PENDING_DELETION,The Main Mode authentication bundle is pending deletion.
+957,0x000032DF,ERROR_IPSEC_QM_POLICY_PENDING_DELETION,The Quick Mode policy is pending deletion.
+958,0x000032E0,WARNING_IPSEC_MM_POLICY_PRUNED,The Main Mode policy was successfully added, but some of the requested offers are not supported.
+959,0x000032E1,WARNING_IPSEC_QM_POLICY_PRUNED,The Quick Mode policy was successfully added, but some of the requested offers are not supported.
+960,0x000035E8,ERROR_IPSEC_IKE_NEG_STATUS_BEGIN,ERROR_IPSEC_IKE_NEG_STATUS_BEGIN
+961,0x000035E9,ERROR_IPSEC_IKE_AUTH_FAIL,IKE authentication credentials are unacceptable.
+962,0x000035EA,ERROR_IPSEC_IKE_ATTRIB_FAIL,IKE security attributes are unacceptable.
+963,0x000035EB,ERROR_IPSEC_IKE_NEGOTIATION_PENDING,IKE Negotiation in progress.
+964,0x000035EC,ERROR_IPSEC_IKE_GENERAL_PROCESSING_ERROR,General processing error.
+965,0x000035ED,ERROR_IPSEC_IKE_TIMED_OUT,Negotiation timed out.
+966,0x000035EE,ERROR_IPSEC_IKE_NO_CERT,IKE failed to find valid machine certificate. Contact your Network Security Administrator about installing a valid certificate in the appropriate Certificate Store.
+967,0x000035EF,ERROR_IPSEC_IKE_SA_DELETED,IKE SA deleted by peer before establishment completed.
+968,0x000035F0,ERROR_IPSEC_IKE_SA_REAPED,IKE SA deleted before establishment completed.
+969,0x000035F1,ERROR_IPSEC_IKE_MM_ACQUIRE_DROP,Negotiation request sat in Queue too long.
+970,0x000035F2,ERROR_IPSEC_IKE_QM_ACQUIRE_DROP,Negotiation request sat in Queue too long.
+971,0x000035F3,ERROR_IPSEC_IKE_QUEUE_DROP_MM,Negotiation request sat in Queue too long.
+972,0x000035F4,ERROR_IPSEC_IKE_QUEUE_DROP_NO_MM,Negotiation request sat in Queue too long.
+973,0x000035F5,ERROR_IPSEC_IKE_DROP_NO_RESPONSE,No response from peer.
+974,0x000035F6,ERROR_IPSEC_IKE_MM_DELAY_DROP,Negotiation took too long.
+975,0x000035F7,ERROR_IPSEC_IKE_QM_DELAY_DROP,Negotiation took too long.
+976,0x000035F8,ERROR_IPSEC_IKE_ERROR,Unknown error occurred.
+977,0x000035F9,ERROR_IPSEC_IKE_CRL_FAILED,Certificate Revocation Check failed.
+978,0x000035FA,ERROR_IPSEC_IKE_INVALID_KEY_USAGE,Invalid certificate key usage.
+979,0x000035FB,ERROR_IPSEC_IKE_INVALID_CERT_TYPE,Invalid certificate type.
+980,0x000035FC,ERROR_IPSEC_IKE_NO_PRIVATE_KEY,IKE negotiation failed because the machine certificate used does not have a private key. IPsec certificates require a private key. Contact your Network Security administrator about replacing with a certificate that has a private key.
+981,0x000035FD,ERROR_IPSEC_IKE_SIMULTANEOUS_REKEY,Simultaneous rekeys were detected.
+982,0x000035FE,ERROR_IPSEC_IKE_DH_FAIL,Failure in Diffie-Hellman computation.
+983,0x000035FF,ERROR_IPSEC_IKE_CRITICAL_PAYLOAD_NOT_RECOGNIZED,Don't know how to process critical payload.
+984,0x00003600,ERROR_IPSEC_IKE_INVALID_HEADER,Invalid header.
+985,0x00003601,ERROR_IPSEC_IKE_NO_POLICY,No policy configured.
+986,0x00003602,ERROR_IPSEC_IKE_INVALID_SIGNATURE,Failed to verify signature.
+987,0x00003603,ERROR_IPSEC_IKE_KERBEROS_ERROR,Failed to authenticate using Kerberos.
+988,0x00003604,ERROR_IPSEC_IKE_NO_PUBLIC_KEY,Peer's certificate did not have a public key.
+989,0x00003605,ERROR_IPSEC_IKE_PROCESS_ERR,Error processing error payload.
+990,0x00003606,ERROR_IPSEC_IKE_PROCESS_ERR_SA,Error processing SA payload.
+991,0x00003607,ERROR_IPSEC_IKE_PROCESS_ERR_PROP,Error processing Proposal payload.
+992,0x00003608,ERROR_IPSEC_IKE_PROCESS_ERR_TRANS,Error processing Transform payload.
+993,0x00003609,ERROR_IPSEC_IKE_PROCESS_ERR_KE,Error processing KE payload.
+994,0x0000360A,ERROR_IPSEC_IKE_PROCESS_ERR_ID,Error processing ID payload.
+995,0x0000360B,ERROR_IPSEC_IKE_PROCESS_ERR_CERT,Error processing Cert payload.
+996,0x0000360C,ERROR_IPSEC_IKE_PROCESS_ERR_CERT_REQ,Error processing Certificate Request payload.
+997,0x0000360D,ERROR_IPSEC_IKE_PROCESS_ERR_HASH,Error processing Hash payload.
+998,0x0000360E,ERROR_IPSEC_IKE_PROCESS_ERR_SIG,Error processing Signature payload.
+999,0x0000360F,ERROR_IPSEC_IKE_PROCESS_ERR_NONCE,Error processing Nonce payload.
+1000,0x00003610,ERROR_IPSEC_IKE_PROCESS_ERR_NOTIFY,Error processing Notify payload.
+1001,0x00003611,ERROR_IPSEC_IKE_PROCESS_ERR_DELETE,Error processing Delete Payload.
+1002,0x00003612,ERROR_IPSEC_IKE_PROCESS_ERR_VENDOR,Error processing VendorId payload.
+1003,0x00003613,ERROR_IPSEC_IKE_INVALID_PAYLOAD,Invalid payload received.
+1004,0x00003614,ERROR_IPSEC_IKE_LOAD_SOFT_SA,Soft SA loaded.
+1005,0x00003615,ERROR_IPSEC_IKE_SOFT_SA_TORN_DOWN,Soft SA torn down.
+1006,0x00003616,ERROR_IPSEC_IKE_INVALID_COOKIE,Invalid cookie received.
+1007,0x00003617,ERROR_IPSEC_IKE_NO_PEER_CERT,Peer failed to send valid machine certificate.
+1008,0x00003618,ERROR_IPSEC_IKE_PEER_CRL_FAILED,Certification Revocation check of peer's certificate failed.
+1009,0x00003619,ERROR_IPSEC_IKE_POLICY_CHANGE,New policy invalidated SAs formed with old policy.
+1010,0x0000361A,ERROR_IPSEC_IKE_NO_MM_POLICY,There is no available Main Mode IKE policy.
+1011,0x0000361B,ERROR_IPSEC_IKE_NOTCBPRIV,Failed to enabled TCB privilege.
+1012,0x0000361C,ERROR_IPSEC_IKE_SECLOADFAIL,Failed to load SECURITY.DLL.
+1013,0x0000361D,ERROR_IPSEC_IKE_FAILSSPINIT,Failed to obtain security function table dispatch address from SSPI.
+1014,0x0000361E,ERROR_IPSEC_IKE_FAILQUERYSSP,Failed to query Kerberos package to obtain max token size.
+1015,0x0000361F,ERROR_IPSEC_IKE_SRVACQFAIL,Failed to obtain Kerberos server credentials for ISAKMP/ERROR_IPSEC_IKE service. Kerberos authentication will not function. The most likely reason for this is lack of domain membership. This is normal if your computer is a member of a workgroup.
+1016,0x00003620,ERROR_IPSEC_IKE_SRVQUERYCRED,Failed to determine SSPI principal name for ISAKMP/ERROR_IPSEC_IKE service (QueryCredentialsAttributes).
+1017,0x00003621,ERROR_IPSEC_IKE_GETSPIFAIL,Failed to obtain new SPI for the inbound SA from IPsec driver. The most common cause for this is that the driver does not have the correct filter. Check your policy to verify the filters.
+1018,0x00003622,ERROR_IPSEC_IKE_INVALID_FILTER,Given filter is invalid.
+1019,0x00003623,ERROR_IPSEC_IKE_OUT_OF_MEMORY,Memory allocation failed.
+1020,0x00003624,ERROR_IPSEC_IKE_ADD_UPDATE_KEY_FAILED,Failed to add Security Association to IPsec Driver. The most common cause for this is if the IKE negotiation took too long to complete. If the problem persists, reduce the load on the faulting machine.
+1021,0x00003625,ERROR_IPSEC_IKE_INVALID_POLICY,Invalid policy.
+1022,0x00003626,ERROR_IPSEC_IKE_UNKNOWN_DOI,Invalid DOI.
+1023,0x00003627,ERROR_IPSEC_IKE_INVALID_SITUATION,Invalid situation.
+1024,0x00003628,ERROR_IPSEC_IKE_DH_FAILURE,Diffie-Hellman failure.
+1025,0x00003629,ERROR_IPSEC_IKE_INVALID_GROUP,Invalid Diffie-Hellman group.
+1026,0x0000362A,ERROR_IPSEC_IKE_ENCRYPT,Error encrypting payload.
+1027,0x0000362B,ERROR_IPSEC_IKE_DECRYPT,Error decrypting payload.
+1028,0x0000362C,ERROR_IPSEC_IKE_POLICY_MATCH,Policy match error.
+1029,0x0000362D,ERROR_IPSEC_IKE_UNSUPPORTED_ID,Unsupported ID.
+1030,0x0000362E,ERROR_IPSEC_IKE_INVALID_HASH,Hash verification failed.
+1031,0x0000362F,ERROR_IPSEC_IKE_INVALID_HASH_ALG,Invalid hash algorithm.
+1032,0x00003630,ERROR_IPSEC_IKE_INVALID_HASH_SIZE,Invalid hash size.
+1033,0x00003631,ERROR_IPSEC_IKE_INVALID_ENCRYPT_ALG,Invalid encryption algorithm.
+1034,0x00003632,ERROR_IPSEC_IKE_INVALID_AUTH_ALG,Invalid authentication algorithm.
+1035,0x00003633,ERROR_IPSEC_IKE_INVALID_SIG,Invalid certificate signature.
+1036,0x00003634,ERROR_IPSEC_IKE_LOAD_FAILED,Load failed.
+1037,0x00003635,ERROR_IPSEC_IKE_RPC_DELETE,Deleted via RPC call.
+1038,0x00003636,ERROR_IPSEC_IKE_BENIGN_REINIT,Temporary state created to perform reinitialization. This is not a real failure.
+1039,0x00003637,ERROR_IPSEC_IKE_INVALID_RESPONDER_LIFETIME_NOTIFY,The lifetime value received in the Responder Lifetime Notify is below the Windows 2000 configured minimum value. Please fix the policy on the peer machine.
+1040,0x00003638,ERROR_IPSEC_IKE_INVALID_MAJOR_VERSION,The recipient cannot handle version of IKE specified in the header.
+1041,0x00003639,ERROR_IPSEC_IKE_INVALID_CERT_KEYLEN,Key length in certificate is too small for configured security requirements.
+1042,0x0000363A,ERROR_IPSEC_IKE_MM_LIMIT,Max number of established MM SAs to peer exceeded.
+1043,0x0000363B,ERROR_IPSEC_IKE_NEGOTIATION_DISABLED,IKE received a policy that disables negotiation.
+1044,0x0000363C,ERROR_IPSEC_IKE_QM_LIMIT,Reached maximum quick mode limit for the main mode. New main mode will be started.
+1045,0x0000363D,ERROR_IPSEC_IKE_MM_EXPIRED,Main mode SA lifetime expired or peer sent a main mode delete.
+1046,0x0000363E,ERROR_IPSEC_IKE_PEER_MM_ASSUMED_INVALID,Main mode SA assumed to be invalid because peer stopped responding.
+1047,0x0000363F,ERROR_IPSEC_IKE_CERT_CHAIN_POLICY_MISMATCH,Certificate doesn't chain to a trusted root in IPsec policy.
+1048,0x00003640,ERROR_IPSEC_IKE_UNEXPECTED_MESSAGE_ID,Received unexpected message ID.
+1049,0x00003641,ERROR_IPSEC_IKE_INVALID_AUTH_PAYLOAD,Received invalid authentication offers.
+1050,0x00003642,ERROR_IPSEC_IKE_DOS_COOKIE_SENT,Sent DoS cookie notify to initiator.
+1051,0x00003643,ERROR_IPSEC_IKE_SHUTTING_DOWN,IKE service is shutting down.
+1052,0x00003644,ERROR_IPSEC_IKE_CGA_AUTH_FAILED,Could not verify binding between CGA address and certificate.
+1053,0x00003645,ERROR_IPSEC_IKE_PROCESS_ERR_NATOA,Error processing NatOA payload.
+1054,0x00003646,ERROR_IPSEC_IKE_INVALID_MM_FOR_QM,Parameters of the main mode are invalid for this quick mode.
+1055,0x00003647,ERROR_IPSEC_IKE_QM_EXPIRED,Quick mode SA was expired by IPsec driver.
+1056,0x00003648,ERROR_IPSEC_IKE_TOO_MANY_FILTERS,Too many dynamically added IKEEXT filters were detected.
+1057,0x00003649,ERROR_IPSEC_IKE_NEG_STATUS_END,ERROR_IPSEC_IKE_NEG_STATUS_END
+1058,0x0000364A,ERROR_IPSEC_IKE_KILL_DUMMY_NAP_TUNNEL,NAP reauth succeeded and must delete the dummy NAP IKEv2 tunnel.
+1059,0x0000364B,ERROR_IPSEC_IKE_INNER_IP_ASSIGNMENT_FAILURE,Error in assigning inner IP address to initiator in tunnel mode.
+1060,0x0000364C,ERROR_IPSEC_IKE_REQUIRE_CP_PAYLOAD_MISSING,Require configuration payload missing.
+1061,0x0000364D,ERROR_IPSEC_KEY_MODULE_IMPERSONATION_NEGOTIATION_PENDING,A negotiation running as the security principle who issued the connection is in progress.
+1062,0x0000364E,ERROR_IPSEC_IKE_COEXISTENCE_SUPPRESS,SA was deleted due to IKEv1/AuthIP co-existence suppress check.
+1063,0x0000364F,ERROR_IPSEC_IKE_RATELIMIT_DROP,Incoming SA request was dropped due to peer IP address rate limiting.
+1064,0x00003650,ERROR_IPSEC_IKE_PEER_DOESNT_SUPPORT_MOBIKE,Peer does not support MOBIKE.
+1065,0x00003651,ERROR_IPSEC_IKE_AUTHORIZATION_FAILURE,SA establishment is not authorized.
+1066,0x00003652,ERROR_IPSEC_IKE_STRONG_CRED_AUTHORIZATION_FAILURE,SA establishment is not authorized because there is not a sufficiently strong PKINIT-based credential.
+1067,0x00003653,ERROR_IPSEC_IKE_AUTHORIZATION_FAILURE_WITH_OPTIONAL_RETRY,SA establishment is not authorized. You may need to enter updated or different credentials such as a smartcard.
+1068,0x00003654,ERROR_IPSEC_IKE_STRONG_CRED_AUTHORIZATION_AND_CERTMAP_FAILURE,SA establishment is not authorized because there is not a sufficiently strong PKINIT-based credential. This might be related to certificate-to-account mapping failure for the SA.
+1069,0x00003655,ERROR_IPSEC_IKE_NEG_STATUS_EXTENDED_END,ERROR_IPSEC_IKE_NEG_STATUS_EXTENDED_END
+1070,0x00003656,ERROR_IPSEC_BAD_SPI,The SPI in the packet does not match a valid IPsec SA.
+1071,0x00003657,ERROR_IPSEC_SA_LIFETIME_EXPIRED,Packet was received on an IPsec SA whose lifetime has expired.
+1072,0x00003658,ERROR_IPSEC_WRONG_SA,Packet was received on an IPsec SA that does not match the packet characteristics.
+1073,0x00003659,ERROR_IPSEC_REPLAY_CHECK_FAILED,Packet sequence number replay check failed.
+1074,0x0000365A,ERROR_IPSEC_INVALID_PACKET,IPsec header and/or trailer in the packet is invalid.
+1075,0x0000365B,ERROR_IPSEC_INTEGRITY_CHECK_FAILED,IPsec integrity check failed.
+1076,0x0000365C,ERROR_IPSEC_CLEAR_TEXT_DROP,IPsec dropped a clear text packet.
+1077,0x0000365D,ERROR_IPSEC_AUTH_FIREWALL_DROP,IPsec dropped an incoming ESP packet in authenticated firewall mode. This drop is benign.
+1078,0x0000365E,ERROR_IPSEC_THROTTLE_DROP,IPsec dropped a packet due to DoS throttling.
+1079,0x00003665,ERROR_IPSEC_DOSP_BLOCK,IPsec DoS Protection matched an explicit block rule.
+1080,0x00003666,ERROR_IPSEC_DOSP_RECEIVED_MULTICAST,IPsec DoS Protection received an IPsec specific multicast packet which is not allowed.
+1081,0x00003667,ERROR_IPSEC_DOSP_INVALID_PACKET,IPsec DoS Protection received an incorrectly formatted packet.
+1082,0x00003668,ERROR_IPSEC_DOSP_STATE_LOOKUP_FAILED,IPsec DoS Protection failed to look up state.
+1083,0x00003669,ERROR_IPSEC_DOSP_MAX_ENTRIES,IPsec DoS Protection failed to create state because the maximum number of entries allowed by policy has been reached.
+1084,0x0000366A,ERROR_IPSEC_DOSP_KEYMOD_NOT_ALLOWED,IPsec DoS Protection received an IPsec negotiation packet for a keying module which is not allowed by policy.
+1085,0x0000366B,ERROR_IPSEC_DOSP_NOT_INSTALLED,IPsec DoS Protection has not been enabled.
+1086,0x0000366C,ERROR_IPSEC_DOSP_MAX_PER_IP_RATELIMIT_QUEUES,IPsec DoS Protection failed to create a per internal IP rate limit queue because the maximum number of queues allowed by policy has been reached.
+1087,0x000036B0,ERROR_SXS_SECTION_NOT_FOUND,The requested section was not present in the activation context.
+1088,0x000036B1,ERROR_SXS_CANT_GEN_ACTCTX,The application has failed to start because its side-by-side configuration is incorrect. Please see the application event log or use the command-line sxstrace.exe tool for more detail.
+1089,0x000036B2,ERROR_SXS_INVALID_ACTCTXDATA_FORMAT,The application binding data format is invalid.
+1090,0x000036B3,ERROR_SXS_ASSEMBLY_NOT_FOUND,The referenced assembly is not installed on your system.
+1091,0x000036B4,ERROR_SXS_MANIFEST_FORMAT_ERROR,The manifest file does not begin with the required tag and format information.
+1092,0x000036B5,ERROR_SXS_MANIFEST_PARSE_ERROR,The manifest file contains one or more syntax errors.
+1093,0x000036B6,ERROR_SXS_ACTIVATION_CONTEXT_DISABLED,The application attempted to activate a disabled activation context.
+1094,0x000036B7,ERROR_SXS_KEY_NOT_FOUND,The requested lookup key was not found in any active activation context.
+1095,0x000036B8,ERROR_SXS_VERSION_CONFLICT,A component version required by the application conflicts with another component version already active.
+1096,0x000036B9,ERROR_SXS_WRONG_SECTION_TYPE,The type requested activation context section does not match the query API used.
+1097,0x000036BA,ERROR_SXS_THREAD_QUERIES_DISABLED,Lack of system resources has required isolated activation to be disabled for the current thread of execution.
+1098,0x000036BB,ERROR_SXS_PROCESS_DEFAULT_ALREADY_SET,An attempt to set the process default activation context failed because the process default activation context was already set.
+1099,0x000036BC,ERROR_SXS_UNKNOWN_ENCODING_GROUP,The encoding group identifier specified is not recognized.
+1100,0x000036BD,ERROR_SXS_UNKNOWN_ENCODING,The encoding requested is not recognized.
+1101,0x000036BE,ERROR_SXS_INVALID_XML_NAMESPACE_URI,The manifest contains a reference to an invalid URI.
+1102,0x000036BF,ERROR_SXS_ROOT_MANIFEST_DEPENDENCY_NOT_INSTALLED,The application manifest contains a reference to a dependent assembly which is not installed.
+1103,0x000036C0,ERROR_SXS_LEAF_MANIFEST_DEPENDENCY_NOT_INSTALLED,The manifest for an assembly used by the application has a reference to a dependent assembly which is not installed.
+1104,0x000036C1,ERROR_SXS_INVALID_ASSEMBLY_IDENTITY_ATTRIBUTE,The manifest contains an attribute for the assembly identity which is not valid.
+1105,0x000036C2,ERROR_SXS_MANIFEST_MISSING_REQUIRED_DEFAULT_NAMESPACE,The manifest is missing the required default namespace specification on the assembly element.
+1106,0x000036C3,ERROR_SXS_MANIFEST_INVALID_REQUIRED_DEFAULT_NAMESPACE,The manifest has a default namespace specified on the assembly element but its value is not "urn:schemas-microsoft-com:asm.v1".
+1107,0x000036C4,ERROR_SXS_PRIVATE_MANIFEST_CROSS_PATH_WITH_REPARSE_POINT,The private manifest probed has crossed a path with an unsupported reparse point.
+1108,0x000036C5,ERROR_SXS_DUPLICATE_DLL_NAME,Two or more components referenced directly or indirectly by the application manifest have files by the same name.
+1109,0x000036C6,ERROR_SXS_DUPLICATE_WINDOWCLASS_NAME,Two or more components referenced directly or indirectly by the application manifest have window classes with the same name.
+1110,0x000036C7,ERROR_SXS_DUPLICATE_CLSID,Two or more components referenced directly or indirectly by the application manifest have the same COM server CLSIDs.
+1111,0x000036C8,ERROR_SXS_DUPLICATE_IID,Two or more components referenced directly or indirectly by the application manifest have proxies for the same COM interface IIDs.
+1112,0x000036C9,ERROR_SXS_DUPLICATE_TLBID,Two or more components referenced directly or indirectly by the application manifest have the same COM type library TLBIDs.
+1113,0x000036CA,ERROR_SXS_DUPLICATE_PROGID,Two or more components referenced directly or indirectly by the application manifest have the same COM ProgIDs.
+1114,0x000036CB,ERROR_SXS_DUPLICATE_ASSEMBLY_NAME,Two or more components referenced directly or indirectly by the application manifest are different versions of the same component which is not permitted.
+1115,0x000036CC,ERROR_SXS_FILE_HASH_MISMATCH,A component's file does not match the verification information present in the component manifest.
+1116,0x000036CD,ERROR_SXS_POLICY_PARSE_ERROR,The policy manifest contains one or more syntax errors.
+1117,0x000036CE,ERROR_SXS_XML_E_MISSINGQUOTE,Manifest Parse Error : A string literal was expected, but no opening quote character was found.
+1118,0x000036CF,ERROR_SXS_XML_E_COMMENTSYNTAX,Manifest Parse Error : Incorrect syntax was used in a comment.
+1119,0x000036D0,ERROR_SXS_XML_E_BADSTARTNAMECHAR,Manifest Parse Error : A name was started with an invalid character.
+1120,0x000036D1,ERROR_SXS_XML_E_BADNAMECHAR,Manifest Parse Error : A name contained an invalid character.
+1121,0x000036D2,ERROR_SXS_XML_E_BADCHARINSTRING,Manifest Parse Error : A string literal contained an invalid character.
+1122,0x000036D3,ERROR_SXS_XML_E_XMLDECLSYNTAX,Manifest Parse Error : Invalid syntax for an xml declaration.
+1123,0x000036D4,ERROR_SXS_XML_E_BADCHARDATA,Manifest Parse Error : An Invalid character was found in text content.
+1124,0x000036D5,ERROR_SXS_XML_E_MISSINGWHITESPACE,Manifest Parse Error : Required white space was missing.
+1125,0x000036D6,ERROR_SXS_XML_E_EXPECTINGTAGEND,Manifest Parse Error : The character '>' was expected.
+1126,0x000036D7,ERROR_SXS_XML_E_MISSINGSEMICOLON,Manifest Parse Error : A semi colon character was expected.
+1127,0x000036D8,ERROR_SXS_XML_E_UNBALANCEDPAREN,Manifest Parse Error : Unbalanced parentheses.
+1128,0x000036D9,ERROR_SXS_XML_E_INTERNALERROR,Manifest Parse Error : Internal error.
+1129,0x000036DA,ERROR_SXS_XML_E_UNEXPECTED_WHITESPACE,Manifest Parse Error : Whitespace is not allowed at this location.
+1130,0x000036DB,ERROR_SXS_XML_E_INCOMPLETE_ENCODING,Manifest Parse Error : End of file reached in invalid state for current encoding.
+1131,0x000036DC,ERROR_SXS_XML_E_MISSING_PAREN,Manifest Parse Error : Missing parenthesis.
+1132,0x000036DD,ERROR_SXS_XML_E_EXPECTINGCLOSEQUOTE,Manifest Parse Error : A single or double closing quote character (\' or \") is missing.
+1133,0x000036DE,ERROR_SXS_XML_E_MULTIPLE_COLONS,Manifest Parse Error : Multiple colons are not allowed in a name.
+1134,0x000036DF,ERROR_SXS_XML_E_INVALID_DECIMAL,Manifest Parse Error : Invalid character for decimal digit.
+1135,0x000036E0,ERROR_SXS_XML_E_INVALID_HEXIDECIMAL,Manifest Parse Error : Invalid character for hexadecimal digit.
+1136,0x000036E1,ERROR_SXS_XML_E_INVALID_UNICODE,Manifest Parse Error : Invalid unicode character value for this platform.
+1137,0x000036E2,ERROR_SXS_XML_E_WHITESPACEORQUESTIONMARK,Manifest Parse Error : Expecting whitespace or '?'.
+1138,0x000036E3,ERROR_SXS_XML_E_UNEXPECTEDENDTAG,Manifest Parse Error : End tag was not expected at this location.
+1139,0x000036E4,ERROR_SXS_XML_E_UNCLOSEDTAG,Manifest Parse Error : The following tags were not closed: %1.
+1140,0x000036E5,ERROR_SXS_XML_E_DUPLICATEATTRIBUTE,Manifest Parse Error : Duplicate attribute.
+1141,0x000036E6,ERROR_SXS_XML_E_MULTIPLEROOTS,Manifest Parse Error : Only one top level element is allowed in an XML document.
+1142,0x000036E7,ERROR_SXS_XML_E_INVALIDATROOTLEVEL,Manifest Parse Error : Invalid at the top level of the document.
+1143,0x000036E8,ERROR_SXS_XML_E_BADXMLDECL,Manifest Parse Error : Invalid xml declaration.
+1144,0x000036E9,ERROR_SXS_XML_E_MISSINGROOT,Manifest Parse Error : XML document must have a top level element.
+1145,0x000036EA,ERROR_SXS_XML_E_UNEXPECTEDEOF,Manifest Parse Error : Unexpected end of file.
+1146,0x000036EB,ERROR_SXS_XML_E_BADPEREFINSUBSET,Manifest Parse Error : Parameter entities cannot be used inside markup declarations in an internal subset.
+1147,0x000036EC,ERROR_SXS_XML_E_UNCLOSEDSTARTTAG,Manifest Parse Error : Element was not closed.
+1148,0x000036ED,ERROR_SXS_XML_E_UNCLOSEDENDTAG,Manifest Parse Error : End element was missing the character '>'.
+1149,0x000036EE,ERROR_SXS_XML_E_UNCLOSEDSTRING,Manifest Parse Error : A string literal was not closed.
+1150,0x000036EF,ERROR_SXS_XML_E_UNCLOSEDCOMMENT,Manifest Parse Error : A comment was not closed.
+1151,0x000036F0,ERROR_SXS_XML_E_UNCLOSEDDECL,Manifest Parse Error : A declaration was not closed.
+1152,0x000036F1,ERROR_SXS_XML_E_UNCLOSEDCDATA,Manifest Parse Error : A CDATA section was not closed.
+1153,0x000036F2,ERROR_SXS_XML_E_RESERVEDNAMESPACE,Manifest Parse Error : The namespace prefix is not allowed to start with the reserved string "xml".
+1154,0x000036F3,ERROR_SXS_XML_E_INVALIDENCODING,Manifest Parse Error : System does not support the specified encoding.
+1155,0x000036F4,ERROR_SXS_XML_E_INVALIDSWITCH,Manifest Parse Error : Switch from current encoding to specified encoding not supported.
+1156,0x000036F5,ERROR_SXS_XML_E_BADXMLCASE,Manifest Parse Error : The name 'xml' is reserved and must be lower case.
+1157,0x000036F6,ERROR_SXS_XML_E_INVALID_STANDALONE,Manifest Parse Error : The standalone attribute must have the value 'yes' or 'no'.
+1158,0x000036F7,ERROR_SXS_XML_E_UNEXPECTED_STANDALONE,Manifest Parse Error : The standalone attribute cannot be used in external entities.
+1159,0x000036F8,ERROR_SXS_XML_E_INVALID_VERSION,Manifest Parse Error : Invalid version number.
+1160,0x000036F9,ERROR_SXS_XML_E_MISSINGEQUALS,Manifest Parse Error : Missing equals sign between attribute and attribute value.
+1161,0x000036FA,ERROR_SXS_PROTECTION_RECOVERY_FAILED,Assembly Protection Error : Unable to recover the specified assembly.
+1162,0x000036FB,ERROR_SXS_PROTECTION_PUBLIC_KEY_TOO_SHORT,Assembly Protection Error : The public key for an assembly was too short to be allowed.
+1163,0x000036FC,ERROR_SXS_PROTECTION_CATALOG_NOT_VALID,Assembly Protection Error : The catalog for an assembly is not valid, or does not match the assembly's manifest.
+1164,0x000036FD,ERROR_SXS_UNTRANSLATABLE_HRESULT,An HRESULT could not be translated to a corresponding Win32 error code.
+1165,0x000036FE,ERROR_SXS_PROTECTION_CATALOG_FILE_MISSING,Assembly Protection Error : The catalog for an assembly is missing.
+1166,0x000036FF,ERROR_SXS_MISSING_ASSEMBLY_IDENTITY_ATTRIBUTE,The supplied assembly identity is missing one or more attributes which must be present in this context.
+1167,0x00003700,ERROR_SXS_INVALID_ASSEMBLY_IDENTITY_ATTRIBUTE_NAME,The supplied assembly identity has one or more attribute names that contain characters not permitted in XML names.
+1168,0x00003701,ERROR_SXS_ASSEMBLY_MISSING,The referenced assembly could not be found.
+1169,0x00003702,ERROR_SXS_CORRUPT_ACTIVATION_STACK,The activation context activation stack for the running thread of execution is corrupt.
+1170,0x00003703,ERROR_SXS_CORRUPTION,The application isolation metadata for this process or thread has become corrupt.
+1171,0x00003704,ERROR_SXS_EARLY_DEACTIVATION,The activation context being deactivated is not the most recently activated one.
+1172,0x00003705,ERROR_SXS_INVALID_DEACTIVATION,The activation context being deactivated is not active for the current thread of execution.
+1173,0x00003706,ERROR_SXS_MULTIPLE_DEACTIVATION,The activation context being deactivated has already been deactivated.
+1174,0x00003707,ERROR_SXS_PROCESS_TERMINATION_REQUESTED,A component used by the isolation facility has requested to terminate the process.
+1175,0x00003708,ERROR_SXS_RELEASE_ACTIVATION_CONTEXT,A kernel mode component is releasing a reference on an activation context.
+1176,0x00003709,ERROR_SXS_SYSTEM_DEFAULT_ACTIVATION_CONTEXT_EMPTY,The activation context of system default assembly could not be generated.
+1177,0x0000370A,ERROR_SXS_INVALID_IDENTITY_ATTRIBUTE_VALUE,The value of an attribute in an identity is not within the legal range.
+1178,0x0000370B,ERROR_SXS_INVALID_IDENTITY_ATTRIBUTE_NAME,The name of an attribute in an identity is not within the legal range.
+1179,0x0000370C,ERROR_SXS_IDENTITY_DUPLICATE_ATTRIBUTE,An identity contains two definitions for the same attribute.
+1180,0x0000370D,ERROR_SXS_IDENTITY_PARSE_ERROR,The identity string is malformed. This may be due to a trailing comma, more than two unnamed attributes, missing attribute name or missing attribute value.
+1181,0x0000370E,ERROR_MALFORMED_SUBSTITUTION_STRING,A string containing localized substitutable content was malformed. Either a dollar sign ($) was followed by something other than a left parenthesis or another dollar sign or an substitution's right parenthesis was not found.
+1182,0x0000370F,ERROR_SXS_INCORRECT_PUBLIC_KEY_TOKEN,The public key token does not correspond to the public key specified.
+1183,0x00003710,ERROR_UNMAPPED_SUBSTITUTION_STRING,A substitution string had no mapping.
+1184,0x00003711,ERROR_SXS_ASSEMBLY_NOT_LOCKED,The component must be locked before making the request.
+1185,0x00003712,ERROR_SXS_COMPONENT_STORE_CORRUPT,The component store has been corrupted.
+1186,0x00003713,ERROR_ADVANCED_INSTALLER_FAILED,An advanced installer failed during setup or servicing.
+1187,0x00003714,ERROR_XML_ENCODING_MISMATCH,The character encoding in the XML declaration did not match the encoding used in the document.
+1188,0x00003715,ERROR_SXS_MANIFEST_IDENTITY_SAME_BUT_CONTENTS_DIFFERENT,The identities of the manifests are identical but their contents are different.
+1189,0x00003716,ERROR_SXS_IDENTITIES_DIFFERENT,The component identities are different.
+1190,0x00003717,ERROR_SXS_ASSEMBLY_IS_NOT_A_DEPLOYMENT,The assembly is not a deployment.
+1191,0x00003718,ERROR_SXS_FILE_NOT_PART_OF_ASSEMBLY,The file is not a part of the assembly.
+1192,0x00003719,ERROR_SXS_MANIFEST_TOO_BIG,The size of the manifest exceeds the maximum allowed.
+1193,0x0000371A,ERROR_SXS_SETTING_NOT_REGISTERED,The setting is not registered.
+1194,0x0000371B,ERROR_SXS_TRANSACTION_CLOSURE_INCOMPLETE,One or more required members of the transaction are not present.
+1195,0x0000371C,ERROR_SMI_PRIMITIVE_INSTALLER_FAILED,The SMI primitive installer failed during setup or servicing.
+1196,0x0000371D,ERROR_GENERIC_COMMAND_FAILED,A generic command executable returned a result that indicates failure.
+1197,0x0000371E,ERROR_SXS_FILE_HASH_MISSING,A component is missing file verification information in its manifest.
+1198,0x00003A98,ERROR_EVT_INVALID_CHANNEL_PATH,The specified channel path is invalid.
+1199,0x00003A99,ERROR_EVT_INVALID_QUERY,The specified query is invalid.
+1200,0x00003A9A,ERROR_EVT_PUBLISHER_METADATA_NOT_FOUND,The publisher metadata cannot be found in the resource.
+1201,0x00003A9B,ERROR_EVT_EVENT_TEMPLATE_NOT_FOUND,The template for an event definition cannot be found in the resource (error = %1).
+1202,0x00003A9C,ERROR_EVT_INVALID_PUBLISHER_NAME,The specified publisher name is invalid.
+1203,0x00003A9D,ERROR_EVT_INVALID_EVENT_DATA,The event data raised by the publisher is not compatible with the event template definition in the publisher's manifest.
+1204,0x00003A9F,ERROR_EVT_CHANNEL_NOT_FOUND,The specified channel could not be found. Check channel configuration.
+1205,0x00003AA0,ERROR_EVT_MALFORMED_XML_TEXT,The specified xml text was not well-formed. See Extended Error for more details.
+1206,0x00003AA1,ERROR_EVT_SUBSCRIPTION_TO_DIRECT_CHANNEL,The caller is trying to subscribe to a direct channel which is not allowed. The events for a direct channel go directly to a logfile and cannot be subscribed to.
+1207,0x00003AA2,ERROR_EVT_CONFIGURATION_ERROR,Configuration error.
+1208,0x00003AA3,ERROR_EVT_QUERY_RESULT_STALE,The query result is stale / invalid. This may be due to the log being cleared or rolling over after the query result was created. Users should handle this code by releasing the query result object and reissuing the query.
+1209,0x00003AA4,ERROR_EVT_QUERY_RESULT_INVALID_POSITION,Query result is currently at an invalid position.
+1210,0x00003AA5,ERROR_EVT_NON_VALIDATING_MSXML,Registered MSXML doesn't support validation.
+1211,0x00003AA6,ERROR_EVT_FILTER_ALREADYSCOPED,An expression can only be followed by a change of scope operation if it itself evaluates to a node set and is not already part of some other change of scope operation.
+1212,0x00003AA7,ERROR_EVT_FILTER_NOTELTSET,Can't perform a step operation from a term that does not represent an element set.
+1213,0x00003AA8,ERROR_EVT_FILTER_INVARG,Left hand side arguments to binary operators must be either attributes, nodes or variables and right hand side arguments must be constants.
+1214,0x00003AA9,ERROR_EVT_FILTER_INVTEST,A step operation must involve either a node test or, in the case of a predicate, an algebraic expression against which to test each node in the node set identified by the preceding node set can be evaluated.
+1215,0x00003AAA,ERROR_EVT_FILTER_INVTYPE,This data type is currently unsupported.
+1216,0x00003AAB,ERROR_EVT_FILTER_PARSEERR,A syntax error occurred at position %1!d!.
+1217,0x00003AAC,ERROR_EVT_FILTER_UNSUPPORTEDOP,This operator is unsupported by this implementation of the filter.
+1218,0x00003AAD,ERROR_EVT_FILTER_UNEXPECTEDTOKEN,The token encountered was unexpected.
+1219,0x00003AAE,ERROR_EVT_INVALID_OPERATION_OVER_ENABLED_DIRECT_CHANNEL,The requested operation cannot be performed over an enabled direct channel. The channel must first be disabled before performing the requested operation.
+1220,0x00003AAF,ERROR_EVT_INVALID_CHANNEL_PROPERTY_VALUE,Channel property %1!s! contains invalid value. The value has invalid type, is outside of valid range, can't be updated or is not supported by this type of channel.
+1221,0x00003AB0,ERROR_EVT_INVALID_PUBLISHER_PROPERTY_VALUE,Publisher property %1!s! contains invalid value. The value has invalid type, is outside of valid range, can't be updated or is not supported by this type of publisher.
+1222,0x00003AB1,ERROR_EVT_CHANNEL_CANNOT_ACTIVATE,The channel fails to activate.
+1223,0x00003AB2,ERROR_EVT_FILTER_TOO_COMPLEX,The xpath expression exceeded supported complexity. Please simplify it or split it into two or more simple expressions.
+1224,0x00003AB3,ERROR_EVT_MESSAGE_NOT_FOUND,the message resource is present but the message is not found in the string/message table.
+1225,0x00003AB4,ERROR_EVT_MESSAGE_ID_NOT_FOUND,The message id for the desired message could not be found.
+1226,0x00003AB5,ERROR_EVT_UNRESOLVED_VALUE_INSERT,The substitution string for insert index (%1) could not be found.
+1227,0x00003AB6,ERROR_EVT_UNRESOLVED_PARAMETER_INSERT,The description string for parameter reference (%1) could not be found.
+1228,0x00003AB7,ERROR_EVT_MAX_INSERTS_REACHED,The maximum number of replacements has been reached.
+1229,0x00003AB8,ERROR_EVT_EVENT_DEFINITION_NOT_FOUND,The event definition could not be found for event id (%1).
+1230,0x00003AB9,ERROR_EVT_MESSAGE_LOCALE_NOT_FOUND,The locale specific resource for the desired message is not present.
+1231,0x00003ABA,ERROR_EVT_VERSION_TOO_OLD,The resource is too old to be compatible.
+1232,0x00003ABB,ERROR_EVT_VERSION_TOO_NEW,The resource is too new to be compatible.
+1233,0x00003ABC,ERROR_EVT_CANNOT_OPEN_CHANNEL_OF_QUERY,The channel at index %1!d! of the query can't be opened.
+1234,0x00003ABD,ERROR_EVT_PUBLISHER_DISABLED,The publisher has been disabled and its resource is not available. This usually occurs when the publisher is in the process of being uninstalled or upgraded.
+1235,0x00003ABE,ERROR_EVT_FILTER_OUT_OF_RANGE,Attempted to create a numeric type that is outside of its valid range.
+1236,0x00003AE8,ERROR_EC_SUBSCRIPTION_CANNOT_ACTIVATE,The subscription fails to activate.
+1237,0x00003AE9,ERROR_EC_LOG_DISABLED,The log of the subscription is in disabled state, and cannot be used to forward events to. The log must first be enabled before the subscription can be activated.
+1238,0x00003AEA,ERROR_EC_CIRCULAR_FORWARDING,When forwarding events from local machine to itself, the query of the subscription can't contain target log of the subscription.
+1239,0x00003AEB,ERROR_EC_CREDSTORE_FULL,The credential store that is used to save credentials is full.
+1240,0x00003AEC,ERROR_EC_CRED_NOT_FOUND,The credential used by this subscription can't be found in credential store.
+1241,0x00003AED,ERROR_EC_NO_ACTIVE_CHANNEL,No active channel is found for the query.
+1242,0x00003AFC,ERROR_MUI_FILE_NOT_FOUND,The resource loader failed to find MUI file.
+1243,0x00003AFD,ERROR_MUI_INVALID_FILE,The resource loader failed to load MUI file because the file fail to pass validation.
+1244,0x00003AFE,ERROR_MUI_INVALID_RC_CONFIG,The RC Manifest is corrupted with garbage data or unsupported version or missing required item.
+1245,0x00003AFF,ERROR_MUI_INVALID_LOCALE_NAME,The RC Manifest has invalid culture name.
+1246,0x00003B00,ERROR_MUI_INVALID_ULTIMATEFALLBACK_NAME,The RC Manifest has invalid ultimatefallback name.
+1247,0x00003B01,ERROR_MUI_FILE_NOT_LOADED,The resource loader cache doesn't have loaded MUI entry.
+1248,0x00003B02,ERROR_RESOURCE_ENUM_USER_STOP,User stopped resource enumeration.
+1249,0x00003B03,ERROR_MUI_INTLSETTINGS_UILANG_NOT_INSTALLED,UI language installation failed.
+1250,0x00003B04,ERROR_MUI_INTLSETTINGS_INVALID_LOCALE_NAME,Locale installation failed.
+1251,0x00003B06,ERROR_MRM_RUNTIME_NO_DEFAULT_OR_NEUTRAL_RESOURCE,A resource does not have default or neutral value.
+1252,0x00003B07,ERROR_MRM_INVALID_PRICONFIG,Invalid PRI config file.
+1253,0x00003B08,ERROR_MRM_INVALID_FILE_TYPE,Invalid file type.
+1254,0x00003B09,ERROR_MRM_UNKNOWN_QUALIFIER,Unknown qualifier.
+1255,0x00003B0A,ERROR_MRM_INVALID_QUALIFIER_VALUE,Invalid qualifier value.
+1256,0x00003B0B,ERROR_MRM_NO_CANDIDATE,No Candidate found.
+1257,0x00003B0C,ERROR_MRM_NO_MATCH_OR_DEFAULT_CANDIDATE,The ResourceMap or NamedResource has an item that does not have default or neutral resource..
+1258,0x00003B0D,ERROR_MRM_RESOURCE_TYPE_MISMATCH,Invalid ResourceCandidate type.
+1259,0x00003B0E,ERROR_MRM_DUPLICATE_MAP_NAME,Duplicate Resource Map.
+1260,0x00003B0F,ERROR_MRM_DUPLICATE_ENTRY,Duplicate Entry.
+1261,0x00003B10,ERROR_MRM_INVALID_RESOURCE_IDENTIFIER,Invalid Resource Identifier.
+1262,0x00003B11,ERROR_MRM_FILEPATH_TOO_LONG,Filepath too long.
+1263,0x00003B12,ERROR_MRM_UNSUPPORTED_DIRECTORY_TYPE,Unsupported directory type.
+1264,0x00003B16,ERROR_MRM_INVALID_PRI_FILE,Invalid PRI File.
+1265,0x00003B17,ERROR_MRM_NAMED_RESOURCE_NOT_FOUND,NamedResource Not Found.
+1266,0x00003B1F,ERROR_MRM_MAP_NOT_FOUND,ResourceMap Not Found.
+1267,0x00003B20,ERROR_MRM_UNSUPPORTED_PROFILE_TYPE,Unsupported MRT profile type.
+1268,0x00003B21,ERROR_MRM_INVALID_QUALIFIER_OPERATOR,Invalid qualifier operator.
+1269,0x00003B22,ERROR_MRM_INDETERMINATE_QUALIFIER_VALUE,Unable to determine qualifier value or qualifier value has not been set.
+1270,0x00003B23,ERROR_MRM_AUTOMERGE_ENABLED,Automerge is enabled in the PRI file.
+1271,0x00003B24,ERROR_MRM_TOO_MANY_RESOURCES,Too many resources defined for package.
+1272,0x00003B60,ERROR_MCA_INVALID_CAPABILITIES_STRING,The monitor returned a DDC/CI capabilities string that did not comply with the ACCESS.bus 3.0, DDC/CI 1.1 or MCCS 2 Revision 1 specification.
+1273,0x00003B61,ERROR_MCA_INVALID_VCP_VERSION,The monitor's VCP Version (0xDF) VCP code returned an invalid version value.
+1274,0x00003B62,ERROR_MCA_MONITOR_VIOLATES_MCCS_SPECIFICATION,The monitor does not comply with the MCCS specification it claims to support.
+1275,0x00003B63,ERROR_MCA_MCCS_VERSION_MISMATCH,The MCCS version in a monitor's mccs_ver capability does not match the MCCS version the monitor reports when the VCP Version (0xDF) VCP code is used.
+1276,0x00003B64,ERROR_MCA_UNSUPPORTED_MCCS_VERSION,The Monitor Configuration API only works with monitors that support the MCCS 1.0 specification, MCCS 2.0 specification or the MCCS 2.0 Revision 1 specification.
+1277,0x00003B65,ERROR_MCA_INTERNAL_ERROR,An internal Monitor Configuration API error occurred.
+1278,0x00003B66,ERROR_MCA_INVALID_TECHNOLOGY_TYPE_RETURNED,The monitor returned an invalid monitor technology type. CRT, Plasma and LCD (TFT) are examples of monitor technology types. This error implies that the monitor violated the MCCS 2.0 or MCCS 2.0 Revision 1 specification.
+1279,0x00003B67,ERROR_MCA_UNSUPPORTED_COLOR_TEMPERATURE,The caller of SetMonitorColorTemperature specified a color temperature that the current monitor did not support. This error implies that the monitor violated the MCCS 2.0 or MCCS 2.0 Revision 1 specification.
+1280,0x00003B92,ERROR_AMBIGUOUS_SYSTEM_DEVICE,The requested system device cannot be identified due to multiple indistinguishable devices potentially matching the identification criteria.
+1281,0x00003BC3,ERROR_SYSTEM_DEVICE_NOT_FOUND,The requested system device cannot be found.
+1282,0x00003BC4,ERROR_HASH_NOT_SUPPORTED,Hash generation for the specified hash version and hash type is not enabled on the server.
+1283,0x00003BC5,ERROR_HASH_NOT_PRESENT,The hash requested from the server is not available or no longer valid.
+1284,0x00003BD9,ERROR_SECONDARY_IC_PROVIDER_NOT_REGISTERED,The secondary interrupt controller instance that manages the specified interrupt is not registered.
+1285,0x00003BDA,ERROR_GPIO_CLIENT_INFORMATION_INVALID,The information supplied by the GPIO client driver is invalid.
+1286,0x00003BDB,ERROR_GPIO_VERSION_NOT_SUPPORTED,The version specified by the GPIO client driver is not supported.
+1287,0x00003BDC,ERROR_GPIO_INVALID_REGISTRATION_PACKET,The registration packet supplied by the GPIO client driver is not valid.
+1288,0x00003BDD,ERROR_GPIO_OPERATION_DENIED,The requested operation is not supported for the specified handle.
+1289,0x00003BDE,ERROR_GPIO_INCOMPATIBLE_CONNECT_MODE,The requested connect mode conflicts with an existing mode on one or more of the specified pins.
+1290,0x00003BDF,ERROR_GPIO_INTERRUPT_ALREADY_UNMASKED,The interrupt requested to be unmasked is not masked.
+1291,0x00003C28,ERROR_CANNOT_SWITCH_RUNLEVEL,The requested run level switch cannot be completed successfully.
+1292,0x00003C29,ERROR_INVALID_RUNLEVEL_SETTING,The service has an invalid run level setting. The run level for a service must not be higher than the run level of its dependent services.
+1293,0x00003C2A,ERROR_RUNLEVEL_SWITCH_TIMEOUT,The requested run level switch cannot be completed successfully since one or more services will not stop or restart within the specified timeout.
+1294,0x00003C2B,ERROR_RUNLEVEL_SWITCH_AGENT_TIMEOUT,A run level switch agent did not respond within the specified timeout.
+1295,0x00003C2C,ERROR_RUNLEVEL_SWITCH_IN_PROGRESS,A run level switch is currently in progress.
+1296,0x00003C2D,ERROR_SERVICES_FAILED_AUTOSTART,One or more services failed to start during the service startup phase of a run level switch.
+1297,0x00003C8D,ERROR_COM_TASK_STOP_PENDING,The task stop request cannot be completed immediately since task needs more time to shutdown.
+1298,0x00003CF0,ERROR_INSTALL_OPEN_PACKAGE_FAILED,Package could not be opened.
+1299,0x00003CF1,ERROR_INSTALL_PACKAGE_NOT_FOUND,Package was not found.
+1300,0x00003CF2,ERROR_INSTALL_INVALID_PACKAGE,Package data is invalid.
+1301,0x00003CF3,ERROR_INSTALL_RESOLVE_DEPENDENCY_FAILED,Package failed updates, dependency or conflict validation.
+1302,0x00003CF4,ERROR_INSTALL_OUT_OF_DISK_SPACE,There is not enough disk space on your computer. Please free up some space and try again.
+1303,0x00003CF5,ERROR_INSTALL_NETWORK_FAILURE,There was a problem downloading your product.
+1304,0x00003CF6,ERROR_INSTALL_REGISTRATION_FAILURE,Package could not be registered.
+1305,0x00003CF7,ERROR_INSTALL_DEREGISTRATION_FAILURE,Package could not be unregistered.
+1306,0x00003CF8,ERROR_INSTALL_CANCEL,User cancelled the install request.
+1307,0x00003CF9,ERROR_INSTALL_FAILED,Install failed. Please contact your software vendor.
+1308,0x00003CFA,ERROR_REMOVE_FAILED,Removal failed. Please contact your software vendor.
+1309,0x00003CFB,ERROR_PACKAGE_ALREADY_EXISTS,The provided package is already installed, and reinstallation of the package was blocked. Check the AppXDeployment-Server event log for details.
+1310,0x00003CFC,ERROR_NEEDS_REMEDIATION,The application cannot be started. Try reinstalling the application to fix the problem.
+1311,0x00003CFD,ERROR_INSTALL_PREREQUISITE_FAILED,A Prerequisite for an install could not be satisfied.
+1312,0x00003CFE,ERROR_PACKAGE_REPOSITORY_CORRUPTED,The package repository is corrupted.
+1313,0x00003CFF,ERROR_INSTALL_POLICY_FAILURE,To install this application you need either a Windows developer license or a sideloading-enabled system.
+1314,0x00003D00,ERROR_PACKAGE_UPDATING,The application cannot be started because it is currently updating.
+1315,0x00003D01,ERROR_DEPLOYMENT_BLOCKED_BY_POLICY,The package deployment operation is blocked by policy. Please contact your system administrator.
+1316,0x00003D02,ERROR_PACKAGES_IN_USE,The package could not be installed because resources it modifies are currently in use.
+1317,0x00003D03,ERROR_RECOVERY_FILE_CORRUPT,The package could not be recovered because necessary data for recovery have been corrupted.
+1318,0x00003D04,ERROR_INVALID_STAGED_SIGNATURE,The signature is invalid. To register in developer mode, AppxSignature.p7x and AppxBlockMap.xml must be valid or should not be present.
+1319,0x00003D05,ERROR_DELETING_EXISTING_APPLICATIONDATA_STORE_FAILED,An error occurred while deleting the package's previously existing application data.
+1320,0x00003D06,ERROR_INSTALL_PACKAGE_DOWNGRADE,The package could not be installed because a higher version of this package is already installed.
+1321,0x00003D07,ERROR_SYSTEM_NEEDS_REMEDIATION,An error in a system binary was detected. Try refreshing the PC to fix the problem.
+1322,0x00003D08,ERROR_APPX_INTEGRITY_FAILURE_CLR_NGEN,A corrupted CLR NGEN binary was detected on the system.
+1323,0x00003D09,ERROR_RESILIENCY_FILE_CORRUPT,The operation could not be resumed because necessary data for recovery have been corrupted.
+1324,0x00003D0A,ERROR_INSTALL_FIREWALL_SERVICE_NOT_RUNNING,The package could not be installed because the Windows Firewall service is not running. Enable the Windows Firewall service and try again.
+1325,0x00003D54,APPMODEL_ERROR_NO_PACKAGE,The process has no package identity.
+1326,0x00003D55,APPMODEL_ERROR_PACKAGE_RUNTIME_CORRUPT,The package runtime information is corrupted.
+1327,0x00003D56,APPMODEL_ERROR_PACKAGE_IDENTITY_CORRUPT,The package identity is corrupted.
+1328,0x00003D57,APPMODEL_ERROR_NO_APPLICATION,The process has no application identity.
+1329,0x00003DB8,ERROR_STATE_LOAD_STORE_FAILED,Loading the state store failed.
+1330,0x00003DB9,ERROR_STATE_GET_VERSION_FAILED,Retrieving the state version for the application failed.
+1331,0x00003DBA,ERROR_STATE_SET_VERSION_FAILED,Setting the state version for the application failed.
+1332,0x00003DBB,ERROR_STATE_STRUCTURED_RESET_FAILED,Resetting the structured state of the application failed.
+1333,0x00003DBC,ERROR_STATE_OPEN_CONTAINER_FAILED,State Manager failed to open the container.
+1334,0x00003DBD,ERROR_STATE_CREATE_CONTAINER_FAILED,State Manager failed to create the container.
+1335,0x00003DBE,ERROR_STATE_DELETE_CONTAINER_FAILED,State Manager failed to delete the container.
+1336,0x00003DBF,ERROR_STATE_READ_SETTING_FAILED,State Manager failed to read the setting.
+1337,0x00003DC0,ERROR_STATE_WRITE_SETTING_FAILED,State Manager failed to write the setting.
+1338,0x00003DC1,ERROR_STATE_DELETE_SETTING_FAILED,State Manager failed to delete the setting.
+1339,0x00003DC2,ERROR_STATE_QUERY_SETTING_FAILED,State Manager failed to query the setting.
+1340,0x00003DC3,ERROR_STATE_READ_COMPOSITE_SETTING_FAILED,State Manager failed to read the composite setting.
+1341,0x00003DC4,ERROR_STATE_WRITE_COMPOSITE_SETTING_FAILED,State Manager failed to write the composite setting.
+1342,0x00003DC5,ERROR_STATE_ENUMERATE_CONTAINER_FAILED,State Manager failed to enumerate the containers.
+1343,0x00003DC6,ERROR_STATE_ENUMERATE_SETTINGS_FAILED,State Manager failed to enumerate the settings.
+1344,0x00003DC7,ERROR_STATE_COMPOSITE_SETTING_VALUE_SIZE_LIMIT_EXCEEDED,The size of the state manager composite setting value has exceeded the limit.
+1345,0x00003DC8,ERROR_STATE_SETTING_VALUE_SIZE_LIMIT_EXCEEDED,The size of the state manager setting value has exceeded the limit.
+1346,0x00003DC9,ERROR_STATE_SETTING_NAME_SIZE_LIMIT_EXCEEDED,The length of the state manager setting name has exceeded the limit.
+1347,0x00003DCA,ERROR_STATE_CONTAINER_NAME_SIZE_LIMIT_EXCEEDED,The length of the state manager container name has exceeded the limit.
+1348,0x00003DE1,ERROR_API_UNAVAILABLE,This API cannot be used in the context of the caller's application type.
