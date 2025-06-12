@@ -9,14 +9,15 @@
 unit ErrorData;
 
 interface
+{$ifdef LANGENU}
 uses
-  {$ifdef DLLENU}   // english
-  ErrorDataENU
-  {$endif DLLENU}
-  {$ifdef DLLDEU}   // german
-  ErrorDataDEU
-  {$endif DLLDEU}
-  ;
+ErrorDataENU;     // english
+{$endif LANGENU}
+{$ifdef LANGDEU}
+uses
+ErrorDataDEU;     // german
+{$endif LANGDEU}
+
 implementation
 
 end.
