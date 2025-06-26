@@ -51,7 +51,7 @@ procedure ShowCritical (msg: PChar); overload; stdcall; external RTLDLL name 'Sh
 procedure ShowError    (msg: PChar); overload; stdcall; external RTLDLL name 'ShowError_PChar';
 
 procedure ShowMessage  (msg: AnsiString); overload; stdcall; external RTLDLL name 'ShowMessage_AnsoString';
-procedure ShowInfo     (msg: AnsiString); overload; stdcall; external RTLDLL name 'ShowInfo_AnsoString';
+procedure ShowInfo     (msg: AnsiString); overload; stdcall; external RTLDLL name 'ShowInfo_AnsiString';
 procedure ShowWarning  (msg: AnsiString); overload; stdcall; external RTLDLL name 'ShowWarning_AnsiString';
 procedure ShowCritical (msg: AnsiString); overload; stdcall; external RTLDLL name 'ShowCritical_AnsiString';
 procedure ShowError    (msg: AnsiString); overload; stdcall; external RTLDLL name 'ShowError_AnsiString';

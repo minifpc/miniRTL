@@ -265,6 +265,12 @@ const
   PAGE_WRITECOMBINE      = $400;
 
 // ---------------------------------------------------------------------------------------
+// BN - button notify ...
+// ---------------------------------------------------------------------------------------
+const
+  BN_CLICKED             = 0;
+  
+// ---------------------------------------------------------------------------------------
 // BS - button style ...
 // ---------------------------------------------------------------------------------------
 const
@@ -426,6 +432,12 @@ const
   WM_NCLBUTTONDOWN      = $00A1;
   WM_NCLBUTTONUP        = $00A2;
   WM_NCLBUTTONDBLCLK    = $00A3;
+
+// ---------------------------------------------------------------------------------------
+// windows messages - mouse button ...
+// ---------------------------------------------------------------------------------------
+const
+  WM_LBUTTONDOWN        = $0210;
   
 // ---------------------------------------------------------------------------------------
 // windows messages ...
@@ -692,6 +704,9 @@ function UnregisterClassA(lpClassName: LPCSTR; hInst: HINSTANCE): BOOL stdcall; 
 
 function GetWindowLongPtrA(id: HWND; nIndex: Integer): NativeInt; stdcall; external 'user32.dll' name 'GetWindowLongPtrA';
 function SetWindowLongPtrA(id: HWND; nIndex: Integer; dwNewLong: NativeInt): NativeInt; stdcall; external 'user32.dll' name 'SetWindowLongPtrA';
+
+function GetDlgItem(hDlg: HWND; nIDDlgItem: Integer): HWND; stdcall; external 'user32.dll' name 'GetDlgItem';
+function GetWindowTextLengthA(id: HWND): Integer; external 'user32.dll' name 'GetWindowTextLengthA';
 
 function IsWindow(id: HWND): BOOL; stdcall; external 'user32.dll';
 function GetLastError: DWORD; stdcall; external 'kernel32.dll';

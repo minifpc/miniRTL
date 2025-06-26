@@ -13,30 +13,53 @@ uses
 type
   TForm1 = class(TForm)
   private
-    FButton: TButton;
+    FButton1: TButton;
+    FButton2: TButton;
+    FCheckBox: TCheckBox;
+    FRadioBox: TRadioBox;
+    FProgressBar: TProgressBar;
+    FComboBox: TComboBox;
+    FSpinDate: TSpinDate;
+    FSpinTime: TSpinTime;
+    FMemo: TMemo;
   public
-    constructor Create;
+    constructor Create(x,y,w,h: Integer);
+    procedure PushButton1_OnClick(Sender: TObject);
   end;
 
 var
-  Form1: TForm;
-  FButton1: TButton;
-  FButton2: TButton;
-  FCheckBox: TCheckBox;
-  FRadioBox: TRadioBox;
-  FProgressBar: TProgressBar;
-  FComboBox: TComboBox;
-  FSpinDate: TSpinDate;
-  FSpinTime: TSpinTime;
-  FMemo: TMemo;
+  Form1: TForm1;
+
+constructor TForm1.Create(x, y, w, h: Integer);
+begin
+  inherited Create(x, y, w, h);
+  
+  FButton1     := TButton      . Create(self,  20,  20, 256,  42);
+  FButton2     := TButton      . Create(self,  20,  80, 250,  42);
+  
+  FCheckBox    := TCheckBox    . Create(self,  20, 140, 100,  42);
+  FRadioBox    := TRadioBox    . Create(self, 180, 140, 100,  42);
+  FProgressBar := TProgressBar . Create(self,  20, 200, 240,  24);
+  FComboBox    := TComboBox    . Create(self,  20, 232, 140, 104);
+
+  FSpinDate    := TSpinDate    . Create(self, 310,  20, 100,  26);
+  FSpinTime    := TSpinTime    . Create(self, 310,  85, 100,  26);
+  
+  FMemo        := TMemo        . Create(self, 200, 230, 200,  84);
+  
+  with FButton1 do
+  begin
+    OnClick := @PushButton1_onClick;
+    Caption := 'Butt A';
+  end;
+end;
+procedure TForm1.PushButton1_OnClick(Sender: TObject);
+begin
+  ShowInfo('Button 1 pressed.');
+end;
 
 procedure CleanUp_1; begin WriteLn('cleanup1 called.'); end;
 procedure CleanUp_2; begin WriteLn('cleanup2 called.'); end;
-
-constructor TForm1.Create;
-begin
-  FButton := TButton.Create(Form1);
-end;
 
 begin
   writeln('start');
@@ -44,71 +67,10 @@ begin
   AddExitProc(@CleanUp_1);
   AddExitProc(@CleanUp_2);
   
-  InitWindowsErrorCodes;
-  
   //Application.Initialize;
   //Application.CreateForm(TForm1, Form1);
   
-  Form1 := TForm.Create;
-  Form1.Width  := 500;
-  Form1.Height := 400;
-  Form1.Top    := 100;
-  Form1.Left   := 100;
-  
-  FButton1 := TButton.Create(Form1);
-  FButton1.Top    :=  20;
-  FButton1.Left   :=  20;
-  FButton1.Width  := 250;
-  FButton1.Height :=  42;
-
-  FButton2 := TButton.Create(Form1);
-  FButton2.Top    :=  80;
-  FButton2.Left   :=  20;
-  FButton2.Width  := 250;
-  FButton2.Height :=  42;
-  
-  FCheckBox := TCheckBox.Create(Form1);
-  FCheckBox.Top    := 140;
-  FCheckBox.Left   :=  20;
-  FCheckBox.Width  := 170;
-  FCheckBox.Height :=  42;
-  
-  FRadioBox := TRadioBox.Create(Form1);
-  FRadioBox.Top    := 140;
-  FRadioBox.Left   := 210;
-  FRadioBox.Width  := 120;
-  FRadioBox.Height :=  42;
-  
-  FProgressBar := TProgressBar.Create(Form1);
-  FProgressBar.Top    := 200;
-  FProgressBar.Left   :=  20;
-  FProgressBar.Width  := 180;
-  FProgressBar.Height :=  24;
-  
-  FComboBox := TComboBox.Create(Form1);
-  FComboBox.Top    := 232;
-  FComboBox.Left   :=  20;
-  FComboBox.Width  := 140;
-  FComboBox.Height := 104;
-  
-  FSpinDate := TSpinDate.Create(Form1);
-  FSpinDate.Top    :=  20;
-  FSpinDate.Left   := 290;
-  FSpinDate.Width  := 100;
-  FSpinDate.Height :=  26;
-  
-  FSpinTime := TSpinTime.Create(Form1);
-  FSpinTime.Top    :=  56;
-  FSpinTime.Left   := 290;
-  FSpinTime.Width  := 100;
-  FSpinTime.Height :=  26;
-  
-  FMemo := TMemo.Create(Form1);
-  FMemo.Top    := 200;
-  FMemo.Left   := 230;
-  FMemo.Width  := 180;
-  FMemo.Height :=  84;
-  
+  Form1 := TForm1.Create(100, 100, 500, 400);
   Form1.ShowModal;
   
   //Application.Run;
