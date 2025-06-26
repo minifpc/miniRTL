@@ -2985,7 +2985,12 @@ begin
 end;
 
 exports
+  InitWindowsErrorCodes name 'InitWindowsErrorCodes';
+{$endif DLLEXPORT}
+
+initialization
+begin
   InitWindowsErrorCodes;
-{$endif}
+end;
 
 end.
