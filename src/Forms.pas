@@ -415,7 +415,8 @@ procedure TControl_SetControlLeft       (p: TControl   ; AValue: Integer); stdca
 procedure TControl_SetControlTop        (p: TControl   ; AValue: Integer); stdcall; export;
 procedure TControl_SetControlWidth      (p: TControl   ; AValue: Integer); stdcall; export;
 // ---------------------------------------------------------------------------------------
-function  TWinControl_Create            (p: TWinControl; AOwner: TComponent): TWinControl;          stdcall; export;
+function  TWinControl_Create            (p: TWinControl; AOwner: TComponent): TWinControl;                    stdcall; export;
+function  TWinControl_WndProc(p: TWincontrol; hw: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; export;
 
 function  TScrollingWinControl_Create   (p: TScrollingWinControl  ): TScrollingWinControl; stdcall; export;
 function  TCustomForm_Create            (p: TCustomForm; f: TForm ): TCustomForm;          stdcall; export;
@@ -499,6 +500,7 @@ procedure TControl_SetControlTop       (p: TControl   ; AValue: Integer); stdcal
 procedure TControl_SetControlWidth     (p: TControl   ; AValue: Integer); stdcall; external RTLDLL;
 // ---------------------------------------------------------------------------------------
 function  TWinControl_Create           (p: TWinControl; AOwner: TComponent): TWinControl;   stdcall; external RTLDLL;
+function TWinControl_WndProc(p: TWincontrol; hw: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; external RTLDLL;
 
 function  TScrollingWinControl_Create  (p: TScrollingWinControl    ): TScrollingWinControl; stdcall; external RTLDLL;
 function  TCustomForm_Create           (p: TCustomForm; f: TForm   ): TCustomForm;          stdcall; external RTLDLL;
@@ -574,7 +576,10 @@ var
 
 procedure fpc_do_exit; external name 'FPC_DO_EXIT';
 
+{$ifdef DLLEXPORT}
+// ---------------------------------------------------------------------------------------
 // alternative to SetLength ...
+// ---------------------------------------------------------------------------------------
 function SetComponentsArrayLength(var Arr: PComponentsArray; oldsize, newsize: Integer): PComponentsArray;
 var
   NewMem: PComponentsArray;
@@ -600,15 +605,12 @@ begin
 end;
 procedure AddComponent(AComp: TComponent);
 begin
-  writeln('AA');
   SetComponentsArrayLength(Components, ComponentsCount, ComponentsCount + 1);
-  writeln('CC');
   Components[ComponentsCount] := AComp;
   inc(ComponentsCount);
-writeln('DD');
 end;
+// ---------------------------------------------------------------------------------------
 
-{$ifdef DLLEXPORT}
 function TApplication_Create2(p: TApplication; ArgCount: Integer; Args: PPChar): TApplication; stdcall; export;
 begin
   {$ifdef DLLDEBUG}
@@ -1127,6 +1129,55 @@ begin
 end;
 {$endif DLLDEBUG}
 
+function TWinControl_WndProc(p: TWincontrol; hw: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; export;
+var
+  i, hi, len: Integer;
+  tc: TComponent;
+begin
+  case uMsg of
+    WM_NCLBUTTONDOWN: begin
+      writeln('HT_TEST -> ' + HitTestToStr(LoWord(wParam)));
+      writeln('wParam lo: ' + IntToStr(LoWord(wParam)));
+      writeln('wParam hi: ' + IntToStr(HiWord(wParam)));
+      writeln('-----------');
+      writeln('lParam lo: ' + IntToStr(LoWord(lParam)));
+      writeln('lParam hi: ' + IntToStr(HiWord(lParam)));
+      if LoWord(wParam) = HTCLOSE then
+      begin
+        writeln('window closed');
+        result := -100;
+        PostQuitMessage(0);
+        exit;
+      end;
+    end;
+    WM_COMMAND: begin
+      case HiWord(wParam) of
+        BN_CLICKED: begin
+          for i := 0 to ComponentsCount - 1 do
+          begin
+            tc := Components[i];
+            if tc.Handle = lparam then
+            begin
+              if Assigned(tc.FWinControl.FOnClick) then
+              tc.FWinControl.FOnClick(p);
+              break;
+            end;
+          end;
+        end;
+      end;
+    end;
+    WM_CLOSE: begin
+      writeln('close');
+      DestroyWindow(hW);
+      result := -100;
+    end;
+    WM_DESTROY: begin
+      PostQuitMessage(0);
+      Result := -100;
+    end;
+  end;
+  result := DefWindowProcA(hW, uMsg, wParam, lParam);
+end;
 
 { TScrollingWinControl }
 
@@ -1751,7 +1802,6 @@ end;
 constructor TPersistent.Create;
 begin
   inherited Create;
-  writeln('1');
   TPersistent_Create(self);
 end;
 destructor TPersistent.Destroy;
@@ -1775,7 +1825,6 @@ begin
     inherited Create;
     setInitialized(true);
     FWinControl := wc;
-    writeln('2');
     TComponent_Create(self, AOwner);
   end;
 end;
@@ -1783,7 +1832,7 @@ destructor TComponent.Destroy;
 begin
   if not isInitialized then
   begin
-    ShowError('TComponent: not init.');
+    ShowError(sError_TComponent_notinit);
     exit;
   end else
   begin
@@ -1849,7 +1898,6 @@ begin
     setInitialized(true);
     FWinControl := wc;
     
-    writeln('3');
     TControl_Create(self, AOwner);
   end;
 end;
@@ -1857,7 +1905,7 @@ destructor TControl.Destroy;
 begin
   if not isInitialized then
   begin
-    ShowError('TControl not initialized');
+    ShowError(sError_TControl_notinit);
     exit;
   end else
   begin
@@ -1901,7 +1949,6 @@ begin
   if not isInitialized then
   begin
     inherited Create(AOwner, self);
-    writeln('4');
     TWinControl_Create(self, AOwner);
   end;
 end;
@@ -1943,53 +1990,8 @@ begin
 end;
 
 function TWinControl.WndProc(hW: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
-var
-  i, hi, len: Integer;
-  tc: TComponent;
 begin
-  case uMsg of
-    WM_NCLBUTTONDOWN: begin
-      writeln('HT_TEST -> ' + HitTestToStr(LoWord(wParam)));
-      writeln('wParam lo: ' + IntToStr(LoWord(wParam)));
-      writeln('wParam hi: ' + IntToStr(HiWord(wParam)));
-      writeln('-----------');
-      writeln('lParam lo: ' + IntToStr(LoWord(lParam)));
-      writeln('lParam hi: ' + IntToStr(HiWord(lParam)));
-      if LoWord(wParam) = HTCLOSE then
-      begin
-        writeln('window closed');
-        result := -100;
-        PostQuitMessage(0);
-        exit;
-      end;
-    end;
-    WM_COMMAND: begin
-      case HiWord(wParam) of
-        BN_CLICKED: begin
-          for i := 0 to ComponentsCount - 1 do
-          begin
-            tc := Components[i];
-            if tc.Handle = lparam then
-            begin
-              if Assigned(tc.FWinControl.FOnClick) then
-              tc.FWinControl.FOnClick(self);
-              break;
-            end;
-          end;
-        end;
-      end;
-    end;
-    WM_CLOSE: begin
-      writeln('close');
-      DestroyWindow(hW);
-      result := -100;
-    end;
-    WM_DESTROY: begin
-      PostQuitMessage(0);
-      Result := -100;
-    end;
-  end;
-  result := DefWindowProcA(hW, uMsg, wParam, lParam);
+  result := TWinControl_WndProc(self, hw, uMsg, wparam, lparam);
 end;
 
 
@@ -2078,11 +2080,10 @@ begin
     end;
     inherited Create(AOwner);
     setInitialized(true);
-    writeln('6');
     TButton_Create2(self, AOwner, x,y, w,h);
   end else
   begin
-    ShowError('TButton: already init.');
+    ShowError(sError_TButton_isinit);
   end;
 end;
 constructor TButton.Create(AOwner: TComponent);
@@ -2094,7 +2095,7 @@ begin
     TButton_Create(self, AOwner);
   end else
   begin
-    ShowError('TButton: already init.');
+    ShowError(sError_TButton_isinit);
   end;
 end;
 destructor TButton.Destroy;

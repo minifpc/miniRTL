@@ -102,63 +102,153 @@ procedure fpc_write_end(var f: Text); compilerproc;
 begin
 end;
 
-procedure fpc_writeln_end(var f: Text); compilerproc;
+{$ifdef DLLEXPORT}
+procedure fpc__writeln_end(var f: Text); stdcall; export;
 var
   s: ansistring;
 begin
   s := LineEnding;
   WriteConsoleA(StdOut, @s[1], length(s), nil, nil);
 end;
+procedure fpc_writeln_end(var f: Text); compilerproc;
+begin
+  fpc__writeln_end(f);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+procedure fpc__writeln_end(var f: Text); stdcall; external RTLDLL;
+procedure fpc_writeln_end(var f: Text); compilerproc;
+begin
+  fpc__writeln_end(f);
+end;
+{$endif DLLIMPORT}
 
-procedure fpc_write_text_char(len: LongInt; var t: Text; c: AnsiChar); [public, alias: 'FPC_WRITE_TEXT_CHAR']; compilerproc;
+{$ifdef DLLEXPORT}
+procedure fpc__write_text_char(len: LongInt; var t: Text; c: AnsiChar); stdcall; export;
 begin
   WriteConsoleA(StdOut, @c, 1, nil, nil);
 end;
+procedure fpc_write_text_char(len: LongInt; var t: Text; c: AnsiChar); [public, alias: 'FPC_WRITE_TEXT_CHAR']; compilerproc;
+begin
+  fpc__write_text_char(len, t, c);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+procedure fpc__write_text_char(len: LongInt; var t: Text; c: AnsiChar); stdcall; external RTLDLL;
+procedure fpc_write_text_char(len: LongInt; var t: Text; c: AnsiChar); [public, alias: 'FPC_WRITE_TEXT_CHAR']; compilerproc;
+begin
+  fpc__write_text_char(len, t, c);
+end;
+{$endif DLLIMPORT}
 
-procedure fpc_write_text_widechar(len: LongInt; var t: Text; c: WideChar); compilerproc;
+{$ifdef DLLEXPORT}
+procedure fpc__write_text_widechar(len: LongInt; var t: Text; c: WideChar); stdcall; export;
 begin
   WriteConsoleW(StdOut, @c, 1, nil, nil);
 end;
+procedure fpc_write_text_widechar(len: LongInt; var t: Text; c: WideChar); compilerproc;
+begin
+  fpc__write_text_widechar(len, t, c);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+procedure fpc__write_text_widechar(len: LongInt; var t: Text; c: WideChar); stdcall; external RTLDLL;
+procedure fpc_write_text_widechar(len: LongInt; var t: Text; c: WideChar); compilerproc;
+begin
+  fpc__write_text_widechar(len, t, c);
+end;
+{$endif DLLIMPORT}
 
-procedure fpc_write_text_shortstr(len: LongInt; var f: Text; const s: ShortString); [public, alias: 'FPC_WRITE_TEXT_SHORTSTR']; compilerproc;
+{$ifdef DLLEXPORT}
+procedure fpc__write_text_shortstr(len: LongInt; var f: Text; const s: ShortString); stdcall; export;
 begin
   WriteConsoleA(StdOut, @s[1], ord(s[0]), nil, nil);
 end;
+procedure fpc_write_text_shortstr(len: LongInt; var f: Text; const s: ShortString); [public, alias: 'FPC_WRITE_TEXT_SHORTSTR']; compilerproc;
+begin
+  fpc__write_text_shortstr(len, f, s);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+procedure fpc__write_text_shortstr(len: LongInt; var f: Text; const s: ShortString); stdcall; external RTLDLL;
+procedure fpc_write_text_shortstr(len: LongInt; var f: Text; const s: ShortString); [public, alias: 'FPC_WRITE_TEXT_SHORTSTR']; compilerproc;
+begin
+  fpc__write_text_shortstr(len, f, s);
+end;
+{$endif DLLIMPORT}
 
 // leave it for later for having fun with TextRec
 //const
 //  fmInput  = $D7B1;
 //  fmOutput = $D7B2;
 
-procedure fpc_write_text_ansistr(len: LongInt; var f: Text; const s: RawByteString); [public, alias: 'FPC_WRITE_TEXT_ANSISTR']; compilerproc;
+{$ifdef DLLEXPORT}
+procedure fpc__write_text_ansistr(len: LongInt; var f: Text; const s: RawByteString); stdcall; export;
 begin
   WriteConsoleA(StdOut, @s[1], length(s), nil, nil);
 end;
+procedure fpc_write_text_ansistr(len: LongInt; var f: Text; const s: RawByteString); [public, alias: 'FPC_WRITE_TEXT_ANSISTR']; compilerproc;
+begin
+  fpc__write_text_ansistr(len, f, s);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+procedure fpc__write_text_ansistr(len: LongInt; var f: Text; const s: RawByteString); stdcall; external RTLDLL;
+procedure fpc_write_text_ansistr(len: LongInt; var f: Text; const s: RawByteString); [public, alias: 'FPC_WRITE_TEXT_ANSISTR']; compilerproc;
+begin
+  fpc__write_text_ansistr(len, f, s);
+end;
+{$endif DLLIMPORT}
 
+{$ifdef DLLEXPORT}
+procedure fpc__write_text_widestr(len: LongInt; var f: Text; const s: WideString); stdcall; export;
+begin
+  if pointer(s) = nil then exit;
+  WriteConsoleW(StdOut, @s[1], length(s), nil, nil);
+end;
 procedure fpc_write_text_widestr(len: LongInt; var f: Text; const s: WideString); compilerproc;
 begin
-  if pointer(s) = nil then exit;
-  WriteConsoleW(StdOut, @s[1], length(s), nil, nil);
+  fpc__write_text_widestr(len, f, s);
 end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+procedure fpc__write_text_widestr(len: LongInt; var f: Text; const s: WideString); stdcall; external RTLDLL;
+procedure fpc_write_text_widestr(len: LongInt; var f: Text; const s: WideString); compilerproc;
+begin
+  fpc__write_text_widestr(len, f, s);
+end;
+{$endif DLLIMPORT}
 
-procedure fpc_write_text_unicodestr(len: LongInt; var f: Text; const s: UnicodeString); compilerproc;
+{$ifdef DLLEXPORT}
+procedure fpc__write_text_unicodestr(len: LongInt; var f: Text; const s: UnicodeString); stdcall; export;
 begin
   if pointer(s) = nil then exit;
   WriteConsoleW(StdOut, @s[1], length(s), nil, nil);
 end;
+procedure fpc_write_text_unicodestr(len: LongInt; var f: Text; const s: UnicodeString); compilerproc;
+begin
+  fpc__write_text_unicodestr(len, f, s);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+procedure fpc__write_text_unicodestr(len: LongInt; var f: Text; const s: UnicodeString); stdcall; external RTLDLL;
+procedure fpc_write_text_unicodestr(len: LongInt; var f: Text; const s: UnicodeString); compilerproc;
+begin
+  fpc__write_text_unicodestr(len, f, s);
+end;
+{$endif DLLIMPORT}
 
 procedure fpc_read_end(var f: Text); [public, alias: 'FPC_READ_END']; compilerproc;
 begin
 end;
 
+{$ifdef DLLEXPORT}
 procedure int_write_to_console(s: AnsiString);
 var
   d: dword;
 begin
   WriteConsoleA(StdOut, @s[1], length(s), @d, nil);
 end;
-
-{$ifdef DLLEXPORT}
 procedure int_read_from_console(out r: AnsiString); export;
 var
   c: char;
@@ -205,33 +295,74 @@ begin
   s := t;
 end;
 
+{$ifdef DLLEXPORT}
+procedure fpc__write_text_sint(len: longint; var t: Text; l: ValSInt); stdcall; export;
+var
+  s: ansistring;
+begin
+  s := itoa(l);
+  WriteConsoleA(StdOut, @s[1], length(s), nil, nil);
+end;
 procedure fpc_write_text_sint(len: longint; var t: Text; l: ValSInt); compilerproc;
-var
-  s: ansistring;
 begin
-  s := itoa(l);
-  WriteConsoleA(StdOut, @s[1], length(s), nil, nil);
+  fpc__write_text_sint(len, t, l);
 end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+procedure fpc__write_text_sint(len: longint; var t: Text; l: ValSInt); stdcall; external RTLDLL;
+procedure fpc_write_text_sint(len: longint; var t: Text; l: ValSInt); compilerproc;
+begin
+  fpc__write_text_sint(len, t, l);
+end;
+{$endif DLLIMPORT}
 
-procedure fpc_write_text_uint(len: longint; var t: Text; l: ValUInt); compilerproc;
+{$ifdef DLLEXPORT}
+procedure fpc__write_text_uint(len: longint; var t: Text; l: ValUInt); stdcall; export;
 var
   s: ansistring;
 begin
   s := itoa(l);
   WriteConsoleA(StdOut, @s[1], length(s), nil, nil);
 end;
+procedure fpc_write_text_uint(len: longint; var t: Text; l: ValUInt); compilerproc;
+begin
+  fpc__write_text_uint(len, t, l);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+procedure fpc__write_text_uint(len: longint; var t: Text; l: ValUInt); stdcall; external RTLDLL;
+procedure fpc_write_text_uint(len: longint; var t: Text; l: ValUInt); compilerproc;
+begin
+  fpc__write_text_uint(len, t, l);
+end;
+{$endif DLLIMPORT}
 
 //procedure fpc_write_text_float(rt, fixkomma, len: longint; var t: Text; r: ValReal); compilerproc;
 //procedure fpc_write_text_currency(fixkomma, len: longint; var t: Text; c: Currency); compilerproc;
-procedure fpc_write_text_qword(len: longint; var t: Text; q: qword); compilerproc;
+
+{$ifdef DLLEXPORT}
+procedure fpc__write_text_qword(len: longint; var t: Text; q: qword); stdcall; export;
 var
   s: ansistring;
 begin
   s := itoa(q); // @@todo: itoa64 / signed / unsigned
   WriteConsoleA(StdOut, @s[1], length(s), nil, nil);
 end;
+procedure fpc_write_text_qword(len: longint; var t: Text; q: qword); compilerproc;
+begin
+  fpc__write_text_qword(len, t, q);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+procedure fpc__write_text_qword(len: longint; var t: Text; q: qword); stdcall; external RTLDLL;
+procedure fpc_write_text_qword(len: longint; var t: Text; q: qword); compilerproc;
+begin
+  fpc__write_text_qword(len, t, q);
+end;
+{$endif DLLIMPORT}
 
-procedure fpc_write_text_boolean(len: longint; var t: Text; b: boolean); compilerproc;
+{$ifdef DLLEXPORT}
+procedure fpc__write_text_boolean(len: longint; var t: Text; b: boolean); stdcall; export;
 var
   s: ansistring;
 begin
@@ -239,6 +370,34 @@ begin
   if b then s := 'TRUE' else s := 'FALSE';
   WriteConsoleA(StdOut, @s[1], length(s), nil, nil);
 end;
+procedure fpc_write_text_boolean(len: longint; var t: Text; b: boolean); compilerproc;
+begin
+  fpc__write_text_boolean(len, t, b);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+procedure fpc__write_text_boolean(len: longint; var t: Text; b: boolean); stdcall; external RTLDLL;
+procedure fpc_write_text_boolean(len: longint; var t: Text; b: boolean); compilerproc;
+begin
+  fpc__write_text_boolean(len, t, b);
+end;
+{$endif DLLIMPORT}
+
+{$ifdef DLLEXPORT}
+exports
+  fpc__writeln_end              name 'fpc__writeln_end',
+  fpc__write_text_ansistr       name 'fpc__write_text_ansistr',
+  fpc__write_text_boolean       name 'fpc__write_text_boolean',
+  fpc__write_text_char          name 'fpc__write_text_char',
+  fpc__write_text_qword         name 'fpc__write_text_qword',
+  fpc__write_text_shortstr      name 'fpc__write_text_shortstr',
+  fpc__write_text_sint          name 'fpc__write_text_sint',
+  fpc__write_text_uint          name 'fpc__write_text_uint',
+  fpc__write_text_unicodestr    name 'fpc__write_text_unicodestr',
+  fpc__write_text_widechar      name 'fpc__write_text_widechar',
+  fpc__write_text_widestr       name 'fpc__write_text_widestr'
+  ;
+{$endif DLLEXPORT}
 
 {$endif}
 
