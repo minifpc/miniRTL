@@ -199,6 +199,8 @@ type
     procedure SetComponentCount(AValue: Integer);
     procedure SetComponentOwner(AOwner: TComponent);
     procedure SetComponentHandle(AHandle: HWND);
+
+    procedure SetComponentCaption(AString: String);
   public
     constructor Create(AOwner: TComponent; wc: TWinControl); virtual;
     destructor Destroy; override;
@@ -210,7 +212,7 @@ type
     //property Components[I: Integer]: TComponent read GetComponent;
     property Owner: TComponent read FOwner;
     property Handle: HWND read FHandle;
-    property Caption: String read FCaption write FCaption;
+    property Caption: String read FCaption write SetComponentCaption;
     property Tag: NativeInt read FTag write FTag default 0;
   end;
 
@@ -408,6 +410,8 @@ function  TComponent_GetComponentOwner  (p: TComponent ; AOwner: TComponent ): T
 procedure TComponent_SetComponentIndex  (p: TComponent ; AValue: Integer    );     stdcall; export;
 procedure TComponent_SetComponentOwner  (p: TComponent ; AOwner: TComponent );     stdcall; export;
 procedure TComponent_SetComponentCount  (p: TComponent ; AValue: Integer    );     stdcall; export;
+
+procedure TComponent_SetComponentCaption(p: TComponent ; AString: String    );     stdcall; export;
 // ---------------------------------------------------------------------------------------
 function  TControl_Create               (p: TControl   ; AOwner: TComponent): TControl;             stdcall; export;
 procedure TControl_SetControlHeight     (p: TControl   ; AValue: Integer); stdcall; export;
@@ -480,53 +484,54 @@ function HitTestToStr(ht: Integer): string; stdcall; export;
 // the internal "import" function's and procedure's ...
 // ---------------------------------------------------------------------------------------
 {$ifdef DLLIMPORT}
-function  TApplication_Create1         (p: TApplication                                 ): TApplication; stdcall; external RTLDLL;
-function  TApplication_Create2         (p: TApplication; ArgCount: Integer; Args: PPChar): TApplication; stdcall; external RTLDLL;
-function  TApplication_Run2            (p: TApplication; form: TForm ): Integer; stdcall; external RTLDLL;
-function  TApplication_Run1            (p: TApplication              ): Integer; stdcall; external RTLDLL;
+function  TApplication_Create1          (p: TApplication                                 ): TApplication; stdcall; external RTLDLL;
+function  TApplication_Create2          (p: TApplication; ArgCount: Integer; Args: PPChar): TApplication; stdcall; external RTLDLL;
+function  TApplication_Run2             (p: TApplication; form: TForm ): Integer; stdcall; external RTLDLL;
+function  TApplication_Run1             (p: TApplication              ): Integer; stdcall; external RTLDLL;
 
-procedure TApplication_CreateForm      (p: TApplication; InstanceClass: TComponentClass; out Referenz ); stdcall; external RTLDLL;
+procedure TApplication_CreateForm       (p: TApplication; InstanceClass: TComponentClass; out Referenz ); stdcall; external RTLDLL;
 
-procedure TApplication_Destroy         (P: TApplication             );          stdcall; external RTLDLL;
-procedure TApplication_Initialize      (p: TApplication             );          stdcall; external RTLDLL;
+procedure TApplication_Destroy          (P: TApplication             );          stdcall; external RTLDLL;
+procedure TApplication_Initialize       (p: TApplication             );          stdcall; external RTLDLL;
 // ---------------------------------------------------------------------------------------
-function  TPersistent_Create           (p: TPersistent             ): TPersistent;          stdcall; external RTLDLL;
-function  TComponent_Create            (p: TComponent ; AOwner: TComponent): TComponent;    stdcall; external RTLDLL;
+function  TPersistent_Create            (p: TPersistent             ): TPersistent;          stdcall; external RTLDLL;
+function  TComponent_Create             (p: TComponent ; AOwner: TComponent): TComponent;    stdcall; external RTLDLL;
+procedure TComponent_SetComponentCaption(p: TComponent ; AString: String   );                stdcall; external RTLDLL;
 // ---------------------------------------------------------------------------------------
-function  TControl_Create              (p: TControl   ; AOwner: TComponent): TControl;      stdcall; external RTLDLL;
-procedure TControl_SetControlHeight    (p: TControl   ; AValue: Integer); stdcall; external RTLDLL;
-procedure TControl_SetControlLeft      (p: TControl   ; AValue: Integer); stdcall; external RTLDLL;
-procedure TControl_SetControlTop       (p: TControl   ; AValue: Integer); stdcall; external RTLDLL;
-procedure TControl_SetControlWidth     (p: TControl   ; AValue: Integer); stdcall; external RTLDLL;
+function  TControl_Create               (p: TControl   ; AOwner: TComponent): TControl;      stdcall; external RTLDLL;
+procedure TControl_SetControlHeight     (p: TControl   ; AValue: Integer); stdcall; external RTLDLL;
+procedure TControl_SetControlLeft       (p: TControl   ; AValue: Integer); stdcall; external RTLDLL;
+procedure TControl_SetControlTop        (p: TControl   ; AValue: Integer); stdcall; external RTLDLL;
+procedure TControl_SetControlWidth      (p: TControl   ; AValue: Integer); stdcall; external RTLDLL;
 // ---------------------------------------------------------------------------------------
-function  TWinControl_Create           (p: TWinControl; AOwner: TComponent): TWinControl;   stdcall; external RTLDLL;
+function  TWinControl_Create            (p: TWinControl; AOwner: TComponent): TWinControl;   stdcall; external RTLDLL;
 function TWinControl_WndProc(p: TWincontrol; hw: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; external RTLDLL;
 
-function  TScrollingWinControl_Create  (p: TScrollingWinControl    ): TScrollingWinControl; stdcall; external RTLDLL;
-function  TCustomForm_Create           (p: TCustomForm; f: TForm   ): TCustomForm;          stdcall; external RTLDLL;
+function  TScrollingWinControl_Create   (p: TScrollingWinControl    ): TScrollingWinControl; stdcall; external RTLDLL;
+function  TCustomForm_Create            (p: TCustomForm; f: TForm   ): TCustomForm;          stdcall; external RTLDLL;
 // ---------------------------------------------------------------------------------------
-procedure TPersistent_Destroy          (p: TPersistent          ); stdcall; external RTLDLL;
-procedure TComponent_Destroy           (p: TComponent           ); stdcall; external RTLDLL;
-procedure TControl_Destroy             (p: TControl             ); stdcall; external RTLDLL;
-procedure TWinControl_Destroy          (p: TWinControl          ); stdcall; external RTLDLL;
-procedure TScrollingWinControl_Destroy (p: TScrollingWinControl ); stdcall; external RTLDLL;
-procedure TCustomForm_Destroy          (p: TCustomForm          ); stdcall; external RTLDLL;
+procedure TPersistent_Destroy           (p: TPersistent          ); stdcall; external RTLDLL;
+procedure TComponent_Destroy            (p: TComponent           ); stdcall; external RTLDLL;
+procedure TControl_Destroy              (p: TControl             ); stdcall; external RTLDLL;
+procedure TWinControl_Destroy           (p: TWinControl          ); stdcall; external RTLDLL;
+procedure TScrollingWinControl_Destroy  (p: TScrollingWinControl ); stdcall; external RTLDLL;
+procedure TCustomForm_Destroy           (p: TCustomForm          ); stdcall; external RTLDLL;
 
-function  TComponent_GetComponentCount (p: TComponent                     ): Integer;     stdcall; external RTLDLL;
-function  TComponent_GetComponentIndex (p: TComponent                     ): Integer;     stdcall; external RTLDLL;
-function  TComponent_GetComponentOwner (p: TComponent; AOwner: TComponent ): TComponent;  stdcall; external RTLDLL;
-function  TComponent_GetComponent      (p: TComponent; I: Integer         ): TComponent;  stdcall; external RTLDLL;
+function  TComponent_GetComponentCount  (p: TComponent                     ): Integer;     stdcall; external RTLDLL;
+function  TComponent_GetComponentIndex  (p: TComponent                     ): Integer;     stdcall; external RTLDLL;
+function  TComponent_GetComponentOwner  (p: TComponent; AOwner: TComponent ): TComponent;  stdcall; external RTLDLL;
+function  TComponent_GetComponent       (p: TComponent; I: Integer         ): TComponent;  stdcall; external RTLDLL;
 
-procedure TComponent_SetComponentIndex (p: TComponent; AValue: Integer    );              stdcall; external RTLDLL;
-procedure TComponent_SetComponentOwner (p: TComponent; AOwner: TComponent );              stdcall; external RTLDLL;
-procedure TComponent_SetComponentCount (p: TComponent ; AValue: Integer   );              stdcall; external RTLDLL;
+procedure TComponent_SetComponentIndex  (p: TComponent; AValue: Integer    );              stdcall; external RTLDLL;
+procedure TComponent_SetComponentOwner  (p: TComponent; AOwner: TComponent );              stdcall; external RTLDLL;
+procedure TComponent_SetComponentCount  (p: TComponent ; AValue: Integer   );              stdcall; external RTLDLL;
 
 // ---------------------------------------------------------------------------------------
-function  TControl_GetClientHeight     (p: TControl): Integer; stdcall; external RTLDLL;
-function  TControl_GetClientWidth      (p: TControl): Integer; stdcall; external RTLDLL;
+function  TControl_GetClientHeight      (p: TControl): Integer; stdcall; external RTLDLL;
+function  TControl_GetClientWidth       (p: TControl): Integer; stdcall; external RTLDLL;
 
-procedure TControl_SetClientHeight     (p: TControl; AValue: Integer); stdcall; external RTLDLL;
-procedure TControl_SetClientWidth      (p: TControl; AValue: Integer); stdcall; external RTLDLL;
+procedure TControl_SetClientHeight      (p: TControl; AValue: Integer); stdcall; external RTLDLL;
+procedure TControl_SetClientWidth       (p: TControl; AValue: Integer); stdcall; external RTLDLL;
 
 procedure TControl_SetAlign(p: TControl; AValue: TAlign); stdcall; external RTLDLL;
 
@@ -828,6 +833,21 @@ begin
     ShowError(sError_TComponent_ref);
     exit;
   end;
+end;
+
+procedure TComponent_SetComponentCaption(p: TComponent; AString: String); stdcall; export;
+begin
+  if p = nil then
+  begin
+    ShowError(sError_TComponent_notinit);
+    exit;
+  end;
+  
+  if Length(Trim(AString)) < 1 then
+  AString := 'Button';
+  
+  p.FCaption := AString;
+  SendMessageA(p.Handle, WM_SETTEXT, 0, LPARAM(PChar(AString)));
 end;
 
 function TComponent_GetComponentOwner(p: TComponent; AOwner: TComponent): TComponent; stdcall; export;
@@ -1854,6 +1874,11 @@ begin
   FInitialized := AValue;
 end;
 
+procedure TComponent.SetComponentCaption(AString: String);
+begin
+  TComponent_SetComponentCaption(self, AString);
+end;
+
 procedure TComponent.SetComponentCount(AValue: Integer);
 begin
   TComponent_SetComponentCount(self, AValue);
@@ -2301,6 +2326,7 @@ exports
   TComponent_GetComponent           name 'TComponent_GetComponent',
   TComponent_SetComponentIndex      name 'TComponent_SetComponentIndex',
   TComponent_SetComponentOwner      name 'TComponent_SetComponentOwner',
+  TComponent_SetComponentCaption    name 'TComponent_SetComponentCaption',
   
   TControl_Create                   name 'TControl_Create',
   TControl_GetClientHeight          name 'TControl_GetClientHeight',

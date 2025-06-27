@@ -43,6 +43,7 @@ function  fpc_char_to_ansistr(ch: PChar): AnsiString; export;
 procedure fpc_ansistr_setlength(var s: AnsiString; newlen: SizeInt); export;
 procedure fpc_ansistr_unique(var s: AnsiString); export;
 
+function Trim(const S: String): String; stdcall; export;
 {$endif DLLEXPORT}
 
 // ---------------------------------------------------------------------------------------
@@ -71,6 +72,8 @@ function  fpc_char_to_ansistr(ch: PChar): AnsiString; external RTLDLL;
 procedure fpc_ansistr_setlength(var s: AnsiString; newlen: SizeInt); external RTLDLL;
 procedure fpc_ansistr_unique(var s: AnsiString); external RTLDLL;
 procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); stdcall; external RTLDLL;
+
+function Trim(const S: String): String; stdcall; external RTLDLL;
 {$endif DLLIMPORT}
 
 implementation
@@ -473,6 +476,30 @@ begin
   Result := ResultStr;
 end;
 
+function IsWhiteSpace(ch: Char): Boolean; stdcall; export;
+begin
+  Result := ch in [' ', #9, #10, #13]; // Leerzeichen, Tab, LF, CR
+end;
+
+function Trim(const S: String): String; stdcall; export;
+var
+  startIdx, endIdx: Integer;
+begin
+  startIdx := 1;
+  endIdx := Length(S);
+
+  // Anfangs-Leerzeichen überspringen
+  while (startIdx <= endIdx) and IsWhiteSpace(S[startIdx]) do
+  inc(startIdx);
+
+  // End-Leerzeichen überspringen
+  while (endIdx >= startIdx) and IsWhiteSpace(S[endIdx]) do
+  dec(endIdx);
+
+  // Ergebnis extrahieren
+  result := Copy(S, startIdx, endIdx - startIdx + 1);
+end;
+
 exports
   StringReplace  name 'StringReplace',
   
@@ -485,6 +512,8 @@ exports
   IntToStrA         name 'IntToStrA',
   IntToStrB         name 'IntToStrB',
   IntToStr          name 'IntToStr',
+  
+  Trim              name 'Trim',
   
   FloatToStr        name 'FloatToStr',
   Format            name 'Format',
