@@ -44,6 +44,7 @@ procedure fpc_ansistr_setlength(var s: AnsiString; newlen: SizeInt); export;
 procedure fpc_ansistr_unique(var s: AnsiString); export;
 
 function Trim(const S: String): String; stdcall; export;
+function LowerCase(const S: string): string; export;
 {$endif DLLEXPORT}
 
 // ---------------------------------------------------------------------------------------
@@ -74,6 +75,7 @@ procedure fpc_ansistr_unique(var s: AnsiString); external RTLDLL;
 procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); stdcall; external RTLDLL;
 
 function Trim(const S: String): String; stdcall; external RTLDLL;
+function LowerCase(const S: string): string; external RTLDLL;
 {$endif DLLIMPORT}
 
 implementation
@@ -500,6 +502,22 @@ begin
   result := Copy(S, startIdx, endIdx - startIdx + 1);
 end;
 
+function LowerCase(const S: string): string; export;
+var
+  i: Integer;
+  ch: Char;
+begin
+  Result := S;
+  for i := 1 to Length(S) do
+  begin
+    ch := S[i];
+    if (ch >= 'A') and (ch <= 'Z') then
+      Result[i] := Chr(Ord(ch) + 32)
+    else
+      Result[i] := ch;
+  end;
+end;
+
 exports
   StringReplace  name 'StringReplace',
   
@@ -514,6 +532,7 @@ exports
   IntToStr          name 'IntToStr',
   
   Trim              name 'Trim',
+  LowerCase         name 'LowerCase',
   
   FloatToStr        name 'FloatToStr',
   Format            name 'Format',
