@@ -12,7 +12,8 @@ uses
 type
   TTokenType = (
     _tkKeyword, _tkIdentifier, _tkNumber,
-    _tkProgram, _tkBegin, _tkEnd, 
+    _tkProgram, _tkBegin, _tkEnd,
+    _tkIf, _tkThen, _tkElse,
     _tkAssign, _tkSemicolon, _tkDot,
     _tkEOF, _tkUnknown
   );
@@ -26,7 +27,8 @@ var
   Source: string;
   Position: Integer;
   CurrentToken: TToken;
-  Lookahead: TToken;
+
+procedure ParseIfStatement; forward;
 
 procedure InitScanner(input: string);
 begin
@@ -76,7 +78,7 @@ end;
 
 procedure Advance; begin inc(Position); end;
 
-function GetToken: TToken;
+function GetNextToken: TToken;
 var
   ch: Char;
   id: string;
@@ -106,8 +108,12 @@ begin
          if id = 'program' then begin CurrentToken.TokenType := _tkProgram; result := CurrentToken; exit; end
     else if id = 'begin'   then begin CurrentToken.TokenType := _tkBegin;   result := CurrentToken; exit; end
     else if id = 'end'     then begin CurrentToken.TokenType := _tkEnd;     result := CurrentToken; exit; end
+    else if id = 'if'      then begin CurrentToken.TokenType := _tkIf;      result := CurrentToken; exit; end
+    else if id = 'then'    then begin CurrentToken.TokenType := _tkThen;    result := CurrentToken; exit; end
+    else if id = 'else'    then begin CurrentToken.TokenType := _tkElse;    result := CurrentToken; exit; end
     else begin
       CurrentToken.TokenType := _tkIdentifier;
+      CurrentToken.Lexeme    := id;
       result := CurrentToken;
       exit;
     end;
@@ -157,49 +163,120 @@ end;
 
 procedure Match(expected: TTokenType);
 begin
-  if Lookahead.TokenType = expected then
-  Lookahead := GetToken  else
-  raise Exception.Create('Syntax Error: Expected ' + IntToStr(Ord(expected)) + ' but found: ' + Lookahead.Lexeme);
+  if CurrentToken.TokenType = expected then
+  CurrentToken := GetNextToken  else
+  raise Exception.Create('Syntax Error: Expected ' + IntToStr(Ord(expected)) + ' but found: ' + CurrentToken.Lexeme);
 end;
 
 procedure ParseStatement;
 begin
-  if Lookahead.TokenType = _tkIdentifier then
+  if CurrentToken.TokenType = _tkIdentifier then
   begin
-    WriteLn('Statement: ', Lookahead.Lexeme);
+    WriteLn('Statement: ', CurrentToken.Lexeme);
     Match(_tkIdentifier);
     Match(_tkAssign);
-    if Lookahead.TokenType = _tkNumber then
+    if CurrentToken.TokenType = _tkNumber then
     begin
-      WriteLn('  Value: ', Lookahead.Lexeme);
+      WriteLn('  Value: ', CurrentToken.Lexeme);
       Match(_tkNumber);
     end else
     raise Exception.Create('Syntax Error: Expected number');
     Match(_tkSemicolon);
+    if CurrentToken.TokenType = _tkIdentifier then
+    ParseStatement else
+    if CurrentToken.TokenType = _tkIf then
+    writeln('IF');
+    ParseIfStatement;
+  end else
+  if CurrentToken.TokenType = _tkIf then
+  begin
+    writeln('if');
+    ParseIfStatement;
   end else
   raise Exception.Create('Syntax Error: Expected identifier');
 end;
 
-procedure ParseAssignment;
+procedure ParseIfStatement;
 begin
+  Match(_tkIf);
   if CurrentToken.TokenType = _tkIdentifier then
   begin
-    WriteLn('Found Identifier: ' + CurrentToken.Lexeme);
-    CurrentToken := GetToken;
-    if CurrentToken.TokenType = _tkAssign then
-    begin
-      CurrentToken := GetToken;
-      if CurrentToken.TokenType = _tkNumber then
-      WriteLn('Found Number: ' + CurrentToken.Lexeme) else
-      raise Exception.Create('Syntax Error: Expected number.');
-      
-      CurrentToken := GetToken;
-      if CurrentToken.TokenType = _tkSemicolon then
-      WriteLn('Assignment OK') else
-      raise Exception.Create('Syntax Error: Expected semicolon.');
-    end;
+    WriteLn('If-Bedingung: ', CurrentToken.Lexeme);
+    CurrentToken := GetNextToken;
+    Match(_tkThen);
+    writeln('----> ' + CurrentToken.Lexeme);
+    
+    Match(_tkIdentifier);
+    writeln('----> ' + CurrentToken.Lexeme);
+    
+    Match(_tkAssign);
+    writeln('----> ' + CurrentToken.Lexeme);
+    
+    CurrentToken := GetNextToken;
+    Match(_tkElse);
+    writeln('----> ' + CurrentToken.Lexeme);
+    
+    Match(_tkIdentifier);
+    writeln('---> ' + CurrentToken.Lexeme);
+    
+    CurrentToken := GetNextToken;
+    Match(_tkAssign);
+    writeln('---> ' + CurrentToken.Lexeme);
+    
+    CurrentToken := GetNextToken;
+    Match(_tkSemicolon);
+    writeln('----> ' + CurrentToken.Lexeme);
   end else
-  raise Exception.Create('Syntax Error: Expected identifier');
+  raise Exception.Create('Syntax Error: Expected identifier as condition');
+
+  Match(_tkThen);
+  ParseStatement;
+
+  if CurrentToken.TokenType = _tkElse then
+  begin
+    Match(_tkElse);
+    ParseStatement;
+  end;
+end;
+
+procedure ParseProgram;
+begin
+  CurrentToken := GetNextToken;
+  if CurrentToken.TokenType = _tkProgram then
+  begin
+  writeln('program');
+    CurrentToken := GetNextToken;
+    if CurrentToken.TokenType = _tkIdentifier then
+    begin
+    writeln('ident: ' + CurrentToken.Lexeme);
+      CurrentToken := GetNextToken;
+      if CurrentToken.TokenType = _tkSemicolon then
+      begin
+      writeln('semicolon');
+        CurrentToken := GetNextToken;
+        if CurrentToken.TokenType = _tkBegin then
+        begin
+        writeln('begin');
+          while true do
+          begin
+            CurrentToken := GetNextToken;
+            if CurrentToken.TokenType = _tkIdentifier then ParseStatement;
+            if CurrentToken.TokenType = _tkEnd        then break;
+            if CurrentToken.TokenType = _tkEOF        then raise Exception.Create('error: end of file.');
+          end;
+        end;
+        if CurrentToken.TokenType = _tkEnd then
+        begin
+        writeln('end');
+          CurrentToken := GetNextToken;
+          if CurrentToken.TokenType = _tkDot then
+          begin
+            WriteLn('. Program korrekt geparst.');
+          end;
+        end;
+      end;
+    end;
+  end;
 end;
 
 begin
@@ -208,11 +285,18 @@ begin
   '(c) 2025 by paule32 and fibonacci' + #13#10 +
   'all rights reserved.'              + #13#10 );
   
-  Source       := '  x  := 42   ' + #13#10 +';';
-  Position     := 1;
-  CurrentToken := GetToken;
+  Source       := ''
+  + 'program test; '
+  + 'begin '
+  + 'x := 42; '
+  + 'if x then yx := 2 else ayc := 3; '
+  + 'y :=  7;'
+  + 'end.'
+  ;
+  
   try
-    ParseAssignment;
+    InitScanner(Source);
+    ParseProgram;
   except
     on E: Exception do
       WriteLn('Error: ', E.Message);
