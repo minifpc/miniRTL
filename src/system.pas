@@ -258,12 +258,25 @@ function IntToStr32(Value: Integer): string; stdcall; external RTLDLL;
 
 procedure HandleError(errno: LongInt); external name 'FPC_HANDLEERROR';
 
-procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); compilerproc; export;
+{$ifdef DLLEXPORT}
+procedure fpc__ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); stdcall; export;
 begin
   pointer(dests) := new_ansistring(length(s1)+length(s2));
   move(s1[1], dests[1], length(s1));
   move(s2[1], dests[length(s1)+1], length(s2));
 end;
+procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); compilerproc;
+begin
+  fpc__ansistr_concat(dests, s1, s2, cp);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+procedure fpc__ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); stdcall; external RTLDLL;
+procedure fpc_ansistr_concat (var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); compilerproc;
+begin
+  fpc__ansistr_concat(dests, s1, s2, cp);
+end;
+{$endif DLLIMPORT}
 
 {$ifdef DLLEXPORT}
 procedure wait_for_enter; export;
@@ -359,6 +372,7 @@ begin
   MessageBoxA(0, @msg[1], 'DEBUG', 0);
 end;
 
+{$ifdef DLLEXPORT}
 // INITIALIZATION
 const
   MAXUNITS = 1024;
@@ -378,7 +392,7 @@ type
 var
   InitFinalTable: TInitFinalTable; external name 'INITFINAL';
 
-procedure fpc_initializeunits; [public, alias: 'FPC_INITIALIZEUNITS'];
+procedure fpc__initializeunits; stdcall; export;
 var
   i: integer;
 begin
@@ -388,6 +402,18 @@ begin
     end;
   end;
 end;
+procedure fpc_initializeunits; [public, alias: 'FPC_INITIALIZEUNITS'];
+begin
+  fpc__initializeunits;
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+procedure fpc__initializeunits; stdcall; external RTLLIB;
+procedure fpc_initializeunits; [public, alias: 'FPC_INITIALIZEUNITS'];
+begin
+  fpc__initializeunits;
+end;
+{$endif DLLIMPORT}
 
 // for internal use
 procedure fpc_initializeunits; [external name 'FPC_INITIALIZEUNITS'];
@@ -408,7 +434,8 @@ end;
 
 
 // internal use only
-procedure fpc_finalizeunits; [public, alias: 'FPC_FINALIZEUNITS'];
+{$ifdef DLLEXPORT}
+procedure fpc__finalizeunits; stdcall; export;
 var
   i: integer;
 begin
@@ -419,6 +446,18 @@ begin
     end;
   end;
 end;
+procedure fpc_finalizeunits; [public, alias: 'FPC_FINALIZEUNITS'];
+begin
+  fpc__finalizeunits;
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+procedure fpc__finalizeunits; stdcall; external RTLLIB;
+procedure fpc_finalizeunits; [public, alias: 'FPC_FINALIZEUNITS'];
+begin
+  fpc__finalizeunits;
+end;
+{$endif DLLIMPORT}
 
 // for internal use
 procedure fpc_finalizeunits; [external name 'FPC_FINALIZEUNITS'];
@@ -427,7 +466,7 @@ procedure fpc_finalizeunits; [external name 'FPC_FINALIZEUNITS'];
 procedure fpc_libinitializeunits; [public, alias: 'FPC_LIBINITIALIZEUNITS']; compilerproc;
 begin
   is_library := true;
-  fpc_initializeunits;
+  fpc__initializeunits;
 end;
 
 procedure Halt(err: integer); noreturn;
@@ -435,12 +474,13 @@ Begin
   internal_do_exit;
 end;
 
-procedure fpc_do_exit; [public, alias: 'FPC_DO_EXIT'];
+{$ifdef DLLEXPORT}
+procedure fpc__do_exit; stdcall; export;
 var
   p: TExitProcedure;
   tempi: Integer;
 begin
-  fpc_finalizeunits;
+  fpc__finalizeunits;
   
   tempi := GetExitProcedureCount;
   repeat
@@ -455,6 +495,18 @@ begin
   writeln('end exit');
   ExitProcess(ExitCode);
 end;
+procedure fpc_do_exit; [public, alias: 'FPC_DO_EXIT'];
+begin
+  fpc__do_exit;
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+procedure fpc__do_exit; stdcall; external RTLDLL;
+procedure fpc_do_exit; [public, alias: 'FPC_DO_EXIT'];
+begin
+  fpc__do_exit;
+end;
+{$endif DLLIMPORT}
 
 { Parameters are dummy and used to force "ret 16" at the end;
   this removes a TSEHFrame record from the stack }
@@ -940,19 +992,45 @@ begin
 end;
 {$endif DLLIMPORT}
 
-function fpc_dynarray_length(p: pointer): tdynarrayindex; [public, alias: 'FPC_DYNARRAY_LENGTH']; compilerproc;
+{$ifdef DLLEXPORT}
+function fpc__dynarray_length(p: pointer): tdynarrayindex; stdcall; export;
 begin
   if p = nil then exit(0);
   result := pdynarray(p-sizeof(tdynarray))^.high+1;
 end;
-
-function fpc_dynarray_high(p: pointer): tdynarrayindex; [public, alias: 'FPC_DYNARRAY_HIGH']; compilerproc;
+function fpc_dynarray_length(p: pointer): tdynarrayindex; [public, alias: 'FPC_DYNARRAY_LENGTH']; compilerproc;
+begin
+  result := fpc__dynarray_length(p);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function fpc__dynarray_length(p: pointer): tdynarrayindex; stdcall; external RTLDLL;
+function fpc_dynarray_length(p: pointer): tdynarrayindex; [public, alias: 'FPC_DYNARRAY_LENGTH']; compilerproc;
+begin
+  result := fpc__dynarray_length(p);
+end;
+{$endif DLLIMPORT}
+{$ifdef DLLEXPORT}
+function fpc__dynarray_high(p: pointer): tdynarrayindex; stdcall; export;
 begin
   if p = nil then exit(0);
   result := pdynarray(p-sizeof(tdynarray))^.high;
 end;
+function fpc_dynarray_high(p: pointer): tdynarrayindex; [public, alias: 'FPC_DYNARRAY_HIGH']; compilerproc;
+begin
+  result := fpc__dynarray_high(p);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function fpc__dynarray_high(p: pointer): tdynarrayindex; stdcall; external RTLDLL;
+function fpc_dynarray_high(p: pointer): tdynarrayindex; [public, alias: 'FPC_DYNARRAY_HIGH']; compilerproc;
+begin
+  result := fpc__dynarray_high(p);
+end;
+{$endif DLLIMPORT}
 
-procedure fpc_dynarray_incr_ref(p: pointer); compilerproc; [public, alias: 'FPC_DYNARRAY_INCR_REF'];
+{$ifdef DLLEXPORT}
+procedure fpc__dynarray_incr_ref(p: pointer); stdcall; export;
 var
   d: pdynarray;
 begin
@@ -966,6 +1044,18 @@ begin
     // @@todo: thread safe
     inc(d^.refcount);
 end;
+procedure fpc_dynarray_incr_ref(p: pointer); compilerproc; [public, alias: 'FPC_DYNARRAY_INCR_REF'];
+begin
+  fpc__dynarray_incr_ref(p);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+procedure fpc__dynarray_incr_ref(p: pointer); stdcall; external RTLDLL;
+procedure fpc_dynarray_incr_ref(p: pointer); compilerproc; [public, alias: 'FPC_DYNARRAY_INCR_REF'];
+begin
+  fpc__dynarray_incr_ref(p);
+end;
+{$endif DLLIMPORT}
 
 {$ifdef DLLEXPORT}
 procedure fpc_dynarray_clear(var p: pointer; ti: pointer); [public,alias:'FPC_DYNARRAY_CLEAR']; export;
@@ -1135,14 +1225,24 @@ end;
 
 {$ifdef DLLEXPORT}
 exports
-  wait_for_enter name 'wait_for_enter',
-  int_read_from_console name 'int_read_from_console',
-  fpc_chararray_to_ansistr name 'fpc_chararray_to_ansistr',
-  fpc_dynarray_clear    name 'fpc_dynarray_clear',
+  wait_for_enter            name 'wait_for_enter',
+  int_read_from_console     name 'int_read_from_console',
+  fpc_chararray_to_ansistr  name 'fpc_chararray_to_ansistr',
+  fpc_dynarray_clear        name 'fpc_dynarray_clear',
+
+  fpc__ansistr_concat       name 'fpc__ansistr_concat',
   
-  GetExitProcedureCount name 'GetExitProcedureCount',
-  GetExitProcedure      name 'GetExitProcedure',
-  AddExitProc           name 'AddExitProc'
+  fpc__dynarray_high        name 'fpc__dynarray_high',
+  fpc__dynarray_incr_ref    name 'fpc__dynarray_incr_ref',
+  fpc__dynarray_length      name 'fpc__dynarray_length',
+  
+  fpc__initializeunits      name 'fpc__initializeunits',
+  fpc__finalizeunits        name 'fpc__finalizeunits',
+  fpc__do_exit              name 'fpc__do_exit',
+  
+  GetExitProcedureCount     name 'GetExitProcedureCount',
+  GetExitProcedure          name 'GetExitProcedure',
+  AddExitProc               name 'AddExitProc'
   ;
 {$endif DLLEXPORT}
 

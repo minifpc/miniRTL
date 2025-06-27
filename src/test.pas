@@ -24,7 +24,9 @@ type
     FMemo: TMemo;
   public
     constructor Create(x,y,w,h: Integer);
+    
     procedure PushButton1_OnClick(Sender: TObject);
+    procedure PushButton2_OnClick(Sender: TObject);
   end;
 
 var
@@ -47,6 +49,9 @@ begin
   
   FMemo        := TMemo        . Create(self, 200, 230, 200,  84);
   
+  FButton2.Caption := 'Butt B';
+  FButton2.OnClick := @PushButton2_onClick;
+  
   with FButton1 do
   begin
     OnClick := @PushButton1_onClick;
@@ -56,6 +61,13 @@ end;
 procedure TForm1.PushButton1_OnClick(Sender: TObject);
 begin
   ShowInfo('Button 1 pressed.');
+end;
+procedure TForm1.PushButton2_onClick(Sender: TObject);
+begin
+  writeln(FButton2.Caption);
+  if FButton2.Caption  = 'Butt B' then
+     FButton2.Caption := 'Butt C' else
+     FButton2.Caption := 'Butt B' ;
 end;
 
 procedure CleanUp_1; begin WriteLn('cleanup1 called.'); end;

@@ -11,31 +11,32 @@
 {$ifdef codeh}
 
 // decode utf-8 to unicode codepoint
-function utf8decode(var cur: pansichar; curend: pansichar; out codepoint: dword; out size: byte): boolean;
+function utf8decode(var cur: pansichar; curend: pansichar; out codepoint: dword; out size: byte): boolean; stdcall;
 // encode unicode codepoint to utf-8
-function utf8encode(codepoint: dword): RawByteString;
+function utf8encode(codepoint: dword): RawByteString; stdcall;
 // decode utf-16 to unicode codepoint
-function utf16decode(var cur: pwidechar; curend: pwidechar; out codepoint: dword; out size: byte): boolean;
+function utf16decode(var cur: pwidechar; curend: pwidechar; out codepoint: dword; out size: byte): boolean; stdcall;
 // encode unicode codepoint to utf-16
-function utf16encode(codepoint: dword): unicodestring;
+function utf16encode(codepoint: dword): unicodestring; stdcall;
 // convert utf-8 ansistring to utf-16 unicodestring
-function utf8toutf16(utf8: ansistring): unicodestring;
+function utf8toutf16(utf8: ansistring): unicodestring; stdcall;
 // convert utf-8 ansichar to utf-16 unicodestring
-function utf8toutf16(utf8: pansichar): unicodestring;
+function utf8toutf16(utf8: pansichar): unicodestring; stdcall;
 // convert utf-16 unicodestring to utf-8 ansistring
-function utf16toutf8(utf16: unicodestring): RawByteString;
+function utf16toutf8(utf16: unicodestring): RawByteString; stdcall;
 // convert utf-16 unicodechar to utf-8 ansistring
-function utf16toutf8(utf16: pwidechar): RawByteString;
+function utf16toutf8(utf16: pwidechar): RawByteString; stdcall;
 // check if a unicode codepoint represents a newline
-function is_codepoint_newline(u: dword): boolean;
+function is_codepoint_newline(u: dword): boolean; stdcall;
 // get the length of a utf-8 string
-function utf8len(const utf8: pansichar): sizeint;
+function utf8len(const utf8: pansichar): sizeint; stdcall;
 
 {$endif}
 
 {$ifdef codei}
 
-function utf8decode(var cur: pansichar; curend: pansichar; out codepoint: dword; out size: byte): boolean; inline;
+{$ifdef DLLEXPORT}
+function utf8__decode(var cur: pansichar; curend: pansichar; out codepoint: dword; out size: byte): boolean; stdcall; export;
 begin
   if (curend <> nil) and not (cur < curend) then exit(false);
   if cur^ = #0 then exit(false);
@@ -71,8 +72,21 @@ begin
   inc(cur, size);
   result := true;
 end;
+function utf8decode(var cur: pansichar; curend: pansichar; out codepoint: dword; out size: byte): boolean; stdcall;
+begin
+  utf8__decode(cur, curend, codepoint, size);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function utf8__decode(var cur: pansichar; curend: pansichar; out codepoint: dword; out size: byte): boolean; stdcall; external RTLDLL;
+function utf8decode(var cur: pansichar; curend: pansichar; out codepoint: dword; out size: byte): boolean; stdcall;
+begin
+  utf8__decode(cur, curend, codepoint, size);
+end;
+{$endif DLLIMPORT}
 
-function utf8encode(codepoint: dword): RawByteString; inline; // ansistring; inline;
+{$ifdef DLLEXPORT}
+function utf8__encode(codepoint: dword): RawByteString; stdcall; export;
 begin
   if codepoint <= $7F then
     result := ansichar(codepoint)
@@ -92,8 +106,21 @@ begin
     result := result + ansichar($80 or (codepoint and $3f));
   end;
 end;
+function utf8encode(codepoint: dword): RawByteString; stdcall;
+begin
+  result := utf8__encode(codepoint);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function utf8__encode(codepoint: dword): RawByteString; stdcall; external RTLDLL;
+function utf8encode(codepoint: dword): RawByteString; stdcall;
+begin
+  result := utf8__encode(codepoint);
+end;
+{$endif DLLIMPORT}
 
-function utf16decode(var cur: pwidechar; curend: pwidechar; out codepoint: dword; out size: byte): boolean; inline;
+{$ifdef DLLEXPORT}
+function utf16__decode(var cur: pwidechar; curend: pwidechar; out codepoint: dword; out size: byte): boolean; stdcall; export;
 begin
   if (curend <> nil) and not (cur < curend) then exit(false);
   if cur^ = #0 then exit(false);
@@ -109,8 +136,21 @@ begin
   inc(cur, size);
   result := true;
 end;
+function utf16decode(var cur: pwidechar; curend: pwidechar; out codepoint: dword; out size: byte): boolean; stdcall;
+begin
+  result := utf16__decode(cur, curend, codepoint, size);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function utf16__decode(var cur: pwidechar; curend: pwidechar; out codepoint: dword; out size: byte): boolean; stdcall; external RTLDLL;
+function utf16decode(var cur: pwidechar; curend: pwidechar; out codepoint: dword; out size: byte): boolean; stdcall;
+begin
+  result := utf16__decode(cur, curend, codepoint, size);
+end;
+{$endif DLLIMPORT}
 
-function utf16encode(codepoint: dword): unicodestring; inline;
+{$ifdef DLLEXPORT}
+function utf16__encode(codepoint: dword): unicodestring; stdcall; export;
 begin
   if codepoint > $ffff then begin
     result := widechar($d800+((codepoint-$10000) shr 10));
@@ -118,8 +158,21 @@ begin
   end else
     result := widechar(codepoint);
 end;
+function utf16encode(codepoint: dword): unicodestring; stdcall;
+begin
+  result := utf16__encode(codepoint);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function utf16__encode(codepoint: dword): unicodestring; stdcall; external RTLDLL;
+function utf16encode(codepoint: dword): unicodestring; stdcall;
+begin
+  result := utf16__encode(codepoint);
+end;
+{$endif DLLIMPORT}
 
-function utf8toutf16(utf8: ansistring): unicodestring;
+{$ifdef DLLEXPORT}
+function utf8__toutf16(utf8: ansistring): unicodestring; stdcall; export;
 var
   i: integer;
   cur, curend: pansichar;
@@ -142,8 +195,21 @@ begin
     end;
   end;
 end;
+function utf8toutf16(utf8: ansistring): unicodestring; stdcall;
+begin
+  result := utf8__toutf16(utf8);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function utf8__toutf16(utf8: ansistring): unicodestring; stdcall; external RTLDLL;
+function utf8toutf16(utf8: ansistring): unicodestring; stdcall;
+begin
+  result := utf8__toutf16(utf8);
+end;
+{$endif DLLIMPORT}
 
-function utf8toutf16(utf8: pansichar): unicodestring;
+{$ifdef DLLEXPORT}
+function utf8__toutf16(utf8: pansichar): unicodestring; stdcall; export;
 var
   i: integer;
   cur: pansichar;
@@ -159,8 +225,21 @@ begin
     inc(i, size);
   end;
 end;
+function utf8toutf16(utf8: pansichar): unicodestring; stdcall;
+begin
+  result := utf8__toutf16(utf8);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function utf8__toutf16(utf8: pansichar): unicodestring; stdcall; external RTLDLL;
+function utf8toutf16(utf8: pansichar): unicodestring; stdcall;
+begin
+  result := utf8__toutf16(utf8);
+end;
+{$endif DLLIMPORT}
 
-function utf16toutf8(utf16: unicodestring): RawByteString; //ansistring;
+{$ifdef DLLEXPORT}
+function utf16__toutf8(utf16: unicodestring): RawByteString; stdcall; export;
 var
   i: integer;
   cur, curend: pwidechar;
@@ -183,8 +262,21 @@ begin
     end;
   end;
 end;
+function utf16toutf8(utf16: unicodestring): RawByteString; stdcall;
+begin
+  result := utf16__toutf8(utf16);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function utf16__toutf8(utf16: unicodestring): RawByteString; stdcall; external RTLDLL;
+function utf16toutf8(utf16: unicodestring): RawByteString; stdcall;
+begin
+  result := utf16__toutf8(utf16);
+end;
+{$endif DLLIMPORT}
 
-function utf16toutf8(utf16: pwidechar): RawByteString; //ansistring;
+{$ifdef DLLEXPORT}
+function utf16__toutf8_widechar(utf16: pwidechar): RawByteString; stdcall; export;
 var
   i: integer;
   cur: pwidechar;
@@ -200,13 +292,26 @@ begin
     inc(i, size);
   end;
 end;
+function utf16toutf8(utf16: pwidechar): RawByteString; stdcall;
+begin
+  result := utf16__toutf8_widechar(utf16);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function utf16__toutf8_widechar(utf16: pwidechar): RawByteString; stdcall; external RTLDLL;
+function utf16toutf8(utf16: pwidechar): RawByteString; stdcall;
+begin
+  result := utf16__toutf8_widechar(utf16);
+end;
+{$endif DLLIMPORT}
 
-function is_codepoint_newline(u: dword): boolean;
+function is_codepoint_newline(u: dword): boolean; stdcall;
 begin
   result := ((u <= 127) and ((u = 10) or (u = 13) or (u = $85))) or ((u = $2028) or (u = $2029));
 end;
 
-function utf8len(const utf8: pansichar): sizeint;
+{$ifdef DLLEXPORT}
+function utf8__len(const utf8: pansichar): sizeint; stdcall; export;
 var
   cur: pansichar;
   codepoint: dword;
@@ -218,6 +323,24 @@ begin
     inc(result);
   end;
 end;
+function utf8len(const utf8: pansichar): sizeint; stdcall;
+begin
+  result := utf8len(utf8);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function utf8__len(const utf8: pansichar): sizeint; stdcall; external RTLDLL name 'utf8__len';
+function utf8len(const utf8: pansichar): sizeint; stdcall;
+begin
+  result := utf8__len(utf8);
+end;
+{$endif DLLIMPORT}
+
+{$ifdef DLLEXPORT}
+exports
+  utf8__len                 name 'utf8__len',
+  utf16__toutf8_widechar    name 'utf16__toutf8_widechar'
+  ;
+{$endif DLLEXPORT}
 
 {$endif}
-
