@@ -53,3 +53,8 @@ jobs:
       with:
         name: fpc-binaries
         path: fpc_build_output.zip
+        
+    - name: ZIP an Release anhängen
+      uses: softprops/action-gh-release@v1
+      with:
+        files: fpc_build_output.zip
