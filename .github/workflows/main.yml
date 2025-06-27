@@ -1,0 +1,40 @@
+name: Build FPC Win64 Project
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Quellcode auschecken
+      uses: actions/checkout@v3
+
+    - name: Free Pascal Win64 herunterladen und entpacken
+      run: |
+        curl -LO https://downloads.sourceforge.net/project/freepascal/Win64/3.2.2/fpc-3.2.2-win64.zip
+        7z x fpc-3.2.2-win64.zip -ofpc
+
+    - name: PATH für Compiler und Tools setzen
+      run: |
+        echo "%GITHUB_WORKSPACE%\fpc\fpc-3.2.2\bin\x86_64-win64" >> %GITHUB_PATH%
+
+    - name: Build-Batch-Datei ausführen
+      run: |
+        cd src
+        build.bat
+
+    - name: Build-Output in ZIP packen
+      run: |
+        mkdir dist
+        copy src\*.exe dist\
+        copy src\*.dll dist\
+        powershell -Command "Compress-Archive -Path dist\* -DestinationPath fpc_build_output.zip"
+
+    - name: ZIP als Artefakt bereitstellen
+      uses: actions/upload-artifact@v3
+      with:
+        name: fpc-binaries
+        path: fpc_build_output.zip
