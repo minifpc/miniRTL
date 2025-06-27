@@ -32,7 +32,7 @@ jobs:
     - name: Build-Batch-Datei ausführen
       shell: cmd
       run: |
-        cd ..\src
+        cd src
         build.bat
 
     - name: Build-Output in ZIP packen
