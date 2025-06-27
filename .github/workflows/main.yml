@@ -34,7 +34,7 @@ jobs:
         powershell -Command "Compress-Archive -Path dist\* -DestinationPath fpc_build_output.zip"
 
     - name: ZIP als Artefakt bereitstellen
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: fpc-binaries
         path: fpc_build_output.zip
