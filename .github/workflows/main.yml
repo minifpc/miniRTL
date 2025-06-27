@@ -15,8 +15,10 @@ jobs:
     - name: Free Pascal Win64 herunterladen und entpacken
       run: |
         mkdir fpc
+        dir
         cd fpc
         curl -LO https://sourceforge.net/projects/freepascal/files/Win32/3.2.2/fpc-3.2.2.i386-win32.cross.x86_64-win64.exe
+        dir
         fpc-3.2.2.i386-win32.cross.x86_64-win64.exe
 
     - name: PATH für Compiler und Tools setzen
