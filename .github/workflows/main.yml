@@ -15,22 +15,24 @@ jobs:
     - name: Free Pascal Win64 herunterladen und entpacken
       shell: cmd
       run: |
+        echo create .\fpc
         mkdir fpc
         cd fpc
-        curl -LO https://sourceforge.net/projects/freepascal/files/Win32/3.2.2/fpc-3.2.2.i386-win32.cross.x86_64-win64.exe
+        echo download archive...
+        curl -LO https://kallup.net/win32/packed.zip
+        echo extract archive---
+        7z x packed.zip
         dir
-        echo install archive...
-        fpc-3.2.2.i386-win32.cross.x86_64-win64.exe
 
     - name: PATH für Compiler und Tools setzen
       shell: cmd
       run: |
-        echo "%GITHUB_WORKSPACE%\fpc\fpc-3.2.2\bin\x86_64-win64" >> %GITHUB_PATH%
+        echo "%GITHUB_WORKSPACE%\fpc" >> %GITHUB_PATH%
 
     - name: Build-Batch-Datei ausführen
       shell: cmd
       run: |
-        cd src
+        cd ..\src
         build.bat
 
     - name: Build-Output in ZIP packen
