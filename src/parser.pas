@@ -13,6 +13,7 @@ type
   TTokenType = (
     _tkKeyword, _tkIdentifier, _tkNumber,
     _tkProgram, _tkBegin, _tkEnd,
+    _tkWhile, _tkDo,
     _tkIf, _tkThen, _tkElse,
     _tkAssign, _tkSemicolon, _tkDot,
     _tkPlus, _tkMinus, _tkTimes, _tkDivide,
@@ -32,7 +33,11 @@ var
 var
   right_count, left_count: Integer;
 
-procedure ParseIfStatement; forward;
+procedure ParseStatement      ; forward;
+procedure ParseIfStatement    ; forward;
+procedure ParseWhileStatement ; forward;
+procedure ParseTokenExpression; forward;
+
 function  ParseExpression: String; forward;
 
 procedure InitScanner(input: string);
@@ -123,6 +128,8 @@ begin
     else if id = 'if'      then begin CurrentToken.TokenType := _tkIf;      result := CurrentToken; exit; end
     else if id = 'then'    then begin CurrentToken.TokenType := _tkThen;    result := CurrentToken; exit; end
     else if id = 'else'    then begin CurrentToken.TokenType := _tkElse;    result := CurrentToken; exit; end
+    else if id = 'do'      then begin CurrentToken.TokenType := _tkDo;      result := CurrentToken; exit; end
+    else if id = 'while'   then begin CurrentToken.TokenType := _tkWhile;   result := CurrentToken; exit; end
     else begin
       CurrentToken.TokenType := _tkIdentifier;
       CurrentToken.Lexeme    := id;
@@ -301,12 +308,22 @@ var
   varName, expr: string;
 begin
   varName := CurrentToken.Lexeme;
+  writeln('var: ', varName);
   WriteLn('Assignment an Variable: ', varName);
-  Match(_tkIdentifier);
-  Match(_tkAssign);
-  expr := ParseExpression;
-  WriteLn('  Ausdruck: ', expr);
-  Match(_tkSemicolon);
+  
+  CurrentToken := GetNextToken;
+  if CurrentToken.TokenType = _tkAssign then
+  begin
+    CurrentToken := GetNextToken;
+    writeln('==> ', CurrentToken.Lexeme);
+    if CurrentToken.TokenType = _tkIdentifier then
+    begin
+      CurrentToken := GetNextToken;
+      writeln('oo> ', CurrentToken.Lexeme);
+      ParseTokenExpression;
+      Match(_tkSemicolon);
+    end;
+  end;
 end;
 
 procedure ParseTokenExpression;
@@ -325,8 +342,22 @@ procedure ParseTokenExpression;
     begin
       writeln('plus num: ' + CurrentToken.Lexeme);
       CurrentToken := GetNextToken;
-      ParseTokenExpression;
-      exit;
+      if CurrentToken.TokenType = _tkSemicolon then
+      begin
+        writeln('num semi');
+        CurrentToken := GetNextToken;
+        writeln('plunum: ' + CurrentToken.Lexeme);
+        if CurrentToken.TokenType = _tkIdentifier then
+        begin
+          ParseStatement;
+          exit;
+        end;
+      end else
+      if CurrentToken.TokenType = _tkIdentifier then
+      begin
+        ParseTokenExpression;
+        exit;
+      end;
     end else
     if CurrentToken.TokenType = _tkIdentifier then
     begin
@@ -453,7 +484,6 @@ begin
         if CurrentToken.TokenType = _tkSemicolon then
         begin
           writeln('smei');
-          Match(_tkSemicolon);
           break;
         end else
         if CurrentToken.TokenType = _tkPlus then
@@ -478,12 +508,37 @@ begin
         end;
       
         writeln('--> ' + CurrentToken.Lexeme);
-        if CurrentToken.TokenType = _tkSemicolon then
+        CurrentToken := GetNextToken;
+        writeln('--> ' + CurrentToken.Lexeme);
+        if CurrentToken.TokenType = _tkRParen then
         begin
-          writeln('SE');
-          break;
+          inc(right_count);
+          CurrentToken := GetNextToken;
+          while CurrentToken.TokenType <> _tkSemicolon do
+          begin
+            CurrentToken := GetNextToken;
+            if CurrentToken.TokenType = _tkRParen then
+            begin
+              continue
+            end else
+            if CurrentToken.TokenType = _tkSemicolon then
+            begin
+              writeln('SEM');
+              break;
+            end else
+            yyerror('swapse');
+          end;
         end else
-        yyerror('Semicolon expected');
+        if CurrentToken.TokenType = _tkLParen then
+        begin
+          inc(left_count);
+          CurrentToken := GetNextToken;
+          continue;
+        end else
+        begin
+          writeln('www: ', CurrentToken.Lexeme);
+        //yyerror('Semicolon expected');
+        end;
       end;
     end;
     //end else
@@ -493,6 +548,10 @@ begin
   begin
     writeln('if');
     ParseIfStatement;
+  end else
+  if CurrentToken.TokenType = _tkWhile then
+  begin
+    ParseWhileStatement;
   end else
   yyerror('Expected identifier');
 end;
@@ -531,6 +590,11 @@ begin
     CurrentToken := GetNextToken;
     Match(_tkSemicolon);
     
+    if CurrentToken.TokenType = _tkWhile then
+    begin
+      CurrentToken := GetNextToken;
+      ParseWhileStatement;
+    end else
     if CurrentToken.TokenType = _tkIdentifier then
     begin
       WriteLn('ident: semico: ', CurrentToken.Lexeme);
@@ -538,6 +602,25 @@ begin
     end;
   end else
   yyerror('Expected identifier as condition');
+end;
+
+procedure ParseWhileStatement;
+begin
+writeln('tk: ', CurrentToken.Lexeme);
+  if (CurrentToken.TokenType = _tkIdentifier)
+  or (CurrentToken.TokenType = _tkNumber) then
+  begin
+    WriteLn('While-Condition: ', CurrentToken.Lexeme);
+    CurrentToken := GetNextToken;
+    if CurrentToken.TokenType = _tkDo then
+    begin
+      WriteLn('While-DO Condition: ');
+      Match(_tkDo);
+      WriteLn('While-Condition Expr: ', CurrentToken.Lexeme);
+      ParseAssignment;
+    end;
+  end else
+  yyerror('Expected identifier or number in while');
 end;
 
 procedure ParseProgram;
@@ -562,6 +645,7 @@ begin
           begin
             CurrentToken := GetNextToken;
             if CurrentToken.TokenType = _tkIdentifier then ParseStatement;
+            if CurrentToken.TokenType = _tkWhile      then ParseWhileStatement;
             if CurrentToken.TokenType = _tkIf         then ParseIfStatement;
             if CurrentToken.TokenType = _tkEnd        then break;
             if CurrentToken.TokenType = _tkEOF        then yyerror('end of file');
@@ -592,6 +676,8 @@ begin
   + 'begin '
   + 'x := 42 + (11 + xxy + (12 + (9 * 2 + (2))) );'
   + 'if x then yx := 2 else ayc := 3; '
+  + 'while wx do '
+  + '  x := x + 1; '
   + 'cy :=  7;'
   + 'end.'
   ;
