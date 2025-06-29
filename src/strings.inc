@@ -396,11 +396,24 @@ begin
 end;
 {$endif DLLIMPORT}
 
-function fpc_ansistr_unique(var S: Pointer): Pointer; compilerproc; [public, alias: 'FPC_ANSISTR_UNIQUE'];
+{$ifdef DLLEXPORT}
+function fpc__ansistr_unique(var S: Pointer): Pointer; stdcall; export;
 begin
   pointer(result) := pointer(s);
   if (result <> nil) and (PAnsiRec(result - AnsiFirstOff)^.Ref <> 1) then result := fpc_truely_ansistr_unique(s);
 end;
+function fpc_ansistr_unique(var S: Pointer): Pointer; compilerproc; [public, alias: 'FPC_ANSISTR_UNIQUE'];
+begin
+  result := fpc__ansistr_unique(S);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function fpc__ansistr_unique(var S: Pointer): Pointer; stdcall; external RTLDLL;
+function fpc_ansistr_unique(var S: Pointer): Pointer; compilerproc; [public, alias: 'FPC_ANSISTR_UNIQUE'];
+begin
+  result := fpc__ansistr_unique(S);
+end;
+{$endif DLLIMPORT}
 
 procedure fpc_ansistr_sint(v: ValSInt; len: SizeInt; out s: RawByteString; cp: TSystemCodePage); [public, alias: 'FPC_ANSISTR_VALSINT']; compilerproc;
 begin
@@ -408,21 +421,21 @@ begin
 end;
 
 {$ifdef DLLEXPORT}
-function fpcchartoansistr(const c: AnsiChar; cp: TSystemCodePage): RawByteString; stdcall; export;
+function fpc__chartoansistr(const c: AnsiChar; cp: TSystemCodePage): RawByteString; stdcall; export;
 begin
   pointer(result) := new_ansistring(1);
   move(c, result[1], 1);
 end;
 function fpc_char_to_ansistr(const c: AnsiChar; cp: TSystemCodePage): RawByteString; compilerproc;
 begin
-  Exit(fpcchartoansistr(c, cp));
+  result := fpc__chartoansistr(c, cp);
 end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
-function fpcchartoansistr(const c: AnsiChar; cp: TSystemCodePage): RawByteString; stdcall; external RTLDLL;
+function fpc__chartoansistr(const c: AnsiChar; cp: TSystemCodePage): RawByteString; stdcall; external RTLDLL;
 function fpc_char_to_ansistr(const c: AnsiChar; cp: TSystemCodePage): RawByteString; compilerproc;
 begin
-  Exit(fpcchartoansistr(c, cp));
+  result := fpc__chartoansistr(c, cp);
 end;
 {$endif DLLIMPORT}
 
@@ -889,6 +902,11 @@ function itoa(num: integer; base: integer=10): pansichar; stdcall;
 begin
   result := itoa_exp(num, base);
 end;
+
+exports
+  fpc__chartoansistr    name 'fpc__chartoansistr',
+  fpc__ansistr_unique   name 'fpc__ansistr_unique'
+  ;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
 function itoa_exp(num: integer; base: integer=10): pansichar; stdcall; external RTLDLL;

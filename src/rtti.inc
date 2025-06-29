@@ -33,12 +33,12 @@ procedure fpc_decref(data, typeinfo: pointer); compilerproc;
 
 procedure fpc_initialize(data, typeinfo: pointer); compilerproc; [public, alias: 'FPC_INITIALIZE'];
 begin
-  writeln('fpc_initialize');
+  //writeln('fpc_initialize');
 end;
 
 procedure fpc_finalize(data, typeinfo: pointer); compilerproc; [public, alias: 'FPC_FINALIZE'];
 begin
-  writeln('fpc_finalize');
+  //writeln('fpc_finalize');
 
   case PTypeKind(typeinfo)^ of
     tkInterface: writeln('decrease refcount of interfaced object');
@@ -47,12 +47,12 @@ end;
 
 procedure fpc_addref(data, typeinfo: pointer); compilerproc; [public, alias: 'FPC_ADDREF'];
 begin
-  writeln('fpc_addref');
+  //writeln('fpc_addref');
 end;
 
 procedure fpc_decref(data, typeinfo: pointer); compilerproc; [public, alias: 'FPC_DECREF'];
 begin
-  writeln('fpc_decref');
+  //writeln('fpc_decref');
 end;
 
 {$endif}
