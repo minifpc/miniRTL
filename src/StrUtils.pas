@@ -7,7 +7,7 @@ unit StrUtils;
 interface
 
 uses
-  Exceptions;
+  Exceptions, Dialogs;
   
 type
   TReplaceFlag  = (
@@ -15,6 +15,41 @@ type
     rfIgnoreCase
   );
   TReplaceFlags = set of TReplaceFlag;
+
+type
+  PStringListArray = ^TStringListArray;
+  TStringListArray = array[0..0] of String;
+
+type
+  TStringList = class(TObject)
+  private
+    FItems: PStringListArray;
+    FCount: Integer;
+    FSorted: BOOL;
+  protected
+    procedure  Grow;
+    function   GetCount: Integer;
+    procedure  InsertSorted(const S: String);
+    procedure  SetSorted(AValue: BOOL);
+    
+    procedure  SetString(Index: Integer; const Value: String);
+    function   GetString(Index: Integer): String;
+  public
+    constructor Create;
+    destructor  Destroy; override;
+
+    procedure Add(const S: string);
+    procedure Sort;
+    procedure Clear;
+    function  Get(Index: Integer): string;
+    
+    function  IndexOfName(AString: String): Integer;
+    function  ValueFromIndex(AValue: Integer): String;
+  published
+    property Count: Integer read GetCount;
+    property Sorted: BOOL read FSorted write SetSorted;
+    property Values[i: Integer]: String read GetString write SetString; default;
+  end;
 
 // ---------------------------------------------------------------------------------------
 // the internal "export" function's and procedure's ...
@@ -44,7 +79,25 @@ procedure fpc_ansistr_setlength(var s: AnsiString; newlen: SizeInt); export;
 procedure fpc_ansistr_unique(var s: AnsiString); export;
 
 function Trim(const S: String): String; stdcall; export;
-function LowerCase(const S: string): string; export;
+
+function UpCase(c: Char): Char; stdcall; export;
+function LoCase(c: Char): Char; stdcall; export;
+
+function LowerCase(const S: string): string; stdcall; export;
+function UpperCase(const S: string): String; stdcall; export;
+
+function CompareText(const S1, S2: string): Integer; stdcall; export;
+
+function SetStringListLength(var Arr: PStringListArray; oldsize, newsize: Integer): PStringListArray; stdcall; export;
+
+function  TStringList_IndexOfName    (p: TStringList; AString: String): Integer; stdcall; export;
+function  TStringList_GetString      (p: TStringList; AValue: Integer): string ; stdcall; export;
+function  TStringList_ValueFromIndex (p: TStringList; AValue: Integer): String ; stdcall; export;
+function  TStringList_Get            (p: TStringList; Index: Integer ): string ; stdcall; export;
+procedure TStringList_GetSorted      (p: TStringList; AValue: BOOL   );          stdcall; export;
+procedure TStringList_Sort           (p: TStringList                 );          stdcall; export;
+procedure TStringList_Add            (p: TStringList; const S: string);          stdcall; export;
+procedure TStringList_InsertSorted   (p: TStringList; const S: String);          stdcall; export;
 {$endif DLLEXPORT}
 
 // ---------------------------------------------------------------------------------------
@@ -75,14 +128,271 @@ procedure fpc_ansistr_unique(var s: AnsiString); external RTLDLL;
 procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); stdcall; external RTLDLL;
 
 function Trim(const S: String): String; stdcall; external RTLDLL;
-function LowerCase(const S: string): string; external RTLDLL;
+
+function UpCase(c: Char): Char; stdcall; external RTLDLL;
+function LoCase(c: Char): Char; stdcall; external RTLDLL;
+
+function LowerCase(const S: string): string; stdcall; external RTLDLL;
+function UpperCase(const S: string): String; stdcall; external RTLDLL;
+
+function CompareText(const S1, S2: string): Integer; stdcall; external RTLDLL;
+
+function SetStringListLength(var Arr: PStringListArray; oldsize, newsize: Integer): PStringListArray; stdcall; external RTLDLL;
+
+function  TStringList_IndexOfName    (p: TStringList; AString: String): Integer; stdcall; external RTLDLL;
+function  TStringList_GetString      (p: TStringList; AValue: Integer): string ; stdcall; external RTLDLL;
+function  TStringList_ValueFromIndex (p: TStringList; AValue: Integer): string ; stdcall; external RTLDLL;
+function  TStringList_Get            (p: TStringList; Index: Integer ): string ; stdcall; external RTLDLL;
+procedure TStringList_GetSorted      (p: TStringList; AValue: BOOL   );          stdcall; external RTLDLL;
+procedure TStringList_Sort           (p: TStringList                 );          stdcall; external RTLDLL;
+procedure TStringList_Add            (p: TStringList; const S: string);          stdcall; external RTLDLL;
+procedure TStringList_InsertSorted   (p: TStringList; const S: String);          stdcall; external RTLDLL;
 {$endif DLLIMPORT}
 
 implementation
 
 uses SysUtils;
 
+{ TStringList }
+constructor TStringList.Create;
+begin
+  inherited Create;
+  
+  FCount  := 0;
+  FSorted := false;
+  
+  SetStringListLength(FItems, 0, 1);
+end;
+
+procedure TStringList.Grow;
+begin
+  writeln('coun: ' + inttostr(FCount));
+  SetStringListLength(FItems, FCount, FCount + 1);
+  FItems[FCount] := 'test';
+  writeln('====> ' + FItems^[FCount]);
+  inc(FCount);
+end;
+
+procedure TStringList.Add(const S: string);
+begin
+  TStringList_Add(self, S);
+end;
+
+procedure TStringList.InsertSorted(const S: String);
+begin
+  TStringList_InsertSorted(self, S);
+end;
+
+function TStringList.Get(Index: Integer): string;
+begin
+  result := TStringList_Get(self, Index);
+end;
+
+procedure TStringList.Clear;
+begin
+  SetStringListLength(FItems, FCount, 1);
+  FCount := 0;
+end;
+
+function TStringList.GetCount: Integer;
+begin
+  result := FCount;
+end;
+
+function TStringList.IndexOfName(AString: String): Integer;
+begin
+  result := TStringList_IndexOfName(self, AString);
+end;
+
+function TStringList.ValueFromIndex(AValue: Integer): String;
+begin
+  result := TStringList_ValueFromIndex(self, AValue);
+end;
+
+procedure TStringList.SetSorted(AValue: BOOL);
+begin
+  TStringList_GetSorted(self, AValue);
+end;
+
+procedure TStringList.Sort;
+begin
+  TStringList_Sort(self);
+end;
+
+function TStringList.GetString(Index: Integer): String;
+begin
+  result := TStringList_GetString(self, Index);
+end;
+
+procedure TStringList.SetString(Index: Integer; const Value: String);
+begin
+  if (Index >= 0) and (Index <= FCount) then
+  FItems[Index] := Value else
+  raise Exception.Create('index out of bounds');
+end;
+
+destructor TStringList.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
 {$ifdef DLLEXPORT}
+function TStringList_ValueFromIndex(p: TStringList; AValue: Integer): String; stdcall; export;
+begin
+  result := '';
+  if AValue < 0 then
+  begin
+    ShowError('TStringList: index value must be positive.');
+    exit;
+  end;
+  if AValue <> p.FCount then
+  begin
+    ShowError('TStringList: index out of bounds.');
+    exit;
+  end;
+  result := p.FItems[AValue];
+end;
+
+function TStringList_IndexOfName (p: TStringList; AString: String): Integer; stdcall; export;
+var
+  i: Integer;
+  found: BOOL;
+begin
+  if p.FCount < 1 then
+  begin
+    ShowError('list is empty');
+    result := -1;
+    exit;
+  end else
+  begin
+    found := false;
+    for i := 0 to p.FCount - 1 do
+    begin
+      if CompareText(p.FItems[i], AString) > 0 then
+      begin
+        found  := true;
+        result := i;
+        exit;
+      end;
+    end;
+    if not found then
+    result := -1;
+  end;
+end;
+
+procedure TStringList_Sort(p: TStringList); stdcall; export;
+var
+  i, j: Integer;
+  temp: string;
+begin
+  // Einfacher BubbleSort
+  for i := 0 to p.FCount - 2 do
+  for j := 0 to p.FCount - 2 - i do
+    if CompareText(p.FItems[j], p.FItems[j + 1]) > 0 then
+    begin
+      temp := p.FItems[j];
+      
+      p.FItems[j] := p.FItems[j + 1];
+      p.FItems[j + 1] := temp;
+    end;
+end;
+
+procedure TStringList_GetSorted(p: TStringList; AValue: BOOL); stdcall; export;
+begin
+  if p.FSorted <> AValue then
+  begin
+    p.FSorted := AValue;
+    if p.FSorted then
+    p.Sort;
+  end;
+end;
+
+procedure TStringList_InsertSorted(p: TStringList; const S: String); stdcall; export;
+var
+  i, j: Integer;
+begin
+  p.Grow;
+  
+  // suche Position zum Einfügen
+  i := 0;
+  while (i < p.FCount) and (CompareText(S, p.FItems[i]) > 0) do
+  inc(i);
+  
+  // schiebe nachfolgende Elemente
+  for j := p.FCount downto i + 1 do
+  p.FItems[j] := p.FItems[j - 1];
+  
+  // Einfügen
+  p.FItems[i] := S;
+  inc(p.FCount);
+end;
+
+function TStringList_GetString(p: TStringList; AValue: Integer): String; stdcall; export;
+begin
+  if (AValue >= 0) and (AValue <= p.FCount) then
+  result := p.FItems[AValue] else
+  raise Exception.Create('index out of bounds');
+end;
+
+function TStringList_Get(p: TStringList; Index: Integer): string; stdcall; export;
+begin
+  if (index >= 0) and (index < p.FCount) then
+  result := p.FItems[Index] else
+  raise Exception.Create('Index out of bounds');
+end;
+
+procedure TStringList_Add(p: TStringList; const S: string); stdcall; export;
+var
+ newmem: PStringListArray;
+ i: Integer;
+begin
+  if p.FSorted then
+  p.InsertSorted(S) else
+  begin
+    inc(p.FCount);
+    GetMem(newmem, StrLen(PChar(S)) + 1);
+    
+    for i := 0 to p.FCount - 1 do
+    newmem^[i] := p.FItems^[i];
+    
+    newmem[p.FCount-1] := S;
+    
+    for i := 0 to p.FCount - 1 do
+    p.FItems^[i] := '';
+    
+    FreeMem(p.FItems);
+    p.FItems := newmem;
+  end;
+end;
+
+function SetStringListLength(var Arr: PStringListArray; oldsize, newsize: Integer): PStringListArray; stdcall; export;
+var
+  NewMem: PStringListArray;
+  CopyCount, i: Integer;
+begin
+  GetMem  (NewMem , NewSize * sizeof(Integer));
+  FillChar(NewMem^, NewSize * sizeof(Integer), 0);
+  writeln('set 1');
+  if (Arr <> nil) then
+  begin
+  writeln('set 2');
+    CopyCount := oldsize;
+    if newsize < oldsize then
+    CopyCount := NewSize;
+    writeln('set 3');
+    for i := 0 to CopyCount - 1 do
+    NewMem^[i] := Arr^[i];
+    writeln('set 4');
+    FreeMem(Arr);
+    writeln('set 5');
+  end;
+  writeln('set 6');
+  Arr := NewMem;
+  writeln('set 7');
+  result := Arr;
+end;
+
 function Min(a, b: Integer): Integer;
 begin
   if a < b then
@@ -502,20 +812,73 @@ begin
   result := Copy(S, startIdx, endIdx - startIdx + 1);
 end;
 
-function LowerCase(const S: string): string; export;
+function LoCase(c: Char): Char; stdcall; export;
+begin
+  if (c >= 'A') and (c <= 'Z') then
+  result := Chr(Ord(c) - Ord('A') + Ord('a')) else
+  result := c;
+end;
+
+function LowerCase(const S: string): string; stdcall; export;
 var
   i: Integer;
   ch: Char;
 begin
-  Result := S;
-  for i := 1 to Length(S) do
+  result := S;
+  for i := 1 to StrLen(S) do
   begin
     ch := S[i];
     if (ch >= 'A') and (ch <= 'Z') then
-      Result[i] := Chr(Ord(ch) + 32)
-    else
-      Result[i] := ch;
+    result[i] := Chr(Ord(ch) + 32) else
+    result[i] := ch;
   end;
+end;
+
+function UpCase(c: Char): Char; stdcall; export;
+begin
+  if (c >= 'a') and (c <= 'z') then
+  result := Chr(Ord(c) - Ord('a') + Ord('A')) else
+  result := c;
+end;
+
+function UpperCase(const S: string): String; stdcall; export;
+var
+  i, len: Integer;
+  p: PChar;
+begin
+  len := StrLen(S) + 1;
+  GetMem(P, len);
+  
+  move(Pointer(S)^, P^, len);
+  //for i := 1 to len do
+  //result[i] := UpCase(S[i]);
+  
+  P[len] := #0;
+end;
+
+function CompareText(const S1, S2: string): Integer; stdcall; export;
+var
+  i: Integer;
+  c1, c2: Char;
+  len: Integer;
+begin
+  len := StrLen(S1);
+  if Length(S2) < len then
+  len := StrLen(S2);
+
+  for i := 1 to len do
+  begin
+    c1 := UpCase(S1[i]);
+    c2 := UpCase(S2[i]);
+    if c1 <> c2 then
+    begin
+      result := Ord(c1) - Ord(c2);
+      Exit;
+    end;
+  end;
+
+  // Bisher gleich – jetzt Länge vergleichen
+  result := StrLen(S1) - StrLen(S2);
 end;
 
 exports
@@ -532,10 +895,26 @@ exports
   IntToStr          name 'IntToStr',
   
   Trim              name 'Trim',
+  CompareText       name 'CompareText',
+  
+  LoCase            name 'LoCase',
   LowerCase         name 'LowerCase',
+  
+  UpCase            name 'UpCase',
+  UpperCase         name 'UpperCase',
   
   FloatToStr        name 'FloatToStr',
   Format            name 'Format',
+
+  TStringList_IndexOfName    name 'TStringList_IndexOfName',
+  TStringList_ValueFromIndex name 'TStringList_ValueFromIndex',
+  TStringList_GetString      name 'TStringList_GetString',
+  TStringList_GetSorted      name 'TStringList_GetSorted',
+  TStringList_Get            name 'TStringList_Get',
+  TStringList_Add            name 'TStringList_Add',
+  TStringList_InsertSorted   name 'TStringList_InsertSorted',
+  
+  SetStringListLength name 'SetStringListLength',
   
   fpc_char_to_ansistr   name 'fpc_char_to_ansistr',
   fpc_ansistr_setlength name 'fpc_ansistr_setlength',

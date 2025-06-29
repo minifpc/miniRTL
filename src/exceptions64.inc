@@ -657,14 +657,15 @@ procedure fpc_raiseexception_(
   anaddr : codepointer;
   aframe : pointer); stdcall; export;
 begin
-  writeln('fpc_raiseexception');
+  //writeln('fpc_raiseexception');
 
   if obj = nil then writeln('obj nil');
   if anaddr = nil then writeln('anaddr nil');
   if aframe = nil then writeln('aframe nil');
 
   if obj <> nil then begin
-    writeln('exception message = ', TTestException(obj).test);
+    //writeln('exception message = ', TTestException(obj).test);
+    writeln(TTestException(obj).test);
   end;
 end;
 procedure fpc_raiseexception(

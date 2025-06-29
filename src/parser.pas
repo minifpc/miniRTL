@@ -30,8 +30,10 @@ var
   Source: string;
   Position: Integer;
   CurrentToken: TToken;
+  SymbolTable: TStringList;
 var
   right_count, left_count: Integer;
+  eval_left  , eval_right: Integer;
 
 procedure ParseStatement      ; forward;
 procedure ParseIfStatement    ; forward;
@@ -39,6 +41,9 @@ procedure ParseWhileStatement ; forward;
 procedure ParseTokenExpression; forward;
 
 function  ParseExpression: String; forward;
+function  EvalExpression: Integer; forward;
+
+procedure Match(expected: TTokenType); forward;
 
 procedure InitScanner(input: string);
 begin
@@ -46,6 +51,7 @@ begin
   Position    := 1;
   right_count := 0;
   left_count  := 0;
+  SymbolTable := TStringList.Create;
 end;
 
 procedure yyerror(msg: String);
@@ -230,6 +236,193 @@ begin
   end;
 end;
 
+function GetVariableValue(name: string): Integer;
+var
+  idx: Integer;
+begin
+  idx := SymbolTable.IndexOfName(name);
+  if idx = -1 then
+  begin
+    {$ifdef DLLDEBUG}
+    writeln('Variable: "' + name + '" not found.');
+    {$endif DLLDEBUG}
+    SymbolTable.Add(name);
+    writeln('oooooooooooooooooooooo');
+    result := 32;
+  end else
+  begin
+    writeln('found var');
+    Result := StrToInt(SymbolTable.ValueFromIndex(idx));
+  end;
+end;
+
+procedure SetVariableValue(name: string; value: Integer);
+var
+  i : Integer;
+begin
+  i := SymbolTable.IndexOfName(name);
+  if i < 0 then
+  SymbolTable.Add(name) else
+  SymbolTable.Values[i] := IntToStr(value);
+end;
+
+function EvalFactor: Integer;
+var
+  val: Integer;
+begin
+  case CurrentToken.TokenType of
+    _tkNumber: begin
+      val := StrToInt(CurrentToken.Lexeme);
+      Match(_tkNumber);
+      Result := val;
+    end;
+    _tkIdentifier: begin
+      result := GetVariableValue(CurrentToken.Lexeme);
+      Match(_tkIdentifier);
+      writeln('###> ', inttostr(result));
+    end;
+    _tkLParen: begin
+      Match(_tkLParen);
+      Result := EvalExpression;
+      Match(_tkRParen);
+    end; else
+    yyerror('Syntaxfehler in Factor.');
+  end;
+end;
+
+procedure ParseTokenParen;
+begin
+  if CurrentToken.TokenType = _tkLParen then
+  begin
+    Match(_tkLParen);
+    inc(left_count);
+  end else
+  if CurrentToken.TokenType = _tkRParen then
+  begin
+    Match(_tkRParen);
+    inc(right_count);
+  end else
+  if CurrentToken.TokenType = _tkSemicolon then
+  begin
+    Match(_tkSemicolon);
+    
+    if left_count  > right_count then yyerror('too much lparen');
+    if right_count > left_count  then yyerror('too much rparen');
+      
+    writeln('sema');
+  end;
+end;
+
+procedure ParseTokenType(var eval_result: Integer);
+begin
+  if CurrentToken.TokenType = _tkIdentifier then
+  begin
+    Match(_tkIdentifier);
+    eval_result := EvalFactor;
+  end else
+  if CurrentToken.TokenType = _tkNumber then
+  begin
+    Match(_tkNumber);
+    eval_result := EvalFactor;
+  end else
+  if CurrentToken.TokenType = _tkLParen then ParseTokenParen else
+  if CurrentToken.TokenType = _tkRParen then ParseTokenParen else
+  yyerror('error 333');
+end;
+
+procedure ParseTokenFactor;
+begin
+  if CurrentToken.TokenType = _tkTimes then
+  begin
+    writeln('TIMES');
+    Match(_tkTimes);
+    ParseTokenType(eval_right);
+  end else
+  if CurrentToken.TokenType = _tkDivide then
+  begin
+    writeln('DIVIDE');
+    Match(_tkDivide);
+    ParseTokenType(eval_right);
+  end;
+end;
+
+function EvalTerm: Integer;
+begin
+  eval_left := EvalFactor;
+  writeln('EvalFactor left: ' + CurrentToken.Lexeme);
+  Match(_tkAssign);
+  while true do
+  begin
+    if CurrentToken.TokenType = _tkIdentifier then
+    begin
+      writeln('IDDDD');
+      Match(_tkIdentifier);
+      ParseTokenFactor;
+    end else
+    if CurrentToken.TokenType = _tkNumber then
+    begin
+      writeln('NUMMB');
+      Match(_tkNumber);
+      ParseTokenFactor;
+    end else
+    begin
+      ParseTokenParen;
+    end;
+    yyerror('expr errrr');
+  end;
+
+(*  
+  if CurrentToken.TokenType = _tkIdentifier then
+  begin
+    Match(_tkIdentifier);
+  while CurrentToken.TokenType in [_tkTimes, _tkDivide] do
+  begin
+    if CurrentToken.TokenType = _tkTimes then
+    begin
+      Match(_tkTimes);
+      right := EvalFactor;
+      left := left * right;
+    end else
+    begin
+      Match(_tkDivide);
+      right := EvalFactor;
+      if right = 0 then raise Exception.Create('Division durch 0!');
+      left := left div right;
+    end;
+  end;*)
+  Result := eval_left;
+end;
+
+function EvalExpression: Integer;
+var
+  left, right: Integer;
+begin
+  writeln('ooooo>> ' + CurrentToken.Lexeme);
+  if CurrentToken.TokenType = _tkSemicolon then
+  begin
+    writeln('emixx');
+    result := StrToInt(CurrentToken.Lexeme);
+    exit;
+  end;
+  left := EvalTerm;
+  while CurrentToken.TokenType in [_tkPlus, _tkMinus] do
+  begin
+    if CurrentToken.TokenType = _tkPlus then
+    begin
+      Match(_tkPlus);
+      right := EvalTerm;
+      left := left + right;
+    end else
+    if CurrentToken.TokenType = _tkMinus then
+    begin
+      Match(_tkMinus);
+      right := EvalTerm;
+      left := left - right;
+    end;
+  end;
+  Result := left;
+end;
+
 procedure Match(expected: TTokenType);
 begin
   if CurrentToken.TokenType = expected then
@@ -306,24 +499,30 @@ end;
 procedure ParseAssignment;
 var
   varName, expr: string;
+  exprValue: Integer;
 begin
   varName := CurrentToken.Lexeme;
+  {$ifdef DLLDEBUG}
   writeln('var: ', varName);
   WriteLn('Assignment an Variable: ', varName);
+  {$endif DLLDEBUG}
   
-  CurrentToken := GetNextToken;
-  if CurrentToken.TokenType = _tkAssign then
-  begin
-    CurrentToken := GetNextToken;
-    writeln('==> ', CurrentToken.Lexeme);
+  exprValue := EvalExpression;
+  writeln('ooooo');
+  SetVariableValue(varName, exprValue);
+  writeln('Zuweisung: ', varName, ' := ', intTostr(exprValue));
+  Match(_tkSemicolon);
+  
+    (*
     if CurrentToken.TokenType = _tkIdentifier then
     begin
       CurrentToken := GetNextToken;
+      {$ifdef DLLDEBUG}
       writeln('oo> ', CurrentToken.Lexeme);
+      {$endif DLLDEBUG}
       ParseTokenExpression;
       Match(_tkSemicolon);
-    end;
-  end;
+    end;*)
 end;
 
 procedure ParseTokenExpression;
@@ -332,7 +531,9 @@ procedure ParseTokenExpression;
     CurrentToken := GetNextToken;
     if CurrentToken.TokenType = _tkLParen then
     begin
+      {$ifdef DLLDEBUG}
       writeln('TOKLEFTPAR');
+      {$endif DLLDEBUG}
       inc(left_count);
       CurrentToken := GetNextToken;
       ParseTokenExpression;
@@ -340,13 +541,19 @@ procedure ParseTokenExpression;
     end else
     if CurrentToken.TokenType = _tkNumber then
     begin
+      {$ifdef DLLDEBUG}
       writeln('plus num: ' + CurrentToken.Lexeme);
+      {$endif DLLDEBUG}
       CurrentToken := GetNextToken;
       if CurrentToken.TokenType = _tkSemicolon then
       begin
+        {$ifdef DLLDEBUG}
         writeln('num semi');
+        {$endif DLLDEBUG}
         CurrentToken := GetNextToken;
+        {$ifdef DLLDEBUG}
         writeln('plunum: ' + CurrentToken.Lexeme);
+        {$endif DLLDEBUG}
         if CurrentToken.TokenType = _tkIdentifier then
         begin
           ParseStatement;
@@ -361,7 +568,9 @@ procedure ParseTokenExpression;
     end else
     if CurrentToken.TokenType = _tkIdentifier then
     begin
+      {$ifdef DLLDEBUG}
       writeln('plus ident: ' + CurrentToken.Lexeme);
+      {$endif DLLDEBUG}
       CurrentToken := GetNextToken;
       ParseTokenExpression;
       exit;
@@ -371,28 +580,37 @@ procedure ParseTokenExpression;
 begin
   if CurrentToken.TokenType = _tkPlus then
   begin
+    {$ifdef DLLDEBUG}
     writeln('plus');
+    {$endif DLLDEBUG}
     subParse;
   end else
   if CurrentToken.TokenType = _tkMinus then
   begin
+    {$ifdef DLLDEBUG}
     writeln('minus');
+    {$endif DLLDEBUG}
     subParse;
   end else
   if CurrentToken.TokenType = _tkTimes then
   begin
+    {$ifdef DLLDEBUG}
     writeln('times');
+    {$endif DLLDEBUG}
     subParse;
   end else
   if CurrentToken.TokenType = _tkDivide then
   begin
+    {$ifdef DLLDEBUG}
     writeln('divide');
+    {$endif DLLDEBUG}
     subParse;
   end else
   if CurrentToken.TokenType = _tkNumber then
   begin
+    {$ifdef DLLDEBUG}
     writeln('  valuE: ', CurrentToken.Lexeme);
-    
+    {$endif DLLDEBUG}
     CurrentToken := GetNextToken;
     ParseTokenExpression;
   end else
@@ -400,36 +618,49 @@ begin
   begin
     inc(right_count);
     CurrentToken := GetNextToken;
+    {$ifdef DLLDEBUG}
     writeln('TOk: ' + CurrentToken.Lexeme);
+    {$endif DLLDEBUG}
     if CurrentToken.TokenType = _tkSemicolon then
     begin
-    writeln('lhs: ' + IntToStr(left_count));
-    writeln('rhs: ' + IntToStr(right_count));
+      {$ifdef DLLDEBUG}
+      writeln('lhs: ' + IntToStr(left_count));
+      writeln('rhs: ' + IntToStr(right_count));
+      {$endif DLLDEBUG}
       if right_count < left_count  then yyerror('right paren without left paren.');
       if left_count  < right_count then yyerror('left paren without right paren.');
 
       right_count := 0;
       left_count  := 0;
       
+      {$ifdef DLLDEBUG}
       writeln('semi expr end');
+      {$endif DLLDEBUG}
       exit;
     end else
     if CurrentToken.TokenType = _tkRParen then
     begin
       inc(right_count);
       CurrentToken := GetNextToken;
+      
+      {$ifdef DLLDEBUG}
       writeln('tok: ' + CurrentToken.Lexeme);
+      {$endif DLLDEBUG}
       if CurrentToken.TokenType = _tkSemicolon then
       begin
-      writeln('LHS: ' + IntToStr(left_count));
-      writeln('RHS: ' + IntToStr(right_count));
+        {$ifdef DLLDEBUG}
+        writeln('LHS: ' + IntToStr(left_count));
+        writeln('RHS: ' + IntToStr(right_count));
+        {$endif DLLDEBUG}
         if right_count < left_count  then yyerror('right paren without left paren.');
         if left_count  < right_count then yyerror('left paren without right paren.');
         
         right_count := 0;
         left_count  := 0;
         
+        {$ifdef DLLDEBUG}
         writeln('end expr');
+        {$endif DLLDEBUG}
         exit;
       end else
       ParseTokenExpression;
@@ -459,7 +690,9 @@ begin
   end else
   if CurrentToken.TokenType = _tkLParen then
   begin
-  writeln('Lparen');
+    {$ifdef DLLDEBUG}
+    writeln('Lparen');
+    {$endif DLLDEBUG}
     inc(left_count);
     CurrentToken := GetNextToken;
     ParseTokenExpression;
@@ -472,18 +705,24 @@ procedure ParseStatement;
 begin
   if CurrentToken.TokenType = _tkIdentifier then
   begin
+    {$ifdef DLLDEBUG}
     WriteLn('Statement: ', CurrentToken.Lexeme);
+    {$endif DLLDEBUG}
     Match(_tkIdentifier);
     Match(_tkAssign);
     while CurrentToken.TokenType <> _tkSemicolon do
     begin
       if CurrentToken.TokenType = _tkNumber then
       begin
+        {$ifdef DLLDEBUG}
         WriteLn('  Value: ', CurrentToken.Lexeme);
+        {$endif DLLDEBUG}
         Match(_tkNumber);
         if CurrentToken.TokenType = _tkSemicolon then
         begin
+          {$ifdef DLLDEBUG}
           writeln('smei');
+          {$endif DLLDEBUG}
           break;
         end else
         if CurrentToken.TokenType = _tkPlus then
@@ -506,10 +745,13 @@ begin
           CurrentToken := GetNextToken;
           ParseTokenExpression;
         end;
-      
+        {$ifdef DLLDEBUG}
         writeln('--> ' + CurrentToken.Lexeme);
+        {$endif DLLDEBUG}
         CurrentToken := GetNextToken;
+        {$ifdef DLLDEBUG}
         writeln('--> ' + CurrentToken.Lexeme);
+        {$endif DLLDEBUG}
         if CurrentToken.TokenType = _tkRParen then
         begin
           inc(right_count);
@@ -523,7 +765,9 @@ begin
             end else
             if CurrentToken.TokenType = _tkSemicolon then
             begin
+              {$ifdef DLLDEBUG}
               writeln('SEM');
+              {$endif DLLDEBUG}
               break;
             end else
             yyerror('swapse');
@@ -536,7 +780,9 @@ begin
           continue;
         end else
         begin
+          {$ifdef DLLDEBUG}
           writeln('www: ', CurrentToken.Lexeme);
+          {$endif DLLDEBUG}
         //yyerror('Semicolon expected');
         end;
       end;
@@ -546,7 +792,9 @@ begin
   end else
   if CurrentToken.TokenType = _tkIf then
   begin
+    {$ifdef DLLDEBUG}
     writeln('if');
+    {$endif DLLDEBUG}
     ParseIfStatement;
   end else
   if CurrentToken.TokenType = _tkWhile then
@@ -561,31 +809,46 @@ begin
   Match(_tkIf);
   if CurrentToken.TokenType = _tkIdentifier then
   begin
+    {$ifdef DLLDEBUG}
     WriteLn('If-Bedingung: ', CurrentToken.Lexeme);
+    {$endif DLLDEBUG}
     CurrentToken := GetNextToken;
     Match(_tkThen);
+    
+    {$ifdef DLLDEBUG}
     WriteLn('If-Bedingung: ', CurrentToken.Lexeme);
+    {$endif DLLDEBUG}
     Match(_tkIdentifier);
     
     if CurrentToken.TokenType = _tkAssign then
     begin
-        WriteLn('If-Assugn: ', CurrentToken.Lexeme);
-        Match(_tkAssign);
+      {$ifdef DLLDEBUG}
+      WriteLn('If-Assugn: ', CurrentToken.Lexeme);
+      {$endif DLLDEBUG}
+      Match(_tkAssign);
     end;
     
+    {$ifdef DLLDEBUG}
     WriteLn('If-Number: ', CurrentToken.Lexeme);
+    {$endif DLLDEBUG}
     
     CurrentToken := GetNextToken;    
     Match(_tkElse);
-    WriteLn('If-Else: else');
     
+    {$ifdef DLLDEBUG}
+    WriteLn('If-Else: else');
     WriteLn('If-ident: ', CurrentToken.Lexeme);
+    {$endif DLLDEBUG}
     Match(_tkIdentifier);
     
+    {$ifdef DLLDEBUG}
     WriteLn('If-Assign: ', CurrentToken.Lexeme);
+    {$endif DLLDEBUG}
     
     CurrentToken := GetNextToken;
+    {$ifdef DLLDEBUG}
     WriteLn('If-number: ', CurrentToken.Lexeme);
+    {$endif DLLDEBUG}
     
     CurrentToken := GetNextToken;
     Match(_tkSemicolon);
@@ -597,7 +860,9 @@ begin
     end else
     if CurrentToken.TokenType = _tkIdentifier then
     begin
+      {$ifdef DLLDEBUG}
       WriteLn('ident: semico: ', CurrentToken.Lexeme);
+      {$endif DLLDEBUG}
       ParseStatement;
     end;
   end else
@@ -606,17 +871,26 @@ end;
 
 procedure ParseWhileStatement;
 begin
-writeln('tk: ', CurrentToken.Lexeme);
+  {$ifdef DLLDEBUG}
+  writeln('tk: ', CurrentToken.Lexeme);
+  {$endif DLLDEBUG}
   if (CurrentToken.TokenType = _tkIdentifier)
   or (CurrentToken.TokenType = _tkNumber) then
   begin
+    {$ifdef DLLDEBUG}
     WriteLn('While-Condition: ', CurrentToken.Lexeme);
+    {$endif DLLDEBUG}
     CurrentToken := GetNextToken;
     if CurrentToken.TokenType = _tkDo then
     begin
+      {$ifdef DLLDEBUG}
       WriteLn('While-DO Condition: ');
+      {$endif DLLDEBUG}
       Match(_tkDo);
+      
+      {$ifdef DLLDEBUG}
       WriteLn('While-Condition Expr: ', CurrentToken.Lexeme);
+      {$endif DLLDEBUG}
       ParseAssignment;
     end;
   end else
@@ -628,19 +902,27 @@ begin
   CurrentToken := GetNextToken;
   if CurrentToken.TokenType = _tkProgram then
   begin
-  writeln('program');
+    {$ifdef DLLDEBUG}
+    writeln('program');
+    {$endif DLLDEBUG}
     CurrentToken := GetNextToken;
     if CurrentToken.TokenType = _tkIdentifier then
     begin
-    writeln('ident: ' + CurrentToken.Lexeme);
+      {$ifdef DLLDEBUG}
+      writeln('ident: ' + CurrentToken.Lexeme);
+      {$endif DLLDEBUG}
       CurrentToken := GetNextToken;
       if CurrentToken.TokenType = _tkSemicolon then
       begin
-      writeln('semicolon');
+        {$ifdef DLLDEBUG}
+        writeln('semicolon');
+        {$endif DLLDEBUG}
         CurrentToken := GetNextToken;
         if CurrentToken.TokenType = _tkBegin then
         begin
-        writeln('begin');
+          {$ifdef DLLDEBUG}
+          writeln('begin');
+          {$endif DLLDEBUG}
           while true do
           begin
             CurrentToken := GetNextToken;
@@ -653,7 +935,9 @@ begin
         end;
         if CurrentToken.TokenType = _tkEnd then
         begin
-        writeln('end');
+          {$ifdef DLLDEBUG}
+          writeln('end');
+          {$endif DLLDEBUG}
           CurrentToken := GetNextToken;
           if CurrentToken.TokenType = _tkDot then
           begin
