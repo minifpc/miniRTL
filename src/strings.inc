@@ -1,3 +1,4 @@
+
 {$if defined(codeh) and defined(codei)}
 {$FATAL interface and implementation at the same time not possible}
 {$endif}

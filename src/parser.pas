@@ -14,7 +14,9 @@ type
     _tkKeyword, _tkIdentifier, _tkNumber,
     _tkProgram, _tkBegin, _tkEnd,
     _tkWhile, _tkDo,
+    _tkWrite, _tkWriteln,
     _tkIf, _tkThen, _tkElse,
+    _tkEqual, _tkLess, _tkGreater, _tkLessEqual, _tkGreaterEqual, _tkNotEqual,
     _tkAssign, _tkSemicolon, _tkDot,
     _tkPlus, _tkMinus, _tkTimes, _tkDivide,
     _tkLParen, _tkRParen,
@@ -26,6 +28,13 @@ type
     Lexeme: string;
   end;
 
+type
+  TProcTable = class(TStringList)
+  public
+    procedure AddProcedure(name: string; position: Integer);
+    function  GetPosition (name: string): Integer;
+  end;
+  
 var
   Source: string;
   Position: Integer;
@@ -102,6 +111,23 @@ end;
 
 procedure Advance; begin inc(Position); end;
 
+function EvalCondition: Boolean;
+var
+  left, right: Integer;
+begin
+  left := EvalExpression;
+  case Lookahead.TokenType of
+    _tkEqual:        begin Match(_tkEqual       ); right := EvalExpression; Result := left =  right; end;
+    _tkNotEqual:     begin Match(_tkNotEqual    ); right := EvalExpression; Result := left <> right; end;
+    _tkLess:         begin Match(_tkLess        ); right := EvalExpression; Result := left <  right; end;
+    _tkLessEqual:    begin Match(_tkLessEqual   ); right := EvalExpression; Result := left <= right; end;
+    _tkGreater:      begin Match(_tkGreater     ); right := EvalExpression; Result := left >  right; end;
+    _tkGreaterEqual: begin Match(_tkGreaterEqual); right := EvalExpression; Result := left >= right; end;
+    else
+    yyerror('Ungültiger Vergleichsoperator.');
+  end;
+end;
+
 function GetNextToken: TToken;
 var
   ch: Char;
@@ -136,6 +162,8 @@ begin
     else if id = 'else'    then begin CurrentToken.TokenType := _tkElse;    result := CurrentToken; exit; end
     else if id = 'do'      then begin CurrentToken.TokenType := _tkDo;      result := CurrentToken; exit; end
     else if id = 'while'   then begin CurrentToken.TokenType := _tkWhile;   result := CurrentToken; exit; end
+    else if id = 'write'   then begin CurrentToken.TokenType := _tkWrite;   result := CurrentToken; exit; end
+    else if id = 'writeln' then begin CurrentToken.TokenType := _tkWriteln; result := CurrentToken; exit: end
     else begin
       CurrentToken.TokenType := _tkIdentifier;
       CurrentToken.Lexeme    := id;
@@ -146,6 +174,35 @@ begin
     Result := CurrentToken;
     exit;
   end else
+  if ch = '=' then
+  begin
+    result.TokenType := _tkEqual;
+  end else
+  if ch = '<' then
+  begin
+    ch := _PeekChar;
+    if ch = '=' then
+    begin
+      ReadChar;
+      Result.TokenType := _tkLessEqual;
+    end else
+    if ch = '>' then
+    begin
+      ReadChar;
+      Result.TokenType := _tkNotEqual;
+    end else
+    Result.TokenType := _tkLess;
+  end else
+  if ch = '>' then
+  begin
+    ch := PeekChar;
+    if ch = '=' then
+    begin
+      ReadChar;
+      Result.TokenType := _tkGreaterEqual;
+    end else
+    Result.TokenType := _tkGreater;
+  end;
   if ch = ':' then
   begin
     inc(Position);
@@ -247,7 +304,6 @@ begin
     writeln('Variable: "' + name + '" not found.');
     {$endif DLLDEBUG}
     SymbolTable.Add(name);
-    writeln('oooooooooooooooooooooo');
     result := 32;
   end else
   begin
@@ -869,6 +925,56 @@ begin
   yyerror('Expected identifier as condition');
 end;
 
+(*
+procedure ParseWhileStatement;
+var
+  conditionToken: TToken;
+  conditionVar: string;
+begin
+  Match(tkWhile);
+
+  // einfache Bedingung: Variable
+  if Lookahead.TokenType = tkIdentifier then
+  begin
+    conditionToken := Lookahead;
+    conditionVar := Lookahead.Lexeme;
+    Match(tkIdentifier);
+  end else
+  raise Exception.Create('Syntax Error: Nur Variable als Bedingung erlaubt (Demo).');
+
+  Match(tkDo);
+
+  while GetVariableValue(conditionVar) <> 0 do
+  begin
+    ParseStatement;
+  end;
+end;
+
+procedure ParseIfStatement;
+var condition: Boolean;
+begin
+  Match(tkIf);
+  condition := EvalCondition;
+  Match(tkThen);
+  if condition then
+    ParseStatement
+  else if Lookahead.TokenType = tkElse then
+  begin
+    Match(tkElse); ParseStatement; // else-Zweig wird ausgeführt
+  end
+  else
+    SkipStatement; // then-Zweig überspringen
+end;
+
+procedure ParseWhileStatement;
+begin
+  Match(tkWhile);
+  while EvalCondition do
+    ParseStatement;
+  Match(tkDo);
+end;
+
+*)
 procedure ParseWhileStatement;
 begin
   {$ifdef DLLDEBUG}
@@ -895,6 +1001,36 @@ begin
     end;
   end else
   yyerror('Expected identifier or number in while');
+end;
+
+procedure ParseBlock;
+begin
+  Match(tkBegin);
+  while not (CurrentToken.TokenType in [_tkEnd]) do
+  ParseStatement;
+  Match(_tkEnd);
+end;
+
+procedure ParseWriteStatement;
+var val: Integer;
+begin
+  Match(_tkWrite);
+  Match(_tkLParen);
+  val := EvalExpression;
+  Write(val);
+  Match(_tkRParen);
+  Match(_tkSemicolon);
+end;
+
+procedure ParseWritelnStatement;
+var val: Integer;
+begin
+  Match(_tkWriteln);
+  Match(_tkLParen);
+  val := EvalExpression;
+  WriteLn(val);
+  Match(_tkRParen);
+  Match(_tkSemicolon);
 end;
 
 procedure ParseProgram;
@@ -926,10 +1062,12 @@ begin
           while true do
           begin
             CurrentToken := GetNextToken;
-            if CurrentToken.TokenType = _tkIdentifier then ParseStatement;
-            if CurrentToken.TokenType = _tkWhile      then ParseWhileStatement;
-            if CurrentToken.TokenType = _tkIf         then ParseIfStatement;
-            if CurrentToken.TokenType = _tkEnd        then break;
+            if CurrentToken.TokenType = _tkWrite      then ParseWriteStatement      else
+            if CurrentToken.TokenType = _tkWeiteLn    then ParseWritelnStatement    else
+            if CurrentToken.TokenType = _tkIdentifier then ParseStatement           else
+            if CurrentToken.TokenType = _tkWhile      then ParseWhileStatement      else
+            if CurrentToken.TokenType = _tkIf         then ParseIfStatement         else
+            if CurrentToken.TokenType = _tkEnd        then break                    else
             if CurrentToken.TokenType = _tkEOF        then yyerror('end of file');
           end;
         end;

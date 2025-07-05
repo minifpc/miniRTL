@@ -8,7 +8,7 @@ program test;
 
 uses
   Windows, Dialogs, SysUtils, StrUtils, Exceptions, Forms,
-  Locales, global, ErrorData, Container;
+  Locales, global, ErrorData;
 
 type
   TForm1 = class(TForm)
@@ -29,17 +29,9 @@ type
     procedure PushButton2_OnClick(Sender: TObject);
   end;
 
-type
-  TVector        = specialize TListVector< Integer >;
-  TVectorReverse = TVector.ReverseEnumerator;
-
 var
-  Form1 : TForm1;
+  Form1: TForm1;
 
-var
-  V     : TVector;
-  REnum : TVectorReverse;
-  
 constructor TForm1.Create(x, y, w, h: Integer);
 begin
   inherited Create(x, y, w, h);
@@ -81,35 +73,6 @@ end;
 procedure CleanUp_1; begin WriteLn('cleanup1 called.'); end;
 procedure CleanUp_2; begin WriteLn('cleanup2 called.'); end;
 
-var
-  item: Integer;
-  
-(*
-T:\a\miniFPC\TinyFPC>test.exe
-DLL attach: ok
-start
-reeee
-Value: syswin_x64_exception_handler
-signals_exception_handler
-exrec^.ExceptionCode = 20970608
-press <enter>...
-
-syswin_x64_exception_handler
-signals_exception_handler
-exrec^.ExceptionCode = 0
-press <enter>...
-
-syswin_x64_exception_handler
-signals_exception_handler
-exrec^.ExceptionCode = 4210160
-press <enter>...
-
-syswin_x64_exception_handler
-signals_exception_handler
-exrec^.ExceptionCode = 0
-press <enter>...
-*)
-
 begin
   writeln('start');
   
@@ -119,25 +82,10 @@ begin
   //Application.Initialize;
   //Application.CreateForm(TForm1, Form1);
   
-  V := TVector.Create(12);
-  V.Add(2);
-  V.Add(3);
-  V.Add(4);
-  
-  REnum := V.GetReverseEnumerator;
-  writeln('reeee');
-  while REnum.MoveNext do
-  writeln('Value: ', intToStr(REnum.Current));
-  
-  writeln('fooo');
-  
   Form1 := TForm1.Create(100, 100, 500, 400);
   Form1.ShowModal;
   
   //Application.Run;
-  
-  REnum.Free;
-  V.Free;
   
   writeln('end.');
 end.
