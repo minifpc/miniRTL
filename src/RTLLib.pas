@@ -4,7 +4,7 @@
 {$define DLLEXPORT}
 {$undef  DLLIMPORT}
 
-{$mode delphi}
+{$mode objfpc}{$H+}
 {$WARN IMPLICIT_STRING_CAST_LOSS OFF}
 library RTLLib;
 
@@ -12,7 +12,7 @@ uses
   Windows, global, StrUtils, RTLUnit;
 
 var
-  DllProc: procedure(hinstDLL: HINSTANCE; Reason: DWORD; lpReserved: Pointer);
+  DllProc: function(hinstDLL: HINSTANCE; Reason: DWORD; lpReserved: Pointer): LongBool; stdcall;
   
 function DllMain(
   hinstDLL   : HINSTANCE;

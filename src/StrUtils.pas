@@ -7,7 +7,7 @@ unit StrUtils;
 interface
 
 uses
-  Exceptions, Dialogs;
+  Exceptions, Dialogs, Container;
   
 type
   TReplaceFlag  = (
