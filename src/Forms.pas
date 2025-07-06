@@ -7,7 +7,7 @@ unit Forms;
 
 interface
 uses
-  Windows, Dialogs, SysUtils, StrUtils, Locales, Classes, ErrorData;
+  Windows, Dialogs, SysUtils, StrUtils, Locales, Classes, ErrorData, parser.dfm;
 
 type
   TNotifyEvent = procedure(Sender: TObject) of object;
@@ -107,7 +107,6 @@ type
   TWinControl     = class;
   TControl        = class;
   TForm           = class;
-  TDFMParser      = class;
   
   // -----------------------------------------------------------------------------------------------
   TPersistent = class(TObject)
@@ -317,11 +316,6 @@ type
     class function ClassName: String; stdcall; virtual;
   end;
   
-  TDFMParser = class
-  public
-    constructor Create(AFileName: String);
-  end;
-
 // ---------------------------------------------------------------------------------------
 // the internal "export" function's and procedure's ...
 // ---------------------------------------------------------------------------------------
@@ -415,8 +409,6 @@ procedure TForm_ShowModal               (p: TForm); stdcall; export;
 
 procedure TForm_ShowBool  (p: TForm ; modal: Boolean); stdcall; export;
 // ---------------------------------------------------------------------------------------
-procedure TDFMParser_Create             (p: TDFMParser; AFileName: String); stdcall; export;
-// ---------------------------------------------------------------------------------------
 function HitTestToStr(ht: Integer): string; stdcall; export;
 {$endif DLLEXPORT}
 
@@ -501,8 +493,6 @@ procedure TComboBox_Destroy             (p: TComboBox           ); stdcall; exte
 procedure TSpinDate_Destroy             (p: TSpinDate           ); stdcall; external RTLDLL;
 procedure TSpinTime_Destroy             (p: TSpinTime           ); stdcall; external RTLDLL;
 procedure TMemo_Destroy                 (p: TMemo               ); stdcall; external RTLDLL;
-// ---------------------------------------------------------------------------------------
-procedure TDFMParser_Create             (p: TDFMParser; AFileName: String); stdcall; external RTLDLL;
 // ---------------------------------------------------------------------------------------
 function HitTestToStr(ht: Integer): string; stdcall; external RTLDLL;
 {$endif DLLIMPORT}
@@ -1087,7 +1077,7 @@ begin
     Halt(2);
   end;
   writeln('ClassName: ' + p.ClassName);
-  p.dfm_parser := TDFMParser.Create(p.ClassName);
+  p.dfm_parser := TDFMParser.Create(p.ClassName + '1');
   
   p.SetComponentCount(1);
   p.FHandle := CreateWindowExA(
@@ -1543,33 +1533,6 @@ begin
   {$ifdef DLLDEBUG}
   writeln('TMemo: Destroy');
   {$endif DLLDEBUG}
-end;
-
-
-{ TDFMParser }
-procedure TDFMParser_Create(p: TDFMParser; AFileName: String); stdcall; export;
-var
-  resinst : HMODULE;
-  resinfo : HANDLE;
-  ressize : DWORD;
-  
-  resdata : HGLOBAL;
-  reslock : Pointer;
-begin
-  resinst := GetModuleHandleA(nil);
-  resinfo := FindResource   (resinst, PChar(AFileName), RT_RCDATA);
-  
-  if resinfo =  0 then
-  RaiseLastOSError;
-  
-  writeln('resourced loaded.');
-  
-  ressize := SizeOfResource (resinst, resinfo); if ressize =  0  then RaiseLastOSError;
-  resdata := LoadResource   (resinst, resinfo); if resdata =  0  then RaiseLastOSError;
-  reslock := LockResource   (         resdata); if reslock = nil then RaiseLastOSError;
-  
-  // text
-  writeln(Copy(PChar(resdata), 1, ressize));
 end;
 {$endif DLLEXPORT}
 
@@ -2044,12 +2007,6 @@ begin
 end;
 
 
-{ TDFMParser }
-constructor TDFMParser.Create(AFileName: String);
-begin
-  TDFMParser_Create(self, AFileName);
-end;
-
 {$ifdef DLLEXPORT}
 exports
   TPersistent_Create                name 'TPersistent_Create',
@@ -2127,8 +2084,6 @@ exports
   TForm_ShowBool                    name 'TForm_ShowBool',
   TForm_ShowModal                   name 'TForm_ShowModal',
 
-  TDFMParser_Create                 name 'TDFMParser_Create',
-  
   HitTestToStr    name 'HitTestToStr'
   ;
   

@@ -2,7 +2,6 @@
 // Copyright(c) 2025 @paule32 and @fibonacci
 // ---------------------------------------------------------------------------------------
 {$mode objfpc}{$H+}
-{$modeswitch generics}
 unit Container;
  
 interface
