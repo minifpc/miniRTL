@@ -265,6 +265,22 @@ const
   PAGE_WRITECOMBINE      = $400;
 
 // ---------------------------------------------------------------------------------------
+// HR - resource types ...
+// ---------------------------------------------------------------------------------------
+const
+  RT_CURSOR   = PChar( 1);
+  RT_BITMAP   = PChar( 2);
+  RT_ICON     = PChar( 3);
+  RT_MENU     = PChar( 4);
+  RT_DIALOG   = PChar( 5);
+  RT_STRING   = PChar( 6);
+  RT_RCDATA   = PChar(10);
+  RT_MANIFEST = PChar(24);
+
+type
+  HRSRC = HANDLE;
+
+// ---------------------------------------------------------------------------------------
 // BN - button notify ...
 // ---------------------------------------------------------------------------------------
 const
@@ -556,6 +572,17 @@ const
 
 var
   hInstanceDLL: HINSTANCE;
+  
+// ---------------------------------------------------------------------------------------
+// FM - format messages ...
+// ---------------------------------------------------------------------------------------
+const
+  FORMAT_MESSAGE_ALLOCATE_BUFFER = $00000100;
+  FORMAT_MESSAGE_IGNORE_INSERTS  = $00000200;
+  FORMAT_MESSAGE_FROM_STRING     = $00000400;
+  FORMAT_MESSAGE_FROM_HMODULE    = $00000800;
+  FORMAT_MESSAGE_FROM_SYSTEM     = $00001000;
+  FORMAT_MESSAGE_ARGUMENT_ARRAY  = $00002000;
 
 {$ifdef DLLEXPORT}
 function LoWord(Value: DWORD): Word; stdcall; export;
@@ -695,6 +722,12 @@ function LoadIconA(hInst: HINST; lpIconName: LPCSTR ): HICON; stdcall; external 
 function LoadCursorW(hInst: HINSTANCE; lpCursorName: LPCWSTR): HCURSOR; stdcall; external 'user32.dll' name 'LoadCursorW';
 function LoadCursorA(hInst: HINSTANCE; lpCursorName: LPCSTR ): HCURSOR; stdcall; external 'user32.dll' name 'LoadCursorA';
 
+function FindResourceA (hModule: HMODULE; lpName, lpType: PChar): HRSRC; stdcall; external 'kernel32.dll' name 'FindResourceA';
+function FindResource  (hModule: HMODULE; lpName, lpType: PChar): HRSRC; stdcall; external 'kernel32.dll' name 'FindResourceA';
+function LoadResource  (hModule: HMODULE; hResInfo: HRSRC): HGLOBAL;     stdcall; external 'kernel32.dll' name 'LoadResource';
+function SizeOfResource(hModule: HMODULE; hResInfo: HRSRC): DWORD;       stdcall; external 'kernel32.dll' name 'SizeofResource';
+function LockResource(hResData: HGLOBAL): Pointer;                       stdcall; external 'kernel32.dll' name 'LockResource';
+
 function GetSysColorBrush(nIndex: Integer): HBRUSH; stdcall; external 'user32.dll' name 'GetSysColorBrush';
 
 function GetModuleHandleA(lpModuleName: PAnsiChar): HMODULE; stdcall; external 'kernel32.dll' name 'GetModuleHandleA';
@@ -725,6 +758,9 @@ function ReadConsoleA(
 
 procedure InitCommonControls; stdcall; external 'comctl32.dll' name 'InitCommonControls';
 
+function FormatMessageA(dwFlags: DWORD; lpSource: LPCVOID; dwMessageId: DWORD; dwLanguageId: DWORD; lpBuffer: LPSTR ; nSize: DWORD; Arguments: Pointer): DWORD; stdcall; external 'kernel32.dll';
+function FormatMessageW(dwFlags: DWORD; lpSource: LPCVOID; dwMessageId: DWORD; dwLanguageId: DWORD; lpBuffer: LPWSTR; nSize: DWORD; Arguments: Pointer): DWORD; stdcall; external 'kernel32.dll';
+  
 procedure Sleep(dwMilliseconds: DWORD); stdcall; external 'kernel32.dll';
 function GetTickCount: DWORD; stdcall; external 'kernel32.dll';
 function Beep(dwFreq, dwDuration: DWORD): BOOL; stdcall; external 'kernel32.dll';

@@ -30,6 +30,7 @@ type
     ReverseEnumerator = class
     private
       FCurrent: specialize TList<T1>;
+      FStart  : Boolean;
     public
       constructor Create(AList: specialize TList<T1>);
       function MoveNext: Boolean;
@@ -90,13 +91,21 @@ constructor TList.ReverseEnumerator.Create(AList: specialize TList<T1>);
 begin
   inherited Create;
   FCurrent := AList.FBottom; // Beginne ganz unten
+  FStart   := false;
 end;
  
 function TList.ReverseEnumerator.MoveNext: Boolean;
 begin
-  Result := FCurrent <> nil;
-  if Result then
-  FCurrent := FCurrent.FPrev;
+  if not FStart then
+  begin
+    FStart := true;
+    result := FCurrent <> nil;
+  end else
+  begin
+    if FCurrent <> nil then
+    FCurrent := FCurrent.FPrev;
+    result   := FCurrent <> nil;
+  end;
 end;
  
 function TList.ReverseEnumerator.GetCurrent: T1;
@@ -117,11 +126,11 @@ constructor TList.Create(AValue: T1);
 begin
   inherited Create;
   FValue  := AValue;
- 
+  
   FTop    := self;
   FBottom := self;
   FNext   := nil;
- 
+  
   FCount  := 1;
 end;
  
@@ -130,6 +139,8 @@ var
   tmp: specialize TList<T1>;
 begin
   tmp := TList.Create(AValue);
+  tmp.FPrev     := FBottom; 
+  
   FBottom.FNext := tmp;
   FBottom       := tmp;
  

@@ -4,6 +4,7 @@
 {$mode objfpc}{$H+}
 {$M-}
 {$define DLLIMPORT}
+{$R test.res}
 program test;
 
 uses
@@ -25,6 +26,8 @@ type
   public
     constructor Create(x,y,w,h: Integer);
     
+    class function ClassName: String; stdcall; virtual;
+    
     procedure PushButton1_OnClick(Sender: TObject);
     procedure PushButton2_OnClick(Sender: TObject);
   end;
@@ -42,7 +45,7 @@ var
   
 constructor TForm1.Create(x, y, w, h: Integer);
 begin
-  inherited Create(x, y, w, h);
+  inherited Create(ClassName, x, y, w, h);
   
   FButton1     := TButton      . Create(self,  20,  20, 256,  42);
   FButton2     := TButton      . Create(self,  20,  80, 250,  42);
@@ -66,6 +69,10 @@ begin
     Caption := 'Butt A';
   end;
 end;
+class function TForm1.ClassName: String; stdcall;
+begin
+  result := 'TForm1';
+end;
 procedure TForm1.PushButton1_OnClick(Sender: TObject);
 begin
   ShowInfo('Button 1 pressed.');
@@ -83,32 +90,6 @@ procedure CleanUp_2; begin WriteLn('cleanup2 called.'); end;
 
 var
   item: Integer;
-  
-(*
-T:\a\miniFPC\TinyFPC>test.exe
-DLL attach: ok
-start
-reeee
-Value: syswin_x64_exception_handler
-signals_exception_handler
-exrec^.ExceptionCode = 20970608
-press <enter>...
-
-syswin_x64_exception_handler
-signals_exception_handler
-exrec^.ExceptionCode = 0
-press <enter>...
-
-syswin_x64_exception_handler
-signals_exception_handler
-exrec^.ExceptionCode = 4210160
-press <enter>...
-
-syswin_x64_exception_handler
-signals_exception_handler
-exrec^.ExceptionCode = 0
-press <enter>...
-*)
 
 begin
   writeln('start');
@@ -123,6 +104,9 @@ begin
   V.Add(2);
   V.Add(3);
   V.Add(4);
+  
+  for item in V do
+  writeln('Value: ', IntToStr(item));
   
   REnum := V.GetReverseEnumerator;
   writeln('reeee');
