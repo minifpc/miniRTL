@@ -33,6 +33,7 @@ jobs:
       shell: cmd
       run: |
         cd src
+        ..\fpc\windres.exe test.rc -o test.res
         ..\fpc\ppcrossx64.exe -dDLLEXPORT -dLANGDEU -dDLLDEBUG -n -B -Twin64 -FE. -Fu. -O3 -Os RTLLib.pas
         ..\fpc\ppcrossx64.exe -dDLLIMPORT -dLANGDEU -dDLLDEBUG -n -B -Twin64 -FE. -Fu. -O3 -Os test.pas
         ..\fpc\x86_64-win64-strip.exe test.exe
