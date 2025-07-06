@@ -22,8 +22,9 @@ type
   Exception = class(TObject)
     Message: string;
     Code: integer;
-    constructor Create(const msg: string; const errcode: integer);
-    constructor Create(const msg: string);
+    constructor Create    (const msg: string; const errcode: integer);
+    constructor Create    (const msg: string);
+    constructor CreateFmt (const msg: string; const args: array of const);
   end;
 
   EDivByZero       = class(Exception) end;  
@@ -34,20 +35,10 @@ type
 var
   exception_classes: array[200..236] of TClass;
 
-function FormatMessageA(dwFlags: DWORD; lpSource: LPCVOID; dwMessageId: DWORD; dwLanguageId: DWORD;
-  lpBuffer: LPSTR; nSize: DWORD; Arguments: Pointer): DWORD; stdcall; external 'kernel32.dll';
-function FormatMessageW(dwFlags: DWORD; lpSource: LPCVOID; dwMessageId: DWORD; dwLanguageId: DWORD;
-  lpBuffer: LPWSTR; nSize: DWORD; Arguments: Pointer): DWORD; stdcall; external 'kernel32.dll';
-
-const
-  FORMAT_MESSAGE_ALLOCATE_BUFFER = $00000100;
-  FORMAT_MESSAGE_IGNORE_INSERTS  = $00000200;
-  FORMAT_MESSAGE_FROM_STRING     = $00000400;
-  FORMAT_MESSAGE_FROM_HMODULE    = $00000800;
-  FORMAT_MESSAGE_FROM_SYSTEM     = $00001000;
-  FORMAT_MESSAGE_ARGUMENT_ARRAY  = $00002000;
-
 implementation
+
+uses
+  StrUtils;
 
 {$ifdef DLLEXPORT}
 function translate_windows_error(code: integer): string; stdcall; export;
@@ -89,6 +80,12 @@ constructor Exception.Create(const msg: string);
 begin
   Message := msg;
   Code := 100;
+end;
+
+constructor Exception.CreateFmt(const msg: string; const args: array of const);
+begin
+  Message := Format(msg, args);
+  Code    := GetLastError;
 end;
 
 {$ifdef DLLIMPORT}

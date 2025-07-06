@@ -31,7 +31,9 @@ C:\FPC\fpc\bin\x86_64-win64\ppcrosswin64.exe -dDLLEXPORT -dLANGDEU -dDLLDEBUG -n
 x86_64-win64-strip.exe rtllib.dll
 
 :skip
-where fpc.exe
+::t:\msys64\mingw64\bin\windres.exe test.rc -O coff -o test.rc.o
+windres.exe test.rc -o test.res
+
 fpc -dDLLEXPORT -dLANGDEU -dDLLDEBUG -n -B -Twin64 -FE. -Fu. -O3 -Os rtllib.pas
 fpc -dDLLIMPORT -dLANGDEU -dDLLDEBUG -n -B -Twin64 -FE. -Fu. -O3 -Os test.pas
 

@@ -72,12 +72,14 @@ function StrToInt(const S: string): Integer; stdcall; export;
 function StrPas(p: PChar): AnsiString; stdcall; export;
 
 function FloatToStr(Value: Double): string; stdcall; export;
-function Format(const FormatStr: string; const Args: array of const): string; stdcall; export;
 
 function  fpc_char_to_ansistr(ch: PChar): AnsiString; export;
 procedure fpc_ansistr_setlength(var s: AnsiString; newlen: SizeInt); export;
 procedure fpc_ansistr_unique(var s: AnsiString); export;
 
+procedure Insert(const Source: string; var S: string; Index: Integer); stdcall; export;
+procedure Delete(var S: string; Index, Count: Integer); stdcall; export;
+function Format(const Template: string; const Args: array of const): string; stdcall; export;
 function Trim(const S: String): String; stdcall; export;
 
 function UpCase(c: Char): Char; stdcall; export;
@@ -88,7 +90,8 @@ function UpperCase(const S: string): String; stdcall; export;
 
 function CompareText(const S1, S2: string): Integer; stdcall; export;
 
-function SetStringListLength(var Arr: PStringListArray; oldsize, newsize: Integer): PStringListArray; stdcall; export;
+function  SetStringListLength(var Arr: PStringListArray; oldsize, newsize: Integer): PStringListArray; stdcall; export;
+procedure SetString(var dest: AnsiString; source: PAnsiChar; len: SizeInt); stdcall; export;
 
 function  TStringList_IndexOfName    (p: TStringList; AString: String): Integer; stdcall; export;
 function  TStringList_GetString      (p: TStringList; AValue: Integer): string ; stdcall; export;
@@ -120,14 +123,16 @@ function StrToInt(const S: string): Integer; stdcall; external RTLDLL;
 function StrPas(p: PChar): AnsiString; stdcall; external RTLDLL;
 
 function FloatToStr(Value: Double): string; stdcall; external RTLDLL;
-function Format(const FormatStr: string; const Args: array of const): string; stdcall; external RTLDLL;
 
 function  fpc_char_to_ansistr(ch: PChar): AnsiString; external RTLDLL;
 procedure fpc_ansistr_setlength(var s: AnsiString; newlen: SizeInt); external RTLDLL;
 procedure fpc_ansistr_unique(var s: AnsiString); external RTLDLL;
 procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); stdcall; external RTLDLL;
 
-function Trim(const S: String): String; stdcall; external RTLDLL;
+procedure Insert(const Source: string; var S: string; Index: Integer); stdcall; external RTLDLL;
+procedure Delete(var S: string; Index, Count: Integer); stdcall; external RTLDLL;
+function  Format(const Template: string; const Args: array of const): string; stdcall; external RTLDLL;
+function  Trim  (const S: String): String; stdcall; external RTLDLL;
 
 function UpCase(c: Char): Char; stdcall; external RTLDLL;
 function LoCase(c: Char): Char; stdcall; external RTLDLL;
@@ -137,7 +142,8 @@ function UpperCase(const S: string): String; stdcall; external RTLDLL;
 
 function CompareText(const S1, S2: string): Integer; stdcall; external RTLDLL;
 
-function SetStringListLength(var Arr: PStringListArray; oldsize, newsize: Integer): PStringListArray; stdcall; external RTLDLL;
+function  SetStringListLength(var Arr: PStringListArray; oldsize, newsize: Integer): PStringListArray; stdcall; external RTLDLL;
+procedure SetString(var dest: AnsiString; source: PAnsiChar; len: SizeInt); stdcall; external RTLDLL;
 
 function  TStringList_IndexOfName    (p: TStringList; AString: String): Integer; stdcall; external RTLDLL;
 function  TStringList_GetString      (p: TStringList; AValue: Integer): string ; stdcall; external RTLDLL;
@@ -238,6 +244,94 @@ begin
 end;
 
 {$ifdef DLLEXPORT}
+procedure Insert(const Source: string; var S: string; Index: Integer); stdcall; export;
+var
+  i, j, LenS, LenSrc: Integer;
+begin
+  LenS := Length(S);
+  LenSrc := Length(Source);
+
+  if Index < 1 then Index := 1;
+  if Index > LenS + 1 then Index := LenS + 1;
+
+  // Platz schaffen
+  SetLength(S, LenS + LenSrc);
+
+  // Zeichen ab Index verschieben (rückwärts!)
+  for i := LenS downto Index do
+    S[i + LenSrc] := S[i];
+
+  // Source einfügen
+  for j := 1 to LenSrc do
+    S[Index - 1 + j] := Source[j];
+end;
+
+procedure Delete(var S: string; Index, Count: Integer); stdcall; export;
+var
+  i, j, Len: Integer;
+begin
+  Len := Length(S);
+  if (Index < 1) or (Index > Len) or (Count <= 0) then Exit;
+  if Index + Count > Len + 1 then Count := Len - Index + 1;
+
+  j := Index;
+  for i := Index + Count to Len do
+  begin
+    S[j] := S[i];
+    Inc(j);
+  end;
+
+  SetLength(S, Len - Count);
+end;
+
+function Format(const Template: string; const Args: array of const): string; stdcall; export;
+var
+  i, j: Integer;
+  p: Integer;
+  ResultStr: string;
+  ArgStr: string;
+begin
+  ResultStr := Template;
+  j := 0;  // Argument-Index
+
+  i := 1;
+  while i <= Length(ResultStr) do
+  begin
+    if (ResultStr[i] = '%') and (i < Length(ResultStr)) then
+    begin
+      if j >= Length(Args) then
+      raise Exception.Create('Zu wenige Argumente für Format-String');
+      
+      case ResultStr[i + 1] of
+        's': begin
+          // String-Behandlung je nach Typ
+          case Args[j].VType of
+            vtAnsiString : ArgStr := AnsiString(Args[j].VAnsiString);
+            vtPChar      : ArgStr := string(Args[j].VPChar);
+            vtChar       : ArgStr := Args[j].VChar;
+            else           ArgStr := '[unbekannter Typ]';
+          end;
+          Delete(ResultStr, i, 2);
+          Insert(ArgStr, ResultStr, i);
+          Inc(i, Length(ArgStr) - 1);
+        end;
+        'd': begin
+          if Args[j].VType = vtInteger then
+          ArgStr := IntToStr(Args[j].VInteger) else
+          ArgStr := '[kein Integer]';
+          Delete(ResultStr, i, 2);
+          Insert(ArgStr, ResultStr, i);
+          Inc(i, Length(ArgStr) - 1);
+        end;
+      end;
+      Inc(j);
+    end else
+    Inc(i);
+  end;
+
+  Result := ResultStr;
+end;
+
 function TStringList_ValueFromIndex(p: TStringList; AValue: Integer): String; stdcall; export;
 begin
   result := '';
@@ -746,48 +840,6 @@ begin
   end;
 end;
 
-function Format(const FormatStr: string; const Args: array of const): string; stdcall; export;
-var
-  I, ArgIndex: Integer;
-  Ch: Char;
-  ResultStr: string;
-begin
-  ResultStr := '';
-  ArgIndex := 0;
-  I := 1;
-
-  while I <= Length(FormatStr) do
-  begin
-    Ch := FormatStr[I];
-
-    if (Ch = '%') and (I < Length(FormatStr)) then
-    begin
-      Inc(I);
-      Ch := FormatStr[I];
-
-      if ArgIndex >= Length(Args) then
-      raise Exception.Create('Nicht genügend Argumente für Format-String');
-
-      case Ch of
-        'd': ResultStr := ResultStr + IntToStr(Args[ArgIndex].VInteger);
-        's': ResultStr := ResultStr + string(Args[ArgIndex].VString^);
-        'f': ResultStr := ResultStr + FloatToStr(Args[ArgIndex].VExtended^);
-        else
-        raise Exception.Create('Unbekanntes Formatzeichen: ' + Ch);
-      end;
-
-      Inc(ArgIndex);
-    end else
-    begin
-      ResultStr := ResultStr + Ch;
-    end;
-
-    Inc(I);
-  end;
-
-  Result := ResultStr;
-end;
-
 function IsWhiteSpace(ch: Char): Boolean; stdcall; export;
 begin
   Result := ch in [' ', #9, #10, #13]; // Leerzeichen, Tab, LF, CR
@@ -856,6 +908,22 @@ begin
   P[len] := #0;
 end;
 
+procedure SetString(var dest: AnsiString; source: PAnsiChar; len: SizeInt); stdcall; export;
+var
+  i: SizeInt;
+begin
+  if (source = nil) or (len <= 0) then
+  begin
+    dest := '';
+    Exit;
+  end;
+
+  SetLength(dest, len); // alloziert Speicher und setzt Length
+  for i := 1 to len do
+  dest[i] := source[i - 1]; // PAnsiChar ist 0-basiert, Strings 1-basiert
+end;
+
+
 function CompareText(const S1, S2: string): Integer; stdcall; export;
 var
   i: Integer;
@@ -900,10 +968,14 @@ exports
   LoCase            name 'LoCase',
   LowerCase         name 'LowerCase',
   
+  SetString         name 'SetString',
+  
   UpCase            name 'UpCase',
   UpperCase         name 'UpperCase',
   
   FloatToStr        name 'FloatToStr',
+  Delete            name 'Delete',
+  Insert            name 'Insert',
   Format            name 'Format',
 
   TStringList_IndexOfName    name 'TStringList_IndexOfName',

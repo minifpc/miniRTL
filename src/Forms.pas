@@ -107,6 +107,7 @@ type
   TWinControl     = class;
   TControl        = class;
   TForm           = class;
+  TDFMParser      = class;
   
   // -----------------------------------------------------------------------------------------------
   /// <class>
@@ -278,22 +279,23 @@ type
   end;
   
   TCustomForm = class(TScrollingWinControl)
+  private
+    FClassName: String;
+    dfm_parser: TDFMParser;
   public
     constructor Create(p: TForm);
     destructor Destroy; override;
     
-    class function ClassName: String; stdcall; virtual;
   published
+    property ClassName: String read FClassName;
     property Handle;
   end;
 
   TForm = class(TCustomForm)
   public
     constructor Create; overload;
-    constructor Create(x,y, w,h: Integer); overload;
+    constructor Create(cn: string; x,y, w,h: Integer); overload;
     destructor Destroy; override;
-    
-    class function ClassName: String; stdcall; virtual;
     
     procedure ShowModal;
     procedure Show(modal: Boolean); overload;
@@ -372,6 +374,11 @@ type
     destructor Destroy; override;
     
     class function ClassName: String; stdcall; virtual;
+  end;
+  
+  TDFMParser = class
+  public
+    constructor Create(AFileName: String);
   end;
 
 // ---------------------------------------------------------------------------------------
@@ -477,6 +484,8 @@ procedure TForm_ShowModal               (p: TForm); stdcall; export;
 
 procedure TForm_ShowBool  (p: TForm ; modal: Boolean); stdcall; export;
 // ---------------------------------------------------------------------------------------
+procedure TDFMParser_Create             (p: TDFMParser; AFileName: String); stdcall; export;
+// ---------------------------------------------------------------------------------------
 function HitTestToStr(ht: Integer): string; stdcall; export;
 {$endif DLLEXPORT}
 
@@ -570,6 +579,8 @@ procedure TComboBox_Destroy             (p: TComboBox           ); stdcall; exte
 procedure TSpinDate_Destroy             (p: TSpinDate           ); stdcall; external RTLDLL;
 procedure TSpinTime_Destroy             (p: TSpinTime           ); stdcall; external RTLDLL;
 procedure TMemo_Destroy                 (p: TMemo               ); stdcall; external RTLDLL;
+// ---------------------------------------------------------------------------------------
+procedure TDFMParser_Create             (p: TDFMParser; AFileName: String); stdcall; external RTLDLL;
 // ---------------------------------------------------------------------------------------
 function HitTestToStr(ht: Integer): string; stdcall; external RTLDLL;
 {$endif DLLIMPORT}
@@ -1309,7 +1320,12 @@ begin
   end;
 
   if TWinControl(p) = nil then
-  writeln('eeeeee');
+  begin
+    ShowError(sError_TForm_ref);
+    Halt(2);
+  end;
+  writeln('ClassName: ' + p.ClassName);
+  p.dfm_parser := TDFMParser.Create(p.ClassName);
   
   p.SetComponentCount(1);
   p.FHandle := CreateWindowExA(
@@ -1361,6 +1377,8 @@ begin
     ShowError(sError_TForm_ref);
     exit;
   end;
+  
+  p.dfm_parser.Free;
 end;
 
 procedure TForm_Show(p: TForm); stdcall; export;
@@ -1765,6 +1783,32 @@ begin
   {$endif DLLDEBUG}
 end;
 
+
+{ TDFMParser }
+procedure TDFMParser_Create(p: TDFMParser; AFileName: String); stdcall; export;
+var
+  resinst : HMODULE;
+  resinfo : HANDLE;
+  ressize : DWORD;
+  
+  resdata : HGLOBAL;
+  reslock : Pointer;
+begin
+  resinst := GetModuleHandleA(nil);
+  resinfo := FindResource   (resinst, PChar(AFileName), RT_RCDATA);
+  
+  if resinfo =  0 then
+  RaiseLastOSError;
+  
+  writeln('resourced loaded.');
+  
+  ressize := SizeOfResource (resinst, resinfo); if ressize =  0  then RaiseLastOSError;
+  resdata := LoadResource   (resinst, resinfo); if resdata =  0  then RaiseLastOSError;
+  reslock := LockResource   (         resdata); if reslock = nil then RaiseLastOSError;
+  
+  // text
+  writeln(Copy(PChar(resdata), 1, ressize));
+end;
 {$endif DLLEXPORT}
 
 (**
@@ -2053,16 +2097,12 @@ begin
   inherited Destroy;
 end;
 
-class function TCustomForm.ClassName: String; stdcall;
-begin
-  result := 'TCustomForm';
-end;
-
 
 { TForm }
 
-constructor TForm.Create(x, y, w, h: Integer);
+constructor TForm.Create(cn: string; x, y, w, h: Integer);
 begin
+  FClassName := cn;
   FHandle := TForm_Create2(self, x, y, w, h);
 end;
 constructor TForm.Create;
@@ -2073,10 +2113,6 @@ destructor TForm.Destroy;
 begin
   TForm_Destroy(self);
   inherited Destroy;
-end;
-class function TForm.ClassName: String; stdcall;
-begin
-  result := 'TForm';
 end;
 procedure TForm.Show;
 begin
@@ -2294,6 +2330,13 @@ begin
   result := 'TMemo';
 end;
 
+
+{ TDFMParser }
+constructor TDFMParser.Create(AFileName: String);
+begin
+  TDFMParser_Create(self, AFileName);
+end;
+
 {$ifdef DLLEXPORT}
 exports
   TApplication_Create1              name 'TApplication_Create1',
@@ -2378,6 +2421,8 @@ exports
   TForm_Show                        name 'TForm_Show',
   TForm_ShowBool                    name 'TForm_ShowBool',
   TForm_ShowModal                   name 'TForm_ShowModal',
+
+  TDFMParser_Create                 name 'TDFMParser_Create',
   
   HitTestToStr    name 'HitTestToStr'
   ;

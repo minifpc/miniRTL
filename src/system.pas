@@ -164,11 +164,13 @@ function  fpc_dynarray_high(p: pointer): tdynarrayindex; compilerproc;
 procedure fpc_dynarray_incr_ref(p: pointer); compilerproc;
 
 {$ifdef DLLEXPORT}
+procedure fpc_setstring_ansistr_pansichar(var dest: AnsiString; source: PAnsiChar; len: SizeInt); export;
 procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); compilerproc;
 procedure fpc_dynarray_clear(var p: pointer; ti: pointer); export;
 Function  fpc_chararray_to_ansistr(const arr: array of char; zerobased: boolean = true): rawbytestring; export;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
+procedure fpc_setstring_ansistr_pansichar(var dest: AnsiString; source: PAnsiChar; len: SizeInt); external RTLDLL;
 procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); compilerproc;
 procedure fpc_dynarray_clear(var p: pointer; ti: pointer); external RTLDLL;
 Function  fpc_chararray_to_ansistr(const arr: array of char; zerobased: boolean = true): rawbytestring; external RTLDLL;
@@ -310,6 +312,21 @@ procedure wait_for_enter; external RTLDLL;
 {$undef codeh} {$define codei} {$I heap.inc}
 
 {$ifdef DLLEXPORT}
+procedure fpc_setstring_ansistr_pansichar(var dest: AnsiString; source: PAnsiChar; len: SizeInt); [public, alias: 'FPC_SETSTRING_ANSISTR_PANSICHAR'];
+var
+  i: SizeInt;
+begin
+  if (source = nil) or (len <= 0) then
+  begin
+    dest := '';
+    Exit;
+  end;
+
+  SetLength(dest, len); // alloziert Speicher und setzt Length
+  for i := 1 to len do
+  dest[i] := source[i - 1]; // PAnsiChar ist 0-basiert, Strings 1-basiert
+end;
+
 function GetExitProcedureCount: Integer; stdcall; export;
 begin
   result := ExitProcedureCount;
@@ -1230,6 +1247,8 @@ exports
   int_read_from_console     name 'int_read_from_console',
   fpc_chararray_to_ansistr  name 'fpc_chararray_to_ansistr',
   fpc_dynarray_clear        name 'fpc_dynarray_clear',
+  
+  fpc_setstring_ansistr_pansichar name 'fpc_setstring_ansistr_pansichar',
 
   fpc__ansistr_concat       name 'fpc__ansistr_concat',
   
