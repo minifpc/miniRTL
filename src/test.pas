@@ -9,7 +9,7 @@ program test;
 
 uses
   Windows, Dialogs, SysUtils, StrUtils, Exceptions, Forms,
-  Locales, global, ErrorData, Container;
+  Locales, global, ErrorData, Container, Graphics, ApplicationUnit;
 
 type
   TForm1 = class(TForm)
@@ -97,7 +97,8 @@ begin
   AddExitProc(@CleanUp_1);
   AddExitProc(@CleanUp_2);
   
-  //Application.Initialize;
+  Application := TApplication.Create;
+  Application.Initialize;
   //Application.CreateForm(TForm1, Form1);
   
   V := TVector.Create(12);
@@ -117,11 +118,11 @@ begin
   
   Form1 := TForm1.Create(100, 100, 500, 400);
   Form1.ShowModal;
-  
-  //Application.Run;
-  
+    
   REnum.Free;
   V.Free;
+  
+  Application.Free;
   
   writeln('end.');
 end.
