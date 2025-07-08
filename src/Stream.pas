@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------------------
 // Copyright(c) 2025 @paule32 and @fibonacci
 // ---------------------------------------------------------------------------------------
-{$mode delphi}{$H+}
+{$mode objfpc}{$H+}
 unit Stream;
 
 interface
@@ -25,22 +25,52 @@ const fmShareDenyNone   = $40;      // read/write access for other processes
 const soBeginning       = 0;
 const soCurrent         = 1;
 const soEnd             = 2;
-  
+
+const FILE_BEGIN        = 0;
+const FILE_CURRENT      = 1;
+const FILE_END          = 2;
+
+// ---------------------------------------------------------------------------------------
+/// <class name="TStream">
+///   <brief>
+///     <lang name="deu">
+///     </lang>
+///     <lang name="enu">
+///       This is the base class of streams for:
+///       - Memory
+///       - File
+///       - Resource
+///     </lang>
+///   </brief>
+///   <private></private>
+///   <protected></protected>
+///   <public>
+///     <constructor name="Create">
+///       <param></param>
+///       <brief>
+///         <lang name="enu">
+///         </lang>
+///         <lang name="deu">
+///         </lang>
+///       </brief>
+///     </constructor
+///   </public>
+/// </class>
+// ---------------------------------------------------------------------------------------
 type
   TStream = class(TObject)
   private
-    FBuffer   : Pointer;
+    FBuffer   : PByteArray;
     FSize     : Integer;
     FCapacity : Integer;
     FPosition : Integer;
   protected
-    function  GetSize: Integer;
+    function  GetSize:            Integer ;
+    procedure SetSize    (AValue: Integer);
     procedure SetCapacity(AValue: Integer);
     procedure ReAlloc    (AValue: Integer);
   public
-    constructor Create(AFileName: String); overload;
-    constructor Create; overload;
-    
+    constructor Create;
     destructor Destroy; override;
     
     procedure ReadBuffer (var   Buffer; Count: Integer);
@@ -48,13 +78,15 @@ type
     function  WriteBuffer(const Buffer; Count: Integer): Integer;
     function  Write      (const Buffer; Count: Integer): Integer;
     
-    function Seek(Offset: Integer; Origin: Word): Integer;
+    function Seek(Offset: Integer; Origin: Integer): Integer;
     
     procedure LoadFromFile(const FileName: string);
     procedure LoadFromStream(Source: TStream);
     
     procedure SaveToFile(const FileName: string);
     procedure SaveToStream(dest: TStream);
+    
+    procedure ReadFromFile(const FileName: string);
     
   published
     property Size     : Integer read FSize;
@@ -66,13 +98,15 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-
-    property Buffer: Pointer read FBuffer;
+    
+    function Seek(Offset: Integer; Origin: Integer): Integer;
   end;
   
   TFileStream = class(TStream)
+  private
+    FFileHandle : THandle;
   public
-    constructor Create(FileName : String; mode: Integer);
+    constructor Create(AFileName: String; mode: Integer);
     destructor Destroy; override;
   end;
   
@@ -84,17 +118,13 @@ type
 
 implementation
 uses
-  Memory, Exceptions;
+  Memory, Exceptions, ErrorData;
 
 { TStream }
-constructor TStream.Create(AFileName: String);
-begin
-  inherited Create;
-end;
-
 constructor TStream.Create;
 begin
   inherited Create;
+  
   FSize     := 0;
   FCapacity := 0;
   FPosition := 0;
@@ -106,33 +136,6 @@ begin
   FreeMem(FBuffer);
   
   inherited Destroy;
-end;
-
-function TStream.Write(const Buffer; Count: LongInt): Integer;
-var
-  NewPos: Integer;
-begin
-  if Count <= 0 then
-  Exit(0);
-
-  NewPos := FPosition + Count;
-
-  // Puffer vergrößern, falls notwendig
-  if NewPos > FCapacity then
-  SetCapacity(NewPos);
-
-  // Größe anpassen, wenn über das aktuelle Ende hinaus geschrieben wird
-  if NewPos > FSize then
-  FSize := NewPos;
-
-  // Daten kopieren
-  Move(Buffer, PByte(Fbuffer)[FPosition], Count);
-
-  // Position aktualisieren
-  inc(FPosition, Count);
-
-  // Rückgabe = Anzahl geschriebener Bytes
-  result := Count;
 end;
 
 function TStream.WriteBuffer(const Buffer; Count: Integer): Integer;
@@ -184,14 +187,14 @@ begin
   end;
 end;
 
-procedure TStream.SetSize(NewSize: Integer);
+procedure TStream.SetSize(AValue: Integer);
 begin
-  if NewSize <> self.GetSize then
+  if AValue <> GetSize then
   begin
-    if NewSize > FCapacity then
-    SetCapacity(NewSize);
+    if AValue > FCapacity then
+    SetCapacity(AValue);
     
-    FSize := NewSize;
+    FSize := AValue;
     
     if FPosition > FSize then
     FPosition := FSize;
@@ -218,8 +221,6 @@ begin
 end;
 
 procedure TStream.ReAlloc(AValue: Integer);
-var
-  NewBuffer: Pointer;
 begin
   if AValue < FSize then
   AValue := FSize;
@@ -228,19 +229,17 @@ begin
   begin
     if FBuffer <> nil then
     begin
-      // alten Inhalt kopieren
-      Move(FBuffer^, NewBuffer^, FSize);
       FreeMem(FBuffer);
+      FBuffer := nil;
     end;
   end else
   begin
     if FBuffer = nil then
     GetMem(FBuffer, AValue) else
-    ReAllocMemory(FBuffer)
+    ReAllocMemory(FBuffer, AValue);
   end;
 
-  FBuffer   := NewBuffer;
-  FCapacity := NewCapacity;
+  FCapacity := AValue;
 end;
 
 procedure TStream.ReadBuffer(var Buffer; Count: LongInt);
@@ -271,10 +270,10 @@ begin
   Exit(0);
   
   if FPosition + Count > FSize then
-  Count := FSize - FPosition;
+  FPosition := Count + FSize;
   
-  Move(PByte(FBuffer)^[FPosition], Buffer, Count);
-  inc(FPosition), Count);
+  Move(PByteArray(FBuffer)^[FPosition], Buffer, Count);
+  inc(FPosition, Count);
   
   result := Count;
 end;
@@ -288,7 +287,7 @@ begin
   if NewPos > FCapacity then
   SetCapacity(NewPos * 2); // wächst dynamisch
 
-  Move(Buffer, PByte(FBuffer)^[FPosition], Count);
+  Move(Buffer, PByteArray(FBuffer)^[FPosition], Count);
   FPosition := NewPos;
   
   if FPosition > FSize then
@@ -297,13 +296,13 @@ begin
   result := Count;
 end;
 
-function TStream.Seek(Offset: Integer; Origin: Word): Integer;
+function TStream.Seek(Offset: Integer; Origin: Integer): Integer;
 begin
   case Origin of
     soBeginning: FPosition := Offset;
     soCurrent:   FPosition := FPosition + Offset;
     soEnd:       FPosition := FSize     + Offset;
-  else
+    else
     raise Exception.Create('invalid Seek-Offset');
   end;
 
@@ -334,13 +333,72 @@ end;
 
 
 { TFileStream }
-constructor TFileStream.Create;
+constructor TFileStream.Create(AFileName: String; mode: Integer);
+var
+  BytesRead: PDWORD;
 begin
   inherited Create;
+  
+  FFileHandle := CreateFileA(
+    PChar(AFileName),       // Dateiname
+    GENERIC_READ,           // Zugriffsmodus: lesen
+    FILE_SHARE_READ,        // anderen Prozessen lesen erlauben
+    nil,                    // Sicherheit
+    OPEN_EXISTING,          // nur öffnen, wenn existiert
+    FILE_ATTRIBUTE_NORMAL,  // Dateiattribute
+    0                       // Template
+  );
+  
+  if FFileHandle = INVALID_HANDLE_VALUE then
+  begin
+    ShowError('file could not be open.');
+    Exit;
+  end;
+  
+  // 2. Dateigröße ermitteln
+  FSize := GetFileSize(FFileHandle, nil);
+  if FSize = INVALID_FILE_SIZE then
+  begin
+    ShowError('could not get file size.');
+    CloseHandle(FFileHandle);
+    Exit;
+  end;
+  
+  // 3. Speicher allozieren
+  GetMem(FBuffer, FSize);
+  
+  // 4. Datei einlesen
+  if not ReadFile(FFileHandle, @FBuffer^[0], FSize, BytesRead, nil) then
+  begin
+    ShowError('could not read file: ' +
+    SysErrorMessage(GetLastError));
+    
+    FreeMem(FBuffer);
+    CloseHandle(FFileHandle);
+    Exit;
+  end;
+end;
+
+function TFileStream.Seek(Offset: Integer; Origin: Integer): Integer;
+  function SeekFile(hFile: THandle; Offset: Integer; MoveMethod: DWORD): Int64;
+  var
+    NewPos: DWORD;
+  begin
+    NewPos := SetFilePointer(hFile, Offset, nil, MoveMethod);
+    if NewPos = $FFFFFFFF then
+    if GetLastError <> NO_ERROR then
+    raise Exception.CreateFmt('Seek fehlgeschlagen: %s', [SysErrorMessage(GetLastError)]);
+    result := NewPos;
+  end;
+begin
 end;
 
 destructor TFileStream.Destroy;
 begin
+  // 5. Aufräumen
+  FreeMem(FBuffer);
+  CloseHandle(FFileHandle);
+  
   inherited Destroy;
 end;
 

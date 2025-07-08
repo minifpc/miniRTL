@@ -9,7 +9,7 @@
 //{$define FULLEXCEPTIONS} // <- for testing
 
 {$ifdef codeh}
-
+{$ifndef DLLRES}
 const
   { Exceptions raised by RTL use this code }
   FPC_EXCEPTION_CODE = $E0465043;
@@ -156,12 +156,17 @@ var
   ExceptObjProc: TExceptObjProc = nil;
   ExceptClsProc: TExceptClsProc = nil;
   ErrorProc: TErrorProc = nil;
-
+{$else}
+type TErrorProc = procedure (ErrNo: LongInt; Address: CodePointer; Frame: Pointer);
+var   ErrorProc : TErrorProc = nil;
+var   ExceptAddrStack: Pointer;
+{$endif DLLRES}
 {$endif}
 
 {$ifdef codei}
 
 {$ifdef DLLEXPORT}
+{$ifndef DLLRES}
 function FilterException_(
   var rec   : EXCEPTION_RECORD;
   imagebase : PtrUInt;
@@ -207,8 +212,10 @@ function FilterException(
 begin
   Exit(FilterException_(rec, imageBase, filterRva, errcode));
 end;
+{$endif DLLRES}
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
+{$ifndef DLLRES}
 function FilterException_(
   var rec   : EXCEPTION_RECORD;
   imagebase : PtrUInt;
@@ -222,9 +229,11 @@ function FilterException(
 begin
   Exit(FilterException_(rec, imageBase, filterRva, errcode));
 end;
+{$endif DLLRES}
 {$endif DLLIMPORT}
 
 {$ifdef DLLEXPORT}
+{$ifndef DLLRES}
 function RunErrorCode_(const rec: EXCEPTION_RECORD): longint; stdcall; export;
 begin
   { negative result means 'FPU reset required' }
@@ -254,16 +263,20 @@ function RunErrorCode(const rec: EXCEPTION_RECORD): longint; stdcall;
 begin
   Exit(RunErrorCode_(rec));
 end;
+{$endif DLLRES}
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
+{$ifndef DLLRES}
 function RunErrorCode_(const rec: EXCEPTION_RECORD): longint; stdcall; external RTLDLL;
 function RunErrorCode(const rec: EXCEPTION_RECORD): longint; stdcall;
 begin
   Exit(RunErrorCode_(rec));
 end;
+{$endif DLLRES}
 {$endif DLLIMPORT}
 
 {$ifdef DLLEXPORT}
+{$ifndef DLLRES}
 procedure TranslateMxcsr(mxcsr: longword; var code: longint); stdcall; export;
 begin
   { we can return only one value, further one's are lost }
@@ -282,15 +295,20 @@ begin
   else { this should not happen }
     code := -255;
 end;
+{$endif DLLRES}
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
+{$ifndef DLLRES}
 procedure TranslateMxcsr(mxcsr: longword; var code: longint); stdcall; external RTLDLL;
+{$endif DLLRES}
 {$endif DLLIMPORT}
 
 {$ifdef DLLEXPORT}
+{$ifndef DLLRES}
 exports
   TranslateMxcsr name 'TranslateMxcsr'
   ;
+{$endif DLLRES}
 {$endif DLLEXPORT}
 
 {$endif}
@@ -300,5 +318,3 @@ exports
 {$else}
   {$I exceptions32.inc}
 {$endif}
-
-

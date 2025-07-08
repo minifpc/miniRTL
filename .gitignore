@@ -67,3 +67,5 @@ src/mfcFPC/pch.h
 *.base
 src/QApplicationPascal.s
 *.$$$
+src/fehler_text_win.res.gz
+src/fehler_code_win.res.gz

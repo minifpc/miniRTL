@@ -15,7 +15,7 @@ type
 type
   // ---------------------------------------------------------------------------------------
   /// <enum>
-  ///   <name> TAlign </name>
+  ///   <name>TAlign </name>
   ///   <key name"alNone">
   ///     <details>
   ///       <lang name="enu">
@@ -86,21 +86,50 @@ type
   ///       </lang>
   ///     <details>
   ///   </key>
-  TAlign = (alNone, alTop, alBottom, alLeft, alRight, alClient, alCustom);
   /// </enum>
+  TAlign = (alNone, alTop, alBottom, alLeft, alRight, alClient, alCustom);
   // ---------------------------------------------------------------------------------------
 
   // ---------------------------------------------------------------------------------------
   /// <type>
   /// <name>TComponentClass</name>
   /// <brief>
-  ///   TComponent is the base class of all component based classes (TForm, TButton, ...)
+  ///   <lang name="deu">
+  ///   </lang>
+  ///   <lang name="enu">
+  ///     TComponent is the base class of all component based classes (TForm, TButton, ...)
+  ///   </lang>
   /// </brief>
   /// <details>
+  ///   <lang name="deu">
+  ///   </lang>
+  ///   <lang name="enu">
   ///   TComponent is the base class of all component based classes (TForm, TButton, ...)
   ///   TComponentClass is a class type which can used to save a variable of the type.
   ///   not valid for instances.
+  ///   </lang>
   /// </details>
+  /// <name>TWinControl</name>
+  /// <brief>
+  ///   <lang name="deu">
+  ///   </lang>
+  ///   <lang name="enu">
+  ///   </lang>
+  /// </brief>
+  /// <name>TControl</name>
+  /// <brief>
+  ///   <lang name="deu">
+  ///   </lang>
+  ///   <lang name="enu">
+  ///   </lang>
+  /// </brief>
+  /// <name>TForm</name>
+  /// <brief>
+  ///   <lang name="deu">
+  ///   </lang>
+  ///   <lang name="enu">
+  ///   </lang>
+  /// </brief>
   /// </type>
   // ---------------------------------------------------------------------------------------
   TComponentClass = class of TComponent;
