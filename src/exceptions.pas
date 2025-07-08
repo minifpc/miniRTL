@@ -30,6 +30,7 @@ type
   EDivByZero       = class(Exception) end;  
   EOutOfMemory     = class(Exception) end;
   EAccessViolation = class(Exception) end;
+  EReadError       = class(Exception) end;
   // @@todo: add more
 
 var
