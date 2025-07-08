@@ -8,7 +8,7 @@
 program test;
 
 uses
-  Windows, Dialogs, SysUtils, StrUtils, Exceptions, Forms,
+  Windows, Dialogs, SysUtils, StrUtils, Exceptions, Forms, Stream,
   Locales, global, ErrorData, Container, Graphics, ApplicationUnit;
 
 type
@@ -42,6 +42,9 @@ var
 var
   V     : TVector;
   REnum : TVectorReverse;
+
+var
+  MS : TMemoryStream;
   
 constructor TForm1.Create(x, y, w, h: Integer);
 begin
@@ -121,6 +124,12 @@ begin
     
   REnum.Free;
   V.Free;
+  
+  
+  MS := TMemoryStream.Create;
+  MS.LoadFromFile('test.txt');
+  
+  MS.Free;
   
   Application.Free;
   

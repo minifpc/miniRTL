@@ -10,6 +10,11 @@ uses Windows, global;
 {$ifdef DLLEXPORT}
 function CommandLineToArgvA(CmdLine: PAnsiChar; var argc: Integer): PPAnsiChar; stdcall; export;
 
+function DirectoryExists(const Dir     : string ): Boolean; stdcall; export;
+function FileExists     (const FileName: string ): Boolean; stdcall; export;
+function IsFile         (const FileName: string ): Boolean; stdcall; export;
+function IsDirectory    (const Dir     : string ): Boolean; stdcall; export;
+
 function  IntToStr32(Value: Integer): string; stdcall; export;
 function  IntToStr(Value: Integer): string; stdcall; export;
 //function  IntToStr(Value:  Int64): PChar; stdcall; export; overload;
@@ -43,6 +48,11 @@ function _i64tow(Value:   Int64; Buffer: PWideChar; Radix: Integer): PWideChar; 
 {$ifdef DLLIMPORT}
 function CommandLineToArgvA(CmdLine: PAnsiChar; var argc: Integer): PPAnsiChar; stdcall; external RTLDLL;
 
+function DirectoryExists(const Dir     : string ): Boolean; stdcall; external RTLDLL;
+function FileExists     (const FileName: string ): Boolean; stdcall; external RTLDLL;
+function IsFile         (const FileName: string ): Boolean; stdcall; external RTLDLL;
+function IsDirectory    (const Dir     : string ): Boolean; stdcall; external RTLDLL;
+
 function _itoa  (Value: Integer; Buffer: PAnsiChar; Radix: Integer): PAnsiChar; cdecl; external 'msvcrt.dll' name '_itoa';
 function _i64toa(Value:   Int64; Buffer: PAnsiChar; Radix: Integer): PAnsiChar; cdecl; external 'msvcrt.dll' name '_i64toa';
 function _i64tow(Value:   Int64; Buffer: PWideChar; Radix: Integer): PWideChar; cdecl; external 'msvcrt.dll' name '_i64tow';
@@ -70,6 +80,8 @@ function StrCat(var Dest: PChar; Source: PChar): PChar; stdcall; external RTLDLL
 //Function fpc_chararray_to_ansistr(const arr: array of char; zerobased: boolean = true): ansistring; compilerproc;
 {$endif DLLIMPORT}
 implementation
+uses
+  Dialogs, StrUtils, Locales;
 
 procedure fpc_pchar_ansistr_intern_charmove(const src: pchar; const srcindex: sizeint; var dst: rawbytestring; const dstindex, len: sizeint); {$ifdef FPC_HAS_CPSTRING}rtlproc;{$endif} {$ifdef SYSTEMINLINE}inline;{$endif}
 begin
@@ -82,6 +94,47 @@ begin
 end;
 
 {$ifdef DLLEXPORT}
+function DirectoryExists(const Dir: string): Boolean; stdcall; export;
+var
+  Attr: DWORD;
+begin
+  // Hole die Datei-/Verzeichnisattribute
+  Attr := GetFileAttributesA(PChar(Dir));
+
+  // Wenn GetFileAttributesA -1 zurückgibt, existiert der Pfad nicht
+  if Attr = INVALID_FILE_ATTRIBUTES then
+  result := False else
+  // Prüfen, ob es sich um ein Verzeichnis handelt
+  result := (Attr and FILE_ATTRIBUTE_DIRECTORY) <> 0;
+end;
+function isDirectory(const Dir: String): Boolean; stdcall; export;
+begin
+  result := DirectoryExists(Dir);
+end;
+
+function FileExists(const FileName: string): Boolean;
+var
+  Attr: DWORD;
+begin
+  // Dateiattribute abrufen
+  Attr := GetFileAttributesA(PChar(FileName));
+
+  // Wenn der Rückgabewert ungültig ist, existiert die Datei nicht
+  if Attr = INVALID_FILE_ATTRIBUTES then
+  result := false else
+  // Prüfen, ob es sich **nicht** um ein Verzeichnis handelt
+  result := (Attr and FILE_ATTRIBUTE_DIRECTORY) = 0;
+end;
+function IsFile(const FileName: string): Boolean; stdcall; export;
+begin
+  if Length(Trim(FileName)) < 1 then
+  begin
+    ShowError(sError_File_StringIsEmpty);
+    Halt(2);
+  end;
+  result := FileExists(FileName);
+end;
+
 Procedure SetString(out S : AnsiString; Buf : PAnsiChar; Len : SizeInt); stdcall; export;
 begin
   SetLength(S,Len);
@@ -440,6 +493,9 @@ end;
 {$ifdef DLLEXPORT}
 exports
   CommandLineToArgvA name 'CommandLineToArgvA',
+  
+  DirectoryExists    name 'DirectoryExists',
+  IsDirectory        name 'IsDirectory',
   
   ChATAStr1 name 'ChATAStr1',
   ChATAStr2 name 'ChATAStr2',
