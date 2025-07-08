@@ -1266,7 +1266,9 @@ exports
   ;
 {$endif DLLEXPORT}
 
+{$ifndef DLLRES}
 initialization
   install_exception_handlers;
+{$endif  DLLRES}
 
 end.

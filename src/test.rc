@@ -1,2 +1,6 @@
 1      24     "test.manifest.rc"
+
 TForm1 RCDATA "test.dfm"
+
+ErrorCode RCDATA "fehler_code_win.rc.gz"
+ErrorText RCDATA "fehler_text_win.rc.gz"

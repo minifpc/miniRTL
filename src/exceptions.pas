@@ -11,11 +11,15 @@ interface
 uses Windows;
 
 {$ifdef DLLEXPORT}
+{$ifndef DLLRES}
 function translate_windows_error(code: integer): string; stdcall; export;
+{$endif DLLRES}
 {$endif DLLEXPORT}
 
 {$ifdef DLLIMPORT}
+{$ifndef DLLRES}
 function translate_windows_error(code: integer): string; stdcall; external RTLDLL;
+{$endif DLLRES}
 {$endif DLLIMPORT}
 
 type
@@ -33,8 +37,10 @@ type
   EReadError       = class(Exception) end;
   // @@todo: add more
 
+{$ifndef DLLRES}
 var
   exception_classes: array[200..236] of TClass;
+{$endif DLLRES}
 
 implementation
 
@@ -42,6 +48,7 @@ uses
   StrUtils;
 
 {$ifdef DLLEXPORT}
+{$ifndef DLLRES}
 function translate_windows_error(code: integer): string; stdcall; export;
 var
   len: DWord;
@@ -69,8 +76,10 @@ begin
   writeln('result = ', result);
   LocalFree(HLOCAL(buf));
 end;
+{$endif DLLRES}
 {$endif DLLEXPORT}
 
+{$ifndef DLLRES}
 constructor Exception.Create(const msg: string; const errcode: integer);
 begin
   Message := msg;
@@ -88,35 +97,45 @@ begin
   Message := Format(msg, args);
   Code    := GetLastError;
 end;
+{$endif DLLRES}
 
 {$ifdef DLLIMPORT}
+{$ifndef DLLRES}
 function  default_ExceptObjProc(code: LongInt; const rec: EXCEPTION_RECORD): Pointer; external RTLDLL;
 function  default_ExceptClsProc(code: LongInt): Pointer; external RTLDLL; external RTLDLL;
 procedure default_ErrorProc(code: Longint; addr: Pointer; frame: Pointer); external RTLDLL;
+{$endif DLLRES}
 {$endif DLLIMPORT}
 
 {$ifdef DLLEXPORT}
+{$ifndef DLLRES}
 function default_ExceptObjProc(code: LongInt; const rec: EXCEPTION_RECORD): Pointer; export;
 begin
   result := TTestException.Create('@@todo');
 end;
+{$endif DLLRES}
 {$endif DLLEXPORT}
 
 {$ifdef DLLEXPORT}
+{$ifndef DLLRES}
 function default_ExceptClsProc(code: LongInt): Pointer; export;
 begin
   if (code >= low(exception_classes)) and (code <= high(exception_classes)) then result := exception_classes[code] else result := nil;
 end;
+{$endif DLLRES}
 {$endif DLLEXPORT}
 
 {$ifdef DLLEXPORT}
+{$ifndef DLLRES}
 procedure default_ErrorProc(code: Longint; addr: Pointer; frame: Pointer); export;
 begin
   raise TTestException.Create('@@todo');
 end;
+{$endif DLLRES}
 {$endif DLLEXPORT}
 
 {$ifdef DLLEXPORT}
+{$ifndef DLLRES}
 procedure initExceptions; stdcall; export;
 var
   i : Integer;
@@ -134,12 +153,17 @@ begin
   for i := 217 to 236 do
   exception_classes[i] := nil;
 end;
+{$endif DLLRES}
 {$endif DLLEXPORT}
+
 {$ifdef DLLIMPORT}
+{$ifndef DLLRES}
 procedure initExceptions; stdcall; external RTLDLL;
+{$endif DLLRES}
 {$endif DLLIMPORT}
 
 {$ifdef DLLEXPORT}
+{$ifndef DLLRES}
 exports
   initExceptions name 'initExceptions',
   translate_windows_error name 'translate_windows_error',
@@ -148,13 +172,20 @@ exports
   default_ExceptClsProc name 'default_ExceptClsProc',
   default_ErrorProc     name 'default_ErrorProc'
   ;
-{$endif DLLEXPORT}
-
+{$endif  DLLRES}
+{$endif  DLLEXPORT}
+{$ifndef DLLRES}
 initialization
   initExceptions;
   
   ExceptObjProc := @default_ExceptObjProc;
   ExceptClsProc := @default_ExceptClsProc;
   ErrorProc := @default_ErrorProc;
-
+{$else}
+procedure dummy_ErrorProc(code: Longint; addr: Pointer; frame: Pointer); export;
+begin
+end;
+initialization
+  ErrorProc := @dummy_ErrorProc;
+{$endif DLLRES}
 end.

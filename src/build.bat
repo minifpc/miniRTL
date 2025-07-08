@@ -34,9 +34,31 @@ x86_64-win64-strip.exe rtllib.dll
 ::t:\msys64\mingw64\bin\windres.exe test.rc -O coff -o test.rc.o
 windres.exe test.rc -o test.res
 
+:: build resource ...
+windres fehler_code_win.rc -o fehler_code_win.res
+windres fehler_text_win.rc -o fehler_text_win.res
+
+:: pack resource
+gzip -9 -f fehler_code_win.res
+gzip -9 -f fehler_text_win.res
+
+:: create upstream of gz file (resource) ...
+windres rtllib_enu.rc -o rtllib_enu.res
+windres rtllib_deu.rc -o rtllib_deu.res
+
+:: biild the resource dll ...
+fpc -dDLLEXPORT -dLANGDEU -dDLLDEBUG -dDLLRES -n -B -Twin64 -FE. -Fu. -O3 -Os rtllib_enu.pas
+fpc -dDLLEXPORT -dLANGDEU -dDLLDEBUG -dDLLRES -n -B -Twin64 -FE. -Fu. -O3 -Os rtllib_deu.pas
+
+:: build runtime dll ...
 fpc -dDLLEXPORT -dLANGDEU -dDLLDEBUG -n -B -Twin64 -FE. -Fu. -O3 -Os rtllib.pas
 fpc -dDLLIMPORT -dLANGDEU -dDLLDEBUG -n -B -Twin64 -FE. -Fu. -O3 -Os test.pas
 
+:: strip debug symbols from resource dll ...
+x86_64-win64-strip.exe rtllib_enu.dll
+x86_64-win64-strip.exe rtllib_deu.dll
+
+:: strip debug symbols from runtime dll and demo app ...
 x86_64-win64-strip.exe rtllib.dll
 x86_64-win64-strip.exe test.exe
 

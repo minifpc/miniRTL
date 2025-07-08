@@ -1,0 +1,1869 @@
+// Gruppierte STRINGTABLE-Ressourcen (16er Blöcke)
+
+STRINGTABLE
+BEGIN
+  0 "Der Vorgang wurde erfolgreich abgeschlossen."
+  1 "Falsche Funktion."
+  2 "Die angegebene Datei wurde nicht gefunden."
+  3 "Das System kann den angegebenen Pfad nicht finden."
+  4 "Das System kann die Datei nicht öffnen."
+  5 "Zugriff verweigert.“"
+  6 "Das Handle ist ungültig."
+  7 "Die Speichersteuerungsblöcke wurden zerstört."
+  8 "Für die Verarbeitung dieses Befehls sind nicht genügend Speicherressourcen verfügbar."
+  9 "Die Adresse des Speichersteuerungsblocks ist ungültig."
+  10 "Die Umgebung ist falsch."
+  11 "Es wurde versucht, ein Programm mit einem falschen Format zu laden."
+  12 "Der Zugriffscode ist ungültig."
+  13 "Ungültige Daten."
+  14 "Für diesen Vorgang ist nicht genügend Speicher verfügbar."
+  15 "Das System kann das angegebene Laufwerk nicht finden."
+END
+
+STRINGTABLE
+BEGIN
+  16 "Das Verzeichnis kann nicht entfernt werden."
+  17 "Das System kann die Datei nicht auf ein anderes Laufwerk verschieben."
+  18 "Es gibt keine weiteren Dateien."
+  19 "Das Medium ist schreibgeschützt."
+  20 "Das System kann das angegebene Gerät nicht finden."
+  21 "Das Gerät ist nicht bereit."
+  22 "Das Gerät erkennt den Befehl nicht."
+  23 "Datenfehler (zyklische Redundanzprüfung)."
+  24 "Das Programm hat einen Befehl ausgegeben, aber die Befehlslänge ist falsch."
+  25 "Das Laufwerk kann keinen bestimmten Bereich oder eine bestimmte Spur auf dem Datenträger finden."
+  26 "Auf den angegebenen Datenträger oder die angegebene Diskette kann nicht zugegriffen werden."
+  27 "Das Laufwerk kann den angeforderten Sektor nicht finden."
+  28 "Der Drucker ist aus Papier."
+  29 "Das System kann nicht auf das angegebene Gerät schreiben."
+  30 "Das System kann nicht vom angegebenen Gerät lesen."
+  31 "Ein an das System angeschlossenes Gerät funktioniert nicht."
+END
+
+STRINGTABLE
+BEGIN
+  32 "Der Prozess kann nicht auf die Datei zugreifen, da sie bereits von einem anderen Prozess verwendet wird."
+  33 "Der Prozess kann nicht auf die Datei zugreifen, da sie teilweise von einem anderen Prozess gesperrt ist."
+  34 "Die falsche Diskette befindet sich im Laufwerk. Fügen Sie %2 (Volume Serial Number: %3) in Laufwerk %1 ein."
+  36 "Zu viele Dateien, die für die Freigabe geöffnet wurden."
+  38 "Das Ende der Datei wurde erreicht."
+  39 "Der Datenträger ist voll."
+END
+
+STRINGTABLE
+BEGIN
+  50 "Die Anforderung wird nicht unterstützt."
+  51 "Windows kann den Netzwerkpfad nicht finden. Vergewissern Sie sich, dass der Netzwerkpfad korrekt ist und der Zielcomputer nicht ausgelastet oder deaktiviert ist. Wenn Windows den Netzwerkpfad weiterhin nicht finden kann, wenden Sie sich an Den Netzwerkadministrator."
+  52 "Sie waren nicht verbunden, da im Netzwerk ein doppelter Name vorhanden ist. Wenn Sie einer Domäne beitreten, wechseln Sie zu System in Systemsteuerung, um den Computernamen zu ändern, und versuchen Sie es erneut. Wenn Sie einer Arbeitsgruppe beitreten, wählen Sie einen anderen Arbeitsgruppennamen aus."
+  53 "Der Netzwerkpfad wurde nicht gefunden.“"
+  54 "Das Netzwerk ist ausgelastet."
+  55 "Die angegebene Netzwerkressource oder das angegebene Gerät ist nicht mehr verfügbar."
+  56 "Das Netzwerk-BIOS-Befehlslimit wurde erreicht."
+  57 "Es ist ein Hardwarefehler des Netzwerkadapters aufgetreten."
+  58 "Der angegebene Server kann den angeforderten Vorgang nicht ausführen."
+  59 "Ein unerwarteter Netzwerkfehler ist aufgetreten."
+  60 "Der Remoteadapter ist nicht kompatibel."
+  61 "Die Druckerwarteschlange ist voll."
+  62 "Speicherplatz zum Speichern der Datei, die auf den Druck wartet, ist auf dem Server nicht verfügbar."
+  63 "Ihre Datei, die auf den Druck wartete, wurde gelöscht."
+END
+
+STRINGTABLE
+BEGIN
+  64 "Der angegebene Netzwerkname ist nicht mehr verfügbar."
+  65 "Der Netzwerkzugriff wird verweigert."
+  66 "Der Netzwerkressourcentyp ist nicht korrekt."
+  67 "„Der Netzwerkname wurde nicht gefunden.“"
+  68 "Das Namenslimit für den netzwerkadapter des lokalen Computers Karte wurde überschritten."
+  69 "Das Netzwerk-BIOS-Sitzungslimit wurde überschritten."
+  70 "Der Remoteserver wurde angehalten oder wird gerade gestartet."
+  71 "Zu diesem Zeitpunkt können keine weiteren Verbindungen zu diesem Remotecomputer hergestellt werden, da bereits so viele Verbindungen vorhanden sind, wie der Computer akzeptieren kann."
+  72 "Der angegebene Drucker oder Datenträger wurde angehalten."
+END
+
+STRINGTABLE
+BEGIN
+  80 "Die Datei ist vorhanden."
+  82 "Das Verzeichnis oder die Datei kann nicht erstellt werden."
+  83 "Fehler bei INT 24."
+  84 "Der Speicher zum Verarbeiten dieser Anforderung ist nicht verfügbar."
+  85 "Der Name des lokalen Geräts wird bereits verwendet."
+  86 "Das angegebene Netzwerkkennwort ist falsch."
+  87 "„Der Parameter ist falsch.“"
+  88 "Im Netzwerk ist ein Schreibfehler aufgetreten."
+  89 "Das System kann derzeit keinen anderen Prozess starten."
+END
+
+STRINGTABLE
+BEGIN
+  100 "Ein weiteres System-Semaphor kann nicht erstellt werden."
+  101 "Der exklusive Semaphor gehört einem anderen Prozess."
+  102 "Der Semaphor ist festgelegt und kann nicht geschlossen werden."
+  103 "Der Semaphor kann nicht erneut festgelegt werden."
+  104 "Zur Unterbrechungszeit können keine exklusiven Semaphore angefordert werden."
+  105 "Der vorherige Besitz dieses Semaphors ist beendet."
+  106 "Legen Sie die Diskette für Laufwerk %1 ein."
+  107 "Das Programm wurde beendet, weil keine alternative Diskette eingefügt wurde."
+  108 "Der Datenträger wird von einem anderen Prozess verwendet oder gesperrt."
+  109 "Die Pipe wurde beendet."
+  110 "Das System kann das angegebene Gerät oder die angegebene Datei nicht öffnen."
+  111 "Der Dateiname ist zu lang."
+END
+
+STRINGTABLE
+BEGIN
+  112 "There is not enough space on the disk."
+  113 "Es sind keine internen Dateibezeichner mehr verfügbar."
+  114 "Der interne Dateibezeichner des Ziels ist falsch."
+  117 "Der IOCTL-Aufruf des Anwendungsprogramms ist nicht korrekt."
+  118 "Der Parameterwert des Schalters verify-on-write ist nicht korrekt."
+  119 "Der angeforderte Befehl wird vom System nicht unterstützt."
+  120 "Diese Funktion wird auf diesem System nicht unterstützt."
+  121 "Der Zeitraum für das Semaphortimeout ist abgelaufen."
+  122 "Der an einen Systemaufruf übergebene Datenbereich ist zu klein."
+  123 "Dateiname, Verzeichnisname oder Volumebezeichnungssyntax ist falsch."
+  124 "Die Systemaufrufebene ist nicht korrekt."
+  125 "Der Datenträger hat keine Volumebezeichnung."
+  126 "Das angegebene Modul wurde nicht gefunden."
+  127 "Die angegebene Prozedur konnte nicht gefunden werden."
+END
+
+STRINGTABLE
+BEGIN
+  128 "Es gibt keine untergeordneten Prozesse, auf die gewartet werden muss."
+  129 "Die %1-Anwendung kann nicht im Win32-Modus ausgeführt werden."
+  130 "Versuchen Sie, ein Dateihandle für eine geöffnete Datenträgerpartition für einen anderen Vorgang als rohe Datenträger-E/A zu verwenden."
+  131 "Es wurde versucht, den Dateizeiger vor den Anfang der Datei zu verschieben."
+  132 "Der Dateizeiger kann nicht auf dem angegebenen Gerät oder der angegebenen Datei festgelegt werden."
+  133 "Ein JOIN- oder SUBST-Befehl kann nicht für ein Laufwerk verwendet werden, das zuvor verknüpfte Laufwerke enthält."
+  134 "Es wurde versucht, einen JOIN- oder SUBST-Befehl auf einem Laufwerk zu verwenden, das bereits verknüpft wurde."
+  135 "Es wurde versucht, einen JOIN- oder SUBST-Befehl auf einem Laufwerk zu verwenden, das bereits ersetzt wurde."
+  136 "Das System hat versucht, die JOIN-Datei eines Laufwerks zu löschen, das nicht verknüpft ist."
+  137 "Das System hat versucht, die Ersetzung eines Laufwerks zu löschen, das nicht ersetzt wird."
+  138 "Das System hat versucht, ein Laufwerk mit einem Verzeichnis auf einem verknüpften Laufwerk zu verbinden."
+  139 "Das System hat versucht, ein Laufwerk in ein Verzeichnis auf einem ersatzierten Laufwerk zu ersetzen."
+  140 "Das System hat versucht, ein Laufwerk mit einem Verzeichnis auf einem ersatzierten Laufwerk zu verbinden."
+  141 "Das System hat versucht, ein Laufwerk in ein Verzeichnis auf einem eingebundenen Laufwerk zu substieren."
+  142 "Das System kann derzeit keine JOIN- oder SUBST-Vorgänge ausführen."
+  143 "Das System kann ein Laufwerk nicht mit oder durch ein Verzeichnis auf demselben Laufwerk verbinden oder ersetzen."
+END
+
+STRINGTABLE
+BEGIN
+  144 "Das Verzeichnis ist kein Unterverzeichnis des Stammverzeichnisses."
+  145 "Das Verzeichnis ist nicht leer."
+  146 "Der angegebene Pfad wird in einem Ersatz verwendet."
+  147 "Es sind nicht genügend Ressourcen für die Verarbeitung dieses Befehls verfügbar."
+  148 "Der angegebene Pfad kann derzeit nicht verwendet werden."
+  149 "Es wurde versucht, ein Laufwerk hinzuzufügen oder zu ersetzen, für das ein Verzeichnis auf dem Laufwerk das Ziel eines vorherigen Ersatzes ist."
+  150 "Systemablaufverfolgungsinformationen wurden in Ihrer CONFIG.SYS-Datei nicht angegeben, oder die Ablaufverfolgung ist nicht zulässig."
+  151 "Die Anzahl der angegebenen Semaphorereignisse für DosMuxSemWait ist nicht korrekt."
+  152 "DosMuxSemWait wurde nicht ausgeführt; zu viele Semaphore sind bereits festgelegt."
+  153 "Die DosMuxSemWait-Liste ist nicht korrekt."
+  154 "Die von Ihnen eingegebene Volumebeschriftung überschreitet den Grenzwert für Bezeichnungszeichen des Zieldateisystems."
+  155 "Ein weiterer Thread kann nicht erstellt werden."
+  156 "Der Empfängerprozess hat das Signal abgelehnt."
+  157 "Das Segment ist bereits verworfen und kann nicht gesperrt werden."
+  158 "Das Segment ist bereits entsperrt."
+  159 "Die Adresse für die Thread-ID ist nicht korrekt."
+END
+
+STRINGTABLE
+BEGIN
+  160 "Mindestens ein Argument ist nicht richtig."
+  161 "Der angegebene Pfad ist ungültig."
+  162 "Ein Signal steht bereits aus."
+  164 "Im System können keine weiteren Threads erstellt werden."
+  167 "Eine Region einer Datei kann nicht gesperrt werden."
+  170 "Die angeforderte Ressource wird verwendet."
+  171 "Die Befehlsunterstützungserkennung des Geräts wird ausgeführt."
+  173 "Eine Sperranforderung war für die angegebene Abbruchregion nicht ausstehend."
+  174 "Das Dateisystem unterstützt keine atomaren Änderungen am Sperrtyp."
+END
+
+STRINGTABLE
+BEGIN
+  180 "Das System hat eine Segmentnummer erkannt, die nicht korrekt war."
+  182 "%1 kann vom Betriebssystem nicht ausgeführt werden."
+  183 "Eine Datei kann nicht erstellt werden, wenn die Datei bereits vorhanden ist."
+  186 "Das übergebene Flag ist nicht korrekt."
+  187 "Der angegebene System-Semaphorname wurde nicht gefunden."
+  188 "%1 kann vom Betriebssystem nicht ausgeführt werden."
+  189 "%1 kann vom Betriebssystem nicht ausgeführt werden."
+  190 "%1 kann vom Betriebssystem nicht ausgeführt werden."
+  191 "%1 kann im Win32-Modus nicht ausgeführt werden."
+END
+
+STRINGTABLE
+BEGIN
+  192 "%1 kann vom Betriebssystem nicht ausgeführt werden."
+  193 "%1 ist keine gültige Win32-Anwendung."
+  194 "%1 kann vom Betriebssystem nicht ausgeführt werden."
+  195 "%1 kann vom Betriebssystem nicht ausgeführt werden."
+  196 "Dieses Anwendungsprogramm kann vom Betriebssystem nicht ausgeführt werden."
+  197 "Das Betriebssystem ist derzeit nicht für die Ausführung dieser Anwendung konfiguriert."
+  198 "%1 kann vom Betriebssystem nicht ausgeführt werden."
+  199 "Dieses Anwendungsprogramm kann vom Betriebssystem nicht ausgeführt werden."
+  200 "Das Codesegment darf nicht größer oder gleich 64 KB sein."
+  201 "%1 kann vom Betriebssystem nicht ausgeführt werden."
+  202 "%1 kann vom Betriebssystem nicht ausgeführt werden."
+  203 "Das System konnte die eingegebene Umgebungsoption nicht finden."
+  205 "Kein Prozess in der Befehlsunterstruktur verfügt über einen Signalhandler."
+  206 "Der Dateiname oder die Erweiterung ist zu lang."
+  207 "Der Ring 2-Stapel wird verwendet."
+END
+
+STRINGTABLE
+BEGIN
+  208 "Die globalen Dateinamenzeichen * oder ? werden falsch eingegeben, oder es werden zu viele globale Dateinamenzeichen angegeben."
+  209 "Das gesendete Signal ist nicht korrekt."
+  210 "Der Signalhandler kann nicht festgelegt werden."
+  212 "Das Segment ist gesperrt und kann nicht neu zugeordnet werden."
+  214 "Diesem Programm oder dynamic-Link-Modul sind zu viele Module für dynamische Verknüpfungen angefügt."
+  215 "Aufrufe von LoadModule können nicht geschachtelt werden."
+  216 "Diese Version von %1 ist nicht mit der Windows-Version kompatibel, die Sie ausführen. Überprüfen Sie die Systeminformationen Ihres Computers, und wenden Sie sich dann an den Softwareherausgeber."
+  217 "Die Bilddatei %1 ist signiert und kann nicht geändert werden."
+  218 "Die Imagedatei %1 ist stark signiert und kann nicht geändert werden."
+  220 "Diese Datei ist ausgecheckt oder für die Bearbeitung durch einen anderen Benutzer gesperrt."
+  221 "Die Datei muss vor dem Speichern der Änderungen ausgecheckt werden."
+  222 "Der Dateityp, der gespeichert oder abgerufen wird, wurde blockiert."
+  223 "Die Dateigröße überschreitet den zulässigen Grenzwert und kann nicht gespeichert werden."
+END
+
+STRINGTABLE
+BEGIN
+  224 "Zugriff verweigert. Bevor Sie Dateien an diesem Speicherort öffnen, müssen Sie zuerst die Website ihrer Liste vertrauenswürdiger Websites hinzufügen, zur Website navigieren und die Option zum automatischen Anmelden auswählen."
+  225 "Der Vorgang wurde nicht erfolgreich abgeschlossen, da die Datei einen Virus oder potenziell unerwünschte Software enthält."
+  226 "Diese Datei enthält einen Virus oder potenziell unerwünschte Software und kann nicht geöffnet werden. Aufgrund der Art dieses Virus oder potenziell unerwünschter Software wurde die Datei von diesem Speicherort entfernt."
+  229 "Die Pipe ist lokal."
+  230 "Der Pipezustand ist ungültig."
+  231 "Alle Pipeinstanzen sind ausgelastet."
+  232 "Die Pipe wird geschlossen."
+  233 "Kein Prozess befindet sich am anderen Ende der Pipe."
+  234 "Weitere Daten sind verfügbar."
+END
+
+STRINGTABLE
+BEGIN
+  240 "Die Sitzung wurde abgebrochen."
+  254 "Der angegebene name des erweiterten Attributs war ungültig."
+  255 "Die erweiterten Attribute sind inkonsistent."
+END
+
+STRINGTABLE
+BEGIN
+  258 "Timeout bei Wartevorgang."
+  259 "Es sind keine weiteren Daten verfügbar."
+  266 "Die Kopierfunktionen können nicht verwendet werden."
+  267 "Der Verzeichnisname ist ungültig."
+END
+
+STRINGTABLE
+BEGIN
+  275 "Die erweiterten Attribute passten nicht in den Puffer."
+  276 "Die erweiterte Attributdatei im eingebundenen Dateisystem ist beschädigt."
+  277 "Die Tabellendatei des erweiterten Attributs ist voll."
+  278 "Das angegebene erweiterte Attributhandle ist ungültig."
+  282 "Das eingebundene Dateisystem unterstützt keine erweiterten Attribute."
+END
+
+STRINGTABLE
+BEGIN
+  288 "Versuchen Sie, Mutex freizugeben, das sich nicht im Besitz des Aufrufers befindet."
+  298 "Es wurden zu viele Beiträge zu einem Semaphor gemacht."
+  299 "Nur ein Teil einer ReadProcessMemory- oder WriteProcessMemory-Anforderung wurde abgeschlossen."
+  300 "Die oplock-Anforderung wird abgelehnt."
+  301 "Eine ungültige Oplockbestätigung wurde vom System empfangen."
+  302 "Das Volume ist zu fragmentiert, um diesen Vorgang abzuschließen."
+  303 "Die Datei kann nicht geöffnet werden, da sie gerade gelöscht wird."
+END
+
+STRINGTABLE
+BEGIN
+  304 "Kurznameneinstellungen können auf diesem Volume aufgrund der globalen Registrierungseinstellung nicht geändert werden."
+  305 "Kurznamen sind auf diesem Volume nicht aktiviert."
+  306 "Der Sicherheitsdatenstrom für das angegebene Volume befindet sich in einem inkonsistenten Zustand. Führen Sie CHKDSK auf dem Volume aus."
+  307 "Ein angeforderter Dateisperrvorgang kann aufgrund eines ungültigen Bytebereichs nicht verarbeitet werden."
+  308 "Das Zur Unterstützung des Imagetyps erforderliche Subsystem ist nicht vorhanden."
+  309 "Der angegebenen Datei ist bereits eine Benachrichtigungs-GUID zugeordnet."
+  310 "Eine ungültige Ausnahmehandlerroutine wurde erkannt."
+  311 "Für das Token wurden doppelte Berechtigungen angegeben."
+  312 "Es konnten keine Bereiche für den angegebenen Vorgang verarbeitet werden."
+  313 "Der Vorgang ist für eine interne Dateisystemdatei nicht zulässig."
+  314 "Die physischen Ressourcen dieses Datenträgers sind erschöpft."
+  315 "Das Token, das die Daten darstellt, ist ungültig."
+  316 "Das Gerät unterstützt die Befehlsfunktion nicht."
+  317 "Das System kann den Nachrichtentext für die Nachrichtennummer 0x%1 in der Nachrichtendatei für %2 nicht finden."
+  318 "Der angegebene Bereich wurde nicht gefunden."
+  319 "Die angegebene zentrale Zugriffsrichtlinie ist auf dem Zielcomputer nicht definiert."
+END
+
+STRINGTABLE
+BEGIN
+  320 "Die von Active Directory abgerufene zentrale Zugriffsrichtlinie ist ungültig."
+  321 "Das Gerät ist nicht erreichbar."
+  322 "Das Zielgerät verfügt über unzureichende Ressourcen, um den Vorgang abzuschließen."
+  323 "Ein Datenintegritätsprüfsummenfehler ist aufgetreten. Die Daten im Dateidatenstrom sind beschädigt."
+  324 "Es wurde versucht, sowohl einen KERNEL als auch ein normales erweitertes Attribut (EA) im selben Vorgang zu ändern."
+  326 "Das Gerät unterstützt trim nicht auf Dateiebene."
+  327 "Der Befehl hat einen Datenoffset angegeben, der nicht an der Granularität/Ausrichtung des Geräts ausgerichtet ist."
+  328 "Der Befehl hat in der Parameterliste ein ungültiges Feld angegeben."
+  329 "Ein Vorgang mit dem Gerät wird derzeit ausgeführt."
+  330 "Es wurde versucht, den Befehl über einen ungültigen Pfad an das Zielgerät zu senden."
+  331 "Der Befehl hat eine Anzahl von Deskriptoren angegeben, die das vom Gerät unterstützte Maximum überschritten."
+  332 "Das Scrubn ist für die angegebene Datei deaktiviert."
+  333 "Das Speichergerät bietet keine Redundanz."
+  334 "Ein Vorgang wird für eine residente Datei nicht unterstützt."
+  335 "Ein Vorgang wird für eine komprimierte Datei nicht unterstützt."
+END
+
+STRINGTABLE
+BEGIN
+  336 "Ein Vorgang wird in einem Verzeichnis nicht unterstützt."
+  337 "Die angegebene Kopie der angeforderten Daten konnte nicht gelesen werden."
+  350 "Es wurde keine Aktion ausgeführt, da ein Systemneustart erforderlich ist."
+  351 "Fehler beim Herunterfahren."
+END
+
+STRINGTABLE
+BEGIN
+  352 "Fehler beim Neustartvorgang."
+  353 "Die maximale Anzahl von Sitzungen wurde erreicht."
+END
+
+STRINGTABLE
+BEGIN
+  400 "Der Thread befindet sich bereits im Hintergrundverarbeitungsmodus."
+  401 "Der Thread befindet sich nicht im Hintergrundverarbeitungsmodus."
+  402 "Der Prozess befindet sich bereits im Hintergrundverarbeitungsmodus."
+  403 "Der Prozess befindet sich nicht im Hintergrundverarbeitungsmodus."
+END
+
+STRINGTABLE
+BEGIN
+  487 "Versuchen Sie, auf eine ungültige Adresse zuzugreifen."
+END
+
+STRINGTABLE
+BEGIN
+  500 "Das Benutzerprofil kann nicht geladen werden."
+END
+
+STRINGTABLE
+BEGIN
+  534 "Das arithmetische Ergebnis überschreitet 32 Bits."
+  535 "Am anderen Ende der Pipe befindet sich ein Prozess."
+  536 "Warten, bis ein Prozess das andere Ende der Pipe öffnet."
+  537 "Die Anwendungsüberprüfung hat einen Fehler im aktuellen Prozess gefunden."
+  538 "Fehler im ABIOS-Subsystem."
+  539 "Im WX86-Subsystem ist eine Warnung aufgetreten."
+  540 "Fehler im WX86-Subsystem."
+  541 "Es wurde versucht, einen Timer abzubrechen oder festzulegen, der über einen zugeordneten APC verfügt, und der Betreffthread ist nicht der Thread, der den Timer ursprünglich mit einer zugeordneten APC-Routine festgelegt hat."
+  542 "Ausnahmecode entladen."
+  543 "Während eines Entladevorgangs wurde ein ungültiger oder nicht ausgerichteter Stapel gefunden."
+END
+
+STRINGTABLE
+BEGIN
+  544 "Während eines Entladevorgangs wurde ein ungültiges Entladeziel gefunden."
+  545 "Ungültige Objektattribute, die für NtCreatePort angegeben sind, oder ungültige Portattribute, die für NtConnectPort angegeben sind"
+  546 "Die Länge der an NtRequestPort oder NtRequestWaitReplyPort übergebenen Nachricht war länger als die vom Port maximal zulässige Nachricht."
+  547 "Es wurde versucht, ein Kontingentlimit unterhalb der aktuellen Nutzung zu senken."
+  548 "Es wurde versucht, ein Gerät anzufügen, das bereits an ein anderes Gerät angeschlossen war."
+  549 "Es wurde versucht, eine Anweisung an einer nicht ausgerichteten Adresse auszuführen, und das Hostsystem unterstützt keine nicht ausgerichteten Anweisungsverweise."
+  550 "Die Profilerstellung wurde nicht gestartet."
+  551 "Die Profilerstellung wurde nicht beendet."
+  552 "Die übergebene ACL enthielt nicht die mindestens erforderlichen Informationen."
+  553 "Die Anzahl der aktiven Profilerstellungsobjekte ist maximal, und es kann nicht mehr gestartet werden."
+  554 "Wird verwendet, um anzugeben, dass ein Vorgang nicht fortgesetzt werden kann, ohne E/A zu blockieren."
+  555 "Gibt an, dass ein Thread versucht hat, sich selbst standardmäßig zu beenden (als NtTerminateThread mit NULL bezeichnet) und dass es sich um den letzten Thread im aktuellen Prozess handelt."
+  556 "Wenn ein MM-Fehler zurückgegeben wird, der nicht im FsRtl-Standardfilter definiert ist, wird er in einen der folgenden Fehler konvertiert, der sich garantiert im Filter befindet. In diesem Fall gehen Informationen verloren, der Filter behandelt die Ausnahme jedoch ordnungsgemäß."
+  557 "Wenn ein MM-Fehler zurückgegeben wird, der nicht im FsRtl-Standardfilter definiert ist, wird er in einen der folgenden Fehler konvertiert, der sich garantiert im Filter befindet. In diesem Fall gehen Informationen verloren, der Filter behandelt die Ausnahme jedoch ordnungsgemäß."
+  558 "Wenn ein MM-Fehler zurückgegeben wird, der nicht im FsRtl-Standardfilter definiert ist, wird er in einen der folgenden Fehler konvertiert, der sich garantiert im Filter befindet. In diesem Fall gehen Informationen verloren, der Filter behandelt die Ausnahme jedoch ordnungsgemäß."
+  559 "Während eines Entladevorgangs ist eine falsch formatierte Funktionstabelle aufgetreten."
+END
+
+STRINGTABLE
+BEGIN
+  560 "Gibt an, dass versucht wurde, einer Dateisystemdatei oder einem Dateisystemverzeichnis Schutz zuzuweisen, und eine der SIDs im Sicherheitsdeskriptor konnte nicht in eine GUID übersetzt werden, die vom Dateisystem gespeichert werden konnte. Dies führt dazu, dass der Schutzversuch fehlschlägt, was dazu führen kann, dass ein Dateierstellungsversuch fehlschlägt."
+  561 "Gibt an, dass versucht wurde, eine LDT durch Festlegen der Größe zu vergrößern, oder dass die Größe keine gerade Anzahl von Selektoren war."
+  563 "Gibt an, dass der Startwert für die LDT-Informationen kein integrales Vielfaches der Selektorgröße war."
+  564 "Gibt an, dass der Benutzer beim Einrichten von Ldt-Deskriptoren einen ungültigen Deskriptor angegeben hat."
+  565 "Gibt an, dass ein Prozess über zu viele Threads verfügt, um die angeforderte Aktion auszuführen. Beispielsweise kann die Zuweisung eines primären Tokens nur ausgeführt werden, wenn ein Prozess über null oder einen Threads verfügt."
+  566 "Es wurde versucht, in einem bestimmten Prozess mit einem Thread zu arbeiten, aber der angegebene Thread befindet sich nicht im angegebenen Prozess."
+  567 "Das Seitendateikontingent wurde überschritten."
+  568 "Der Netlogon-Dienst kann nicht gestartet werden, da ein anderer Netlogon-Dienst, der in der Domäne ausgeführt wird, mit der angegebenen Rolle in Konflikt tritt."
+  569 "Die SAM-Datenbank auf einem Windows Server ist erheblich nicht mit der Kopie auf dem Domänencontroller synchronisiert. Eine vollständige Synchronisierung ist erforderlich."
+  570 "Fehler bei der NtCreateFile-API. Dieser Fehler sollte nie an eine Anwendung zurückgegeben werden. Er ist ein Platzhalter für den Windows Lan Manager-Redirector, der in seinen internen Fehlerzuordnungsroutinen verwendet werden kann."
+  571 "{Privilege Failed} Die E/A-Berechtigungen für den Prozess konnten nicht geändert werden."
+  572 "{Anwendungsausgang durch STRG+C} Die Anwendung wurde durch STRG+C beendet."
+  573 "{Fehlende Systemdatei} Die erforderliche Systemdatei %hs ist fehlerhaft oder fehlt."
+  574 "{Anwendungsfehler} Die Ausnahme %s (0x%08lx) ist in der Anwendung am Speicherort 0x%08lx aufgetreten."
+  575 "{Anwendungsfehler} Die Anwendung konnte nicht ordnungsgemäß gestartet werden (0x%lx). Klicken Sie auf OK, um die Anwendung zu schließen."
+END
+
+STRINGTABLE
+BEGIN
+  576 "{Auslagerungsdatei kann nicht erstellt werden} Fehler beim Erstellen der Auslagerungsdatei %hs (%lx). Die angeforderte Größe war %ld."
+  577 "Windows kann die digitale Signatur für diese Datei nicht überprüfen. Bei einer kürzlich vorgenommenen Hardware- oder Softwareänderung wurde möglicherweise eine Datei installiert, die falsch signiert oder beschädigt ist, oder es könnte sich um schadhafte Software aus einer unbekannten Quelle handeln."
+  578 "{Keine Pagingdatei angegeben} In der Systemkonfiguration wurde keine Auslagerungsdatei angegeben."
+  579 "{EXCEPTION} Eine Realmodusanwendung, die eine Gleitkommaanweisung ausgegeben hat, und Gleitkommahardware ist nicht vorhanden."
+  580 "Ein Ereignispaarsynchronisierungsvorgang wurde mithilfe des threadspezifischen Client/Server-Ereignispaarobjekts ausgeführt, aber kein Ereignispaarobjekt war dem Thread zugeordnet."
+  581 "Ein Windows Server verfügt über eine falsche Konfiguration."
+  582 "Es wurde ein ungültiges Zeichen gefunden. Für einen Zeichensatz mit mehreren Byte umfasst dies ein Leadbyte ohne ein nachfolgendes Trailbytebyte. Für den Unicode-Zeichensatz umfasst dies die Zeichen 0xFFFF und 0xFFFE."
+  583 "Das Unicode-Zeichen ist nicht im Unicode-Zeichensatz definiert, der auf dem System installiert ist."
+  584 "Die Auslagerungsdatei kann nicht auf einer Diskette erstellt werden."
+  585 "Das System-BIOS konnte einen Systemunterbrechung nicht mit dem Gerät oder Bus verbinden, für das das Gerät verbunden ist."
+  586 "Dieser Vorgang ist nur für den primären Domänencontroller der Domäne zulässig."
+  587 "Es wurde versucht, eine Mutante so zu erwerben, dass ihre maximale Anzahl überschritten worden wäre."
+  588 "Auf ein Volume wurde zugegriffen, für das ein Dateisystemtreiber erforderlich ist, der noch nicht geladen wurde."
+  589 "{Registrierungsdateifehler} Die Registrierung kann die Struktur (Datei) nicht laden: %hs oder ihr Protokoll oder alternativ. Sie ist beschädigt, abwesend oder nicht beschreibbar."
+  590 "{Unerwarteter Fehler in DebugActiveProcess} Beim Verarbeiten einer DebugActiveProcess-API-Anforderung ist ein unerwarteter Fehler aufgetreten. Sie können OK auswählen, um den Prozess zu beenden, oder Abbrechen, um den Fehler zu ignorieren."
+  591 "{Schwerwiegender Systemfehler} Der %hs-Systemprozess wurde unerwartet mit einem status von 0x%08x (0x%08x 0x%08x) beendet. Das System wurde heruntergefahren."
+END
+
+STRINGTABLE
+BEGIN
+  592 "{Data Not Accepted} Der TDI-Client konnte die während einer Anzeige empfangenen Daten nicht verarbeiten."
+  593 "BEI NTVDM ist ein harter Fehler aufgetreten."
+  594 "{Cancel Timeout} Der %hs-Treiber konnte eine abgebrochene E/A-Anforderung in der zugewiesenen Zeit nicht abschließen."
+  595 "{Reply Message Mismatch} Es wurde versucht, auf eine LPC-Nachricht zu antworten, aber der von der Client-ID in der Nachricht angegebene Thread wartete nicht auf diese Nachricht."
+  596 "{Verzögerter Schreibfehler} Windows konnte nicht alle Daten für die Datei %hs speichern. Die Daten sind verloren gegangen. Dieser Fehler kann durch einen Fehler der Computerhardware oder netzwerkverbindung verursacht werden. Versuchen Sie, diese Datei an anderer Stelle zu speichern."
+  597 "Die Parameter, die im Freigegebenen Speicherfenster des Clients/Servers an den Server übergeben wurden, waren ungültig. Möglicherweise wurden zu viele Daten in das Freigegebene Speicherfenster eingefügt."
+  598 "Der Stream ist kein winziger Stream."
+  599 "Die Anforderung muss vom Stapelüberlaufcode verarbeitet werden."
+  600 "Interne OFS-status Codes, die angeben, wie ein Zuordnungsvorgang behandelt wird. Entweder wird ein Wiederholungsversuch ausgeführt, nachdem die enthaltende Onode verschoben wurde, oder der Ausdehnungsdatenstrom wird in einen großen Stream konvertiert."
+  601 "Beim Versuch, das Objekt zu finden, wurde ein Objekt gefunden, das anhand der ID auf dem Volume übereinstimmt, es liegt jedoch außerhalb des Bereichs des für den Vorgang verwendeten Handles."
+  602 "Das Bucketarray muss vergrößert werden. Wiederholen Sie die Transaktion, nachdem Sie dies ausgeführt haben."
+  603 "Der Marshallingpuffer für Benutzer/Kernel ist übergelaufen."
+  604 "Die angegebene Variantenstruktur enthält ungültige Daten."
+  605 "Der angegebene Puffer enthält falsch formatierte Daten."
+  606 "{Fehler bei der Überwachung} Fehler beim Versuch, eine Sicherheitsüberwachung zu generieren."
+  607 "Die Timerauflösung wurde zuvor nicht vom aktuellen Prozess festgelegt."
+END
+
+STRINGTABLE
+BEGIN
+  608 "Es gibt nicht genügend Kontoinformationen, um Sie anzumelden."
+  609 "{Ungültiger DLL-Eintragspunkt} Die dynamische Linkbibliothek %hs ist nicht ordnungsgemäß geschrieben. Der Stapelzeiger wurde in einem inkonsistenten Zustand belassen. Der Einstiegspunkt sollte als WINAPI oder STDCALL deklariert werden. Wählen Sie JA aus, um beim Laden der DLL einen Fehler zu erstellen. Wählen Sie NEIN aus, um die Ausführung fortzusetzen. Die Auswahl von NEIN kann dazu führen, dass die Anwendung falsch funktioniert."
+  610 "{Invalid Service Callback Entrypoint} Der %hs-Dienst ist nicht ordnungsgemäß geschrieben. Der Stapelzeiger wurde in einem inkonsistenten Zustand belassen. Der Rückrufeinstiegspunkt sollte als WINAPI oder STDCALL deklariert werden. Wenn Sie OK auswählen, wird der Dienst fortgesetzt. Der Dienstprozess funktioniert jedoch möglicherweise nicht ordnungsgemäß."
+  611 "Es liegt ein IP-Adresskonflikt mit einem anderen System im Netzwerk vor."
+  612 "Es liegt ein IP-Adresskonflikt mit einem anderen System im Netzwerk vor."
+  613 "{Low on registry space} Das System hat die maximal zulässige Größe für den Systemteil der Registrierung erreicht. Zusätzliche Speicheranforderungen werden ignoriert."
+  614 "Ein Rückrufrückgabesystemdienst kann nicht ausgeführt werden, wenn kein Rückruf aktiv ist."
+  615 "Das angegebene Kennwort ist zu kurz, um die Richtlinie Ihres Benutzerkontos zu erfüllen. Wählen Sie ein längeres Kennwort aus."
+  616 "Die Richtlinie Ihres Benutzerkontos erlaubt es Ihnen nicht, Kennwörter zu häufig zu ändern. Dies soll verhindern, dass Benutzer wieder zu einem vertrauten, aber möglicherweise erkannten Kennwort wechseln. Wenn Sie der Meinung sind, dass Ihr Kennwort kompromittiert wurde, wenden Sie sich bitte sofort an Ihren Administrator, damit ihm ein neues zugewiesen wird."
+  617 "Sie haben versucht, Ihr Kennwort in ein Kennwort zu ändern, das Sie in der Vergangenheit verwendet haben. Die Richtlinie Ihres Benutzerkontos lässt dies nicht zu. Wählen Sie ein Kennwort aus, das Sie zuvor nicht verwendet haben."
+  618 "Das angegebene Komprimierungsformat wird nicht unterstützt."
+  619 "Die angegebene Hardwareprofilkonfiguration ist ungültig."
+  620 "Der angegebene Plug & Play Registrierungsgerätepfad ist ungültig."
+  621 "Die angegebene Kontingentliste ist intern mit ihrem Deskriptor inkonsistent."
+  622 "{Windows-Evaluierungsbenachrichtigung} Der Auswertungszeitraum für diese Installation von Windows ist abgelaufen. Dieses System wird in einer Stunde heruntergefahren. Um den Zugriff auf diese Installation von Windows wiederherzustellen, aktualisieren Sie diese Installation mithilfe einer lizenzierten Distribution dieses Produkts."
+  623 "{Unzulässige System-DLL-Verschiebung} Die System-DLL %hs wurde im Arbeitsspeicher verschoben. Die Anwendung wird nicht ordnungsgemäß ausgeführt. Die Verlagerung erfolgte, weil die DLL %hs einen Adressbereich belegte, der für Windows-System-DLLs reserviert ist. Der Anbieter, der die DLL angibt, sollte für eine neue DLL kontaktiert werden."
+END
+
+STRINGTABLE
+BEGIN
+  624 "{DLL-Initialisierung fehlgeschlagen} Die Anwendung konnte nicht initialisiert werden, weil die Fensterstation heruntergefahren wird."
+  625 "Der Validierungsprozess muss mit dem nächsten Schritt fortfahren."
+  626 "Es gibt keine Übereinstimmungen mehr für die aktuelle Indexaufzählung."
+  627 "Der Bereich konnte aufgrund eines Konflikts nicht zur Bereichsliste hinzugefügt werden."
+  628 "Der Serverprozess wird unter einer anderen SID ausgeführt, als vom Client benötigt wird."
+  629 "Eine Gruppe, die für die Verwendung nur deny gekennzeichnet ist, kann nicht aktiviert werden."
+  630 "{EXCEPTION} Mehrere Gleitkommafehler."
+  631 "{EXCEPTION} Mehrere Gleitkommafallen."
+  632 "Die angeforderte Schnittstelle wird nicht unterstützt."
+  633 "{System standby failed} (Fehler beim System standby} Der Treiber %hs unterstützt den Standbymodus nicht. Durch das Aktualisieren dieses Treibers kann das System in den Standbymodus wechseln."
+  634 "Die Systemdatei %1 wurde beschädigt und ersetzt."
+  635 "{Virtual Memory Minimum Too Low} Ihr System verfügt über wenig virtuellen Arbeitsspeicher. Windows erhöht die Größe Ihrer Auslagerungsdatei für den virtuellen Arbeitsspeicher. Während dieses Prozesses können Speicheranforderungen für einige Anwendungen abgelehnt werden. Weitere Informationen finden Sie unter Hilfe."
+  636 "Ein Gerät wurde entfernt, sodass die Enumeration neu gestartet werden muss."
+  637 "{Schwerwiegender Systemfehler} Das Systemimage %s ist nicht ordnungsgemäß signiert. Die Datei wurde durch die signierte Datei ersetzt. Das System wurde heruntergefahren."
+  638 "Das Gerät wird ohne einen Neustart nicht gestartet."
+  639 "Es ist nicht genügend Energie vorhanden, um den angeforderten Vorgang abzuschließen."
+END
+
+STRINGTABLE
+BEGIN
+  640 "ERROR_MULTIPLE_FAULT_VIOLATION"
+  641 "Das System wird gerade heruntergefahren."
+  642 "Es wurde versucht, einen DebugPort für prozesse zu entfernen, aber dem Prozess war noch kein Port zugeordnet."
+  643 "Diese Version von Windows ist nicht mit der Verhaltensversion der Verzeichnisgesamtstruktur, Der Domäne oder des Domänencontrollers kompatibel."
+  644 "Der angegebene Bereich wurde in der Bereichsliste nicht gefunden."
+  646 "Der Treiber wurde nicht geladen, weil das System im abgesicherten Modus gestartet wird."
+  647 "Der Treiber wurde nicht geladen, weil der Initialisierungsaufruf nicht erfolgreich war."
+  648 "Der Fehler ""%hs"" beim Anwenden von Strom oder Lesen der Gerätekonfiguration. Dies kann durch einen Fehler Ihrer Hardware oder durch eine schlechte Verbindung verursacht werden."
+  649 "Der Erstellungsvorgang ist fehlgeschlagen, da der Name mindestens einen Bereitstellungspunkt enthielt, der in ein Volume aufgelöst wird, an das das angegebene Geräteobjekt nicht angefügt ist."
+  650 "Der Device Object-Parameter ist entweder kein gültiges Geräteobjekt oder nicht an das durch den Dateinamen angegebene Volume angefügt."
+  651 "Ein Computerüberprüfungsfehler ist aufgetreten. Weitere Informationen finden Sie im Systemereignisprotokoll."
+  652 "Fehler [%2] bei der Verarbeitung der Treiberdatenbank."
+  653 "Die Größe der Systemstruktur hat ihren Grenzwert überschritten."
+  654 "Der Treiber konnte nicht geladen werden, da sich eine frühere Version des Treibers noch im Arbeitsspeicher befindet."
+  655 "{Volume Shadow Copy Service} Warten Sie, während der Volumeschattenkopiedienst volume %hs für den Ruhezustand vorbereitet."
+END
+
+STRINGTABLE
+BEGIN
+  656 "Das System konnte nicht in den Ruhezustand versetzt werden (Der Fehlercode lautet %hs). Der Ruhezustand wird deaktiviert, bis das System neu gestartet wird."
+  657 "Das angegebene Kennwort ist zu lang, um die Richtlinie Ihres Benutzerkontos zu erfüllen. Wählen Sie ein kürzeres Kennwort aus."
+  665 "Der angeforderte Vorgang konnte aufgrund einer Dateisystemeinschränkung nicht ausgeführt werden."
+  668 "Ein Assertionsfehler ist aufgetreten."
+  669 "Fehler im ACPI-Subsystem."
+  670 "WOW-Assertionsfehler."
+  671 "Ein Gerät fehlt in der MPS-Tabelle des System-BIOS. Dieses Gerät wird nicht verwendet. Wenden Sie sich an Ihren Systemhersteller, um ein System-BIOS-Update zu erhalten."
+END
+
+STRINGTABLE
+BEGIN
+  672 "Ein Übersetzer konnte Ressourcen nicht übersetzen."
+  673 "Ein IRQ-Übersetzer konnte Ressourcen nicht übersetzen."
+  674 "Treiber %2 hat eine ungültige ID für ein untergeordnetes Gerät (%3) zurückgegeben."
+  675 "{Kernel debugger Awakened} der Systemdebugger wurde durch einen Interrupt aktiviert."
+  676 "{Handles geschlossen} Handles für Objekte wurden als Ergebnis des angeforderten Vorgangs automatisch geschlossen."
+  677 "{Zu viele Informationen} Die angegebene Zugriffssteuerungsliste (Access Control List, ACL) enthielt mehr Informationen als erwartet."
+  678 "Diese Warnstufe status gibt an, dass der Transaktionsstatus für die Registrierungsunterstruktur bereits vorhanden ist, ein Transaktionscommit jedoch zuvor abgebrochen wurde. Der Commit wurde NICHT abgeschlossen, aber es wurde auch kein Rollback ausgeführt (sodass ggf. weiterhin ein Commit ausgeführt wird)."
+  679 "{Medien geändert} Die Medien haben sich möglicherweise geändert."
+  680 "{GUID-Ersetzung} Bei der Übersetzung eines globalen Bezeichners (GUID) in eine Windows-Sicherheits-ID (SID) wurde kein administrativ definiertes GUID-Präfix gefunden. Es wurde ein Ersatzpräfix verwendet, das die Systemsicherheit nicht beeinträchtigt. Dies kann jedoch einen restriktiveren Zugriff als beabsichtigt ermöglichen."
+  681 "Der Erstellungsvorgang wurde beendet, nachdem eine symbolische Verknüpfung erreicht wurde."
+  682 "Ein langer Sprung wurde ausgeführt."
+  683 "Der Plug & Play Abfragevorgang war nicht erfolgreich."
+  684 "Eine Framekonsolidierung wurde ausgeführt."
+  685 "{Registrierungsstruktur wiederhergestellt} Registrierungsstruktur (Datei): %hs wurde beschädigt und wiederhergestellt. Einige Daten sind möglicherweise verloren gegangen."
+  686 "Die Anwendung versucht, ausführbaren Code aus dem Modul %hs auszuführen. Dies kann unsicher sein. Eine Alternative, %hs, ist verfügbar. Sollte die Anwendung das sichere Modul %hs verwenden?"
+  687 "Die Anwendung lädt ausführbaren Code aus dem Modul %hs. Dies ist sicher, aber möglicherweise nicht mit früheren Versionen des Betriebssystems kompatibel. Alternativ ist %hs verfügbar. Sollte die Anwendung das sichere Modul %hs verwenden?"
+END
+
+STRINGTABLE
+BEGIN
+  688 "Der Debugger hat die Ausnahme nicht verarbeitet."
+  689 "Debugger antwortet später."
+  690 "Debugger kann kein Handle bereitstellen."
+  691 "Debugger beendeten Thread."
+  692 "Debugger beendet prozess."
+  693 "Debugger hat Steuerelement C erhalten."
+  694 "Debugger gedruckte Ausnahme für Steuerelement C."
+  695 "Debugger hat RIP-Ausnahme empfangen."
+  696 "Der Debugger hat die Steuerungsunterbrechung empfangen."
+  697 "Debuggerbefehlskommunikations-Ausnahme."
+  698 "{Objekt vorhanden} Es wurde versucht, ein Objekt zu erstellen, und der Objektname war bereits vorhanden."
+  699 "{Thread angehalten} Eine Threadbeendigung ist aufgetreten, während der Thread angehalten wurde. Der Thread wurde fortgesetzt, und die Beendigung wurde fortgesetzt."
+  700 "{Bild verschoben} Eine Bilddatei konnte nicht an der in der Bilddatei angegebenen Adresse zugeordnet werden. Für dieses Image müssen lokale Korrekturen durchgeführt werden."
+  701 "Diese Informationsebene status gibt an, dass ein angegebener Registrierungsunterstrukturtransaktionsstatus noch nicht vorhanden war und erstellt werden musste."
+  702 "{Segmentlast} Ein virtueller DOS-Computer (VDM) lädt, entladen oder verschiebt ein MS-DOS- oder Win16-Programmsegmentimage. Eine Ausnahme wird ausgelöst, damit ein Debugger Symbole und Haltepunkte innerhalb dieser 16-Bit-Segmente laden, entladen oder nachverfolgen kann."
+  703 "{Ungültiges aktuelles Verzeichnis} Der Prozess kann nicht zum aktuellen Startverzeichnis %hs wechseln. Wählen Sie OK aus, um das aktuelle Verzeichnis auf %hs festzulegen, oder abbrechen, um das Verzeichnis zu beenden."
+END
+
+STRINGTABLE
+BEGIN
+  704 "{Redundant Read} Um eine Leseanforderung zu erfüllen, liest das fehlertolerante NT-Dateisystem die angeforderten Daten erfolgreich aus einer redundanten Kopie. Dies wurde getan, weil das Dateisystem auf einem Member des fehlertoleranten Volumes einen Fehler gefunden hat, aber den fehlerhaften Bereich des Geräts nicht neu zuweisen konnte."
+  705 "{Redundanter Schreibvorgang} Um eine Schreibanforderung zu erfüllen, hat das fehlertolerante NT-Dateisystem erfolgreich eine redundante Kopie der Informationen geschrieben. Dies wurde getan, weil das Dateisystem einen Fehler auf einem Member des fehlertoleranten Volumes festgestellt hat, aber nicht in der Lage war, den fehlerhaften Bereich des Geräts neu zuzuweisen."
+  706 "{Computertyp mismatch} Die Imagedatei %hs ist gültig, aber für einen anderen Computertyp als den aktuellen Computer. Wählen Sie OK aus, um fortzufahren, oder ABBRECHEN, um das Laden der DLL zu fehlschlagen."
+  707 "{Partielle Empfangene Daten} Der Netzwerktransport hat teilweise Daten an den Client zurückgegeben. Die restlichen Daten werden später gesendet."
+  708 "{Expedited Data Received} Der Netzwerktransport hat Daten an den Client zurückgegeben, die vom Remotesystem als beschleunigt gekennzeichnet wurden."
+  709 "{Teilweise beschleunigte Empfangene Daten} Der Netzwerktransport hat teilweise Daten an den Client zurückgegeben, und diese Daten wurden vom Remotesystem als beschleunigt markiert. Die restlichen Daten werden später gesendet."
+  710 "{TDI Event Done} Die TDI-Indikation wurde erfolgreich abgeschlossen."
+  711 "{TDI-Ereignis ausstehend} Die TDI-Angabe hat den Status ausstehend erreicht."
+  712 "Überprüfen des Dateisystems auf %wZ."
+  713 "{Fatal Application Exit} %hs."
+  714 "Auf den angegebenen Registrierungsschlüssel wird durch ein vordefiniertes Handle verwiesen."
+  715 "{Seite entsperrt} Der Seitenschutz einer gesperrten Seite wurde in ""Kein Zugriff"" geändert, und die Seite wurde aus dem Arbeitsspeicher und aus dem Prozess entsperrt."
+  716 "%hs"
+  717 "{Seite gesperrt} Eine der zu sperrenden Seiten war bereits gesperrt."
+  718 "Anwendungs-Popup: %1 : %2"
+  719 "ERROR_ALREADY_WIN32"
+END
+
+STRINGTABLE
+BEGIN
+  720 "{Computertypkonflikt} Die Imagedatei %hs ist gültig, gilt jedoch für einen anderen Computertyp als den aktuellen Computer."
+  721 "Es wurde eine Ergebnisausführung ausgeführt, und es war kein Thread für die Ausführung verfügbar."
+  722 "Das fortsetzbare Flag für eine Timer-API wurde ignoriert."
+  723 "Der Schlichter hat das Schiedsverfahren für diese Ressourcen auf sein übergeordnetes Element zurückgestellt."
+  724 "Das eingefügte CardBus-Gerät kann aufgrund eines Konfigurationsfehlers auf ""%hs"" nicht gestartet werden."
+  725 "Die CPUs in diesem Multiprozessorsystem haben nicht alle dieselbe Revisionsebene. Um alle Prozessoren zu verwenden, beschränkt sich das Betriebssystem auf die Features des am wenigsten leistungsfähigen Prozessors im System. Sollten Probleme mit diesem System auftreten, wenden Sie sich an den CPU-Hersteller, um zu überprüfen, ob diese Kombination von Prozessoren unterstützt wird."
+  726 "Das System wurde in den Ruhezustand versetzt."
+  727 "Das System wurde aus dem Ruhezustand fortgesetzt."
+  728 "Windows hat erkannt, dass die Systemfirmware (BIOS) aktualisiert wurde [vorheriges Firmwaredatum = %2, aktuelles Firmwaredatum %3]."
+  729 "Ein Gerätetreiber führt zu einem Verlust gesperrter E/A-Seiten, was zu einer Beeinträchtigung des Systems führt. Das System hat den Nachverfolgungscode automatisch aktiviert, um den Täter zu fangen."
+  730 "Das System ist erwacht."
+  731 "ERROR_WAIT_1"
+  732 "ERROR_WAIT_2"
+  733 "ERROR_WAIT_3"
+  734 "ERROR_WAIT_63"
+  735 "ERROR_ABANDONED_WAIT_0"
+END
+
+STRINGTABLE
+BEGIN
+  736 "ERROR_ABANDONED_WAIT_63"
+  737 "ERROR_USER_APC"
+  738 "ERROR_KERNEL_APC"
+  739 "ERROR_ALERTED"
+  740 "Für den angeforderten Vorgang ist eine Erhöhung erforderlich."
+  741 "Eine Analyse sollte vom Objekt-Manager durchgeführt werden, da der Name der Datei zu einem symbolischen Link geführt hat."
+  742 "Ein Vorgang zum Öffnen/Erstellen wird abgeschlossen, während eine Oplockunterbrechung ausgeführt wird."
+  743 "Ein neues Volume wurde von einem Dateisystem bereitgestellt."
+  744 "Diese Erfolgsstufe status gibt an, dass der Transaktionsstatus für die Registrierungsunterstruktur bereits vorhanden ist, aber ein Transaktionscommit zuvor abgebrochen wurde. Der Commit wurde nun abgeschlossen."
+  745 "Dies gibt an, dass eine Benachrichtigungsänderungsanforderung abgeschlossen wurde, weil das Handle geschlossen wurde, das die Benachrichtigungsänderungsanforderung ausgeführt hat."
+  746 "{Connect-Fehler beim primären Transport} Es wurde versucht, auf dem primären Transport eine Verbindung mit dem Remoteserver %hs herzustellen, aber die Verbindung ist fehlgeschlagen. Der Computer KONNTE eine Verbindung mit einem sekundären Transport herstellen."
+  747 "Seitenfehler war ein Übergangsfehler."
+  748 "Seitenfehler war ein Anforderungsfehler ohne Fehler."
+  749 "Seitenfehler war ein Anforderungsfehler ohne Fehler."
+  750 "Seitenfehler war ein Anforderungsfehler ohne Fehler."
+  751 "Seitenfehler wurde durch Lesen von einem sekundären Speichergerät befriedet."
+END
+
+STRINGTABLE
+BEGIN
+  752 "Die zwischengespeicherte Seite wurde während des Vorgangs gesperrt."
+  753 "Absturzabbild ist in der Auslagerungsdatei vorhanden."
+  754 "Der angegebene Puffer enthält alle Nullen."
+  755 "Eine Analyse sollte vom Objekt-Manager durchgeführt werden, da der Name der Datei zu einer symbolischen Verknüpfung geführt hat."
+  756 "Beim Gerät wurde ein Abfragestopp erfolgreich beendet, und die Ressourcenanforderungen wurden geändert."
+  757 "Der Übersetzer hat diese Ressourcen in den globalen Raum übersetzt, und es sollten keine weiteren Übersetzungen durchgeführt werden."
+  758 "Ein Prozess, der beendet wird, weist keine Threads auf, die beendet werden müssen."
+  759 "Der angegebene Prozess ist nicht Teil eines Auftrags."
+  760 "Der angegebene Prozess ist Teil eines Auftrags."
+  761 "{Volume Shadow Copy Service} Das System ist jetzt für den Ruhezustand bereit."
+  762 "Ein Dateisystem- oder Dateisystemfiltertreiber hat einen FsFilter-Vorgang erfolgreich abgeschlossen."
+  763 "Der angegebene Interruptvektor war bereits verbunden."
+  764 "Der angegebene Interruptvektor ist weiterhin verbunden."
+  765 "Ein Vorgang wird blockiert, der auf einen Oplock wartet."
+  766 "Debugger behandelt Ausnahme."
+  767 "Debugger wurde fortgesetzt."
+END
+
+STRINGTABLE
+BEGIN
+  768 "In einem Rückruf im Benutzermodus ist eine Ausnahme aufgetreten, und der Kernelrückrufrahmen sollte entfernt werden."
+  769 "Die Komprimierung ist für dieses Volume deaktiviert."
+  770 "Der Datenanbieter kann keine Rückwärtsdaten über ein Resultset abrufen."
+  771 "Der Datenanbieter kann nicht rückwärts durch ein Resultset scrollen."
+  772 "Der Datenanbieter erfordert, dass zuvor abgerufene Daten freigegeben werden, bevor er nach weiteren Daten fragt."
+  773 "Der Datenanbieter konnte die für eine Spaltenbindung in einem Accessor festgelegten Flags nicht interpretieren."
+  774 "Mindestens ein Fehler ist beim Verarbeiten der Anforderung aufgetreten."
+  775 "Die Implementierung kann die Anforderung nicht ausführen."
+  776 "Der Client einer Komponente hat einen Vorgang angefordert, der aufgrund des Zustands der Komponente instance ungültig ist."
+  777 "Eine Versionsnummer konnte nicht analysiert werden."
+  778 "Die Startposition des Iterators ist ungültig."
+  779 "Die Hardware hat einen nicht korrigierbaren Speicherfehler gemeldet."
+  780 "Für den versuchten Vorgang musste die Selbstheilung aktiviert werden."
+  781 "Beim Desktop-Heap ist beim Zuweisen von Sitzungsspeicher ein Fehler aufgetreten. Das Systemereignisprotokoll enthält weitere Informationen."
+  782 "Der Systemstromzustand wechselt von %2 auf %3."
+  783 "Der Systemstromzustand wechselt von %2 zu %3, könnte aber %4 eingeben."
+END
+
+STRINGTABLE
+BEGIN
+  784 "Ein Thread wird aufgrund von MCA mit MCA EXCEPTION verteilt."
+  785 "Der Zugriff auf %1 wird durch die Richtlinienregel %2 überwacht."
+  786 "Der Zugriff auf %1 wurde von Ihrem Administrator durch die Richtlinienregel %2 eingeschränkt."
+  787 "Eine gültige Ruhezustandsdatei wurde ungültig und sollte abgebrochen werden."
+  788 "{Verzögerter Schreibfehler} Windows konnte nicht alle Daten für die Datei %hs speichern. die Daten verloren gegangen sind. Dieser Fehler kann durch Netzwerkkonnektivitätsprobleme verursacht werden. Versuchen Sie, diese Datei an anderer Stelle zu speichern."
+  789 "{Verzögerter Schreibfehler} Windows konnte nicht alle Daten für die Datei %hs speichern. die Daten verloren gegangen sind. Dieser Fehler wurde vom Server zurückgegeben, auf dem sich die Datei befindet. Versuchen Sie, diese Datei an anderer Stelle zu speichern."
+  790 "{Verzögerter Schreibfehler} Windows konnte nicht alle Daten für die Datei %hs speichern. die Daten verloren gegangen sind. Dieser Fehler kann verursacht werden, wenn das Gerät entfernt wurde oder das Medium schreibgeschützt ist."
+  791 "Die für dieses Gerät erforderlichen Ressourcen sind in Konflikt mit der MCFG-Tabelle."
+  792 "Die Volumereparatur konnte nicht ausgeführt werden, während sie online ist. Planen Sie, das Volume offline zu schalten, damit es repariert werden kann."
+  793 "Die Volumereparatur war nicht erfolgreich."
+  794 "Eines der Volumebeschädigungsprotokolle ist voll. Weitere Beschädigungen, die möglicherweise erkannt werden, werden nicht protokolliert."
+  795 "Eines der Volumebeschädigungsprotokolle ist intern beschädigt und muss neu erstellt werden. Das Volume kann nicht erkannte Beschädigungen enthalten und muss gescannt werden."
+  796 "Eines der Volumebeschädigungsprotokolle ist für den Betrieb nicht verfügbar."
+  797 "Eines der Volumebeschädigungsprotokolle wurde gelöscht, während weiterhin Beschädigte datensätze enthalten sind. Das Volume enthält erkannte Beschädigungen und muss gescannt werden."
+  798 "Eines der Volumebeschädigungsprotokolle wurde von chkdsk gelöscht und enthält keine echten Beschädigungen mehr."
+  799 "Verwaiste Dateien sind auf dem Volume vorhanden, konnten aber nicht wiederhergestellt werden, da im Wiederherstellungsverzeichnis keine neuen Namen mehr erstellt werden konnten. Dateien müssen aus dem Wiederherstellungsverzeichnis verschoben werden."
+END
+
+STRINGTABLE
+BEGIN
+  800 "Der diesem Handle zugeordnete Oplock ist nun einem anderen Handle zugeordnet."
+  801 "Ein Oplock der angeforderten Ebene kann nicht gewährt werden. Möglicherweise ist ein Oplock einer niedrigeren Ebene verfügbar."
+  802 "Der Vorgang wurde nicht erfolgreich abgeschlossen, da er dazu führen würde, dass ein Oplock unterbrochen wird. Der Aufrufer hat angefordert, dass vorhandene Oplocks nicht unterbrochen werden."
+  803 "Das Handle, dem dieser Oplock zugeordnet wurde, wurde geschlossen. Der Oplock ist jetzt unterbrochen."
+  804 "Der angegebene Zugriffssteuerungseintrag (Access Control Entry, ACE) enthält keine Bedingung."
+  805 "Der angegebene Zugriffssteuerungseintrag (Access Control Entry, ACE) enthält eine ungültige Bedingung."
+  806 "Der Zugriff auf das angegebene Dateihandle wurde widerrufen."
+  807 "Eine Bilddatei wurde an einer anderen Adresse als der in der Bilddatei angegebenen zugeordnet, aber Korrekturen werden weiterhin automatisch für das Bild ausgeführt."
+END
+
+STRINGTABLE
+BEGIN
+  994 "Der Zugriff auf das erweiterte Attribut wurde verweigert."
+  995 "Der E/A-Vorgang wurde wegen eines Threadendes oder einer Anwendungsanforderung abgebrochen."
+  996 "Das überlappende E/A-Ereignis befindet sich nicht in einem signalisierten Zustand."
+  997 "Der überlappende E/A-Vorgang wird ausgeführt."
+  998 "Ungültiger Zugriff auf den Speicherort des Arbeitsspeichers."
+  999 "Fehler beim Ausführen des Inpagevorgangs."
+  1001 "Rekursion zu tief; der Stapel überläuft."
+  1002 "Das Fenster kann nicht auf die gesendete Nachricht reagieren."
+  1003 "Diese Funktion kann nicht abgeschlossen werden."
+  1004 "Ungültige Flags."
+  1005 "Das Volume enthält kein erkanntes Dateisystem. Stellen Sie sicher, dass alle erforderlichen Dateisystemtreiber geladen sind und das Volume nicht beschädigt ist."
+  1006 "Das Volume für eine Datei wurde extern geändert, sodass die geöffnete Datei nicht mehr gültig ist."
+  1007 "Der angeforderte Vorgang kann nicht im Vollbildmodus ausgeführt werden."
+END
+
+STRINGTABLE
+BEGIN
+  1008 "Es wurde versucht, auf ein Token zu verweisen, das nicht vorhanden ist."
+  1009 "Die Konfigurationsregistrierungsdatenbank ist beschädigt."
+  1010 "Der Konfigurationsregistrierungsschlüssel ist ungültig."
+  1011 "Der Konfigurationsregistrierungsschlüssel konnte nicht geöffnet werden."
+  1012 "Der Konfigurationsregistrierungsschlüssel konnte nicht gelesen werden."
+  1013 "Der Konfigurationsregistrierungsschlüssel konnte nicht geschrieben werden."
+  1014 "Eine der Dateien in der Registrierungsdatenbank musste mithilfe eines Protokolls oder einer alternativen Kopie wiederhergestellt werden. Die Wiederherstellung war erfolgreich."
+  1015 "Die Registrierung ist beschädigt. Die Struktur einer der Dateien, die Registrierungsdaten enthält, ist beschädigt, oder das Systemspeicherimage der Datei ist beschädigt, oder die Datei konnte nicht wiederhergestellt werden, da die alternative Kopie oder das Protokoll nicht vorhanden oder beschädigt war."
+  1016 "Ein von der Registrierung initiierter E/A-Vorgang konnte nicht wiederhergestellt werden. Die Registrierung konnte eine der Dateien, die das Systemimage der Registrierung enthalten, nicht einlesen, ausschreiben oder leeren."
+  1017 "Das System hat versucht, eine Datei in die Registrierung zu laden oder wiederherzustellen, aber die angegebene Datei hat kein Registrierungsdateiformat."
+  1018 "Es wurde ein illegaler Vorgang für einen Registrierungsschlüssel versucht, der zum Löschen markiert wurde."
+  1019 "Das System konnte den erforderlichen Speicherplatz in einem Registrierungsprotokoll nicht zuordnen."
+  1020 "Es kann keine symbolische Verknüpfung in einem Registrierungsschlüssel erstellt werden, der bereits Unterschlüssel oder Werte enthält."
+  1021 "Unter einem flüchtigen übergeordneten Schlüssel kann kein stabiler Unterschlüssel erstellt werden."
+  1022 "Eine Benachrichtigungsänderungsanforderung wird abgeschlossen, und die Informationen werden nicht im Puffer des Aufrufers zurückgegeben. Der Aufrufer muss nun die Dateien aufzählen, um die Änderungen zu finden."
+END
+
+STRINGTABLE
+BEGIN
+  1051 "Ein Stoppsteuerelement wurde an einen Dienst gesendet, von dem andere ausgeführte Dienste abhängig sind."
+  1052 "Das angeforderte Steuerelement ist für diesen Dienst ungültig."
+  1053 "Der Dienst antwortete nicht rechtzeitig auf die Start- oder Steuerungsanforderung."
+  1054 "Für den Dienst konnte kein Thread erstellt werden."
+  1055 "Die Dienstdatenbank ist gesperrt."
+END
+
+STRINGTABLE
+BEGIN
+  1056 "Eine instance des Diensts wird bereits ausgeführt."
+  1057 "Der Kontoname ist ungültig oder nicht vorhanden, oder das Kennwort ist für den angegebenen Kontonamen ungültig."
+  1058 "Der Dienst kann nicht gestartet werden, weil er deaktiviert wurde oder weil ihm keine aktivierten Geräte zugeordnet sind."
+  1059 "Die Zirkeldienstabhängigkeit wurde angegeben."
+  1060 "Der angegebene Dienst ist nicht als installierter Dienst vorhanden."
+  1061 "Der Dienst kann derzeit keine Kontrollmeldungen akzeptieren."
+  1062 "Der Dienst wurde nicht gestartet."
+  1063 "Der Dienstprozess konnte keine Verbindung mit dem Dienstcontroller herstellen."
+  1064 "Beim Verarbeiten der Steuerelementanforderung ist eine Ausnahme im Dienst aufgetreten."
+  1065 "Die angegebene Datenbank ist nicht vorhanden."
+  1066 "Der Dienst hat einen dienstspezifischen Fehlercode zurückgegeben."
+  1067 "Der Prozess wurde unerwartet beendet."
+  1068 "Der Abhängigkeitsdienst oder die Gruppe konnte nicht gestartet werden."
+  1069 "Der Dienst konnte wegen einer fehlerhaften Anmeldung nicht gestartet werden."
+  1070 "Nach dem Start hängte der Dienst in einem Startstatus aus."
+  1071 "Die angegebene Dienstdatenbanksperre ist ungültig."
+END
+
+STRINGTABLE
+BEGIN
+  1072 "Der angegebene Dienst wurde zum Löschen markiert."
+  1073 "Der angegebene Dienst ist bereits vorhanden."
+  1074 "Das System wird derzeit mit der letzten als zweifelsfrei bekannten Konfiguration ausgeführt."
+  1075 "Der Abhängigkeitsdienst ist nicht vorhanden oder wurde zum Löschen markiert."
+  1076 "Der aktuelle Start wurde bereits für die Verwendung als letztes bekanntes Gut-Steuerelementsatz akzeptiert."
+  1077 "Seit dem letzten Start wurden keine Versuche unternommen, den Dienst zu starten."
+  1078 "Der Name wird bereits als Dienstname oder Dienstanzeigename verwendet."
+  1079 "Das für diesen Dienst angegebene Konto unterscheidet sich von dem Konto, das für andere Dienste angegeben ist, die im gleichen Prozess ausgeführt werden."
+  1080 "Fehleraktionen können nur für Win32-Dienste und nicht für Treiber festgelegt werden."
+  1081 "Dieser Dienst wird im gleichen Prozess wie der Dienststeuerungs-Manager ausgeführt. Daher kann der Dienststeuerungs-Manager keine Maßnahmen ergreifen, wenn der Prozess dieses Diensts unerwartet beendet wird."
+  1082 "Für diesen Dienst wurde kein Wiederherstellungsprogramm konfiguriert."
+  1083 "Das ausführbare Programm, in dem dieser Dienst für die Ausführung konfiguriert ist, implementiert den Dienst nicht."
+  1084 "Dieser Dienst kann nicht im abgesicherten Modus gestartet werden."
+END
+
+STRINGTABLE
+BEGIN
+  1100 "Das physische Ende des Bandes wurde erreicht."
+  1101 "Ein Bandzugriff hat ein Dateizeichen erreicht."
+  1102 "Der Anfang des Bandes oder einer Partition wurde gefunden."
+  1103 "Ein Bandzugriff hat das Ende einer Gruppe von Dateien erreicht."
+END
+
+STRINGTABLE
+BEGIN
+  1104 "Auf dem Band sind keine Daten mehr vorhanden."
+  1105 "Das Band konnte nicht partitioniert werden."
+  1106 "Beim Zugriff auf ein neues Band einer mehrvolumen Partition ist die aktuelle Blockgröße falsch."
+  1107 "Beim Laden eines Bandes konnten keine Informationen zur Bandpartition gefunden werden."
+  1108 "Der Medienauswurfmechanismus kann nicht gesperrt werden."
+  1109 "Die Medien können nicht entladen werden."
+  1110 "Die Medien im Laufwerk haben sich möglicherweise geändert."
+  1111 "Der E/A-Bus wurde zurückgesetzt."
+  1112 "Keine Medien im Laufwerk."
+  1113 "Auf der Zielcodepage mit mehreren Byte ist keine Zuordnung für das Unicode-Zeichen vorhanden."
+  1114 "Fehler bei einer DLL-Initialisierungsroutine (Dynamic Link Library)."
+  1115 "Das System wird gerade heruntergefahren."
+  1116 "Das Herunterfahren des Systems konnte nicht abgebrochen werden, da kein Herunterfahren ausgeführt wurde."
+  1117 "Die Anforderung konnte aufgrund eines E/A-Gerätefehlers nicht ausgeführt werden."
+  1118 "Kein serielles Gerät wurde erfolgreich initialisiert. Der serielle Treiber wird entladen."
+  1119 "Ein Gerät, das eine Interruptanforderung (IRQ) für andere Geräte freigegeben hat, kann nicht geöffnet werden. Mindestens ein anderes Gerät, das diesen IRQ verwendet, wurde bereits geöffnet."
+END
+
+STRINGTABLE
+BEGIN
+  1120 "Ein serieller E/A-Vorgang wurde durch einen weiteren Schreibvorgang an den seriellen Port abgeschlossen. Die IOCTL_SERIAL_XOFF_COUNTER 0 erreicht.)"
+  1121 "Ein serieller E/A-Vorgang wurde abgeschlossen, da der Timeoutzeitraum abgelaufen ist. Die IOCTL_SERIAL_XOFF_COUNTER hat nicht 0 0 erreicht.)"
+  1122 "Auf dem Diskettendatenträger wurde keine ID-Adressmarke gefunden."
+  1123 "Nicht übereinstimmend zwischen dem Sektor-ID-Feld für Disketten und der Adresse des Diskettencontrollers."
+  1124 "Der Diskettencontroller hat einen Fehler gemeldet, der vom Diskettentreiber nicht erkannt wird."
+  1125 "Der Diskettencontroller hat in seinen Registern inkonsistente Ergebnisse zurückgegeben."
+  1126 "Beim Zugriff auf die Festplatte ist ein Erneutkalibrierungsvorgang auch nach wiederholungsversuchen fehlgeschlagen."
+  1127 "Beim Zugriff auf die Festplatte ist ein Datenträgervorgang auch nach Wiederholungen fehlgeschlagen."
+  1128 "Beim Zugriff auf die Festplatte war ein Zurücksetzen des Datenträgercontrollers erforderlich, aber selbst das war fehlgeschlagen."
+  1129 "Physisches Ende des Bandes gefunden."
+  1130 "Für diesen Befehl ist nicht genügend Serverspeicher verfügbar."
+  1131 "Eine potenzielle Deadlockbedingung wurde erkannt."
+  1132 "Die angegebene Basisadresse oder der angegebene Dateioffset verfügt nicht über die richtige Ausrichtung."
+END
+
+STRINGTABLE
+BEGIN
+  1140 "Ein Versuch, den Systemstromzustand zu ändern, wurde von einer anderen Anwendung oder einem anderen Treiber vetoiert."
+  1141 "Fehler beim System-BIOS beim Ändern des Systemleistungszustands."
+  1142 "Es wurde versucht, mehr Links für eine Datei zu erstellen, als das Dateisystem unterstützt."
+  1150 "Das angegebene Programm erfordert eine neuere Version von Windows."
+  1151 "Das angegebene Programm ist keine MS-DOS- oder Windows-Anwendung."
+END
+
+STRINGTABLE
+BEGIN
+  1152 "Es kann nicht mehr als eine instance des angegebenen Programms gestartet werden."
+  1153 "Das angegebene Programm wurde für eine frühere Version von Windows geschrieben."
+  1154 "Eine der Bibliotheksdateien, die zum Ausführen dieser Anwendung erforderlich sind, ist beschädigt."
+  1155 "Der angegebenen Datei für diesen Vorgang ist keine Anwendung zugeordnet."
+  1156 "Fehler beim Senden des Befehls an die Anwendung."
+  1157 "Eine der Bibliotheksdateien, die zum Ausführen dieser Anwendung erforderlich sind, wurde nicht gefunden."
+  1158 "Der aktuelle Prozess hat alle systemeigenen Handles für Window Manager-Objekte verwendet."
+  1159 "Die Nachricht kann nur mit synchronen Vorgängen verwendet werden."
+  1160 "Das angegebene Quellelement verfügt über keine Medien."
+  1161 "Das angegebene Zielelement enthält bereits Medien."
+  1162 "Das angegebene Element ist nicht vorhanden."
+  1163 "Das angegebene Element ist Teil eines Magazins, das nicht vorhanden ist."
+  1164 "Das angegebene Gerät muss aufgrund von Hardwarefehlern neu initialisiert werden."
+  1165 "Das Gerät hat angegeben, dass eine Reinigung erforderlich ist, bevor weitere Operationen versucht werden."
+  1166 "Das Gerät hat angegeben, dass seine Tür geöffnet ist."
+  1167 "Das Gerät ist nicht verbunden."
+END
+
+STRINGTABLE
+BEGIN
+  1168 "Element wurde nicht gefunden."
+  1169 "Es gab keine Übereinstimmung für den angegebenen Schlüssel im Index."
+  1170 "Der angegebene Eigenschaftensatz ist für das -Objekt nicht vorhanden."
+  1171 "Der an GetMouseMovePoints übergebene Punkt befindet sich nicht im Puffer."
+  1172 "Der Nachverfolgungsdienst (Arbeitsstation) wird nicht ausgeführt."
+  1173 "Die Volume-ID wurde nicht gefunden."
+  1175 "Die zu ersetzende Datei kann nicht entfernt werden."
+  1176 "Die Ersatzdatei kann nicht in die zu ersetzende Datei verschoben werden. Die zu ersetzende Datei hat ihren ursprünglichen Namen beibehalten."
+  1177 "Die Ersatzdatei kann nicht in die zu ersetzende Datei verschoben werden. Die zu ersetzende Datei wurde mit dem Sicherungsnamen umbenannt."
+  1178 "Das Volumeänderungsjournal wird gelöscht."
+  1179 "Das Volumeänderungsjournal ist nicht aktiv."
+  1180 "Es wurde eine Datei gefunden, die aber möglicherweise nicht die richtige Datei ist."
+  1181 "Der Journaleintrag wurde aus dem Journal gelöscht."
+END
+
+STRINGTABLE
+BEGIN
+  1190 "Das Herunterfahren des Systems wurde bereits geplant."
+  1191 "Das Herunterfahren des Systems kann nicht initiiert werden, da andere Benutzer am Computer angemeldet sind."
+END
+
+STRINGTABLE
+BEGIN
+  1200 "Der angegebene Gerätename ist ungültig."
+  1201 "Das Gerät ist derzeit nicht verbunden, aber es handelt sich um eine gespeicherte Verbindung."
+  1202 "Der Name des lokalen Geräts verfügt über eine gespeicherte Verbindung mit einer anderen Netzwerkressource."
+  1203 "Der Netzwerkpfad wurde entweder falsch eingegeben, ist nicht vorhanden, oder der Netzwerkanbieter ist derzeit nicht verfügbar. Versuchen Sie, den Pfad neu einzuschreiben, oder wenden Sie sich an den Netzwerkadministrator."
+  1204 "Der angegebene Netzwerkanbietername ist ungültig."
+  1205 "Das Netzwerkverbindungsprofil kann nicht geöffnet werden."
+  1206 "Das Netzwerkverbindungsprofil ist beschädigt."
+  1207 "Ein Nichtcontainer kann nicht aufgezählt werden."
+  1208 "Ein erweiterter Fehler ist aufgetreten."
+  1209 "Das Format des angegebenen Gruppennamens ist ungültig."
+  1210 "Das Format des angegebenen Computernamens ist ungültig."
+  1211 "Das Format des angegebenen Ereignisnamens ist ungültig."
+  1212 "Das Format des angegebenen Domänennamens ist ungültig."
+  1213 "Das Format des angegebenen Dienstnamens ist ungültig."
+  1214 "Das Format des angegebenen Netzwerknamens ist ungültig."
+  1215 "Das Format des angegebenen Freigabenamens ist ungültig."
+END
+
+STRINGTABLE
+BEGIN
+  1216 "Das Format des angegebenen Kennworts ist ungültig."
+  1217 "Das Format des angegebenen Nachrichtennamens ist ungültig."
+  1218 "Das Format des angegebenen Nachrichtenziels ist ungültig."
+  1219 "Mehrere Verbindungen mit einem Server oder einer freigegebenen Ressource durch denselben Benutzer, der mehrere Benutzernamen verwendet, sind nicht zulässig. Trennen Sie alle vorherigen Verbindungen mit dem Server oder der freigegebenen Ressource, und versuchen Sie es erneut."
+  1220 "Es wurde versucht, eine Sitzung mit einem Netzwerkserver einzurichten, aber es sind bereits zu viele Sitzungen für diesen Server eingerichtet."
+  1221 "Der Arbeitsgruppen- oder Domänenname wird bereits von einem anderen Computer im Netzwerk verwendet."
+  1222 "Das Netzwerk ist nicht vorhanden oder nicht gestartet."
+  1223 "Der Vorgang wurde vom Benutzer abgebrochen."
+  1224 "Der angeforderte Vorgang kann nicht für eine Datei ausgeführt werden, in der ein vom Benutzer zugeordneter Abschnitt geöffnet ist."
+  1225 "Der Remotecomputer hat die Netzwerkverbindung abgelehnt."
+  1226 "Die Netzwerkverbindung wurde ordnungsgemäß geschlossen."
+  1227 "Dem Netzwerktransportendpunkt ist bereits eine Adresse zugeordnet."
+  1228 "Dem Netzwerkendpunkt wurde noch keine Adresse zugeordnet."
+  1229 "Ein Vorgang wurde für eine nicht vorhandene Netzwerkverbindung versucht."
+  1230 "Bei einer aktiven Netzwerkverbindung wurde ein ungültiger Vorgang versucht."
+  1231 "Der Netzwerkspeicherort kann nicht erreicht werden. Informationen zur Netzwerkproblembehandlung finden Sie in der Windows-Hilfe."
+END
+
+STRINGTABLE
+BEGIN
+  1232 "Der Netzwerkspeicherort kann nicht erreicht werden. Informationen zur Netzwerkproblembehandlung finden Sie in der Windows-Hilfe."
+  1233 "Der Netzwerkspeicherort kann nicht erreicht werden. Informationen zur Netzwerkproblembehandlung finden Sie in der Windows-Hilfe."
+  1234 "Am Zielnetzwerkendpunkt auf dem Remotesystem wird kein Dienst ausgeführt."
+  1235 "Die Anforderung wurde abgebrochen."
+  1236 "Die Netzwerkverbindung wurde vom lokalen System abgebrochen."
+  1237 "Der Vorgang konnte nicht abgeschlossen werden. Ein Wiederholungsversuch sollte ausgeführt werden."
+  1238 "Eine Verbindung mit dem Server konnte nicht hergestellt werden, da der Grenzwert für die Anzahl gleichzeitiger Verbindungen für dieses Konto erreicht wurde."
+  1239 "Der Versuch, sich während einer nicht autorisierten Tageszeit für dieses Konto anzumelden."
+  1240 "Das Konto ist nicht berechtigt, sich von dieser Station aus anzumelden."
+  1241 "Die Netzwerkadresse konnte nicht für den angeforderten Vorgang verwendet werden."
+  1242 "Der Dienst ist bereits registriert."
+  1243 "Der angegebene Dienst ist nicht vorhanden."
+  1244 "Der angeforderte Vorgang wurde nicht ausgeführt, weil der Benutzer nicht authentifiziert wurde."
+  1245 "Der angeforderte Vorgang wurde nicht ausgeführt, weil sich der Benutzer nicht beim Netzwerk angemeldet hat. Der angegebene Dienst ist nicht vorhanden."
+  1246 "Fahren Sie mit der laufenden Arbeit fort."
+  1247 "Es wurde versucht, einen Initialisierungsvorgang auszuführen, wenn die Initialisierung bereits abgeschlossen ist."
+END
+
+STRINGTABLE
+BEGIN
+  1248 "Keine lokalen Geräte mehr."
+  1249 "Die angegebene Website ist nicht vorhanden."
+  1250 "Ein Domänencontroller mit dem angegebenen Namen ist bereits vorhanden."
+  1251 "Dieser Vorgang wird nur unterstützt, wenn Sie mit dem Server verbunden sind."
+  1252 "Das Gruppenrichtlinienframework sollte die Erweiterung auch dann aufrufen, wenn keine Änderungen vorgenommen werden."
+  1253 "Der angegebene Benutzer verfügt nicht über ein gültiges Profil."
+  1254 "Dieser Vorgang wird auf einem Computer mit Windows Server 2003 for Small Business Server nicht unterstützt."
+  1255 "Der Servercomputer wird heruntergefahren."
+  1256 "Das Remotesystem ist nicht verfügbar. Informationen zur Netzwerkproblembehandlung finden Sie in der Windows-Hilfe."
+  1257 "Die bereitgestellte Sicherheits-ID stammt nicht aus einer Kontodomäne."
+  1258 "Der bereitgestellte Sicherheitsbezeichner verfügt nicht über eine Domänenkomponente."
+  1259 "Das AppHelp-Dialogfeld wurde abgebrochen und verhindert, dass die Anwendung gestartet wird."
+  1260 "Dieses Programm wird durch eine Gruppenrichtlinie blockiert. Wenden Sie sich an den Systemadministrator, um weitere Informationen zu erhalten."
+  1261 "Ein Programm versucht, einen ungültigen Registerwert zu verwenden. Wird normalerweise durch ein nicht initialisiertes Register verursacht. Dieser Fehler ist itaniumspezifisch."
+  1262 "Die Freigabe ist derzeit offline oder nicht vorhanden."
+  1263 "Beim Kerberos-Protokoll ist beim Überprüfen des KDC-Zertifikats während der Smartcardanmeldung ein Fehler aufgetreten. Das Systemereignisprotokoll enthält weitere Informationen."
+END
+
+STRINGTABLE
+BEGIN
+  1264 "Beim Versuch, das Smartcardsubsystem zu verwenden, ist beim Kerberos-Protokoll ein Fehler aufgetreten."
+  1265 "Das System kann keinen Domänencontroller kontaktieren, um die Authentifizierungsanforderung zu verarbeiten. Versuchen Sie es später noch mal."
+  1271 "Der Computer ist gesperrt und kann nicht ohne die Force-Option heruntergefahren werden."
+  1273 "Ein anwendungsdefinierter Rückruf hat beim Aufruf ungültige Daten erhalten."
+  1274 "Das Gruppenrichtlinienframework sollte die Erweiterung in der synchronen Vordergrundrichtlinienaktualisierung aufrufen."
+  1275 "Das Laden dieses Treibers wurde blockiert."
+  1276 "Eine Dynamic Link Library (DLL) verweist auf ein Modul, das weder eine DLL noch das ausführbare Image des Prozesses war."
+  1277 "Windows kann dieses Programm nicht öffnen, da es deaktiviert wurde."
+  1278 "Windows kann dieses Programm nicht öffnen, da das Lizenzerzwingungssystem manipuliert wurde oder beschädigt wurde."
+  1279 "Fehler bei der Transaktionswiederherstellung."
+END
+
+STRINGTABLE
+BEGIN
+  1280 "Der aktuelle Thread wurde bereits in eine Faser konvertiert."
+  1281 "Der aktuelle Thread wurde bereits aus einer Faser konvertiert."
+  1282 "Das System hat eine Überschreitung eines stapelbasierten Puffers in dieser Anwendung erkannt. Diese Überschreitung könnte es einem böswilligen Benutzer ermöglichen, die Kontrolle über diese Anwendung zu erlangen."
+  1283 "Daten, die in einem der Parameter vorhanden sind, sind mehr als die Funktion ausführen kann."
+  1284 "Ein Versuch, einen Vorgang für ein Debugobjekt auszuführen, ist fehlgeschlagen, da das Objekt gerade gelöscht wird."
+  1285 "Fehler beim Verzögern des Ladens eines .dll oder Abrufen einer Funktionsadresse in einem verzögert geladenen .dll."
+  1286 "%1 ist eine 16-Bit-Anwendung. Sie sind nicht berechtigt, 16-Bit-Anwendungen auszuführen. Überprüfen Sie Ihre Berechtigungen mit Ihrem Systemadministrator."
+  1287 "Es sind unzureichende Informationen vorhanden, um die Fehlerursache zu identifizieren."
+  1288 "Der an eine C-Laufzeitfunktion übergebene Parameter ist falsch."
+  1289 "Der Vorgang ist über die gültige Datenlänge der Datei hinaus aufgetreten."
+  1290 "Fehler beim Start des Diensts, da mindestens ein Dienst im selben Prozess eine inkompatible Dienst-SID-Typeinstellung aufweist. Ein Dienst mit eingeschränktem Dienst-SID-Typ kann nur im selben Prozess mit anderen Diensten mit einem eingeschränkten SID-Typ koexistieren. Wenn der Dienst-SID-Typ für diesen Dienst nur konfiguriert wurde, muss der Hostingprozess neu gestartet werden, um diesen Dienst zu starten."
+END
+
+STRINGTABLE
+BEGIN
+  9104 "Die Zone verfügt nicht über genügend Signaturschlüssel. Es muss mindestens ein Schlüsselsignaturschlüssel (Key Signing Key, KSK) und mindestens ein Zonensignaturschlüssel (ZSK) vorhanden sein."
+  9105 "Der angegebene Algorithmus wird nicht unterstützt."
+  9106 "Die angegebene Schlüsselgröße wird nicht unterstützt."
+  9107 "Auf mindestens einen der Signaturschlüssel für eine Zone kann der DNS-Server nicht zugreifen. Die Zonensignatur ist erst betriebsbereit, wenn dieser Fehler behoben wurde."
+  9108 "Der angegebene Schlüsselspeicheranbieter unterstützt den DPAPI++-Datenschutz nicht. Die Zonensignatur ist erst betriebsbereit, wenn dieser Fehler behoben wurde."
+  9109 "Es ist ein unerwarteter DPAPI++-Fehler aufgetreten. Die Zonensignatur ist erst betriebsbereit, wenn dieser Fehler behoben wurde."
+  9110 "Es ist ein unerwarteter Kryptofehler aufgetreten. Die Zonensignatur ist möglicherweise erst betriebsbereit, wenn dieser Fehler behoben wurde."
+  9111 "Der DNS-Server hat einen Signaturschlüssel mit einer unbekannten Version gefunden. Die Zonensignatur ist erst betriebsbereit, wenn dieser Fehler behoben wurde."
+  9112 "Der angegebene Schlüsseldienstanbieter kann nicht vom DNS-Server geöffnet werden."
+  9113 "Der DNS-Server kann keine weiteren Signaturschlüssel mit dem angegebenen Algorithmus und dem angegebenen KSK-Flagwert für diese Zone akzeptieren."
+  9114 "Der angegebene Rolloverzeitraum ist ungültig."
+  9115 "Der angegebene anfängliche Rolloveroffset ist ungültig."
+  9116 "Für den angegebenen Signaturschlüssel wird bereits ein Rollover von Schlüsseln ausgeführt."
+  9117 "Der angegebene Signaturschlüssel verfügt nicht über einen Zu widerrufenden Standbyschlüssel."
+  9118 "Dieser Vorgang ist für einen Zonensignaturschlüssel (ZSK) nicht zulässig."
+  9119 "Dieser Vorgang ist für einen aktiven Signaturschlüssel nicht zulässig."
+END
+
+STRINGTABLE
+BEGIN
+  9120 "Der angegebene Signaturschlüssel wird bereits für den Rollover in die Warteschlange gestellt."
+  9121 "Dieser Vorgang ist für eine Zone ohne Vorzeichen nicht zulässig."
+  9122 "Dieser Vorgang konnte nicht abgeschlossen werden, da der DNS-Server, der als aktueller Schlüssel master für diese Zone aufgeführt ist, ausgefallen oder falsch konfiguriert ist. Beheben Sie das Problem für den aktuellen Schlüssel master für diese Zone, oder verwenden Sie einen anderen DNS-Server, um den Schlüssel master Rolle zu ergreifen."
+  9123 "Der angegebene Gültigkeitszeitraum der Signatur ist ungültig."
+  9124 "Die angegebene Anzahl der NSEC3-Iterationen ist höher als die minimale Schlüssellänge, die in der Zone verwendet wird."
+  9125 "Dieser Vorgang konnte nicht abgeschlossen werden, da der DNS-Server mit deaktivierten DNSSEC-Features konfiguriert wurde. Aktivieren Sie DNSSEC auf dem DNS-Server."
+  9126 "Dieser Vorgang konnte nicht abgeschlossen werden, da der empfangene XML-Stream leer oder syntaktisch ungültig ist."
+  9127 "Dieser Vorgang wurde abgeschlossen, aber es wurden keine Vertrauensanker hinzugefügt, da alle empfangenen Vertrauensanker entweder ungültig, nicht unterstützt, abgelaufen sind oder in weniger als 30 Tagen nicht gültig sind."
+  9128 "Der angegebene Signaturschlüssel wartet nicht auf die Aktualisierung der elterlichen DS."
+  9129 "Hashkollision während der NSEC3-Signatur erkannt. Geben Sie ein anderes vom Benutzer bereitgestelltes Salz an, oder verwenden Sie ein zufällig generiertes Salz, und versuchen Sie erneut, die Zone zu signieren."
+  9130 "NSEC ist nicht mit dem NSEC3-RSA-SHA-1-Algorithmus kompatibel. Wählen Sie einen anderen Algorithmus aus, oder verwenden Sie NSEC3."
+END
+
+STRINGTABLE
+BEGIN
+  9501 "Bei der DNS-Abfrage wurden keine Einträge gefunden."
+  9502 "Fehlerhaftes DNS-Paket."
+  9503 "Kein DNS-Paket."
+END
+
+STRINGTABLE
+BEGIN
+  9504 "DNS-Fehler, überprüfen Sie rcode."
+  9505 "Ungesichertes DNS-Paket."
+  9506 "Die DNS-Abfrageanforderung steht aus."
+END
+
+STRINGTABLE
+BEGIN
+  9551 "Ungültiger DNS-Typ."
+END
+
+STRINGTABLE
+BEGIN
+  9552 "Ungültige IP-Adresse."
+  9553 "Ungültige Eigenschaft."
+  9554 "Versuchen Sie den DNS-Vorgang später erneut."
+  9555 "Der Datensatz für den angegebenen Namen und Typ ist nicht eindeutig."
+  9556 "DER DNS-Name entspricht nicht den RFC-Spezifikationen."
+  9557 "DNS-Name ist ein vollqualifizierter DNS-Name."
+  9558 "DER DNS-Name ist gepunktet (mit mehreren Bezeichnungen)."
+  9559 "DNS-Name ist ein einteiliger Name."
+  9560 "DNS-Name enthält ein ungültiges Zeichen."
+  9561 "DER DNS-Name ist vollständig numerisch."
+  9562 "Der angeforderte Vorgang ist auf einem DNS-Stammserver nicht zulässig."
+  9563 "Der Datensatz konnte nicht erstellt werden, da dieser Teil des DNS-Namespace an einen anderen Server delegiert wurde."
+  9564 "Der DNS-Server konnte keine Reihe von Stammhinweisen finden."
+  9565 "Der DNS-Server hat Stammhinweise gefunden, waren aber nicht für alle Adapter konsistent."
+  9566 "Der angegebene Wert ist für diesen Parameter zu klein."
+  9567 "Der angegebene Wert ist für diesen Parameter zu groß."
+END
+
+STRINGTABLE
+BEGIN
+  9568 "Dieser Vorgang ist nicht zulässig, während der DNS-Server Zonen im Hintergrund lädt. Versuchen Sie es später noch mal."
+  9569 "Der angeforderte Vorgang ist für einen DNS-Server, der auf einem schreibgeschützten DC ausgeführt wird, nicht zulässig."
+  9570 "Unter einem DNAME-Eintrag dürfen keine Daten vorhanden sein."
+  9571 "Für diesen Vorgang ist die Delegierung von Anmeldeinformationen erforderlich."
+  9572 "Die Richtlinientabelle für die Namensauflösung wurde beschädigt. Die DNS-Auflösung schlägt fehl, bis sie behoben wurde. Wenden Sie sich an den Netzwerkadministrator."
+END
+
+STRINGTABLE
+BEGIN
+  9601 "Die DNS-Zone ist nicht vorhanden."
+  9602 "DNS-Zoneninformationen sind nicht verfügbar."
+  9603 "Ungültiger Vorgang für die DNS-Zone."
+  9604 "Ungültige DNS-Zonenkonfiguration."
+  9605 "DIE DNS-Zone verfügt über keinen SOA-Eintrag (Start of Authority)."
+  9606 "DIE DNS-Zone verfügt über keinen Namenserverdatensatz (Name Server, NS)."
+  9607 "DIE DNS-Zone ist gesperrt."
+  9608 "Fehler beim Erstellen einer DNS-Zone."
+  9609 "Die DNS-Zone ist bereits vorhanden."
+  9610 "Die automatische DNS-Zone ist bereits vorhanden."
+  9611 "Ungültiger DNS-Zonentyp."
+  9612 "Sekundäre DNS-Zone erfordert master IP-Adresse."
+  9613 "DNS-Zone nicht sekundär."
+  9614 "Sekundäre IP-Adresse erforderlich."
+  9615 "Fehler bei der WINS-Initialisierung."
+END
+
+STRINGTABLE
+BEGIN
+  9616 "Benötigen Sie WINS-Server."
+  9617 "Fehler beim NBTSTAT-Initialisierungsaufruf."
+  9618 "Ungültiges Löschen des Autoritätsbeginns (SOA)."
+  9619 "Für diesen Namen ist bereits eine bedingte Weiterleitungszone vorhanden."
+  9620 "Diese Zone muss mit einer oder mehreren IP-Adressen master DNS-Servers konfiguriert werden."
+  9621 "Der Vorgang kann nicht ausgeführt werden, da diese Zone heruntergefahren wird."
+  9622 "Dieser Vorgang kann nicht ausgeführt werden, da die Zone derzeit signiert wird. Versuchen Sie es später noch mal."
+END
+
+STRINGTABLE
+BEGIN
+  9651 "Für die primäre DNS-Zone ist eine Datendatei erforderlich."
+  9652 "Ungültiger Datendateiname für DNS-Zone."
+  9653 "Fehler beim Öffnen der Datendatei für die DNS-Zone."
+  9654 "Fehler beim Schreiben der Datendatei für die DNS-Zone."
+  9655 "Fehler beim Lesen der Datendatei für die DNS-Zone."
+END
+
+STRINGTABLE
+BEGIN
+  9701 "Der DNS-Eintrag ist nicht vorhanden."
+  9702 "Fehler beim Format des DNS-Eintrags."
+  9703 "Fehler bei der Knotenerstellung in DNS."
+  9704 "Unbekannter DNS-Eintragstyp."
+  9705 "Timeout des DNS-Eintrags."
+  9706 "Name nicht in der DNS-Zone."
+  9707 "CNAME-Schleife erkannt."
+  9708 "Node ist ein CNAME-DNS-Eintrag."
+  9709 "Für den angegebenen Namen ist bereits ein CNAME-Eintrag vorhanden."
+  9710 "Zeichnen Sie nur am STAMM der DNS-Zone auf."
+  9711 "DER DNS-Eintrag ist bereits vorhanden."
+END
+
+STRINGTABLE
+BEGIN
+  9712 "Sekundärer DNS-Zonendatenfehler."
+  9713 "Dns-Cachedaten konnten nicht erstellt werden."
+  9714 "Der DNS-Name ist nicht vorhanden."
+  9715 "Es konnte kein Zeigerdatensatz (PTR) erstellt werden."
+  9716 "Die DNS-Domäne wurde nicht gelöscht."
+  9717 "Der Verzeichnisdienst ist nicht verfügbar."
+  9718 "Die DNS-Zone ist bereits im Verzeichnisdienst vorhanden."
+  9719 "Der DNS-Server erstellt oder liest die Startdatei für die integrierte DNS-Zone des Verzeichnisdiensts nicht."
+  9720 "Node ist ein DNAME-DNS-Eintrag."
+  9721 "Für den angegebenen Namen ist bereits ein DNAME-Eintrag vorhanden."
+  9722 "Eine Aliasschleife wurde entweder mit CNAME- oder DNAME-Einträgen erkannt."
+END
+
+STRINGTABLE
+BEGIN
+  9751 "DNS AXFR (Zonenübertragung) abgeschlossen."
+  9752 "Fehler bei der DNS-Zonenübertragung."
+  9753 "Lokaler WINS-Server hinzugefügt."
+END
+
+STRINGTABLE
+BEGIN
+  9801 "Der Aufruf des sicheren Updates muss die Updateanforderung fortsetzen."
+END
+
+STRINGTABLE
+BEGIN
+  9851 "TCP/IP-Netzwerkprotokoll nicht installiert."
+  9852 "Keine DNS-Server, die für das lokale System konfiguriert sind."
+END
+
+STRINGTABLE
+BEGIN
+  9901 "Die angegebene Verzeichnispartition ist nicht vorhanden."
+  9902 "Die angegebene Verzeichnispartition ist bereits vorhanden."
+  9903 "Dieser DNS-Server ist nicht in der angegebenen Verzeichnispartition aufgeführt."
+END
+
+STRINGTABLE
+BEGIN
+  9904 "Dieser DNS-Server ist bereits in der angegebenen Verzeichnispartition eingetragen."
+  9905 "Die Verzeichnispartition ist derzeit nicht verfügbar. Bitte warten Sie einige Minuten, und versuchen Sie es erneut."
+  9906 "Fehler beim Vorgang, weil die Domänenbenennung master FSMO-Rolle nicht erreicht werden konnte. Der Domänencontroller mit der Domänenbenennung master FSMO-Rolle ist ausgefallen oder kann die Anforderung nicht verarbeiten oder windows Server 2003 oder höher nicht ausführen."
+END
+
+STRINGTABLE
+BEGIN
+  10004 "Ein blockierender Vorgang wurde durch einen Aufruf von WSACancelBlockingCall unterbrochen."
+  10009 "Das angegebene Dateihandle ist ungültig."
+  10013 "Es wurde versucht, auf einen Socket auf eine Weise zuzugreifen, die durch seine Zugriffsberechtigungen verboten ist."
+  10014 "Das System hat beim Versuch, ein Zeigerargument in einem Aufruf zu verwenden, eine ungültige Zeigeradresse erkannt."
+END
+
+STRINGTABLE
+BEGIN
+  10022 "Ein ungültiges Argument wurde angegeben."
+  10024 "Zu viele offene Sockets."
+END
+
+STRINGTABLE
+BEGIN
+  10035 "Ein nicht blockierende Socketvorgang konnte nicht sofort abgeschlossen werden."
+  10036 "Ein Blockierungsvorgang wird momentan ausgeführt."
+  10037 "Es wurde versucht, für einen nicht blockierenden Socket, für den bereits ein Vorgang ausgeführt wurde, einen weiteren Vorgang auszuführen."
+  10038 "Es wurde ein Vorgang für etwas versucht, das kein Socket ist."
+  10039 "Eine erforderliche Adresse wurde von einem Vorgang an einem Socket weggelassen."
+  10040 "Eine Nachricht, die über einen Datagrammsocket gesendet wurde, war für den internen Nachrichtenpuffer oder ein anderes Netzwerklimit zu groß, oder der Puffer für den Datagrammempfang war für das Datagramm zu klein."
+  10041 "Im Socketfunktionsaufruf wurde ein Protokoll angegeben, das die Semantik des angeforderten Sockettyps nicht unterstützt."
+  10042 "Eine unbekannte, ungültige oder nicht unterstützte Option oder Ebene wurde in einem getsockopt- oder setsockopt-Aufruf angegeben."
+  10043 "Das angeforderte Protokoll wurde nicht im System konfiguriert, oder es ist keine Implementierung dafür vorhanden."
+  10044 "In dieser Adressfamilie ist die Unterstützung für den angegebenen Sockettyp nicht vorhanden."
+  10045 "Der versuchte Vorgang wird für den Typ des Objekts, auf das verwiesen wird, nicht unterstützt."
+  10046 "Die Protokollfamilie wurde nicht im System konfiguriert oder es ist keine Implementierung dafür vorhanden."
+  10047 "Es wurde eine Adresse verwendet, die mit dem angeforderten Protokoll nicht kompatibel ist."
+END
+
+STRINGTABLE
+BEGIN
+  10048 "Only one usage of each socket address (protocol/network address/port) is normally permitted."
+  10049 "Die angeforderte Adresse ist im Kontext ungültig."
+  10050 "Bei einem Socketvorgang war das Netzwerk inaktiv."
+  10051 "Ein Socketvorgang wurde versucht, ein nicht erreichbares Netzwerk zu verwenden."
+  10052 "Die Verbindung wurde unterbrochen, weil die Keep-Alive-Aktivität einen Fehler erkannte, während der Vorgang ausgeführt wurde."
+  10053 "Eine hergestellte Verbindung wurde durch die Software auf dem Hostcomputer abgebrochen."
+  10054 "An existing connection was forcibly closed by the remote host."
+  10055 "Ein Vorgang für einen Socket konnte nicht ausgeführt werden, weil dem System genügend Pufferspeicherplatz fehlte oder eine Warteschlange voll war."
+  10056 "Für einen bereits verbundenen Socket wurde eine Verbindungsanforderung gestellt."
+  10057 "Eine Anforderung zum Senden oder Empfangen von Daten war unzulässig, weil der Socket nicht verbunden ist und (beim Senden über einen Datagrammsocket mithilfe eines sendto-Aufrufs) keine Adresse bereitgestellt wurde."
+  10058 "Eine Anforderung zum Senden oder Empfangen von Daten wurde nicht zugelassen, da der Socket in die entsprechende Richtung bereits durch einen vorangegangenen shutdown-Aufruf heruntergefahren wurde."
+  10059 "Zu viele Verweise auf ein Kernelobjekt."
+  10060 "Ein Verbindungsversuch ist fehlgeschlagen, weil die verbundene Partei nach einer bestimmten Zeit nicht ordnungsgemäß reagiert hat, oder die Verbindung nicht hergestellt wurde, weil der verbundene Host nicht reagiert hat."
+  10061 "Es konnte keine Verbindung hergestellt werden, da der Zielcomputer sie aktiv abgelehnt hat."
+  10062 "Name kann nicht übersetzt werden."
+  10063 "Die Namenskomponente oder der Name war zu lang."
+END
+
+STRINGTABLE
+BEGIN
+  10064 "Ein Socketvorgang ist fehlgeschlagen, weil der Zielhost ausgefallen ist."
+  10065 "Versuch eines Socketvorgangs für einen nicht erreichbaren Host."
+  10066 "Ein Verzeichnis, das nicht leer ist, kann nicht entfernt werden."
+  10067 "Eine Windows Sockets-Implementierung kann eine Beschränkung für die Anzahl von Anwendungen aufweisen, die sie gleichzeitig verwenden können."
+  10068 "Das Kontingent ist nicht mehr vorhanden."
+  10069 "Das Datenträgerkontingent ist nicht mehr verfügbar."
+  10070 "Der Dateihandleverweis ist nicht mehr verfügbar."
+  10071 "Das Element ist lokal nicht verfügbar."
+END
+
+STRINGTABLE
+BEGIN
+  10091 "WSAStartup kann derzeit nicht funktionieren, da das zugrunde liegende System, das zum Bereitstellen von Netzwerkdiensten verwendet wird, derzeit nicht verfügbar ist."
+  10092 "Die angeforderte Windows Sockets-Version wird nicht unterstützt."
+  10093 "Entweder hat die Anwendung WSAStartup nicht aufgerufen, oder WSAStartup ist fehlgeschlagen."
+END
+
+STRINGTABLE
+BEGIN
+  10101 "Wird von WSARecv oder WSARecvFrom zurückgegeben, um anzugeben, dass die Remotepartei eine ordnungsgemäße Herunterfahrsequenz initiiert hat."
+  10102 "WSALookupServiceNext gibt keine ergebnisse mehr zurück."
+  10103 "Ein Aufruf von WSALookupServiceEnd wurde ausgeführt, während dieser Aufruf noch verarbeitet wurde. Der Anruf wurde abgebrochen."
+  10104 "Die Prozeduraufruftabelle ist ungültig."
+  10105 "Der angeforderte Dienstanbieter ist ungültig."
+  10106 "Der angeforderte Dienstanbieter konnte nicht geladen oder initialisiert werden."
+  10107 "Ein Systemaufruf ist fehlgeschlagen."
+  10108 "Ein solcher Dienst ist nicht bekannt. Der Dienst kann nicht im angegebenen Namensraum gefunden werden."
+  10109 "Die angegebene Klasse wurde nicht gefunden."
+  10110 "WSALookupServiceNext gibt keine ergebnisse mehr zurück."
+  10111 "Ein Aufruf von WSALookupServiceEnd wurde ausgeführt, während dieser Aufruf noch verarbeitet wurde. Der Anruf wurde abgebrochen."
+END
+
+STRINGTABLE
+BEGIN
+  10112 "Bei einer Datenbankabfrage ist ein Fehler aufgetreten, da sie aktiv abgelehnt wurde."
+END
+
+STRINGTABLE
+BEGIN
+  11001 "Ein solcher Host ist nicht bekannt."
+  11002 "Hierbei handelt es sich in der Regel um einen temporären Fehler, der während der Auflösung von Hostnamen auftritt und einen Hinweis darauf liefert, dass der lokale Server keine Antwort von einem autorisierenden Server erhalten hat."
+  11003 "Beim Datenbankaufruf ist ein nicht behebbarer Fehler aufgetreten."
+  11004 "Der angeforderte Name ist gültig, aber es wurden keine Daten des angeforderten Typs gefunden."
+  11005 "Mindestens eine Reserve ist eingetroffen."
+  11006 "Mindestens ein Weg ist angekommen."
+  11007 "Es gibt keine Absender."
+END
+
+STRINGTABLE
+BEGIN
+  11008 "Es gibt keine Empfänger."
+  11009 "Die Reserve wurde bestätigt."
+  11010 "Fehler aufgrund fehlender Ressourcen."
+  11011 "Aus administrativen Gründen abgelehnt– ungültige Anmeldeinformationen."
+  11012 "Unbekannter oder in Konflikt stehenden Stil."
+  11013 "Problem mit einem Teil des filterspec- oder providerspecific-Puffers im Allgemeinen."
+  11014 "Problem mit einem Teil der Flowspec."
+  11015 "Allgemeiner QOS-Fehler."
+  11016 "Ein ungültiger oder unbekannter Diensttyp wurde in der flowspec gefunden."
+  11017 "In der QOS-Struktur wurde eine ungültige oder inkonsistente Flowspec gefunden."
+  11018 "Ungültiger QOS-anbieterspezifischer Puffer."
+  11019 "Es wurde ein ungültiger QOS-Filterstil verwendet."
+  11020 "Ein ungültiger QOS-Filtertyp wurde verwendet."
+  11021 "Im FLOWDESCRIPTOR wurde eine falsche Anzahl von QOS FILTERSPECs angegeben."
+  11022 "Im QOS-anbieterspezifischen Puffer wurde ein Objekt mit einem ungültigen ObjectLength-Feld angegeben."
+  11023 "In der QOS-Struktur wurde eine falsche Anzahl von Flussdeskriptoren angegeben."
+END
+
+STRINGTABLE
+BEGIN
+  11024 "Im QOS-anbieterspezifischen Puffer wurde ein nicht erkanntes Objekt gefunden."
+  11025 "Im QOS-anbieterspezifischen Puffer wurde ein ungültiges Richtlinienobjekt gefunden."
+  11026 "In der Flowdeskriptorliste wurde ein ungültiger QOS-Flussdeskriptor gefunden."
+  11027 "Im QOS-anbieterspezifischen Puffer wurde eine ungültige oder inkonsistente Flowspec gefunden."
+  11028 "Im QOS-anbieterspezifischen Puffer wurde eine ungültige FILTERSPEC gefunden."
+  11029 "Im QOS-anbieterspezifischen Puffer wurde ein ungültiges Shape-Verwerfensmodusobjekt gefunden."
+  11030 "Im QOS-anbieterspezifischen Puffer wurde ein ungültiges Strukturierungsratenobjekt gefunden."
+  11031 "Im QOS-anbieterspezifischen Puffer wurde ein reserviertes Richtlinienelement gefunden."
+  11032 "Kein solcher Host ist sicher bekannt."
+  11033 "Die namensbasierte IPSEC-Richtlinie konnte nicht hinzugefügt werden."
+END
+
+STRINGTABLE
+BEGIN
+  12000 "Siehe Internetfehlercodes und „WinInet.h“."
+  12001 "Siehe WinHTTP-Fehlercodes und „Winhttp.h“."
+END
+
+STRINGTABLE
+BEGIN
+  13000 "Die angegebene Schnellmodusrichtlinie ist bereits vorhanden."
+  13001 "Die angegebene Schnellmodusrichtlinie wurde nicht gefunden."
+  13002 "Die angegebene Schnellmodusrichtlinie wird verwendet."
+  13003 "Die angegebene Schnellmodusrichtlinie ist bereits vorhanden."
+  13004 "Die angegebene Schnellmodusrichtlinie wurde nicht gefunden."
+  13005 "Die angegebene Schnellmodusrichtlinie wird verwendet."
+  13006 "Der angegebene Schnellmodusfilter ist bereits vorhanden."
+  13007 "Die angegebene Schnellmodusfilter wurde nicht gefunden."
+END
+
+STRINGTABLE
+BEGIN
+  13008 "Der angegebene Transportmodusfilter ist bereits vorhanden."
+  13009 "Der angegebene Transportmodusfilter ist nicht vorhanden."
+  13010 "Die angegebene Hauptmodus-Authentifizierungsliste ist vorhanden."
+  13011 "Die angegebene Hauptmodus-Authentifizierungsliste wurde nicht gefunden."
+  13012 "Die angegebene Hauptmodus-Authentifizierungsliste wird verwendet."
+  13013 "Die angegebene Hauptmodusrichtlinie wurde nicht gefunden."
+  13014 "Die angegebene Hauptmodus-Standardauthentifizierungsliste wurde nicht gefunden."
+  13015 "Die angegebene Schnellmodusrichtlinie wurde nicht gefunden."
+  13016 "Der angegebene Tunnelmodusfilter ist vorhanden."
+  13017 "Die angegebene Tunnelmodusfilter wurde nicht gefunden."
+  13018 "Die Löschung des Hauptmodusfilters steht aus."
+  13019 "Die Löschung des Transportfilters steht aus."
+  13020 "Die Löschung des Tunnelfilters steht aus."
+  13021 "Die Löschung der Hauptmodusrichtlinie steht aus."
+  13022 "Die Löschung des Hauptmodus-Authentifizierungspakets steht aus."
+  13023 "Die Löschung der Schnellmodusrichtlinie steht aus."
+END
+
+STRINGTABLE
+BEGIN
+  13024 "Die Hauptmodusrichtlinie wurde erfolgreich hinzugefügt, aber einige der angeforderten Angebote werden nicht unterstützt."
+  13025 "Die Schnellmodusrichtlinie wurde erfolgreich hinzugefügt, aber einige der angeforderten Angebote werden nicht unterstützt."
+END
+
+STRINGTABLE
+BEGIN
+  13800 "ERROR_IPSEC_IKE_NEG_STATUS_BEGIN"
+  13801 "Anmeldeinformationen für die IKE-Authentifizierung sind unzulässig."
+  13802 "IKE-Sicherheitsattribute sind inakzeptabel."
+  13803 "Die IKE-Aushandlung wird ausgeführt."
+  13804 "Allgemeiner Verarbeitungsfehler."
+  13805 "Timeout der Verhandlung."
+  13806 "IKE konnte kein gültiges Computerzertifikat finden. Erkundigen Sie sich bei Ihrem Netzwerksicherheitsadministrator, wie Sie ein gültiges Zertifikat im entsprechenden Zertifikatspeicher installieren."
+  13807 "IKE-Sicherheitszuordnung gelöscht, bevor die Einrichtung abgeschlossen war."
+END
+
+STRINGTABLE
+BEGIN
+  13808 "IKE-Sicherheitszuordnung gelöscht, bevor die Einrichtung abgeschlossen war."
+  13809 "Die Aushandlungsanforderung befand sich zu lange in der Warteschlange."
+  13810 "Die Aushandlungsanforderung befand sich zu lange in der Warteschlange."
+  13811 "Die Aushandlungsanforderung befand sich zu lange in der Warteschlange."
+  13812 "Die Aushandlungsanforderung befand sich zu lange in der Warteschlange."
+  13813 "Keine Antwort vom Peer."
+  13814 "Die Verhandlung dauerte zu lange."
+  13815 "Die Verhandlung dauerte zu lange."
+  13816 "Unbekannter Fehler."
+  13817 "Fehler bei der Zertifikatsperrüberprüfung."
+  13818 "Ungültige Zertifikatschlüsselverwendung."
+  13819 "Ungültiger Zertifikattyp."
+  13820 "Fehler bei der IKE-Aushandlung, weil das verwendete Computerzertifikat keinen privaten Schlüssel enthält. IPsec-Zertifikate erfordern einen privaten Schlüssel. Wenden Sie sich an Ihren Netzwerksicherheitsadministrator, um das Zertifikat durch ein Zertifikat mit einem privaten Schlüssel zu ersetzen."
+  13821 "Gleichzeitige neue Schlüssel wurden erkannt."
+  13822 "Fehler bei Diffie-Hellman Berechnung."
+  13823 "Unbekannt, wie kritische Nutzdaten verarbeitet werden sollen."
+END
+
+STRINGTABLE
+BEGIN
+  13824 "Ungültiger Header."
+  13825 "Keine Richtlinie konfiguriert."
+  13826 "Fehler beim Überprüfen der Signatur."
+  13827 "Fehler bei der Authentifizierung mithilfe von Kerberos."
+  13828 "Das Peerzertifikat verfügte nicht über einen öffentlichen Schlüssel."
+  13829 "Fehler beim Verarbeiten der Fehlernutzdaten."
+  13830 "Fehler bei der Verarbeitung der Sicherheitszuordnungs-Nutzdaten."
+  13831 "Fehler bei der Verarbeitung der Vorschlagsnutzdaten."
+  13832 "Fehler bei der Verarbeitung der Transformationsnutzdaten."
+  13833 "Fehler bei der Verarbeitung der KE-Nutzdaten."
+  13834 "Fehler bei der Verarbeitung der ID-Nutzdaten."
+  13835 "Fehler bei der Verarbeitung der Zertifikatnutzdaten."
+  13836 "Fehler bei der Verarbeitung der Zertifikatanforderungsnutzdaten."
+  13837 "Fehler bei der Verarbeitung der Hashnutzdaten."
+  13838 "Fehler bei der Verarbeitung der Signaturnutzdaten."
+  13839 "Fehler bei der Verarbeitung der Nonce-Nutzdaten."
+END
+
+STRINGTABLE
+BEGIN
+  13840 "Fehler bei der Verarbeitung der Benachrichtigungsnutzdaten."
+  13841 "Fehler bei der Verarbeitung der Löschnutzdaten."
+  13842 "Fehler bei der Verarbeitung der VendorId-Nutzdaten."
+  13843 "Ungültige Nutzdaten empfangen."
+  13844 "Soft SA geladen."
+  13845 "Soft SA entfernt."
+  13846 "Ungültiges Cookie empfangen."
+  13847 "Peer konnte kein gültiges Computerzertifikat senden."
+  13848 "Fehler bei der Überprüfung der Zertifizierungssperrung des Zertifikats des Peers."
+  13849 "Neue Richtlinie hat mit der alten Richtlinie gebildete SAs ungültig gemacht."
+  13850 "Es ist keine IKE-Richtlinie für den Hauptmodus verfügbar."
+  13851 "Fehler beim Aktivieren der TCB-Berechtigung."
+  13852 "Fehler beim Laden von SECURITY.DLL."
+  13853 "Fehler beim Abrufen der Dispatchadresse der Sicherheitsfunktionstabelle von SSPI."
+  13854 "Fehler beim Abfragen des Kerberos-Pakets zum Abrufen der maximalen Tokengröße."
+  13855 "Fehler beim Abrufen von Kerberos-Serveranmeldeinformationen für den ISAKMP/ERROR_IPSEC_IKE-Dienst. Kerberos-Authentifizierung funktioniert nicht. Der wahrscheinlichste Grund ist fehlende Domänenmitgliedschaft. Dies ist normal, wenn Ihr Computer Mitglied einer Arbeitsgruppe ist."
+END
+
+STRINGTABLE
+BEGIN
+  13856 "Fehler beim Ermitteln des SSPI-Prinzipalnamens für den ISAKMP/ERROR_IPSEC_IKE-Dienst (QueryCredentialsAttributes)."
+  13857 "Fehler beim Abrufen einer neuen SPI für die eingehende SA vom IPsec-Treiber. Die häufigste Ursache dafür ist, dass der Treiber nicht über den richtigen Filter verfügt. Überprüfen Sie Ihre Richtlinie, um die Filter zu überprüfen."
+  13858 "Der angegebene Filter ist ungültig."
+  13859 "Die Speicherbelegung hat einen Fehler erzeugt."
+  13860 "Fehler beim Hinzufügen der Sicherheitszuordnung zum IPsec-Treiber. Häufigste Ursache: Die IKE-Aushandlung hat zu lange gedauert. Wenn das Problem weiterhin besteht, verringern Sie die Last auf dem fehlerhaften Computer."
+  13861 "Ungültige Richtlinie."
+  13862 "Ungültige DOI."
+  13863 "Ungültige Situation."
+  13864 "Diffie-Hellman Fehler."
+  13865 "Ungültige Diffie-Hellman-Gruppe."
+  13866 "Fehler beim Verschlüsseln der Nutzdaten."
+  13867 "Fehler beim Entschlüsseln der Nutzdaten."
+  13868 "Fehler beim Abgleich der Richtlinie."
+  13869 "Nicht unterstützte ID."
+  13870 "Fehler bei der Hashüberprüfung für."
+  13871 "Ungültiger Hashalgorithmus."
+END
+
+STRINGTABLE
+BEGIN
+  13872 "Ungültige Hashgröße."
+  13873 "Ungültiger Verschlüsselungsalgorithmus."
+  13874 "Ungültiger Authentifizierungsalgorithmus."
+  13875 "Ungültige Zertifikatsignatur."
+  13876 "Fehler beim Ladevorgang."
+  13877 "Über RPC-Aufruf gelöscht."
+  13878 "Temporärer Zustand erstellt, um Neuinitialisierung durchzuführen. Dies ist kein echter Fehler."
+  13879 "Der in der Antwortbenachrichtigung empfangene Wert für die Lebensdauer liegt unter dem für Windows 2000 konfigurierten Mindestwert. Korrigieren Sie die Richtlinie auf dem Peercomputer."
+  13880 "Der Empfänger kann die im Header angegebene IKE-Version nicht verarbeiten."
+  13881 "Die Schlüssellänge im Zertifikat ist für konfigurierte Sicherheitsanforderungen zu klein."
+  13882 "Die maximale Anzahl der für das Peering eingerichteten MM-SAs wurde überschritten."
+  13883 "IKE hat eine Richtlinie erhalten, die Aushandlung deaktiviert."
+  13884 "Der maximale Schnellmodusgrenzwert für den Hauptmodus wurde erreicht. Ein neuer Hauptmodus wird gestartet."
+  13885 "Die Sa-Lebensdauer im Hauptmodus ist abgelaufen, oder ein Peer hat einen Hauptmodus gelöscht."
+  13886 "Sicherheitszuordnung im Hauptmodus ungültig, weil Peer nicht mehr reagiert."
+  13887 "Das Zertifikat wird nicht mit einem vertrauenswürdigen Stamm in der IPsec-Richtlinie verkettet."
+END
+
+STRINGTABLE
+BEGIN
+  13888 "Unerwartete Nachrichten-ID wurde empfangen."
+  13889 "Ungültige Authentifizierungsangebote empfangen."
+  13890 "DoS-Cookie-Benachrichtigung an Initiator gesendet."
+  13891 "IKE-Dienst wird beendet."
+  13892 "Die Bindung zwischen CGA-Adresse und Zertifikat konnte nicht überprüft werden."
+  13893 "Fehler bei der Verarbeitung von NatOA-Nutzdaten."
+  13894 "Parameter des Hauptmodus sind für diesen Schnellmodus ungültig."
+  13895 "Die Schnellmodus-SA ist durch IPsec-Treiber abgelaufen."
+  13896 "Es wurden zu viele dynamisch hinzugefügte IKEEXT-Filter erkannt."
+  13897 "ERROR_IPSEC_IKE_NEG_STATUS_END"
+  13898 "Die NAP-Neuauthentifizierung war erfolgreich und muss den Dummy-NAP-IKEv2-Tunnel löschen."
+  13899 "Fehler beim Zuweisen der inneren IP-Adresse zum Initiator im Tunnelmodus."
+  13900 "Erfordern, dass die Konfigurationsnutzdaten fehlen."
+  13901 "Es wird aktuell eine Aushandlung als Sicherheitsprinzipal ausgeführt, der die Verbindung hergestellt hat."
+  13902 "SA wurde aufgrund der Überprüfung der Koexistenz von IKEv1/AuthIP gelöscht."
+  13903 "Eingehende SA-Anforderungen wurden aufgrund der Begrenzung der Peer-IP-Adressrate gelöscht."
+END
+
+STRINGTABLE
+BEGIN
+  13904 "Peer unterstützt MOBIKE nicht."
+  13905 "Die Einrichtung der Sicherheitszuordnung ist nicht autorisiert."
+  13906 "SA-Einrichtung ist nicht autorisiert, da keine ausreichend starken PKINIT-basierten Anmeldeinformationen vorhanden sind."
+  13907 "Die Einrichtung der Sicherheitszuordnung ist nicht autorisiert. Möglicherweise müssen Sie aktualisierte oder andere Anmeldeinformationen eingeben, z. B. eine Smartcard."
+  13908 "SA-Einrichtung ist nicht autorisiert, da keine ausreichend starken PKINIT-basierten Anmeldeinformationen vorhanden sind. Dies kann mit einem Fehler bei der Zertifikat-/Kontozuordnung für die SA zusammenhängen."
+  13909 "ERROR_IPSEC_IKE_NEG_STATUS_EXTENDED_END"
+  13910 "Der SPI im Paket stimmt nicht mit einer gültigen IPsec-SA überein."
+  13911 "Das Paket wurde in einer IPsec-SA empfangen, deren Lebensdauer abgelaufen ist."
+  13912 "Das Paket wurde in einer IPsec-SA empfangen, die nicht mit den Paketmerkmalen übereinstimmt."
+  13913 "Fehler bei der Wiederholungsprüfung der Paketsequenznummer."
+  13914 "Der IPsec-Header und/oder -Trailer im Paket ist ungültig."
+  13915 "Fehler bei IPsec-Integritätsprüfung."
+  13916 "IPsec hat ein Klartextpaket verworfen."
+  13917 "IPsec hat ein eingehendes ESP-Paket im authentifizierten Firewallmodus verworfen. Dieser Vorfall ist harmlos."
+  13918 "IPsec hat aufgrund von DoS-Drosselung ein Paket verworfen."
+END
+
+STRINGTABLE
+BEGIN
+  13925 "IPsec DoS Protection entsprach einer expliziten Blockregel."
+  13926 "IPsec DoS Protection hat ein IPsec-spezifisches Multicastpaket erhalten, was unzulässig ist."
+  13927 "IPsec DoS Protection hat ein falsch formatiertes Paket empfangen."
+  13928 "IPsec DoS Protection konnte den Status nicht nachschlagen."
+  13929 "IPsec DoS Protection konnte keinen Zustand erstellen, da die maximale Anzahl von Einträgen erreicht wurde, die gemäß der Richtlinie zulässig sind."
+  13930 "IPsec DoS Protection hat ein IPsec-Aushandlungspaket für ein Schlüsselmodul erhalten, was gemäß der Richtlinie unzulässig ist."
+  13931 "IPsec DoS Protection wurde nicht aktiviert."
+  13932 "IPsec DoS Protection konnte keine Warteschlange pro interner IP-Ratenbegrenzung erstellen, weil die maximale Anzahl von Warteschlangen erreicht wurde, die gemäß der Richtlinie zulässig sind."
+END
+
+STRINGTABLE
+BEGIN
+  14000 "Der angeforderte Abschnitt war im Aktivierungskontext nicht vorhanden."
+  14001 "Die Anwendung konnte nicht gestartet werden, weil die parallele Anwendungskonfiguration nicht richtig ist. Weitere Informationen finden Sie im Anwendungsereignisprotokoll, oder verwenden Sie das Befehlszeilentool „sxstrace.exe“."
+  14002 "Das Format der Anwendungsbindungsdaten ist ungültig."
+  14003 "Die Assembly, auf die verwiesen wird, ist nicht auf Ihrem System installiert."
+  14004 "Die Manifestdatei beginnt nicht mit den erforderlichen Tag- und Formatinformationen."
+  14005 "Die Manifestdatei enthält mindestens einen Syntaxfehler."
+  14006 "Die Anwendung hat versucht, einen deaktivierten Aktivierungskontext zu aktivieren."
+  14007 "Der angeforderte Nachschlageschlüssel wurde in keinem aktiven Aktivierungskontext gefunden."
+  14008 "Eine für die Anwendung erforderliche Komponentenversion steht in Konflikt mit einer anderen Komponentenversion, die bereits aktiv ist."
+  14009 "Der Typ des angeforderten Aktivierungskontextabschnitts stimmt nicht mit der verwendeten Abfrage-API überein."
+  14010 "Mangels Systemressourcen musste isolierte Aktivierung für den aktuellen Ausführungsthread deaktiviert werden."
+  14011 "Ein Versuch, den Standardaktivierungskontext für den Prozess festzulegen, ist fehlgeschlagen, weil der Standardaktivierungskontext des Prozesses bereits festgelegt wurde."
+  14012 "Der angegebene Codierungsgruppenbezeichner wird nicht erkannt."
+  14013 "Die angeforderte Codierung wird nicht erkannt."
+  14014 "Das Manifest enthält einen Verweis auf einen ungültigen URI."
+  14015 "Das Anwendungsmanifest enthält einen Verweis auf eine abhängige Assembly, die nicht installiert ist."
+END
+
+STRINGTABLE
+BEGIN
+  14016 "Das Manifest für eine Assembly, die von der Anwendung verwendet wird, enthält einen Verweis auf eine abhängige Assembly, die nicht installiert ist."
+  14017 "Das Manifest enthält ein Attribut für die Assemblyidentität, das ungültig ist."
+  14018 "Dem Manifest fehlt die erforderliche Standardnamespacespezifikation für das Assemblyelement."
+  14019 "Das Manifest hat einen Standardnamespace, der für das Assemblyelement angegeben ist, sein Wert ist jedoch nicht „urn:schemas-microsoft-com:asm.v1“."
+  14020 "Das überprüfte private Manifest hat einen Pfad mit einem nicht unterstützten erneuten Analysepunkt gekreuzt."
+  14021 "Mindestens zwei Komponenten, auf die direkt oder indirekt vom Anwendungsmanifest verwiesen wird, verfügen über Dateien mit demselben Namen."
+  14022 "Mindestens zwei Komponenten, auf die direkt oder indirekt vom Anwendungsmanifest verwiesen wird, verfügen über Fensterklassen mit demselben Namen."
+  14023 "Mindestens zwei Komponenten, auf die direkt oder indirekt vom Anwendungsmanifest verwiesen wird, verfügen über die gleichen COM-Server-CLSIDs."
+  14024 "Mindestens zwei Komponenten, auf die direkt oder indirekt vom Anwendungsmanifest verwiesen wird, verfügen über Proxys für die gleichen COM-Schnittstellen-IIDs."
+  14025 "Mindestens zwei Komponenten, auf die direkt oder indirekt vom Anwendungsmanifest verwiesen wird, verfügen über die gleichen TLBIDs der COM-Typbibliothek."
+  14026 "Mindestens zwei Komponenten, auf die direkt oder indirekt vom Anwendungsmanifest verwiesen wird, verfügen über die gleichen COM-ProgIDs."
+  14027 "Mindestens zwei Komponenten, auf die direkt oder indirekt vom Anwendungsmanifest verwiesen wird, weisen unterschiedliche Versionen derselben Komponente auf, was unzulässig ist."
+  14028 "Die Datei einer Komponente stimmt nicht mit den Überprüfungsinformationen überein, die im Komponentenmanifest vorhanden sind."
+  14029 "Die Richtlinienmanifest enthält mindestens einen Syntaxfehler."
+  14030 "Manifestanalysefehler: Eine Zeichenfolge wurde erwartet, es konnte aber kein öffnendes Anführungszeichen gefunden werden."
+  14031 "Manifestanalysefehler: In einem Kommentar wurde falsche Syntax verwendet."
+END
+
+STRINGTABLE
+BEGIN
+  14032 "Manifestanalysefehler: Ein Name wurde mit einem ungültigen Zeichen begonnen."
+  14033 "Manifestanalysefehler: Ein Name enthielt ein ungültiges Zeichen."
+  14034 "Manifestanalysefehler: Ein Zeichenfolgenliteral enthielt ein ungültiges Zeichen."
+  14035 "Manifestanalysefehler: Ungültige Syntax für eine XML-Deklaration."
+  14036 "Manifestanalysefehler: Im Textinhalt wurde ein ungültiges Zeichen gefunden."
+  14037 "Manifestanalysefehler: Das erforderliche Leerzeichen fehlte."
+  14038 "Manifestanalysefehler: Das Zeichen „>“ wurde erwartet."
+  14039 "Manifestanalysefehler: Es wurde ein Semikolonzeichen erwartet."
+  14040 "Manifestanalysefehler: Unvollständige Klammern."
+  14041 "Manifestanalysefehler: Interner Fehler."
+  14042 "Manifestanalysefehler: Leerzeichen sind an dieser Position nicht zulässig."
+  14043 "Manifestanalysefehler: In der aktuellen Codierung wurde das Dateiende in einem ungültigen Zustand erreicht."
+  14044 "Manifestanalysefehler: Fehlende Klammern."
+  14045 "Ein einfaches oder doppeltes schließendes Anführungszeichen (\' oder \"") fehlt."
+  14046 "Manifestanalysefehler: Mehrere Doppelpunkte sind in einem Namen nicht zulässig."
+  14047 "Manifestanalysefehler: Ungültiges Zeichen für Dezimalzahl."
+END
+
+STRINGTABLE
+BEGIN
+  14048 "Manifestanalysefehler: Ungültiges Zeichen für Hexadezimalziffer."
+  14049 "Manifestanalysefehler: Ungültiger Unicode-Zeichenwert für diese Plattform."
+  14050 "Manifestanalysefehler: Leerzeichen oder „?“."
+  14051 "Manifestanalysefehler: Das Endtag wurde an diesem Speicherort nicht erwartet."
+  14052 "Manifestanalysefehler: Die folgenden Tags wurden nicht geschlossen: %1."
+  14053 "Manifestanalysefehler: Doppeltes Attribut."
+  14054 "Manifestanalysefehler: In einem XML-Dokument ist nur ein Element auf höchster Ebene zulässig."
+  14055 "Manifestanalysefehler: Ungültig auf der obersten Ebene des Dokuments."
+  14056 "Manifestanalysefehler: Ungültige XML-Deklaration."
+  14057 "Manifestanalysefehler: Das XML-Dokument muss über ein Element auf oberster Ebene verfügen."
+  14058 "Manifestanalysefehler: Unerwartetes Ende der Datei."
+  14059 "Manifestanalysefehler: Parameterentitäten können nicht innerhalb einer Markupdeklaration in einer internen Teilmenge verwendet werden."
+  14060 "Manifestanalysefehler: Das Element wurde nicht geschlossen."
+  14061 "Manifestanalysefehler: Im Endelement fehlte das Zeichen „>“."
+  14062 "Manifestanalysefehler: Ein Zeichenfolgenliteral wurde nicht geschlossen."
+  14063 "Manifestanalysefehler: Ein Kommentar wurde nicht geschlossen."
+END
+
+STRINGTABLE
+BEGIN
+  14064 "Manifestanalysefehler: Eine Deklaration wurde nicht geschlossen."
+  14065 "Manifestanalysefehler: Ein CDATA-Abschnitt wurde nicht geschlossen."
+  14066 "Manifestanalysefehler: Ein Namespacepräfix darf nicht mit der reservierten Zeichenfolge „xml“ beginnen."
+  14067 "Manifestanalysefehler: Die angegebene Codierung wird vom System nicht unterstützt."
+  14068 "Manifestanalysefehler: Das Wechseln zwischen aktueller und angegebener Codierung wird nicht unterstützt."
+  14069 "Manifestanalysefehler: Der Name „xml“ ist reserviert und muss Kleinbuchstaben verwenden."
+  14070 "Manifestanalysefehler: Ein eigenständiges Attribut muss den Wert „yes“ oder „no“ aufweisen."
+  14071 "Manifestanalysefehler: Ein eigenständiges Attribut kann nicht in externen Entitäten verwendet werden."
+  14072 "Manifestanalysefehler: Ungültige Versionsnummer."
+  14073 "Manifestanalysefehler: Das Gleichheitszeichen zwischen Attribut und Attributwert fehlt."
+  14074 "Assemblyschutzfehler: Die angegebene Assembly kann nicht wiederhergestellt werden."
+  14075 "Assemblyschutzfehler: Der öffentliche Schlüssel für eine Assembly war zu kurz, um zulässig zu sein."
+  14076 "Assemblyschutzfehler: Der Katalog für eine Assembly ist ungültig oder stimmt nicht mit dem Manifest der Assembly überein."
+  14077 "Ein HRESULT konnte nicht in einen entsprechenden Win32-Fehlercode übersetzt werden."
+  14078 "Assemblyschutzfehler: Der Katalog für eine Assembly fehlt."
+  14079 "Der angegebenen Assemblyidentität fehlt mindestens ein Attribut, das in diesem Kontext vorhanden sein muss."
+END
+
+STRINGTABLE
+BEGIN
+  14080 "Die angegebene Assemblyidentität verfügt über mindestens einen Attributnamen, der Zeichen enthält, die in XML-Namen unzulässig sind."
+  14081 "Die referenzierte Assembly wurde nicht gefunden."
+  14082 "Der Aktivierungsstapel für den Aktivierungskontext für den ausgeführten Ausführungsthread ist beschädigt."
+  14083 "Die Anwendungsisolationsmetadaten für diesen Prozess oder Thread sind beschädigt."
+  14084 "Der Aktivierungskontext, der deaktiviert wird, ist nicht der zuletzt aktivierte."
+  14085 "Der Aktivierungskontext, der deaktiviert wird, ist für den aktuellen Ausführungsthread nicht aktiv."
+  14086 "Der Aktivierungskontext, der deaktiviert wird, wurde bereits deaktiviert."
+  14087 "Eine von der Isolationsfunktion verwendete Komponente hat angefordert, den Prozess zu beenden."
+  14088 "Eine Kernelmoduskomponente gibt einen Verweis auf einen Aktivierungskontext frei."
+  14089 "Der Aktivierungskontext der Systemstandardassembly konnte nicht generiert werden."
+  14090 "Der Wert eines Attributs in einer Identität liegt nicht innerhalb des zulässigen Bereichs."
+  14091 "Der Name eines Attributs in einer Identität liegt nicht innerhalb des zulässigen Bereichs."
+  14092 "Eine Identität enthält zwei Definitionen für dasselbe Attribut."
+  14093 "Die Identitätszeichenfolge ist falsch formatiert. Dies kann auf ein nachfolgendes Komma, mehr als zwei unbenannte Attribute, einen fehlenden Attributnamen oder einen fehlenden Attributwert zurückzuführen sein."
+  14094 "Eine Zeichenfolge, die lokalisierten substituierbaren Inhalt enthält, wurde falsch formatiert. Entweder folgte auf ein Dollarzeichen ($) etwas anderes als eine linke Klammer oder ein weiteres Dollarzeichen, oder die rechte Klammer einer Ersetzung wurde nicht gefunden."
+  14095 "Das Token für den öffentlichen Schlüssel entspricht nicht dem angegebenen öffentlichen Schlüssel."
+END
+
+STRINGTABLE
+BEGIN
+  14096 "Eine Ersetzungszeichenfolge hatte keine Zuordnung."
+  14097 "Die Komponente muss vor dem Ausgeben der Anforderung gesperrt werden."
+  14098 "Der Komponentenspeicher wurde beschädigt."
+  14099 "Fehler bei einem erweiterten Installationsprogramm während der Einrichtung oder Wartung."
+  14100 "Die Zeichencodierung in der XML-Deklaration stimmte nicht mit der im Dokument verwendeten Codierung überein."
+  14101 "Die Identitäten der Manifeste sind identisch, aber ihr Inhalt unterscheidet sich."
+  14102 "Die Komponentenidentitäten unterscheiden sich."
+  14103 "Die Assembly ist keine Bereitstellung."
+  14104 "Die Datei ist nicht Teil der Assembly."
+  14105 "Die Größe des Manifests überschreitet den maximal zulässigen Wert."
+  14106 "Die Einstellung ist nicht registriert."
+  14107 "Mindestens ein erforderlicher Member der Transaktion ist nicht vorhanden."
+  14108 "Fehler beim primitiven SMI-Installationsprogramm während der Einrichtung oder Wartung."
+  14109 "Eine ausführbare generische Befehlsdatei hat ein Ergebnis zurückgegeben, das auf einen Fehler hinweist."
+  14110 "Einer Komponente fehlen Dateiüberprüfungsinformationen im Manifest."
+END
+
+STRINGTABLE
+BEGIN
+  15000 "Der angegebene Kanalpfad ist ungültig."
+  15001 "Die angegebene Abfrage ist ungültig."
+  15002 "Die Herausgebermetadaten wurden in der Ressource nicht gefunden."
+  15003 "Die Vorlage für eine Ereignisdefinition wurde in der Ressource nicht gefunden (Fehler = %1)."
+  15004 "Der angegebene Herausgebername ist ungültig."
+  15005 "Die vom Herausgeber ausgelösten Ereignisdaten sind nicht mit der Ereignisvorlagendefinition im Manifest des Herausgebers kompatibel."
+  15007 "Der angegebene Kanal wurde nicht gefunden. Überprüfen Sie die Kanalkonfiguration."
+END
+
+STRINGTABLE
+BEGIN
+  15008 "Der angegebene XML-Text war nicht wohlgeformt. Weitere Informationen finden Sie unter „Erweiterter Fehler“."
+  15009 "Der Aufrufer versucht, einen direkten Kanal zu abonnieren, was unzulässig ist. Die Ereignisse für einen direkten Kanal werden direkt in eine Protokolldatei übertragen und können nicht abonniert werden."
+  15010 "Fehler bei der Konfiguration."
+  15011 "Das Abfrageergebnis ist veraltet/ungültig. Dies kann darauf zurückzuführen sein, dass das Protokoll nach der Erstellung des Abfrageergebnisses gelöscht oder ein Rollover ausgeführt wurde. Benutzer sollten diesen Code verarbeiten, indem sie das Abfrageergebnisobjekt freigeben und die Abfrage erneut ausgeben."
+  15012 "Das Abfrageergebnis befindet sich derzeit an einer ungültigen Position."
+  15013 "Registriertes MSXML unterstützt keine Überprüfung."
+  15014 "Auf einen Ausdruck kann nur dann eine Änderung des Bereichsvorgangs folgen, wenn er selbst als Knotensatz ausgewertet wird und nicht bereits Teil einer anderen Änderung des Bereichsvorgangs ist."
+  15015 "Es kann kein Schrittvorgang aus einem Ausdruck ausgeführt werden, der keinen Elementsatz darstellt."
+  15016 "Linksseitige Argumente für binäre Operatoren müssen Attribute, Knoten oder Variablen sein, und rechtsseitige Argumente müssen Konstanten sein."
+  15017 "Ein Schrittvorgang muss entweder einen Knotentest oder im Fall eines Prädikats einen algebraischen Ausdruck umfassen, anhand dessen jeder Knoten in der Knotenmenge, die in der vorangehenden Knotenmenge festgelegt ist, geprüft werden kann."
+  15018 "Dieser Datentyp wird derzeit nicht unterstützt."
+  15019 "An Position %1!d! ist ein Syntaxfehler aufgetreten."
+  15020 "Dieser Operator wird von dieser Implementierung des Filters nicht unterstützt."
+  15021 "Das gefundene Token war unerwartet."
+  15022 "Der angeforderte Vorgang kann nicht über einen aktivierten direkten Kanal ausgeführt werden. Der Kanal muss zunächst deaktiviert werden, bevor der angeforderte Vorgang ausgeführt wird."
+  15023 "Kanaleigenschaft %1!s! enthält einen ungültigen Wert. Der Wert weist einen ungültigen Typ auf, befindet sich außerhalb des gültigen Bereichs, kann nicht aktualisiert werden oder wird von diesem Kanaltyp nicht unterstützt."
+END
+
+STRINGTABLE
+BEGIN
+  15024 "Herausgebereigenschaft %1!s! enthält einen ungültigen Wert. Der Wert weist einen ungültigen Typ auf, befindet sich außerhalb des gültigen Bereichs, kann nicht aktualisiert werden oder wird von diesem Herausgebertyp nicht unterstützt."
+  15025 "Der Kanal kann nicht aktiviert werden."
+  15026 "Der xpath-Ausdruck überschreitet die unterstützte Komplexität. Vereinfachen Sie ihn, oder teilen Sie ihn in mindestens zwei einfachere Ausdrücke auf."
+  15027 "Die Nachrichtenressource ist vorhanden, aber die Nachricht wurde nicht in der Zeichenfolgen-/Nachrichtentabelle gefunden."
+  15028 "Die Nachrichten-ID für die gewünschte Nachricht wurde nicht gefunden."
+  15029 "Die Ersetzungszeichenfolge für den Einfügeindex (%1) wurde nicht gefunden."
+  15030 "Die Beschreibungszeichenfolge für den Parameterverweis (%1) wurde nicht gefunden."
+  15031 "Die maximale Anzahl von Ersetzungen wurde erreicht."
+  15032 "Die Ereignisdefinition wurde für die Ereignis-ID (%1) nicht gefunden."
+  15033 "Die gebietsschemaspezifische Ressource für die gewünschte Nachricht ist nicht vorhanden."
+  15034 "Die Ressource ist zu alt, um kompatibel zu sein."
+  15035 "Die Ressource ist zu neu, um kompatibel zu sein."
+  15036 "Der Kanal an Index %1!d! der Abfrage kann nicht geöffnet werden."
+  15037 "Der Herausgeber wurde deaktiviert, und seine Ressource ist nicht verfügbar. Dies tritt in der Regel auf, wenn der Herausgeber gerade deinstalliert oder aktualisiert wird."
+  15038 "Es wurde versucht, einen numerischen Typ zu erstellen, der sich außerhalb seines gültigen Bereichs befindet."
+END
+
+STRINGTABLE
+BEGIN
+  15080 "Das Abonnement kann nicht aktiviert werden."
+  15081 "Das Protokoll des Abonnements befindet sich im deaktivierten Zustand und kann nicht zum Weiterleiten von Ereignissen verwendet werden. Das Protokoll muss zunächst aktiviert werden, bevor das Abonnement aktiviert werden kann."
+  15082 "Beim Weiterleiten von Ereignissen vom lokalen Computer an sich selbst kann die Abfrage des Abonnements kein Zielprotokoll des Abonnements enthalten."
+  15083 "Der Anmeldeinformationsspeicher, der zum Speichern von Anmeldeinformationen verwendet wird, ist voll."
+  15084 "Die von diesem Abonnement verwendeten Anmeldeinformationen wurden im Anmeldeinformationsspeicher nicht gefunden."
+  15085 "Für die Abfrage wurde kein aktiver Kanal gefunden."
+END
+
+STRINGTABLE
+BEGIN
+  15100 "Das Ressourcenladeprogramm konnte die MUI-Datei nicht finden."
+  15101 "Das Ressourcenladeprogramm konnte die MUI-Datei nicht laden, weil die Datei die Überprüfung nicht bestanden hat."
+  15102 "Das RC-Manifest ist beschädigt und enthält unbrauchbare Daten, nicht unterstützte Versionen oder fehlende erforderliche Elemente."
+  15103 "Das RC-Manifest weist einen ungültigen Kulturnamen auf."
+END
+
+STRINGTABLE
+BEGIN
+  15104 "Das RC-Manifest weist einen ungültigen Namen für Ultimatefallback auf."
+  15105 "Der Cache des Ressourcenladeprogramms weist keinen MUI-Eintrag auf."
+  15106 "Ressourcenenumeration wurde vom Benutzer beendet."
+  15107 "Fehler bei der Installation der Benutzeroberflächensprache."
+  15108 "Fehler bei der Gebietsschemainstallation."
+  15110 "Eine Ressource verfügt nicht über einen Standard- oder neutralen Wert."
+  15111 "Ungültige PRI-Konfigurationsdatei."
+  15112 "Ungültiger Dateityp."
+  15113 "Unbekannter Qualifizierer."
+  15114 "Ungültiger Qualifiziererwert."
+  15115 "Kein Kandidat gefunden."
+  15116 "Die ResourceMap oder NamedResource verfügt über ein Element, das keine Standard- oder neutrale Ressource aufweist."
+  15117 "Ungültiger ResourceCandidate-Typ."
+  15118 "Doppelte Ressourcenzuordnung."
+  15119 "Doppelter Eintrag."
+END
+
+STRINGTABLE
+BEGIN
+  15120 "Ungültiger Ressourcenbezeichner."
+  15121 "Dateipfad zu lang."
+  15122 "Nicht unterstützter Verzeichnistyp."
+  15126 "Ungültige PRI-Datei."
+  15127 "NamedResource nicht gefunden."
+  15135 "ResourceMap nicht gefunden."
+END
+
+STRINGTABLE
+BEGIN
+  15136 "Nicht unterstützter MRT-Profiltyp."
+  15137 "Ungültiger Qualifiziereroperator."
+  15138 "Qualifiziererwert kann nicht bestimmt werden, oder Qualifiziererwert wurde nicht festgelegt."
+  15139 "Automerge ist in der PRI-Datei aktiviert."
+  15140 "Zu viele Ressourcen, die für das Paket definiert sind."
+END
+
+STRINGTABLE
+BEGIN
+  15200 "Der Monitor hat eine DDC/CI-Funktionszeichenfolge zurückgegeben, die nicht der Spezifikation für ACCESS.bus 3.0, DDC/CI 1.1 oder MCCS 2 Revision 1 entsprach."
+  15201 "Der VCP-Code der VCP-Version (0xDF) des Monitors hat einen ungültigen Versionswert zurückgegeben."
+  15202 "Der Monitor entspricht nicht der MCCS-Spezifikation, die er angeblich unterstützt."
+  15203 "Die MCCS-Version in der mccs_ver-Funktion eines Monitors stimmt nicht mit der MCCS-Version überein, die der Monitor meldet, wenn der VCP-Versionscode (0xDF) verwendet wird."
+  15204 "Die Monitorkonfigurations-API funktioniert nur mit Monitoren, die die MCCS 1.0-Spezifikation, die MCCS 2.0-Spezifikation oder die MCCS 2.0 Revision 1-Spezifikation unterstützen."
+  15205 "Interner Fehler bei der Monitorkonfigurations-API."
+  15206 "Der Monitor hat einen ungültigen Monitortechnologietyp zurückgegeben. CRT, Plasma und LCD (TFT) sind Beispiele für Monitortechniktypen. Dieser Fehler impliziert, dass der Monitor gegen die Spezifikation MCCS 2.0 oder MCCS 2.0 Revision 1 verstoßen hat."
+  15207 "Der Aufrufer von SetMonitorColorTemperature hat eine Farbtemperatur angegeben, die vom aktuellen Monitor nicht unterstützt wird. Dieser Fehler impliziert, dass der Monitor gegen die Spezifikation MCCS 2.0 oder MCCS 2.0 Revision 1 verstoßen hat."
+END
+
+STRINGTABLE
+BEGIN
+  15250 "Das angeforderte Systemgerät kann nicht identifiziert werden, weil mehrere nicht unterscheidbare Geräte möglicherweise den Identifizierungskriterien entsprechen."
+END
+
+STRINGTABLE
+BEGIN
+  15299 "Das angeforderte Systemgerät wurde nicht gefunden."
+  15300 "Die Hashgenerierung für die angegebene Hashversion und den angegebenen Hashtyp ist auf dem Server nicht aktiviert."
+  15301 "Der vom Server angeforderte Hash ist nicht verfügbar oder nicht mehr gültig."
+END
+
+STRINGTABLE
+BEGIN
+  15321 "Die Instanz des sekundären Interruptcontrollers, die den angegebenen Interrupt verwaltet, ist nicht registriert."
+  15322 "Die vom GPIO-Clienttreiber bereitgestellten Informationen sind ungültig."
+  15323 "Die vom GPIO-Clienttreiber angegebene Version wird nicht unterstützt."
+  15324 "Das vom GPIO-Clienttreiber bereitgestellte Registrierungspaket ist ungültig."
+  15325 "Der angeforderte Vorgang wird für das angegebene Handle nicht unterstützt."
+  15326 "Der angeforderte Verbindungsmodus steht in Konflikt mit einem vorhandenen Modus an mindestens einem der angegebenen Pins."
+  15327 "Der Interrupt, der demaskiert werden soll, ist nicht maskiert."
+END
+
+STRINGTABLE
+BEGIN
+  15400 "Der angeforderte Switch auf Ausführungsebene kann nicht erfolgreich abgeschlossen werden."
+  15401 "Der Dienst verfügt über eine ungültige Einstellung für die Ausführungsebene. Die Ausführungsebene für einen Dienst darf nicht höher als die Ausführungsebene seiner abhängigen Dienste sein."
+  15402 "Der angeforderte Switch auf Ausführungsebene kann nicht erfolgreich abgeschlossen werden, weil mindestens ein Dienst innerhalb des angegebenen Timeouts nicht beendet oder neu gestartet wird."
+  15403 "Ein Switch-Agent auf Ausführungsebene hat nicht innerhalb des angegebenen Timeouts geantwortet."
+  15404 "Ein Switch auf Ausführungsebene wird derzeit ausgeführt."
+  15405 "Mindestens ein Dienst konnte während der Dienststartphase eines Switch auf Ausführungsebene nicht gestartet werden."
+END
+
+STRINGTABLE
+BEGIN
+  15501 "Die Anforderung zum Beenden des Tasks kann nicht sofort abgeschlossen werden, weil der Task mehr Zeit zum Herunterfahren benötigt."
+END
+
+STRINGTABLE
+BEGIN
+  15600 "Das Paket konnte nicht geöffnet werden."
+  15601 "Das Paket wurde nicht gefunden."
+  15602 "Paketdaten sind ungültig."
+  15603 "Fehler bei Updates des Pakets (Abhängigkeits- oder Konfliktüberprüfung)."
+  15604 "Auf Ihrem Computer ist nicht genügend Speicherplatz vorhanden. Geben Sie Speicherplatz frei, und versuchen Sie es noch mal."
+  15605 "Problem beim Herunterladen des Produkts."
+  15606 "Das Paket konnte nicht registriert werden."
+  15607 "Die Registrierung des Pakets konnte nicht aufgehoben werden."
+  15608 "Der Benutzer hat die Installationsanforderung abgebrochen."
+  15609 "Fehler bei der Installation. Wenden Sie sich an Ihren Softwarehersteller."
+  15610 "Fehler beim Entfernen. Wenden Sie sich an Ihren Softwarehersteller."
+  15611 "Das bereitgestellte Paket ist bereits installiert, und eine erneute Installation des Pakets wurde blockiert. Informationen dazu finden Sie im Ereignisprotokoll „AppXDeployment-Server“."
+  15612 "Die Anwendung kann nicht gestartet werden. Versuchen Sie, die Anwendung neu zu installieren, um das Problem zu beheben."
+  15613 "Eine Voraussetzung für eine Installation konnte nicht erfüllt werden."
+  15614 "Das Paketrepository ist beschädigt."
+  15615 "Um diese Anwendung zu installieren, benötigen Sie entweder eine Windows-Entwicklerlizenz oder ein für Querladen aktiviertes System."
+END
+
+STRINGTABLE
+BEGIN
+  15616 "Die Anwendung kann nicht gestartet werden, weil sie derzeit aktualisiert wird."
+  15617 "Der Paketbereitstellungsvorgang wird durch eine Richtlinie blockiert. Wenden Sie sich an den Systemadministrator."
+  15618 "Das Paket konnte nicht installiert werden, weil die Ressourcen, die es ändert, derzeit verwendet werden."
+  15619 "Das Paket konnte nicht wiederhergestellt werden, weil die erforderlichen Daten für die Wiederherstellung beschädigt wurden."
+  15620 "Die Signatur ist ungültig. Um die Registrierung im Entwicklermodus auszuführen, müssen „AppxSignature.p7x“ und „AppxBlockMap.xml“ gültig oder nicht vorhanden sein."
+  15621 "Fehler beim Löschen der zuvor vorhandenen Anwendungsdaten des Pakets."
+  15622 "Das Paket konnte nicht installiert werden, weil bereits eine höhere Version dieses Pakets installiert ist."
+  15623 "Ein Fehler in einer Systembinärdatei wurde erkannt. Versuchen Sie, den PC zu aktualisieren, um das Problem zu beheben."
+  15624 "Eine beschädigte CLR-NGEN-Binärdatei wurde auf dem System erkannt."
+  15625 "Der Vorgang konnte nicht fortgesetzt werden, weil die erforderlichen Daten für die Wiederherstellung beschädigt wurden."
+  15626 "Das Paket konnte nicht installiert werden, weil der Windows-Firewalldienst nicht ausgeführt wird. Aktivieren Sie den Windows-Firewalldienst, und versuchen Sie es erneut."
+END
+
+STRINGTABLE
+BEGIN
+  15700 "Der Prozess verfügt über keine Paketidentität."
+  15701 "Die Informationen zur Paketlaufzeit sind beschädigt."
+  15702 "Die Paketidentität ist beschädigt."
+  15703 "Der Prozess weist keine Anwendungsidentität auf."
+END
+
+STRINGTABLE
+BEGIN
+  15800 "Fehler beim Laden des Zustandsspeichers."
+  15801 "Fehler beim Abrufen der Zustandsversion für die Anwendung."
+  15802 "Fehler beim Festlegen der Zustandsversion für die Anwendung."
+  15803 "Fehler beim Zurücksetzen des strukturierten Zustands der Anwendung."
+  15804 "Der Zustands-Manager konnte den Container nicht öffnen."
+  15805 "Der Zustands-Manager konnte den Container nicht erstellen."
+  15806 "Der Zustands-Manager konnte den Container nicht löschen."
+  15807 "Der Zustands-Manager konnte die Einstellung nicht lesen."
+END
+
+STRINGTABLE
+BEGIN
+  15808 "Der Zustands-Manager konnte die Einstellung nicht schreiben."
+  15809 "Der Zustands-Manager konnte die Einstellung nicht löschen."
+  15810 "Der Zustands-Manager konnte die Einstellung nicht abfragen."
+  15811 "Der Zustands-Manager konnte die zusammengesetzte Einstellung nicht lesen."
+  15812 "Der Zustands-Manager konnte die zusammengesetzte Einstellung nicht schreiben."
+  15813 "Der Zustands-Manager konnte die Container nicht aufzählen."
+  15814 "Der Zustands-Manager konnte die Einstellungen nicht aufzählen."
+  15815 "Die Größe des zusammengesetzten Einstellungswerts des Zustands-Managers hat den Grenzwert überschritten."
+  15816 "Die Größe des Einstellungswerts des Zustands-Managers hat den Grenzwert überschritten."
+  15817 "Die Länge des Einstellungsnamens des Zustands-Managers hat den Grenzwert überschritten."
+  15818 "Die Länge des Zustands-Manager-Containernamens hat den Grenzwert überschritten."
+END
+
+STRINGTABLE
+BEGIN
+  15841 "Diese API kann nicht im Kontext des Anwendungstyps des Aufrufers verwendet werden."
+END

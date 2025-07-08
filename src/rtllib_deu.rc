@@ -1,0 +1,2 @@
+ErrorCode RCDATA "fehler_code_win.res.gz"
+ErrorText RCDATA "fehler_text_win.res.gz"
