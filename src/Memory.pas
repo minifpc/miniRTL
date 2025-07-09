@@ -6,26 +6,32 @@ unit Memory;
 
 interface
 
-{$ifdef DLLEXPORT}
-function GetMemory     (Size: PtrUInt): Pointer;                stdcall; export;
-function FreeMemory    (P: Pointer): PtrUInt;                   stdcall; export;
-function ReAllocMemory (P: Pointer; NewSize: PtrUInt): Pointer; stdcall; export;
-{$endif DLLEXPORT}
-
-{$ifdef DLLIMPORT}
-function GetMemory     (Size: PtrUInt): Pointer;                stdcall; external RTLDLL;
-function FreeMemory    (P: Pointer): PtrUInt;                   stdcall; external RTLDLL;
-function ReAllocMemory (P: Pointer; NewSize: PtrUInt): Pointer; stdcall; external RTLDLL;
-{$endif DLLIMPORT}
+function GetMemory    (Size: PtrUInt): Pointer;                stdcall;
+function FreeMemory   (P: Pointer): PtrUInt;                   stdcall;
+function ReAllocMemory(P: Pointer; NewSize: PtrUInt): Pointer; stdcall;
 
 implementation
 
-{$ifdef DLLEXPORT}
+uses xmm;
 type
   PMemHeader = ^TMemHeader;
   TMemHeader = record
     Size: PtrUInt;
   end;
+
+function Min(A, B: Integer): Integer;
+begin
+  if A < B then
+  result := A else
+  result := B ;
+end;
+
+function Max(A, B: Integer): Integer;
+begin
+  if A > B then
+  result := A else
+  result := B ;
+end;
 
 function GetMemory(Size: PtrUInt): Pointer; stdcall; export;
 var
@@ -65,13 +71,5 @@ begin
   FreeMemory(P);
   Result := NewP;
 end;
-
-exports
-  GetMemory     name 'GetMemory',
-  FreeMemory    name 'FreeMemory',
-  ReAllocMemory name 'ReAllocMemory'
-  ;
-  
-{$endif DLLEXPORT}
 
 end.
