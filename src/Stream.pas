@@ -60,10 +60,11 @@ const FILE_END          = 2;
 type
   TStream = class(TObject)
   private
-    FBuffer   : PByteArray;
-    FSize     : Integer;
-    FCapacity : Integer;
-    FPosition : Integer;
+    FBuffer     : PByteArray;
+    FSize       : Integer;
+    FCapacity   : Integer;
+    FPosition   : Integer;
+    FFileHandle : THandle;
   protected
     function  GetSize:            Integer ;
     procedure SetSize    (AValue: Integer);
@@ -80,14 +81,15 @@ type
     
     function Seek(Offset: Integer; Origin: Integer): Integer;
     
+    procedure ReadFromFile(const FileName: string);
     procedure LoadFromFile(const FileName: string);
+    
     procedure LoadFromStream(Source: TStream);
     
     procedure SaveToFile(const FileName: string);
     procedure SaveToStream(dest: TStream);
     
-    procedure ReadFromFile(const FileName: string);
-    
+    function  CopyFrom(Source: TStream; Count: Integer): Integer;
   published
     property Size     : Integer read FSize;
     property Capacity : Integer read FCapacity write SetCapacity;
@@ -99,15 +101,15 @@ type
     constructor Create;
     destructor Destroy; override;
     
-    function Seek(Offset: Integer; Origin: Integer): Integer;
+    //function Seek(Offset: Integer; Origin: Integer): Integer;
   end;
   
   TFileStream = class(TStream)
-  private
-    FFileHandle : THandle;
   public
     constructor Create(AFileName: String; mode: Integer);
     destructor Destroy; override;
+    
+    function Seek(Offset: Integer; Origin: Integer): Integer;
   end;
   
   TResourceStream = class(TStream)
@@ -119,6 +121,9 @@ type
 implementation
 uses
   Memory, Exceptions, ErrorData;
+
+const
+  CopyBufferSize = 8192; // 8 KB
 
 { TStream }
 constructor TStream.Create;
@@ -136,6 +141,11 @@ begin
   FreeMem(FBuffer);
   
   inherited Destroy;
+end;
+
+function TStream.GetSize: Integer;
+begin
+  result := FSize;
 end;
 
 function TStream.WriteBuffer(const Buffer; Count: Integer): Integer;
@@ -162,6 +172,10 @@ begin
   result := TotalWritten;
 end;
 
+procedure TStream.LoadFromFile(const FileName: string);
+begin
+  ReadFromFile(FileName);
+end;
 procedure TStream.ReadFromFile(const FileName: string);
 var
   FileStream: TFileStream;
@@ -184,6 +198,41 @@ begin
     SaveToStream(FileStream);
   finally
     FileStream.Free;
+  end;
+end;
+
+function TStream.CopyFrom(Source: TStream; Count: Integer): Integer;
+var
+  Buffer: PByte;
+  ReadNow, ToRead: Integer;
+  TotalCopied: Integer;
+begin
+  Result := 0;
+  GetMem(Buffer, CopyBufferSize);
+  try
+    // Wenn Count = 0 → alles vom aktuellen Position bis EOF
+    if Count = 0 then
+      Count := Source.Size - Source.Position;
+
+    TotalCopied := 0;
+    while Count > 0 do
+    begin
+      ToRead := CopyBufferSize;
+      if Count < ToRead then
+        ToRead := Count;
+
+      ReadNow := Source.Read(Buffer^, ToRead);
+      if ReadNow = 0 then
+        Break; // EOF oder Fehler
+
+      Self.Write(Buffer^, ReadNow);
+
+      Inc(TotalCopied, ReadNow);
+      Dec(Count, ReadNow);
+    end;
+    Result := TotalCopied;
+  finally
+    FreeMem(Buffer);
   end;
 end;
 
@@ -380,17 +429,18 @@ begin
 end;
 
 function TFileStream.Seek(Offset: Integer; Origin: Integer): Integer;
-  function SeekFile(hFile: THandle; Offset: Integer; MoveMethod: DWORD): Int64;
+  function SeekFile(hFile: THandle; Offset: Integer; MoveMethod: DWORD): Integer;
   var
     NewPos: DWORD;
   begin
     NewPos := SetFilePointer(hFile, Offset, nil, MoveMethod);
     if NewPos = $FFFFFFFF then
-    if GetLastError <> NO_ERROR then
+    if GetLastError <> 0 then
     raise Exception.CreateFmt('Seek fehlgeschlagen: %s', [SysErrorMessage(GetLastError)]);
     result := NewPos;
   end;
 begin
+  result := SeekFile(FFileHandle, Offset, DWORD(Origin));
 end;
 
 destructor TFileStream.Destroy;

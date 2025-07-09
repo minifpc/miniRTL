@@ -357,7 +357,9 @@ end;
 
 class function TObject.ClassName: String;
 begin
+{$ifndef DLLRES}
   result := PVmt(Self)^.vClassName^;
+{$endif DLLRES}
 end;
 
 class function TObject.ClassParent: TClass;
@@ -577,6 +579,7 @@ end;
 
 function TInterfacedObject._Release: LongInt; stdcall;
 begin
+{$ifndef DLLRES}
   // @@todo: InterlockedDecrement/Increment
   dec(FRefCount);
   result := FRefCount;
@@ -593,6 +596,9 @@ begin
       self.Destroy;
     end;
   end;
+{$else}
+  result := 0;
+{$endif}
 end;
 
 destructor TInterfacedObject.Destroy;

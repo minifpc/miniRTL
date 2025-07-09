@@ -25,34 +25,33 @@ ppcrossx64.exe -dDLLEXPORT -dLANGDEU -dDLLDEBUG -n     -Ur -Twin64 -FE. -Fu. -O3
 ppcrossx64.exe -dDLLEXPORT -dLANGDEU -dDLLDEBUG -n     -Ur -Twin64 -FE. -Fu. -O3 -Os sysutils.pas
 ppcrossx64.exe -dDLLEXPORT -dLANGDEU -dDLLDEBUG -n     -Ur -Twin64 -FE. -Fu. -O3 -Os xmm.pas
 
-C:\FPC\fpc\bin\x86_64-win64\ppcrosswin64.exe -dDLLEXPORT -dLANGDEU -dDLLDEBUG -n     -Ur -Twin64 -FE. -Fu. -O3 -Os rtlunit.pas
-C:\FPC\fpc\bin\x86_64-win64\ppcrosswin64.exe -dDLLEXPORT -dLANGDEU -dDLLDEBUG -n     -Ur -Twin64 -FE. -Fu. -O3 -Os rtllib.pas
+C:\FPC\fpc\bin\x86_64-win64\ppcrosswin64.exe -dDLLEXPORT -dLANGDEU -dDLLDEBUG -n     -Ur -Twin64 -FE. -Fu. -O3 rtlunit.pas
+C:\FPC\fpc\bin\x86_64-win64\ppcrosswin64.exe -dDLLEXPORT -dLANGDEU -dDLLDEBUG -n     -Ur -Twin64 -FE. -Fu. -O3 rtllib.pas
 
 x86_64-win64-strip.exe rtllib.dll
 
 :skip
-::t:\msys64\mingw64\bin\windres.exe test.rc -O coff -o test.rc.o
+:: build resource ...
 windres.exe test.rc -o test.res
 
-:: build resource ...
-windres fehler_code_win.rc -o fehler_code_win.res
-windres fehler_text_win.rc -o fehler_text_win.res
+windres.exe fehler_code_win.rc -o fehler_code_win.res
+windres.exe fehler_text_win.rc -o fehler_text_win.res
 
 :: pack resource
-gzip -9 -f fehler_code_win.res
-gzip -9 -f fehler_text_win.res
+gzip.exe -9 -f fehler_code_win.res
+gzip.exe -9 -f fehler_text_win.res
 
 :: create upstream of gz file (resource) ...
-windres rtllib_enu.rc -o rtllib_enu.res
-windres rtllib_deu.rc -o rtllib_deu.res
+windres.exe rtllib_enu.rc -o rtllib_enu.res
+windres.exe rtllib_deu.rc -o rtllib_deu.res
 
 :: biild the resource dll ...
-fpc -dDLLEXPORT -dLANGDEU -dDLLDEBUG -dDLLRES -n -B -Twin64 -FE. -Fu. -O3 -Os rtllib_enu.pas
-fpc -dDLLEXPORT -dLANGDEU -dDLLDEBUG -dDLLRES -n -B -Twin64 -FE. -Fu. -O3 -Os rtllib_deu.pas
+fpc.exe -dDLLEXPORT -dLANGDEU -dDLLDEBUG -dDLLRES -n -B -Twin64 -FE. -Fu. -O3 rtllib_enu.pas
+fpc.exe -dDLLEXPORT -dLANGDEU -dDLLDEBUG -dDLLRES -n -B -Twin64 -FE. -Fu. -O3 rtllib_deu.pas
 
 :: build runtime dll ...
-fpc -dDLLEXPORT -dLANGDEU -dDLLDEBUG -n -B -Twin64 -FE. -Fu. -O3 -Os rtllib.pas
-fpc -dDLLIMPORT -dLANGDEU -dDLLDEBUG -n -B -Twin64 -FE. -Fu. -O3 -Os test.pas
+fpc.exe -dDLLEXPORT -dLANGDEU -dDLLDEBUG -n -B -Twin64 -FE. -Fu. -O3 rtllib.pas
+fpc.exe -dDLLIMPORT -dLANGDEU -dDLLDEBUG -n -B -Twin64 -FE. -Fu. -O3 test.pas
 
 :: strip debug symbols from resource dll ...
 x86_64-win64-strip.exe rtllib_enu.dll
