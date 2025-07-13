@@ -25,10 +25,10 @@ procedure fpc_write_text_unicodestr(len: LongInt; var f: Text; const s: UnicodeS
 //procedure fpc_write_text_unicodestr(len :longint; var f: Text; const s: UnicodeString); compilerproc;
 
 {$ifdef DLLEXPORT}
-procedure int_read_from_console(out r: AnsiString); export;
+procedure int_read_from_console(out r: AnsiString); stdcall; export;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
-procedure int_read_from_console(out r: AnsiString); external RTLDLL;
+procedure int_read_from_console(out r: AnsiString); stdcall; external RTLDLL;
 {$endif}
 
 // pchar
@@ -249,7 +249,7 @@ var
 begin
   WriteConsoleA(StdOut, @s[1], length(s), @d, nil);
 end;
-procedure int_read_from_console(out r: AnsiString); export;
+procedure int_read_from_console(out r: AnsiString); stdcall; export;
 var
   c: char;
   d: dword;

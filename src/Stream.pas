@@ -118,6 +118,53 @@ type
     destructor Destroy; override;
   end;
 
+{$ifdef DLLEXPORT}
+// ---------------------------------------------------------------------------------------
+function  TStream_WriteBuffer    (p: TStream; const Buffer; Count: Integer): Integer; stdcall; export;
+function  TStream_CopyFrom       (p: TStream; Source: TStream; Count: Integer): Integer; stdcall; export;
+
+procedure TFileStream_Create     (p: TFileStream; AFileName: String; mode: Integer); stdcall; export;
+function  TFileStream_Seek       (p: TFileStream; Offset: Integer; Origin: Integer): Integer; stdcall; export;
+
+function  TStream_Write          (p: TStream; const Buffer; Count: Integer): Integer; stdcall; export;
+function  TStream_Read           (p: TStream; var   Buffer; Count: Integer): Integer; stdcall; export;
+procedure TStream_ReadBuffer     (p: TStream; var   Buffer; Count: LongInt); stdcall; export;
+
+function  TStream_Seek           (p: TStream; Offset: Integer; Origin: Integer): Integer; stdcall; export;
+
+procedure TStream_ReAlloc        (p: TStream; AValue: Integer); stdcall; export;
+procedure TStream_SetSize        (p: TStream; AValue: Integer); stdcall; export;
+
+procedure TStream_LoadFromStream (p: TStream; Source: TStream); stdcall; export;
+
+procedure TStream_ReadFromFile   (p: TStream; const FileName: string); stdcall; export;
+procedure TStream_SaveToFile     (p: TStream; const FileName: string); stdcall; export;
+// ---------------------------------------------------------------------------------------
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+// ---------------------------------------------------------------------------------------
+function  TStream_WriteBuffer    (p: TStream; const Buffer; Count: Integer): Integer; stdcall; external RTLDLL;
+function  TStream_CopyFrom       (p: TStream; Source: TStream; Count: Integer): Integer; stdcall; external RTLDLL name 'TStream_CopyFrom';
+
+procedure TFileStream_Create     (p: TFileStream; AFileName: String; mode: Integer); stdcall; external RTLDLL;
+function  TFileStream_Seek       (p: TFileStream; Offset: Integer; Origin: Integer): Integer; stdcall; external RTLDLL;
+
+function  TStream_Write          (p: TStream; const Buffer; Count: Integer): Integer; stdcall; external RTLDLL;
+function  TStream_Read           (p: TStream; var   Buffer; Count: Integer): Integer; stdcall; external RTLDLL;
+procedure TStream_ReadBuffer     (p: TStream; var   Buffer; Count: LongInt); stdcall; external RTLDLL;
+
+function  TStream_Seek           (p: TStream; Offset: Integer; Origin: Integer): Integer; stdcall; external RTLDLL;
+
+procedure TStream_ReAlloc        (p: TStream; AValue: Integer); stdcall; external RTLDLL;
+procedure TStream_SetSize        (p: TStream; AValue: Integer); stdcall; external RTLDLL;
+
+procedure TStream_LoadFromStream (p: TStream; Source: TStream); stdcall; external RTLDLL;
+
+procedure TStream_ReadFromFile   (p: TStream; const FileName: string); stdcall; external RTLDLL;
+procedure TStream_SaveToFile     (p: TStream; const FileName: string); stdcall; external RTLDLL;
+// ---------------------------------------------------------------------------------------
+{$endif DLLIMPORT}
+
 implementation
 uses
   Memory, Exceptions, ErrorData;
@@ -148,22 +195,23 @@ begin
   result := FSize;
 end;
 
-function TStream.WriteBuffer(const Buffer; Count: Integer): Integer;
+{$ifdef DLLEXPORT}
+function TStream_WriteBuffer(p: TStream; const Buffer; Count: Integer): Integer; stdcall; export;
 var
-  P: PByte;
+  Pb: PByte;
   BytesWritten, TotalWritten: Integer;
 begin
-  P := @Buffer;
+  Pb := @Buffer;
   TotalWritten := 0;
 
   while Count > 0 do
   begin
-    BytesWritten := Write(P^, Count);
+    BytesWritten := p.Write(Pb^, Count);
     
     if BytesWritten <= 0 then
     Break;
     
-    inc(P, BytesWritten);
+    inc(Pb, BytesWritten);
     inc(TotalWritten, BytesWritten);
     
     dec(Count, BytesWritten);
@@ -171,37 +219,14 @@ begin
 
   result := TotalWritten;
 end;
-
-procedure TStream.LoadFromFile(const FileName: string);
+{$endif DLLEXPORT}
+function TStream.WriteBuffer(const Buffer; Count: Integer): Integer;
 begin
-  ReadFromFile(FileName);
-end;
-procedure TStream.ReadFromFile(const FileName: string);
-var
-  FileStream: TFileStream;
-begin
-  FileStream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
-  try
-    // Position an das Ende setzen
-    FileStream.Seek(0, soEnd);
-    CopyFrom(FileStream, FileStream.Size);
-  finally
-    FileStream.Free;
-  end;
-end;
-procedure TStream.SaveToFile(const FileName: string);
-var
-  FileStream: TFileStream;
-begin
-  FileStream := TFileStream.Create(FileName, fmCreate);
-  try
-    SaveToStream(FileStream);
-  finally
-    FileStream.Free;
-  end;
+  result := TStream_WriteBuffer(self, Buffer, Count);
 end;
 
-function TStream.CopyFrom(Source: TStream; Count: Integer): Integer;
+{$ifdef DLLEXPORT}
+function TStream_CopyFrom(p: TStream; Source: TStream; Count: Integer): Integer; stdcall; export;
 var
   Buffer: PByte;
   ReadNow, ToRead: Integer;
@@ -225,7 +250,7 @@ begin
       if ReadNow = 0 then
         Break; // EOF oder Fehler
 
-      Self.Write(Buffer^, ReadNow);
+      p.Write(Buffer^, ReadNow);
 
       Inc(TotalCopied, ReadNow);
       Dec(Count, ReadNow);
@@ -235,28 +260,88 @@ begin
     FreeMem(Buffer);
   end;
 end;
-
-procedure TStream.SetSize(AValue: Integer);
+{$endif DLLEXPORT}
+function TStream.CopyFrom(Source: TStream; Count: Integer): Integer;
 begin
-  if AValue <> GetSize then
-  begin
-    if AValue > FCapacity then
-    SetCapacity(AValue);
-    
-    FSize := AValue;
-    
-    if FPosition > FSize then
-    FPosition := FSize;
+  result := TStream_CopyFrom(self, Source, Count);
+end;
+
+{$ifdef DLLEXPORT}
+procedure TStream_ReadFromFile(p: TStream; const FileName: string); stdcall; export;
+var
+  FileStream: TFileStream;
+begin
+  FileStream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
+  try
+    // Position an das Ende setzen
+    FileStream.Seek(0, soEnd);
+    p.CopyFrom(FileStream, FileStream.Size);
+  finally
+    FileStream.Free;
   end;
 end;
+{$endif DLLEXPORT}
+procedure TStream.LoadFromFile(const FileName: string);
+begin
+  TStream_ReadFromFile(self,FileName);
+end;
+procedure TStream.ReadFromFile(const FileName: string);
+begin
+  LoadFromFile(FileName);
+end;
 
+{$ifdef DLLEXPORT}
+procedure TStream_SaveToFile(p: TStream; const FileName: string); stdcall; export;
+var
+  FileStream: TFileStream;
+begin
+  FileStream := TFileStream.Create(FileName, fmCreate);
+  try
+    p.SaveToStream(FileStream);
+  finally
+    FileStream.Free;
+  end;
+end;
+{$endif DLLEXPORT}
+procedure TStream.SaveToFile(const FileName: string);
+begin
+  TStream_SaveToFile(self, FileName);
+end;
+
+{$ifdef DLLEXPORT}
+procedure TStream_SetSize(p: TStream; AValue: Integer); stdcall; export;
+begin
+  if AValue <> p.GetSize then
+  begin
+    if AValue > p.FCapacity then
+    p.SetCapacity(AValue);
+    
+    p.FSize := AValue;
+    
+    if p.FPosition > p.FSize then
+    p.FPosition := p.FSize;
+  end;
+end;
+{$endif DLLEXPORT}
+procedure TStream.SetSize(AValue: Integer);
+begin
+  TStream_SetSize(self, AValue);
+end;
+
+{$ifdef DLLEXPORT}
+procedure TStream_LoadFromStream(p: TStream; Source: TStream); stdcall; export;
+begin
+  p.SetSize(0);             // Inhalt löschen
+  p.Seek(0, soBeginning);   // an Anfang gehen
+  p.CopyFrom(Source, Source.Size); // neuen Inhalt lesen
+  p.Seek(0, soBeginning);   // wieder zurück
+end;
+{$endif DLLEXPORT}
 procedure TStream.LoadFromStream(Source: TStream);
 begin
-  SetSize(0);             // Inhalt löschen
-  Seek(0, soBeginning);   // an Anfang gehen
-  CopyFrom(Source, Source.Size); // neuen Inhalt lesen
-  Seek(0, soBeginning);   // wieder zurück
+  TStream_LoadFromStream(self, Source);
 end;
+
 procedure TStream.SaveToStream(dest: TStream);
 begin
   if FSize > 0 then
@@ -269,97 +354,127 @@ begin
   ReAllocMemory(FBuffer, AValue);
 end;
 
-procedure TStream.ReAlloc(AValue: Integer);
+{$ifdef DLLEXPORT}
+procedure TStream_ReAlloc(p: TStream; AValue: Integer); stdcall; export;
 begin
-  if AValue < FSize then
-  AValue := FSize;
+  if AValue < p.FSize then
+  AValue := p.FSize;
 
   if AValue = 0 then
   begin
-    if FBuffer <> nil then
+    if p.FBuffer <> nil then
     begin
-      FreeMem(FBuffer);
-      FBuffer := nil;
+      FreeMem(p.FBuffer);
+      p.FBuffer := nil;
     end;
   end else
   begin
-    if FBuffer = nil then
-    GetMem(FBuffer, AValue) else
-    ReAllocMemory(FBuffer, AValue);
+    if p.FBuffer = nil then
+    GetMem(p.FBuffer, AValue) else
+    ReAllocMemory(p.FBuffer, AValue);
   end;
 
-  FCapacity := AValue;
+  p.FCapacity := AValue;
+end;
+{$endif DLLEXPORT}
+procedure TStream.ReAlloc(AValue: Integer);
+begin
+  TStream_ReAlloc(self, AValue);
 end;
 
-procedure TStream.ReadBuffer(var Buffer; Count: LongInt);
+{$ifdef DLLEXPORT}
+procedure TStream_ReadBuffer(p: TStream; var Buffer; Count: LongInt); stdcall; export;
 var
-  P: PByte;
+  Pb: PByte;
   BytesRead, Remaining: LongInt;
 begin
   if Count <= 0 then
   exit;
 
-  P := @Buffer;
+  Pb := @Buffer;
   Remaining := Count;
 
   while Remaining > 0 do
   begin
-    BytesRead := Read(P^, Remaining);
+    BytesRead := p.Read(Pb^, Remaining);
     if BytesRead <= 0 then
     raise EReadError.Create('Fehler beim Lesen aus dem Stream');
 
-    Inc(P, BytesRead);
+    Inc(Pb, BytesRead);
     Dec(Remaining, BytesRead);
   end;
 end;
-
-function TStream.Read(var Buffer; Count: Integer): Integer;
+{$endif DLLEXPORT}
+procedure TStream.ReadBuffer(var Buffer; Count: LongInt);
 begin
-  if FPosition >= FSize then
+  TStream_ReadBuffer(self, Buffer, Count);
+end;
+
+{$ifdef DLLEXPORT}
+function TStream_Read(p: TStream; var Buffer; Count: Integer): Integer; stdcall; export;
+begin
+  if p.FPosition >= p.FSize then
   Exit(0);
   
-  if FPosition + Count > FSize then
-  FPosition := Count + FSize;
+  if p.FPosition + Count > p.FSize then
+  p.FPosition := Count + p.FSize;
   
-  Move(PByteArray(FBuffer)^[FPosition], Buffer, Count);
-  inc(FPosition, Count);
+  Move(PByteArray(p.FBuffer)^[p.FPosition], Buffer, Count);
+  inc(p.FPosition, Count);
   
   result := Count;
 end;
+{$endif DLLEXPORT}
+function TStream.Read(var Buffer; Count: Integer): Integer;
+begin
+  result := TStream_Read(self, Buffer, Count);
+end;
 
-function TStream.Write(const Buffer; Count: Integer): Integer;
+{$ifdef DLLEXPORT}
+function TStream_Write(p: TStream; const Buffer; Count: Integer): Integer; stdcall; export;
 var
   NewPos: LongInt;
 begin
-  NewPos := FPosition + Count;
+  NewPos := p.FPosition + Count;
   
-  if NewPos > FCapacity then
-  SetCapacity(NewPos * 2); // wächst dynamisch
+  if NewPos > p.FCapacity then
+  p.SetCapacity(NewPos * 2); // wächst dynamisch
 
-  Move(Buffer, PByteArray(FBuffer)^[FPosition], Count);
-  FPosition := NewPos;
+  Move(Buffer, PByteArray(p.FBuffer)^[p.FPosition], Count);
+  p.FPosition := NewPos;
   
-  if FPosition > FSize then
-  FSize  := FPosition;
+  if p.FPosition > p.FSize then
+  p.FSize := p.FPosition;
   
-  result := Count;
+  result  := Count;
+end;
+{$endif DLLEXPORT}
+function TStream.Write(const Buffer; Count: Integer): Integer;
+begin
+  result := TStream_Write(self, Buffer, Count);
 end;
 
-function TStream.Seek(Offset: Integer; Origin: Integer): Integer;
+{$ifdef DLLEXPORT}
+function TStream_Seek(p: TStream; Offset: Integer; Origin: Integer): Integer; stdcall; export;
 begin
   case Origin of
-    soBeginning: FPosition := Offset;
-    soCurrent:   FPosition := FPosition + Offset;
-    soEnd:       FPosition := FSize     + Offset;
+    soBeginning: p.FPosition := Offset;
+    soCurrent:   p.FPosition := p.FPosition + Offset;
+    soEnd:       p.FPosition := p.FSize     + Offset;
     else
     raise Exception.Create('invalid Seek-Offset');
   end;
 
-  if FPosition < 0 then
-  FPosition := 0 else if FPosition > FSize then
-  FPosition := FSize;
+  if p.FPosition < 0 then
+  p.FPosition := 0 else if p.FPosition > p.FSize then
+  p.FPosition := p.FSize;
 
-  result    := FPosition;
+  result    := p.FPosition;
+end;
+{$endif DLLEXPORT}
+function TStream.Seek(Offset: Integer; Origin: Integer): Integer;
+begin
+  result := TStream_Seek(self, Offset, Origin);
 end;
 
 
@@ -382,13 +497,12 @@ end;
 
 
 { TFileStream }
-constructor TFileStream.Create(AFileName: String; mode: Integer);
+{$ifdef DLLEXPORT}
+procedure TFileStream_Create(p: TFileStream; AFileName: String; mode: Integer); stdcall; export;
 var
   BytesRead: PDWORD;
 begin
-  inherited Create;
-  
-  FFileHandle := CreateFileA(
+  p.FFileHandle := CreateFileA(
     PChar(AFileName),       // Dateiname
     GENERIC_READ,           // Zugriffsmodus: lesen
     FILE_SHARE_READ,        // anderen Prozessen lesen erlauben
@@ -398,37 +512,43 @@ begin
     0                       // Template
   );
   
-  if FFileHandle = INVALID_HANDLE_VALUE then
+  if p.FFileHandle = INVALID_HANDLE_VALUE then
   begin
     ShowError('file could not be open.');
     Exit;
   end;
   
   // 2. Dateigröße ermitteln
-  FSize := GetFileSize(FFileHandle, nil);
-  if FSize = INVALID_FILE_SIZE then
+  p.FSize := GetFileSize(p.FFileHandle, nil);
+  if p.FSize = INVALID_FILE_SIZE then
   begin
     ShowError('could not get file size.');
-    CloseHandle(FFileHandle);
+    CloseHandle(p.FFileHandle);
     Exit;
   end;
   
   // 3. Speicher allozieren
-  GetMem(FBuffer, FSize);
+  GetMem(p.FBuffer, p.FSize);
   
   // 4. Datei einlesen
-  if not ReadFile(FFileHandle, @FBuffer^[0], FSize, BytesRead, nil) then
+  if not ReadFile(p.FFileHandle, @p.FBuffer^[0], p.FSize, BytesRead, nil) then
   begin
     ShowError('could not read file: ' +
     SysErrorMessage(GetLastError));
     
-    FreeMem(FBuffer);
-    CloseHandle(FFileHandle);
+    FreeMem(p.FBuffer);
+    CloseHandle(p.FFileHandle);
     Exit;
   end;
 end;
-
-function TFileStream.Seek(Offset: Integer; Origin: Integer): Integer;
+{$endif DLLEXPORT}
+constructor TFileStream.Create(AFileName: String; mode: Integer);
+begin
+  inherited Create;
+  TFileStream_Create(self, AFileName, mode);
+end;
+{$ifdef DLLEXPORT}
+function TFileStream_Seek(p: TFileStream; Offset: Integer; Origin: Integer): Integer; stdcall; export;
   function SeekFile(hFile: THandle; Offset: Integer; MoveMethod: DWORD): Integer;
   var
     NewPos: DWORD;
@@ -440,7 +560,12 @@ function TFileStream.Seek(Offset: Integer; Origin: Integer): Integer;
     result := NewPos;
   end;
 begin
-  result := SeekFile(FFileHandle, Offset, DWORD(Origin));
+  result := SeekFile(p.FFileHandle, Offset, DWORD(Origin));
+end;
+{$endif DLLEXPORT}
+function TFileStream.Seek(Offset: Integer; Origin: Integer): Integer;
+begin
+  result := TFileStream_Seek(self, Offset, Origin);
 end;
 
 destructor TFileStream.Destroy;
@@ -463,5 +588,23 @@ destructor TResourceStream.Destroy;
 begin
   inherited Destroy;
 end;
+
+{$ifdef DLLEXPORT}
+exports
+  TStream_ReadBuffer     name 'TStream_ReadBuffer',
+  TStream_WriteBuffer    name 'TStream_WriteBuffer',
+  TStream_ReAlloc        name 'TStream_ReAlloc',
+  TStream_Write          name 'TStream_Write',
+  TStream_Read           name 'TStream_Read',
+  TStream_SetSize        name 'TStream_SetSize',
+  TStream_CopyFrom       name 'TStream_CopyFrom',
+  TStream_LoadFromStream name 'TStream_LoadFromStream',
+  TStream_SaveToFile     name 'TStream_SaveToFile',
+  TStream_ReadFromFile   name 'TStream_ReadFromFile',
+  
+  TFileStream_Create     name 'TFileStream_Create',
+  TFileStream_Seek       name 'TFileStream_Seek'
+  ;
+{$endif DLLEXPORT}
 
 end.
