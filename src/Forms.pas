@@ -7,7 +7,7 @@ unit Forms;
 
 interface
 uses
-  Windows, Dialogs, SysUtils, StrUtils, Locales, Classes, ErrorData, parser.dfm;
+  Windows, Dialogs, SysUtils, StrUtils, Locales, Classes, ErrorData, parser.dfm, Stream;
 
 type
   TNotifyEvent = procedure(Sender: TObject) of object;
@@ -437,6 +437,8 @@ procedure TForm_Show                    (p: TForm); stdcall; export;
 procedure TForm_ShowModal               (p: TForm); stdcall; export;
 
 procedure TForm_ShowBool  (p: TForm ; modal: Boolean); stdcall; export;
+
+function TWinControl_WndProcStatic(hWnd: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; export;
 // ---------------------------------------------------------------------------------------
 function HitTestToStr(ht: Integer): string; stdcall; export;
 {$endif DLLEXPORT}
@@ -457,7 +459,7 @@ procedure TControl_SetControlTop        (p: TControl   ; AValue: Integer); stdca
 procedure TControl_SetControlWidth      (p: TControl   ; AValue: Integer); stdcall; external RTLDLL;
 // ---------------------------------------------------------------------------------------
 function  TWinControl_Create            (p: TWinControl; AOwner: TComponent): TWinControl;   stdcall; external RTLDLL;
-function TWinControl_WndProc(p: TWincontrol; hw: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; external RTLDLL;
+function  TWinControl_WndProc(p: TWincontrol; hw: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; external RTLDLL;
 
 function  TScrollingWinControl_Create   (p: TScrollingWinControl    ): TScrollingWinControl; stdcall; external RTLDLL;
 function  TCustomForm_Create            (p: TCustomForm; f: TForm   ): TCustomForm;          stdcall; external RTLDLL;
@@ -522,6 +524,8 @@ procedure TComboBox_Destroy             (p: TComboBox           ); stdcall; exte
 procedure TSpinDate_Destroy             (p: TSpinDate           ); stdcall; external RTLDLL;
 procedure TSpinTime_Destroy             (p: TSpinTime           ); stdcall; external RTLDLL;
 procedure TMemo_Destroy                 (p: TMemo               ); stdcall; external RTLDLL;
+
+function TWinControl_WndProcStatic(hWnd: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; external RTLDLL;
 // ---------------------------------------------------------------------------------------
 function HitTestToStr(ht: Integer): string; stdcall; external RTLDLL;
 {$endif DLLIMPORT}
@@ -1737,7 +1741,8 @@ begin
   result := 'TWinControl';
 end;
 
-class function TWinControl.WndProcStatic(hWnd: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
+{$ifdef DLLEXPORT}
+function TWinControl_WndProcStatic(hWnd: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; export;
 var
   Window: TWinControl;
   ptr: Pointer;
@@ -1761,6 +1766,11 @@ begin
   if Assigned(Window) then
   result := Window.WndProc(hWnd, uMsg, wParam, lParam) else
   result := DefWindowProcA(hWnd, uMsg, wParam, lParam) ;
+end;
+{$endif DLLEXPORT}
+class function TWinControl.WndProcStatic(hWnd: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
+begin
+  result := TWinControl_WndProcStatic(hWnd, uMsg, wParam, lParam);
 end;
 
 function TWinControl.WndProc(hW: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
@@ -2042,6 +2052,8 @@ exports
   TComponent_Create                 name 'TComponent_Create',
   
   TWinControl_Create                name 'TWinControl_Create',
+  TWinControl_WndProcStatic         name 'TWinControl_WndProcStatic',
+  TWinControl_Destroy               name 'TWinControl_Destroy',
   
   TScrollingWinControl_Create       name 'TScrollingWinControl_Create',
   TCustomForm_Create                name 'TCustomForm_Create',
@@ -2049,7 +2061,6 @@ exports
   TPersistent_Destroy               name 'TPersistent_Destroy',
   TComponent_Destroy                name 'TComponent_Destroy',
   TControl_Destroy                  name 'TControl_Destroy',
-  TWinControl_Destroy               name 'TWinControl_Destroy',
   TScrollingWinControl_Destroy      name 'TScrollingWinControl_Destroy',
   TCustomForm_Destroy               name 'TCustomForm_Destroy',
   

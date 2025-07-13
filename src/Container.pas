@@ -7,7 +7,7 @@ unit Container;
 interface
  
 type
-  generic TList<T1> = class
+  generic TList<T1> = class(TObject)
   private
     FValue  : T1;
     FTop    : specialize TList<T1>;
@@ -65,6 +65,7 @@ implementation
 { TListEnumerator }
 constructor TList.Enumerator.Create(AList: specialize TList<T1>);
 begin
+writeln('listenum c');
   inherited Create;
   FCurrent := nil;
   FHead := AList.FTop;
@@ -88,6 +89,7 @@ end;
 { TListReverseEnumerator }
 constructor TList.ReverseEnumerator.Create(AList: specialize TList<T1>);
 begin
+writeln('listreverseenum c');
   inherited Create;
   FCurrent := AList.FBottom; // Beginne ganz unten
   FStart   := false;
@@ -116,14 +118,18 @@ end;
 { TListVector }
 constructor TListVector.Create(AValue: T1);
 begin
+writeln('vector c');
   inherited Create(AValue);
+writeln('c vector');
 end;
  
  
 { TList }
 constructor TList.Create(AValue: T1);
 begin
+writeln('list c');
   inherited Create;
+writeln('c list');
   FValue  := AValue;
   
   FTop    := self;
@@ -137,6 +143,7 @@ procedure TList.Add(AValue: T1);
 var
   tmp: specialize TList<T1>;
 begin
+writeln('listadd c');
   tmp := TList.Create(AValue);
   tmp.FPrev     := FBottom; 
   

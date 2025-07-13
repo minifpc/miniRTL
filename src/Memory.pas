@@ -10,6 +10,12 @@ function GetMemory    (Size: PtrUInt): Pointer;                stdcall;
 function FreeMemory   (P: Pointer): PtrUInt;                   stdcall;
 function ReAllocMemory(P: Pointer; NewSize: PtrUInt): Pointer; stdcall;
 
+{$ifdef DLLIMPORT}
+function ReAllocMemory(P: Pointer; NewSize: PtrUInt): Pointer; stdcall; external RTLDLL;
+function GetMemory(Size: PtrUInt): Pointer; stdcall; external RTLDLL;
+function FreeMemory(P: Pointer): PtrUInt; stdcall; external RTLDLL;
+{$endif}
+
 implementation
 
 uses xmm;
@@ -33,6 +39,7 @@ begin
   result := B ;
 end;
 
+{$ifdef DLLEXPORT}
 function GetMemory(Size: PtrUInt): Pointer; stdcall; export;
 var
   Header: PMemHeader;
@@ -71,5 +78,12 @@ begin
   FreeMemory(P);
   Result := NewP;
 end;
+
+exports
+  ReAllocMemory name 'ReAllocMemory',
+  FreeMemory    name 'FreeMemory',
+  GetMemory     name 'GetMemory'
+  ;
+{$endif DLLEXPORT}
 
 end.
