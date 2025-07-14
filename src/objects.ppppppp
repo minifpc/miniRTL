@@ -221,26 +221,44 @@ function IsGUIDEqual(const guid1, guid2: TGUID): boolean; stdcall; external RTLD
   TVmt
   **************************************** }
 
-function TInterfaceEntry.GetIID: PGUID;
+{$ifdef DLLEXPORT}
+function TInterfaceEntry_GetIID(p: TInterfaceEntry): PGUID; stdcall; export;
 begin
   {$ifdef VER3_0}
-  GetIID := IIDRef;
+  result := p.IIDRef;
   {$else VER3_0}
-  if Assigned(IIDRef) then GetIID := IIDRef^
-  else
-    GetIID := nil;
+  if Assigned(p.IIDRef) then
+  result := p.IIDRef^   else
+  result := nil;
   {$endif VER3_0}
 end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function TInterfaceEntry_GetIID(p: TInterfaceEntry): PGUID; stdcall; external RTLDLL;
+{$endif DLLIMPORT}
+function TInterfaceEntry.GetIID: PGUID;
+begin
+  result := TInterfaceEntry_GetIID(self);
+end;
 
-function TInterfaceEntry.GetIIDStr: PShortString;
+{$ifdef DLLEXPORT}
+function TInterfaceEntry_GetIIDStr(p: TInterfaceEntry): PShortString; stdcall; export;
 begin
   {$ifdef VER3_0}
-  GetIIDStr := IIDStrRef;
-  {$else VER3_0}
-  if Assigned(IIDStrRef) then GetIIDStr := IIDStrRef^
-  else
-    GetIIDStr := nil;
+  result := p.IIDStrRef;
+  {$else  VER3_0}
+  if Assigned(p.IIDStrRef) then
+  result := p.IIDStrRef^   else
+  result := nil;
   {$endif VER3_0}
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function TInterfaceEntry_GetIIDStr(p: TInterfaceEntry): PShortString; stdcall; external RTLDLL;
+{$endif DLLIMPORT}
+function TInterfaceEntry.GetIIDStr: PShortString;
+begin
+  result := TInterfaceEntry_GetIIDStr(self);
 end;
 
 { ****************************************
@@ -265,14 +283,23 @@ begin
   //writeln('TObject.Destroy | ', ClassName, ClassName, ' | memsize = ', MemSize(pointer(self)), ' | ptr = ', ptruint(pointer(self)));
 end;
 
-class function TObject.NewInstance: TObject;
+{$ifdef DLLEXPORT}
+function TObject_NewInstance(po: TObject): TObject; stdcall; export;
 var
    p: pointer;
 begin
-  GetMem(p, InstanceSize);
+  GetMem(p, po.InstanceSize);
   //writeln('TObject.NewInstance | ', TClass(self).ClassName, ' | memsize = ', MemSize(p), ' | ptr = ', ptruint(p));
-  if p <> nil then InitInstance(p);
+  if p <> nil then po.InitInstance(p);
   result := TObject(p);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function TObject_NewInstance(po: TObject): TObject; stdcall; external RTLDLL;
+{$endif DLLIMPORT}
+class function TObject.NewInstance: TObject;
+begin
+  result := TObject_NewInstance(TObject(self));
 end;
 
 procedure TObject.FreeInstance;
@@ -357,7 +384,9 @@ end;
 
 class function TObject.ClassName: String;
 begin
+{$ifndef DLLRES}
   result := PVmt(Self)^.vClassName^;
+{$endif DLLRES}
 end;
 
 class function TObject.ClassParent: TClass;
@@ -482,7 +511,7 @@ end;
 function GetInterface_(objclass: TObject; const iid: TGUID; out obj): boolean; external RTLDLL;
 function TObject.GetInterface(const iid: TGUID; out obj): boolean;
 begin
-  Exit(GetInterface_(self, iid, obj));
+  result := GetInterface_(self, iid, obj);
 end;
 {$endif DLLIMPORT}
 
@@ -575,24 +604,39 @@ begin
   result := FRefCount;
 end;
 
-function TInterfacedObject._Release: LongInt; stdcall;
+{$ifdef DLLEXPORT}
+function TInterfacedObject__Release(p: TInterfacedObject): LongInt; stdcall; export;
 begin
+{$ifndef DLLRES}
   // @@todo: InterlockedDecrement/Increment
-  dec(FRefCount);
-  result := FRefCount;
+  dec(p.FRefCount);
+  result := p.FRefCount;
   if result = 0 then begin
     // @@todo: that too
-    inc(FDestroyCount);
-    if FDestroyCount = 1 then begin
-      if copy(ClassName, 1, 9) = '$Capturer' then begin
+    inc(p.FDestroyCount);
+    if p.FDestroyCount = 1 then
+    begin
+      if copy(p.ClassName, 1, 9) = '$Capturer' then
+      begin
         // we cant destroy capturer object, it crashes
         //writeln('@@todo: fix this');
         exit;
       end;
 
-      self.Destroy;
+      p.Destroy;
     end;
   end;
+{$else}
+  result := 0;
+{$endif DLLRES}
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function TInterfacedObject__Release(p: TInterfacedObject): LongInt; stdcall; external RTLDLL;
+{$endif DLLIMPORT}
+function TInterfacedObject._Release: LongInt; stdcall;
+begin
+  result := TInterfacedObject__Release(self);
 end;
 
 destructor TInterfacedObject.Destroy;
@@ -624,36 +668,90 @@ end;
   TMethod
   **************************************** }
 
-class operator TMethod.=(const aLeft, aRight: TMethod): Boolean; inline;
+{$ifdef DLLEXPORT}
+function TMethod_eq(const aLeft, aRight: TMethod): Boolean; stdcall; export;
 begin
   result := (aLeft.Data = aRight.Data) and (aLeft.Code = aRight.Code);
 end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function TMethod_eq(const aLeft, aRight: TMethod): Boolean; stdcall; external RTLDLL;
+{$endif DLLIMPORT}
+class operator TMethod.=(const aLeft, aRight: TMethod): Boolean; inline;
+begin
+  result := TMethod_eq(aLeft, aRight);
+end;
 
-class operator TMethod.<>(const aLeft, aRight: TMethod): Boolean; inline;
+{$ifdef DLLEXPORT}
+function TMethod_lg(const aLeft, aRight: TMethod): Boolean; stdcall; export;
 begin
   result := (aLeft.Data <> aRight.Data) or (aLeft.Code <> aRight.Code);
 end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function TMethod_lg(const aLeft, aRight: TMethod): Boolean; stdcall; external RTLDLL;
+{$endif DLLIMPORT}
+class operator TMethod.<>(const aLeft, aRight: TMethod): Boolean; inline;
+begin
+  result := TMethod_lg(aLeft, aRight);
+end;
 
-class operator TMethod.>(const aLeft, aRight: TMethod): Boolean; inline;
+{$ifdef DLLEXPORT}
+function TMethod_g(const aLeft, aRight: TMethod): Boolean; stdcall; export;
 begin
   result := (PtrUInt(aLeft.Data) > PtrUInt(aRight.Data)) or
             ((aLeft.Data = aRight.Data) and (PtrUInt(aLeft.Code) > PtrUInt(aRight.Code)));
 end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function TMethod_g(const aLeft, aRight: TMethod): Boolean; stdcall; external RTLDLL;
+{$endif DLLIMPORT}
+class operator TMethod.>(const aLeft, aRight: TMethod): Boolean; inline;
+begin
+  result := TMethod_g(aLeft, aRight);
+end;
 
-class operator TMethod.>=(const aLeft, aRight: TMethod): Boolean; inline;
+{$ifdef DLLEXPORT}
+function TMethod_ge(const aLeft, aRight: TMethod): Boolean; stdcall; export;
 begin
   result := (aLeft > aRight) or (aLeft = aRight);
 end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function TMethod_ge(const aLeft, aRight: TMethod): Boolean; stdcall; external RTLDLL;
+{$endif DLLIMPORT}
+class operator TMethod.>=(const aLeft, aRight: TMethod): Boolean; inline;
+begin
+  result := TMethod_ge(aLeft, aRight);
+end;
 
-class operator TMethod.<(const aLeft, aRight: TMethod): Boolean; inline;
+{$ifdef DLLEXPORT}
+function TMethod_l(const aLeft, aRight: TMethod): Boolean; stdcall; export;
 begin
   Result := (PtrUInt(aLeft.Data) < PtrUInt(aRight.Data)) or
             ((aLeft.Data = aRight.Data) and (PtrUInt(aLeft.Code) < PtrUInt(aRight.Code)));
 end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function TMethod_l(const aLeft, aRight: TMethod): Boolean; stdcall; external RTLDLL;
+{$endif DLLIMPORT}
+class operator TMethod.<(const aLeft, aRight: TMethod): Boolean; inline;
+begin
+  result := TMethod_l(aLeft, aRight);
+end;
 
-class operator TMethod.<=(const aLeft, aRight: TMethod): Boolean; inline;
+{$ifdef DLLEXPORT}
+function TMethod_le(const aLeft, aRight: TMethod): Boolean; stdcall; export;
 begin
   result := (aLeft < aRight) or (aLeft = aRight);
+end;
+{$endif DLLEXPORT}
+{$ifdef DLLIMPORT}
+function TMethod_le(const aLeft, aRight: TMethod): Boolean; stdcall; external RTLDLL;
+{$endif DLLIMPORT}
+class operator TMethod.<=(const aLeft, aRight: TMethod): Boolean; inline;
+begin
+  result := TMethod_le(aLeft, aRight);
 end;
 
 { ****************************************
@@ -753,10 +851,24 @@ end;
 
 {$ifdef DLLEXPORT}
 exports
-  InitInterfacePointers name 'InitInterfacePointers',
-  fpcintfdecrref name 'fpcintfdecrref',
-  IsGUIDEqual name 'IsGUIDEqual'
+  InitInterfacePointers      name 'InitInterfacePointers',
+  TObject_NewInstance        name 'TObject_NewInstance',
+  
+  TInterfaceEntry_GetIID     name 'TInterfaceEntry_GetIID',
+  TInterfaceEntry_GetIIDStr  name 'TInterfaceEntry_GetIIDStr',
+  
+  TInterfacedObject__Release name 'TInterfacedObject__Release',
+  
+  TMethod_eq                 name 'TMethod_eq',
+  TMethod_g                  name 'TMethod_g' ,
+  TMethod_ge                 name 'TMethod_ge',
+  TMethod_l                  name 'TMethod_l' ,
+  TMethod_le                 name 'TMethod_le',
+  TMethod_lg                 name 'TMethod_lg',
+  
+  fpcintfdecrref             name 'fpcintfdecrref',
+  IsGUIDEqual                name 'IsGUIDEqual'
   ;
 {$endif DLLIMPORT}
-  
+
 {$endif}

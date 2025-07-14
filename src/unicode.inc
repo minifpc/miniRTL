@@ -31,7 +31,6 @@ function is_codepoint_newline(u: dword): boolean; stdcall;
 // get the length of a utf-8 string
 function utf8len(const utf8: pansichar): sizeint; stdcall;
 
-
 {$endif}
 
 {$ifdef codei}
@@ -39,7 +38,6 @@ function utf8len(const utf8: pansichar): sizeint; stdcall;
 {$ifdef DLLEXPORT}
 function utf8__decode(var cur: pansichar; curend: pansichar; out codepoint: dword; out size: byte): boolean; stdcall; export;
 begin
-{$ifndef DLLRES}
   if (curend <> nil) and not (cur < curend) then exit(false);
   if cur^ = #0 then exit(false);
   if (byte(cur^) and $f0 = $f0) then begin
@@ -73,7 +71,6 @@ begin
   end;
   inc(cur, size);
   result := true;
-{$endif DLLRES}
 end;
 function utf8decode(var cur: pansichar; curend: pansichar; out codepoint: dword; out size: byte): boolean; stdcall;
 begin
@@ -91,7 +88,6 @@ end;
 {$ifdef DLLEXPORT}
 function utf8__encode(codepoint: dword): RawByteString; stdcall; export;
 begin
-{$ifndef DLLRES}
   if codepoint <= $7F then
     result := ansichar(codepoint)
   else if codepoint <= $7ff then begin
@@ -109,7 +105,6 @@ begin
     result := result + ansichar($80 or ((codepoint shr 6) and $3f));
     result := result + ansichar($80 or (codepoint and $3f));
   end;
-{$endif DLLRES}
 end;
 function utf8encode(codepoint: dword): RawByteString; stdcall;
 begin
@@ -127,7 +122,6 @@ end;
 {$ifdef DLLEXPORT}
 function utf16__decode(var cur: pwidechar; curend: pwidechar; out codepoint: dword; out size: byte): boolean; stdcall; export;
 begin
-{$ifndef DLLRES}
   if (curend <> nil) and not (cur < curend) then exit(false);
   if cur^ = #0 then exit(false);
   codepoint := dword(cur^);
@@ -141,7 +135,6 @@ begin
   end;
   inc(cur, size);
   result := true;
-{$endif DLLRES}
 end;
 function utf16decode(var cur: pwidechar; curend: pwidechar; out codepoint: dword; out size: byte): boolean; stdcall;
 begin
@@ -186,7 +179,6 @@ var
   codepoint: dword;
   size: byte;
 begin
-{$ifndef DLLRES}
   curend := @utf8[1]+length(utf8);
   result := '';
   i := 1;
@@ -202,7 +194,6 @@ begin
       inc(i);
     end;
   end;
-{$endif DLLRES}
 end;
 function utf8toutf16(utf8: ansistring): unicodestring; stdcall;
 begin
@@ -346,12 +337,10 @@ end;
 {$endif DLLIMPORT}
 
 {$ifdef DLLEXPORT}
-{$ifndef DLLRES}
 exports
   utf8__len                 name 'utf8__len',
   utf16__toutf8_widechar    name 'utf16__toutf8_widechar'
   ;
-{$endif DLLRES}
 {$endif DLLEXPORT}
 
 {$endif}

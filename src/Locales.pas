@@ -10,189 +10,177 @@ uses global;
   // english
   {$ifdef LANGENU}
   var
-    sInformation: PChar = 'Informations'; export;
-    sWarning    : PChar = 'Warning'; export;
-    sCritical   : PChar = 'Critical'; export;
-    sError      : PChar = 'Error'; export;
+    sInformation: AnsiString = 'Informations'; export;
+    sWarning    : AnsiString = 'Warning'; export;
+    sCritical   : AnsiString = 'Critical'; export;
+    sError      : AnsiString = 'Error'; export;
     
-    sError_TApplication_nil         : PChar = 'TApplication is not allocated.';                   export name 'mErr0001';
-    sError_TApplication_ref         : PChar = 'internal Error: TApplication is not referenced.';  export name 'mErr0002';
-    sError_TApplication_parseArgs   : PChar = 'can not parse command line.';                      export name 'mErr0003';
+    sError_TApplication_nil         : AnsiString = 'TApplication is not allocated.';                   export name 'mErr0001';
+    sError_TApplication_ref         : AnsiString = 'internal Error: TApplication is not referenced.';  export name 'mErr0002';
+    sError_TApplication_parseArgs   : AnsiString = 'can not parse command line.';                      export name 'mErr0003';
     
-    sError_Internal                 : PChar = 'internel error: '; export;
-    sError_ref                      : PChar = 'is not referenced.'; export;
+    sError_Internal                 : AnsiString = 'internel error: '; export;
+    sError_ref                      : AnsiString = 'is not referenced.'; export;
     
-    sError_TDFMParser_isDir         : PChar = 'parse file is not valid because it is a directory.'; export name 'mErr0010';
-    sError_File_StringIsEmpty       : PChar = 'file name is empty.';                                export name 'mErr0011';
-    sError_NoFile_Or_Missing        : PChar = 'not a valid file or it is missing.';                 export name 'mErr0012';
+    sError_TPersistent_ref          : AnsiString = 'internal Error: TPersistent is not referenced.'; export;
     
-    sError_TPersistent_ref          : PChar = 'internal Error: TPersistent is not referenced.'; export;
+    sError_TComponent_ref           : AnsiString = 'internal Error: TComponent is not referenced.'; exporit;
+    sError_TComponent_noOwner       : AnsiString = 'TComponent missing AOwner.'; export;
     
-    sError_TComponent_ref           : PChar = 'internal Error: TComponent is not referenced.'; exporit;
-    sError_TComponent_noOwner       : PChar = 'TComponent missing AOwner.'; export;
+    sError_TControl_ref             : AnsiString = 'internal Error: TControl is not referenced.'; export;
+    sError_TControl_noHandle        : AnsiString = 'TControl missing handle.'; export;
     
-    sError_TControl_ref             : PChar = 'internal Error: TControl is not referenced.'; export;
-    sError_TControl_noHandle        : PChar = 'TControl missing handle.'; export;
+    sError_TWinControl_ref          : AnsiString = 'internal Error: TWinControl is not referenced.'; export;
+    sError_TScrollingWinControl_ref : AnsiString = 'internal Error: TScrollingWinControl is not referenced.'; export;
+    sError_TCustomForm_ref          : AnsiString = 'internal Error: TCustomForm is not referenced.'; export;
     
-    sError_TWinControl_ref          : PChar = 'internal Error: TWinControl is not referenced.'; export;
-    sError_TScrollingWinControl_ref : PChar = 'internal Error: TScrollingWinControl is not referenced.'; export;
-    sError_TCustomForm_ref          : PChar = 'internal Error: TCustomForm is not referenced.'; export;
+    sError_TButtonControl_ref       : AnsiString = 'internal Error: TButtonControl is not referenced.'; export;
+    sError_TButton_ref              : AnsiString = 'internal Error: TButton is not referenced.'; export;
     
-    sError_TButtonControl_ref       : PChar = 'internal Error: TButtonControl is not referenced.'; export;
-    sError_TButton_ref              : PChar = 'internal Error: TButton is not referenced.'; export;
+    sError_TCheckBox_ref            : AnsiString = 'internal Error: TCheckBox is not referenced.'; export;
+    sError_TRadioBox_ref            : AnsiString = 'internal Error: TRadioBox is not referenced.'; export;
+    sError_TProgressBar_ref         : AnsiString = 'internal Error: TProgressBar is not referenced.'; export;
+    sError_TComboBox_ref            : AnsiString = 'internal Error: TComboBox is not referenced.'; export;
     
-    sError_TCheckBox_ref            : PChar = 'internal Error: TCheckBox is not referenced.'; export;
-    sError_TRadioBox_ref            : PChar = 'internal Error: TRadioBox is not referenced.'; export;
-    sError_TProgressBar_ref         : PChar = 'internal Error: TProgressBar is not referenced.'; export;
-    sError_TComboBox_ref            : PChar = 'internal Error: TComboBox is not referenced.'; export;
+    sError_TSpinCalendar_ref        : AnsiString = 'internal Error: TSpinCalendar is not referenced.'; export;
+    sError_TSpinTime_ref            : AnsiString = 'internal Error: TSpinTime is not referenced.'; export;
     
-    sError_TSpinCalendar_ref        : PChar = 'internal Error: TSpinCalendar is not referenced.'; export;
-    sError_TSpinTime_ref            : PChar = 'internal Error: TSpinTime is not referenced.'; export;
+    sError_TMemo_ref                : AnsiString = 'internal Error: TMemo is not referenced.'; export name 'mErr9001';
+    sError_TMemo_noOwner            : AnsiString = 'TMemo missing handle.';                    export name 'mErr9002';
     
-    sError_TMemo_ref                : PChar = 'internal Error: TMemo is not referenced.'; export name 'mErr9001';
-    sError_TMemo_noOwner            : PChar = 'TMemo missing handle.';                    export name 'mErr9002';
+    sError_TComboBox_noOwner        : AnsiString = 'TComboBox missing handle.'; export;
+    sError_TSpinDate_noOwner        : AnsiString = 'TSpinDate missing handle.'; export;
+    sError_TSpinTime_noOwner        : AnsiString = 'TSpinTime missing handle.'; export;
     
-    sError_TComboBox_noOwner        : PChar = 'TComboBox missing handle.'; export;
-    sError_TSpinDate_noOwner        : PChar = 'TSpinDate missing handle.'; export;
-    sError_TSpinTime_noOwner        : PChar = 'TSpinTime missing handle.'; export;
-    
-    sError_TButton_isinit           : PChar = 'TButton: already init.'; export name 'mErr8001';
-    sError_TComponent_notinit       : PChar = 'TComponent: not init.';  export name 'mErr8002';
-    sError_TControl_notinit         : PChar = 'TControl: not init.';    export name 'mErr8003';
+    sError_TButton_isinit           : AnsiString = 'TButton: already init.'; export name 'mErr8001';
+    sError_TComponent_notinit       : AnsiString = 'TComponent: not init.';  export name 'mErr8002';
+    sError_TControl_notinit         : AnsiString = 'TControl: not init.';    export name 'mErr8003';
 
-    sError_TWinControl_noWindoeHandle : PChar = 'internal Error: No Window-Handle available.'; export;
+    sError_TWinControl_noWindoeHandle : AnsiString = 'internal Error: No Window-Handle available.'; export;
     
-    sError_TForm_nil: PChar = 'TForm is not allocated.'; export;
-    sError_TForm_ref: PChar = 'internal Error: TForm not referenced.'; export;
+    sError_TForm_nil: AnsiString = 'TForm is not allocated.'; export;
+    sError_TForm_ref: AnsiString = 'internal Error: TForm not referenced.'; export;
     
-    sError_AddExitProc: PChar = 'Too many ExitProcs registered.'; export;
+    sError_AddExitProc: AnsiString = 'Too many ExitProcs registered.'; export;
     
-    sHello      : PChar = 'Hello World'; export;
+    sHello      : AnsiString = 'Hello World'; export;
   {$endif LANGENU}
 
   // german
   {$ifdef LANGDEU}
   var
-    sInformation: PChar = 'Information'; export;
-    sWarning    : PChar = 'Warnung'; export;
-    sCritical   : PChar = 'Kritisch'; export;
-    sError      : PChar = 'Fehler'; export;
+    sInformation: AnsiString = 'Information'; export;
+    sWarning    : AnsiString = 'Warnung'; export;
+    sCritical   : AnsiString = 'Kritisch'; export;
+    sError      : AnsiString = 'Fehler'; export;
     
-    sError_TApplication_nil      : PChar = 'TApplication ist nicht zugewiesen.';                    export name 'mErr0001';
-    sError_TApplication_ref      : PChar = 'internal Error: TApplication ist nichtt referenziert.'; export name 'mErr0002';
-    sError_TApplication_parseArgs: PChar = 'kann Kommandozeile nicht ermitteln.';                   export name 'mErr0003';
+    sError_TApplication_nil      : AnsiString = 'TApplication ist nicht zugewiesen.';                    export name 'mErr0001';
+    sError_TApplication_ref      : AnsiString = 'internal Error: TApplication ist nichtt referenziert.'; export name 'mErr0002';
+    sError_TApplication_parseArgs: AnsiString = 'kann Kommandozeile nicht ermitteln.';                   export name 'mErr0003';
     
-    sError_Internal                 : PChar = 'interner Fehler: '; export;
-    sError_ref                      : PChar = 'ist nicht zugewiesen.'; export;
+    sError_Internal                 : AnsiString = 'interner Fehler: '; export;
+    sError_ref                      : AnsiString = 'ist nicht zugewiesen.'; export;
     
-    sError_TDFMParser_isDir         : PChar = 'Parser-Datei ist keine gÃ¼ltige Datei. Es handelt sich hier um ein Verzeichnis'; export name 'mErr0010';
-    sError_File_StringIsEmpty       : PChar = 'String für Dateiname ist leer.';                     export name 'mErr0011';
-    sError_NoFile_Or_Missing        : PChar = 'keine gültige Datei, oder nicht vorhanden.';         export name 'mErr0012';
+    sError_TPersistent_ref          : AnsiString = 'interner Fehler: TPersistent ist nicht zugewiesen.'; export;
     
-    sError_TPersistent_ref          : PChar = 'interner Fehler: TPersistent ist nicht zugewiesen.'; export;
+    sError_TComponent_ref           : AnsiString = 'interner Fehler: TComponent ist nicht zugewiesen.'; export;
+    sError_TComponent_noOwner       : AnsiString = 'TComponent besitzt keinen AOwner.'; export;
     
-    sError_TComponent_ref           : PChar = 'interner Fehler: TComponent ist nicht zugewiesen.'; export;
-    sError_TComponent_noOwner       : PChar = 'TComponent besitzt keinen AOwner.'; export;
+    sError_TControl_ref             : AnsiString = 'interner Fehler: TControl ist nicht zugewiesen.'; export;
+    sError_TControl_noHandle        : AnsiString = 'interner Fehler: TControl kein Handle'; export;
     
-    sError_TControl_ref             : PChar = 'interner Fehler: TControl ist nicht zugewiesen.'; export;
-    sError_TControl_noHandle        : PChar = 'interner Fehler: TControl kein Handle'; export;
+    sError_TWinControl_ref          : AnsiString = 'interner Fehler: TWinControl ist nicht zugewiesen.'; export;
+    sError_TScrollingWinControl_ref : AnsiString = 'interner Fehler: TScrollingWinControl ist nicht zugewiesen.'; export;
+    sError_TCustomForm_ref          : AnsiString = 'interner Fehler: TCustomForm ist nicht zugewiesen.'; export;
     
-    sError_TWinControl_ref          : PChar = 'interner Fehler: TWinControl ist nicht zugewiesen.'; export;
-    sError_TScrollingWinControl_ref : PChar = 'interner Fehler: TScrollingWinControl ist nicht zugewiesen.'; export;
-    sError_TCustomForm_ref          : PChar = 'interner Fehler: TCustomForm ist nicht zugewiesen.'; export;
+    sError_TButtonControl_ref       : AnsiString = 'interner Fehler: TButtonControl ist nicht zugewiesen.'; export;
+    sError_TButton_ref              : AnsiString = 'interner Fehler: TButton ist nicht zugewiesen.'; export;
     
-    sError_TButtonControl_ref       : PChar = 'interner Fehler: TButtonControl ist nicht zugewiesen.'; export;
-    sError_TButton_ref              : PChar = 'interner Fehler: TButton ist nicht zugewiesen.'; export;
+    sError_TCheckBox_ref            : AnsiString = 'interner Fehler: TCheckBox ist nicht zugewiesen.'; export;
+    sError_TRadioBox_ref            : AnsiString = 'interner Fehler: TRadioBox ist nicht zugewiesen.'; export;
+    sError_TProgressBar_ref         : AnsiString = 'interner Fehler: TProgressBar ist nicht zugewiesen.'; export;
     
-    sError_TCheckBox_ref            : PChar = 'interner Fehler: TCheckBox ist nicht zugewiesen.'; export;
-    sError_TRadioBox_ref            : PChar = 'interner Fehler: TRadioBox ist nicht zugewiesen.'; export;
-    sError_TProgressBar_ref         : PChar = 'interner Fehler: TProgressBar ist nicht zugewiesen.'; export;
+    sError_TComboBox_ref            : AnsiString = 'interner Fehler: TComboBox ist nicht zugewiesen.'; export;
+    sError_TSpinDate_ref            : AnsiString = 'interner Fehler: TSpinDate ist nicht zugewiesen.'; export;
+    sError_TSpinTime_ref            : AnsiString = 'interner Fehler: TSpinTime ist nicht zugewiesen.'; export;
     
-    sError_TComboBox_ref            : PChar = 'interner Fehler: TComboBox ist nicht zugewiesen.'; export;
-    sError_TSpinDate_ref            : PChar = 'interner Fehler: TSpinDate ist nicht zugewiesen.'; export;
-    sError_TSpinTime_ref            : PChar = 'interner Fehler: TSpinTime ist nicht zugewiesen.'; export;
+    sError_TButton_isinit           : AnsiString = 'TButton: bereits init.';  export name 'mErr8001';
+    sError_TComponent_notinit       : AnsiString = 'TComponent: nicht init.'; export name 'mErr8002';
+    sError_TControl_notinit         : AnsiString = 'TControl: nicht init.';   export name 'mErr8003';
     
-    sError_TButton_isinit           : PChar = 'TButton: bereits init.';  export name 'mErr8001';
-    sError_TComponent_notinit       : PChar = 'TComponent: nicht init.'; export name 'mErr8002';
-    sError_TControl_notinit         : PChar = 'TControl: nicht init.';   export name 'mErr8003';
+    sError_TMemo_ref                : AnsiString = 'interner Fehler: TMemo ist nicht zugewiesen.'; export name 'mErr9001';
+    sError_TMemo_noOwner            : AnsiString = 'TMemo besitzt keinen AOwner.';                 export name 'mErr9002';
     
-    sError_TMemo_ref                : PChar = 'interner Fehler: TMemo ist nicht zugewiesen.'; export name 'mErr9001';
-    sError_TMemo_noOwner            : PChar = 'TMemo besitzt keinen AOwner.';                 export name 'mErr9002';
+    sError_TComboBox_noOwner        : AnsiString = 'TComboBox besitzt keinen AOwner.'; export;
+    sError_TSpinDate_noOwner        : AnsiString = 'TSpinDate besitzt keinen AOwner.'; export;
+    sError_TSpinTime_noOwner        : AnsiString = 'TSpinTime besitzt keinen AOwner.'; export;
     
-    sError_TComboBox_noOwner        : PChar = 'TComboBox besitzt keinen AOwner.'; export;
-    sError_TSpinDate_noOwner        : PChar = 'TSpinDate besitzt keinen AOwner.'; export;
-    sError_TSpinTime_noOwner        : PChar = 'TSpinTime besitzt keinen AOwner.'; export;
+    sError_TWinControl_noWindoeHandle : AnsiString = 'interner Fehler: kein Fenster-Handle verfÃ¼gbar.'; export;
     
-    sError_TWinControl_noWindoeHandle : PChar = 'interner Fehler: kein Fenster-Handle verfügbar.'; export;
+    sError_TForm_nil: AnsiString = 'TForm ist nicht zugewiesen.'; export;
+    sError_TForm_ref: AnsiString = 'interner Fehler: TForm nicht referenziert.'; export;
     
-    sError_TForm_nil: PChar = 'TForm ist nicht zugewiesen.'; export;
-    sError_TForm_ref: PChar = 'interner Fehler: TForm nicht referenziert.'; export;
+    sError_AddExitProc: AnsiString = 'zu viele ExitProcs registriert.'; export;
     
-    sError_AddExitProc: PChar = 'zu viele ExitProcs registriert.'; export;
-    
-    sHello      : PChar = 'Hallo Welt'; export;
+    sHello      : AnsiString = 'Hallo Welt'; export;
   {$endif LANGDEU}
 {$endif DLLEXPORT}
 
 {$ifdef DLLIMPORT}
 var
-  sInformation  : PChar; external RTLDLL;
-  sWarning      : PChar; external RTLDLL;
-  sCritical     : PChar; external RTLDLL;
-  sError        : PChar; external RTLDLL;
-  sHello        : PChar; external RTLDLL;
+  sInformation  : AnsiString; external RTLDLL;
+  sWarning      : AnsiString; external RTLDLL;
+  sCritical     : AnsiString; external RTLDLL;
+  sError        : AnsiString; external RTLDLL;
+  sHello        : AnsiString; external RTLDLL;
 
-  sError_Internal : PChar      ; external RTLDLL;
-  sError_ref      : PChar      ; external RTLDLL;
+  sError_Internal : AnsiString      ; external RTLDLL;
+  sError_ref      : AnsiString      ; external RTLDLL;
   
-  sError_TApplication_nil           : PChar; external RTLDLL name 'mErr0001';
-  sError_TApplication_ref           : PChar; external RTLDLL name 'mErr0002';
-  sError_TApplication_parseArgs     : PChar; external RTLDLL name 'mErr0003';
+  sError_TApplication_nil           : AnsiString; external RTLDLL name 'mErr0001';
+  sError_TApplication_ref           : AnsiString; external RTLDLL name 'mErr0002';
+  sError_TApplication_parseArgs     : AnsiString; external RTLDLL name 'mErr0003';
 
-  sError_TDFMParser_isDir           : PChar; external RTLDLL name 'mErr0010';
-  sError_File_StringIsEmpty         : PChar; external RTLDLL name 'mErr0011';
-  sError_NoFile_Or_Missing          : PChar; external RTLDLL name 'mErr0012';
+  sError_TPersistent_ref            : AnsiString; external RTLDLL;
   
-  sError_TPersistent_ref            : PChar; external RTLDLL;
+  sError_TComponent_ref             : AnsiString; external RTLDLL;
+  sError_TComponent_noOwner         : AnsiString; external RTLDLL;
   
-  sError_TComponent_ref             : PChar; external RTLDLL;
-  sError_TComponent_noOwner         : PChar; external RTLDLL;
+  sError_TControl_ref               : AnsiString; external RTLDLL;
+  sError_TControl_noHandle          : AnsiString; external RTLDLL;
   
-  sError_TControl_ref               : PChar; external RTLDLL;
-  sError_TControl_noHandle          : PChar; external RTLDLL;
+  sError_TWinControl_ref            : AnsiString; external RTLDLL;
+  sError_TScrollingWinControl_ref   : AnsiString; external RTLDLL;
+  sError_TCustomForm_ref            : AnsiString; external RTLDLL;
   
-  sError_TWinControl_ref            : PChar; external RTLDLL;
-  sError_TScrollingWinControl_ref   : PChar; external RTLDLL;
-  sError_TCustomForm_ref            : PChar; external RTLDLL;
+  sError_TButtonControl_ref         : AnsiString; external RTLDLL;
   
-  sError_TButtonControl_ref         : PChar; external RTLDLL;
+  sError_TButton_ref                : AnsiString; external RTLDLL;
+  sError_TCheckBox_ref              : AnsiString; external RTLDLL;
+  sError_TRadioBox_ref              : AnsiString; external RTLDLL;
+  sError_TProgressBar_ref           : AnsiString; external RTLDLL;
   
-  sError_TButton_ref                : PChar; external RTLDLL;
-  sError_TCheckBox_ref              : PChar; external RTLDLL;
-  sError_TRadioBox_ref              : PChar; external RTLDLL;
-  sError_TProgressBar_ref           : PChar; external RTLDLL;
+  sError_TComboBox_ref              : AnsiString; external RTLDLL;
+  sError_TSpinDate_ref              : AnsiString; external RTLDLL;
+  sError_TSpinTime_ref              : AnsiString; external RTLDLL;
   
-  sError_TComboBox_ref              : PChar; external RTLDLL;
-  sError_TSpinDate_ref              : PChar; external RTLDLL;
-  sError_TSpinTime_ref              : PChar; external RTLDLL;
+  sError_TComboBox_noOwner          : AnsiString; external RTLDLL;
+  sError_TSpinDate_noOwner          : AnsiString; external RTLDLL;
+  sError_TSpinTime_noOwner          : AnsiString; external RTLDLL;
   
-  sError_TComboBox_noOwner          : PChar; external RTLDLL;
-  sError_TSpinDate_noOwner          : PChar; external RTLDLL;
-  sError_TSpinTime_noOwner          : PChar; external RTLDLL;
+  sError_TMemo_ref                  : AnsiString; external RTLDLL name 'mErr9001';
+  sError_TMemo_noOwner              : AnsiString; external RTLDLL name 'mErr9002';
   
-  sError_TMemo_ref                  : PChar; external RTLDLL name 'mErr9001';
-  sError_TMemo_noOwner              : PChar; external RTLDLL name 'mErr9002';
+  sError_TButton_isinit             : AnsiString; external RTLDLL name 'mErr8001';
+  sError_TComponent_notinit         : AnsiString; external RTLDLL name 'mErr8002';
+  sError_TControl_notinit           : AnsiString; external RTLDLL name 'mErr8003';
   
-  sError_TButton_isinit             : PChar; external RTLDLL name 'mErr8001';
-  sError_TComponent_notinit         : PChar; external RTLDLL name 'mErr8002';
-  sError_TControl_notinit           : PChar; external RTLDLL name 'mErr8003';
+  sError_TWinControl_noWindoeHandle : AnsiString; external RTLDLL;
   
-  sError_TWinControl_noWindoeHandle : PChar; external RTLDLL;
+  sError_TForm_nil: AnsiString      ; external RTLDLL;
+  sError_TForm_ref: AnsiString      ; external RTLDLL;
   
-  sError_TForm_nil: PChar      ; external RTLDLL;
-  sError_TForm_ref: PChar      ; external RTLDLL;
-  
-  sError_AddExitProc: PChar    ; external RTLDLL;
+  sError_AddExitProc: AnsiString    ; external RTLDLL;
   
 {$endif DLLIMPORT}
 
@@ -212,10 +200,6 @@ exports
   sError_TApplication_ref           name 'mErr0002', //'sError_TApplication_ref',
   sError_TApplication_parseArgs     name 'mErr0003', //'sError_TApplication_parseArgs',
 
-  sError_TDFMParser_isDir           name 'mErr0010', //'sError_TDFMParser_isDir,
-  sError_File_StringIsEmpty         name 'mErr0011', //'sError_File_StringIsEmpty',
-  sError_NoFile_Or_Missing          name 'mErr0012', //'sError_NoFile_Or_Missing',
-  
   sError_TPersistent_ref            name 'mErr1001', //'sError_TPersistent_ref',
   
   sError_TComponent_ref             name 'mErr2001', //'sError_TComponent_ref',

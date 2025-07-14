@@ -140,7 +140,7 @@ exports
   fpcansistrdecrref       name 'fpcansistrdecrref',
   fpcansistrcopy          name 'fpcansistrcopy',
   fpcansistrcompareequal  name 'fpcansistrcompareequal',
-  fpc__ansistr_incr_ref   name 'fpc__ansistr_incr_ref',
+  fpcansistrincrref       name 'fpcansistrincrref',
   
   fpcpwidechartoansistr name 'fpcpwidechartoansistr',
   fpcwidestrassign      name 'fpcwidestrassign',

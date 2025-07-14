@@ -14,8 +14,7 @@ procedure fpcansistrsetlength(var S: rawbytestring; l: SizeInt; cp: TSystemCodeP
 procedure fpcansistrdecrref(var s: pointer); stdcall; export;
 function  fpcansistrcopy(const s: RawByteString; index, size: SizeInt): RawByteString; stdcall; export;
 function  fpcansistrcompareequal(const s1, s2: RawByteString): SizeInt; stdcall; export;
-
-procedure fpc__ansistr_incr_ref(var s: pointer); stdcall; export;
+procedure fpcansistrincrref(s: pointer); stdcall; export;
 
 function  fpcpwidechartoansistr(const p: PWideChar; cp: TSystemCodePage): AnsiString; stdcall; export;
 procedure fpcwidestrassign(var s1: pointer; s2: pointer); stdcall export;
@@ -38,8 +37,6 @@ procedure fpc_shortstr_concat(var dests: ShortString; const s1, s2: ShortString)
 {$endif DLLEXPORT}
 
 {$ifdef DLLIMPORT}
-procedure fpc__ansistr_incr_ref(var s: pointer); stdcall; external RTLDLL;
-
 procedure fpc_shortstr_concat(var dests: ShortString; const s1, s2: ShortString); stdcall; external RTLDLL;
 //procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); stdcall; external RTLDLL;
 {$endif}
@@ -58,8 +55,8 @@ function fpc_shortstr_copy(const s: ShortString; index: SizeInt; count: SizeInt)
 // AnsiString
 procedure fpc_ansistr_assign(var dests: pointer; s2: pointer); compilerproc;
 procedure fpc_ansistr_setlength(var s: RawByteString; l: SizeInt; cp: TSystemCodePage); compilerproc;
-procedure fpc_ansistr_decr_ref (var s: pointer); compilerproc;
-procedure fpc_ansistr_incr_ref (var s: pointer); compilerproc;
+procedure fpc_ansistr_decr_ref(var s: pointer); compilerproc;
+procedure fpc_ansistr_incr_ref(s: pointer); compilerproc;
 
 procedure fpc_ansistr_concat_multi(var dests: RawByteString; const sarr: array of RawByteString; cp: TSystemCodePage); compilerproc;
 function fpc_ansistr_unique(var s: pointer): pointer; compilerproc;
@@ -336,7 +333,7 @@ end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
 procedure fpcansistrdecrref(var s: pointer); stdcall; external RTLDLL;
-procedure fpc__ansistrdecrref(var s: pointer); [public , alias: 'FPC_ANSISTR_DECR_REF']; compilerproc;
+procedure fpc_ansistr_decr_ref(var s: pointer); [public , alias: 'FPC_ANSISTR_DECR_REF']; compilerproc;
 begin
   fpcansistrdecrref(s);
 end;
@@ -346,7 +343,7 @@ end;
 procedure fpc_ansistr_decr_ref(var s: pointer); [external name 'FPC_ANSISTR_DECR_REF'];
 
 {$ifdef DLLEXPORT}
-procedure fpc__ansistr_incr_ref(var s: pointer); stdcall; export;
+procedure fpcansistrincrref(s: pointer); stdcall; export;
 begin
   if s = nil then exit;
   if PAnsiRec(s-AnsiFirstOff)^.Ref < 0 then exit;
@@ -354,15 +351,16 @@ begin
   inc(PAnsiRec(s-AnsiFirstOff)^.Ref);
   //inclocked(PAnsiRec(s-AnsiFirstOff)^.Ref);
 end;
-procedure fpc_ansistr_incr_ref(var s: pointer); compilerproc;
+procedure fpc_ansistr_incr_ref(s: pointer); [public, alias: 'FPC_ANSISTR_INCR_REF']; compilerproc;
 begin
-  fpc__ansistr_incr_ref(s);
+  fpcansistrincrref(s);
 end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
-procedure fpc_ansistr_incr_ref (var s: pointer); compilerproc;
+procedure fpcansistrincrref(s: pointer); stdcall; external RTLDLL;
+procedure fpc_ansistr_incr_ref(s: pointer); [public, alias: 'FPC_ANSISTR_INCR_REF']; compilerproc;
 begin
-  fpc__ansistr_incr_ref(s);
+  fpcansistrincrref(s);
 end;
 {$endif DLLIMPORT}
 
@@ -589,7 +587,7 @@ end;
 {$endif DLLIMPORT}
 
 { alias for internal use }
-//procedure fpc_widestr_incr_ref(var s: pointer); [external name 'FPC_WIDESTR_INCR_REF']; compilerproc;
+procedure fpc_widestr_incr_ref(var s: pointer); [external name 'FPC_WIDESTR_INCR_REF']; compilerproc;
 
 { ****************************************
   AnsiChar
@@ -908,7 +906,6 @@ end;
 
 exports
   fpc__chartoansistr    name 'fpc__chartoansistr',
-  //fpc__ansistr_incr_ref name 'fpc__ansistr_incr_ref',
   fpc__ansistr_unique   name 'fpc__ansistr_unique'
   ;
 {$endif DLLEXPORT}

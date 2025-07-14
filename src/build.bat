@@ -25,39 +25,18 @@ ppcrossx64.exe -dDLLEXPORT -dLANGDEU -dDLLDEBUG -n     -Ur -Twin64 -FE. -Fu. -O3
 ppcrossx64.exe -dDLLEXPORT -dLANGDEU -dDLLDEBUG -n     -Ur -Twin64 -FE. -Fu. -O3 -Os sysutils.pas
 ppcrossx64.exe -dDLLEXPORT -dLANGDEU -dDLLDEBUG -n     -Ur -Twin64 -FE. -Fu. -O3 -Os xmm.pas
 
-C:\FPC\fpc\bin\x86_64-win64\ppcrosswin64.exe -dDLLEXPORT -dLANGDEU -dDLLDEBUG -n     -Ur -Twin64 -FE. -Fu. -O3 rtlunit.pas
-C:\FPC\fpc\bin\x86_64-win64\ppcrosswin64.exe -dDLLEXPORT -dLANGDEU -dDLLDEBUG -n     -Ur -Twin64 -FE. -Fu. -O3 rtllib.pas
+C:\FPC\fpc\bin\x86_64-win64\ppcrosswin64.exe -dDLLEXPORT -dLANGDEU -dDLLDEBUG -n     -Ur -Twin64 -FE. -Fu. -O3 -Os rtlunit.pas
+C:\FPC\fpc\bin\x86_64-win64\ppcrosswin64.exe -dDLLEXPORT -dLANGDEU -dDLLDEBUG -n     -Ur -Twin64 -FE. -Fu. -O3 -Os rtllib.pas
 
 x86_64-win64-strip.exe rtllib.dll
 
 :skip
-:: build resource ...
+::t:\msys64\mingw64\bin\windres.exe test.rc -O coff -o test.rc.o
 windres.exe test.rc -o test.res
 
-windres.exe fehler_code_win.rc -o fehler_code_win.res
-windres.exe fehler_text_win.rc -o fehler_text_win.res
+fpc -dDLLEXPORT -dLANGDEU -dDLLDEBUG -n -B -Twin64 -FE. -Fu. -O3 -Os rtllib.pas
+fpc -dDLLIMPORT -dLANGDEU -dDLLDEBUG -n -B -Twin64 -FE. -Fu. -O3 -Os test.pas
 
-:: pack resource
-gzip.exe -9 -f fehler_code_win.res
-gzip.exe -9 -f fehler_text_win.res
-
-:: create upstream of gz file (resource) ...
-windres.exe rtllib_enu.rc -o rtllib_enu.res
-windres.exe rtllib_deu.rc -o rtllib_deu.res
-
-:: biild the resource dll ...
-fpc.exe -dDLLEXPORT -dLANGDEU -dDLLDEBUG -dDLLRES -n -B -Twin64 -FE. -Fu. -O3 rtllib_enu.pas
-fpc.exe -dDLLEXPORT -dLANGDEU -dDLLDEBUG -dDLLRES -n -B -Twin64 -FE. -Fu. -O3 rtllib_deu.pas
-
-:: build runtime dll ...
-fpc.exe -dDLLEXPORT -dLANGDEU -dDLLDEBUG -n -B -Twin64 -FE. -Fu. -O3 rtllib.pas
-fpc.exe -dDLLIMPORT -dLANGDEU -dDLLDEBUG -n -B -Twin64 -FE. -Fu. -O3 test.pas
-
-:: strip debug symbols from resource dll ...
-x86_64-win64-strip.exe rtllib_enu.dll
-x86_64-win64-strip.exe rtllib_deu.dll
-
-:: strip debug symbols from runtime dll and demo app ...
 x86_64-win64-strip.exe rtllib.dll
 x86_64-win64-strip.exe test.exe
 
