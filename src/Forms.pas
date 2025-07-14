@@ -7,7 +7,7 @@ unit Forms;
 
 interface
 uses
-  Windows, Dialogs, SysUtils, StrUtils, Locales, Classes, ErrorData, parser.dfm, Stream;
+  Windows, Dialogs, SysUtils, StrUtils, Locales, Classes, ErrorData;
 
 type
   TNotifyEvent = procedure(Sender: TObject) of object;
@@ -15,7 +15,7 @@ type
 type
   // ---------------------------------------------------------------------------------------
   /// <enum>
-  ///   <name>TAlign </name>
+  ///   <name> TAlign </name>
   ///   <key name"alNone">
   ///     <details>
   ///       <lang name="enu">
@@ -86,56 +86,28 @@ type
   ///       </lang>
   ///     <details>
   ///   </key>
-  /// </enum>
   TAlign = (alNone, alTop, alBottom, alLeft, alRight, alClient, alCustom);
+  /// </enum>
   // ---------------------------------------------------------------------------------------
 
   // ---------------------------------------------------------------------------------------
   /// <type>
   /// <name>TComponentClass</name>
   /// <brief>
-  ///   <lang name="deu">
-  ///   </lang>
-  ///   <lang name="enu">
-  ///     TComponent is the base class of all component based classes (TForm, TButton, ...)
-  ///   </lang>
+  ///   TComponent is the base class of all component based classes (TForm, TButton, ...)
   /// </brief>
   /// <details>
-  ///   <lang name="deu">
-  ///   </lang>
-  ///   <lang name="enu">
   ///   TComponent is the base class of all component based classes (TForm, TButton, ...)
   ///   TComponentClass is a class type which can used to save a variable of the type.
   ///   not valid for instances.
-  ///   </lang>
   /// </details>
-  /// <name>TWinControl</name>
-  /// <brief>
-  ///   <lang name="deu">
-  ///   </lang>
-  ///   <lang name="enu">
-  ///   </lang>
-  /// </brief>
-  /// <name>TControl</name>
-  /// <brief>
-  ///   <lang name="deu">
-  ///   </lang>
-  ///   <lang name="enu">
-  ///   </lang>
-  /// </brief>
-  /// <name>TForm</name>
-  /// <brief>
-  ///   <lang name="deu">
-  ///   </lang>
-  ///   <lang name="enu">
-  ///   </lang>
-  /// </brief>
   /// </type>
   // ---------------------------------------------------------------------------------------
   TComponentClass = class of TComponent;
   TWinControl     = class;
   TControl        = class;
   TForm           = class;
+  TDFMParser      = class;
   
   // -----------------------------------------------------------------------------------------------
   TPersistent = class(TObject)
@@ -345,6 +317,11 @@ type
     class function ClassName: String; stdcall; virtual;
   end;
   
+  TDFMParser = class
+  public
+    constructor Create(AFileName: String);
+  end;
+
 // ---------------------------------------------------------------------------------------
 // the internal "export" function's and procedure's ...
 // ---------------------------------------------------------------------------------------
@@ -437,8 +414,8 @@ procedure TForm_Show                    (p: TForm); stdcall; export;
 procedure TForm_ShowModal               (p: TForm); stdcall; export;
 
 procedure TForm_ShowBool  (p: TForm ; modal: Boolean); stdcall; export;
-
-function TWinControl_WndProcStatic(hWnd: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; export;
+// ---------------------------------------------------------------------------------------
+procedure TDFMParser_Create             (p: TDFMParser; AFileName: String); stdcall; export;
 // ---------------------------------------------------------------------------------------
 function HitTestToStr(ht: Integer): string; stdcall; export;
 {$endif DLLEXPORT}
@@ -459,7 +436,7 @@ procedure TControl_SetControlTop        (p: TControl   ; AValue: Integer); stdca
 procedure TControl_SetControlWidth      (p: TControl   ; AValue: Integer); stdcall; external RTLDLL;
 // ---------------------------------------------------------------------------------------
 function  TWinControl_Create            (p: TWinControl; AOwner: TComponent): TWinControl;   stdcall; external RTLDLL;
-function  TWinControl_WndProc(p: TWincontrol; hw: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; external RTLDLL;
+function TWinControl_WndProc(p: TWincontrol; hw: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; external RTLDLL;
 
 function  TScrollingWinControl_Create   (p: TScrollingWinControl    ): TScrollingWinControl; stdcall; external RTLDLL;
 function  TCustomForm_Create            (p: TCustomForm; f: TForm   ): TCustomForm;          stdcall; external RTLDLL;
@@ -524,8 +501,8 @@ procedure TComboBox_Destroy             (p: TComboBox           ); stdcall; exte
 procedure TSpinDate_Destroy             (p: TSpinDate           ); stdcall; external RTLDLL;
 procedure TSpinTime_Destroy             (p: TSpinTime           ); stdcall; external RTLDLL;
 procedure TMemo_Destroy                 (p: TMemo               ); stdcall; external RTLDLL;
-
-function TWinControl_WndProcStatic(hWnd: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; external RTLDLL;
+// ---------------------------------------------------------------------------------------
+procedure TDFMParser_Create             (p: TDFMParser; AFileName: String); stdcall; external RTLDLL;
 // ---------------------------------------------------------------------------------------
 function HitTestToStr(ht: Integer): string; stdcall; external RTLDLL;
 {$endif DLLIMPORT}
@@ -1110,7 +1087,7 @@ begin
     Halt(2);
   end;
   writeln('ClassName: ' + p.ClassName);
-  p.dfm_parser := TDFMParser.Create(p.ClassName + '1');
+  p.dfm_parser := TDFMParser.Create(p.ClassName);
   
   p.SetComponentCount(1);
   p.FHandle := CreateWindowExA(
@@ -1567,6 +1544,33 @@ begin
   writeln('TMemo: Destroy');
   {$endif DLLDEBUG}
 end;
+
+
+{ TDFMParser }
+procedure TDFMParser_Create(p: TDFMParser; AFileName: String); stdcall; export;
+var
+  resinst : HMODULE;
+  resinfo : HANDLE;
+  ressize : DWORD;
+  
+  resdata : HGLOBAL;
+  reslock : Pointer;
+begin
+  resinst := GetModuleHandleA(nil);
+  resinfo := FindResource   (resinst, PChar(AFileName), RT_RCDATA);
+  
+  if resinfo =  0 then
+  RaiseLastOSError;
+  
+  writeln('resourced loaded.');
+  
+  ressize := SizeOfResource (resinst, resinfo); if ressize =  0  then RaiseLastOSError;
+  resdata := LoadResource   (resinst, resinfo); if resdata =  0  then RaiseLastOSError;
+  reslock := LockResource   (         resdata); if reslock = nil then RaiseLastOSError;
+  
+  // text
+  writeln(Copy(PChar(resdata), 1, ressize));
+end;
 {$endif DLLEXPORT}
 
 
@@ -1741,8 +1745,7 @@ begin
   result := 'TWinControl';
 end;
 
-{$ifdef DLLEXPORT}
-function TWinControl_WndProcStatic(hWnd: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall; export;
+class function TWinControl.WndProcStatic(hWnd: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
 var
   Window: TWinControl;
   ptr: Pointer;
@@ -1766,11 +1769,6 @@ begin
   if Assigned(Window) then
   result := Window.WndProc(hWnd, uMsg, wParam, lParam) else
   result := DefWindowProcA(hWnd, uMsg, wParam, lParam) ;
-end;
-{$endif DLLEXPORT}
-class function TWinControl.WndProcStatic(hWnd: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
-begin
-  result := TWinControl_WndProcStatic(hWnd, uMsg, wParam, lParam);
 end;
 
 function TWinControl.WndProc(hW: HWND; uMsg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
@@ -2046,14 +2044,18 @@ begin
 end;
 
 
+{ TDFMParser }
+constructor TDFMParser.Create(AFileName: String);
+begin
+  TDFMParser_Create(self, AFileName);
+end;
+
 {$ifdef DLLEXPORT}
 exports
   TPersistent_Create                name 'TPersistent_Create',
   TComponent_Create                 name 'TComponent_Create',
   
   TWinControl_Create                name 'TWinControl_Create',
-  TWinControl_WndProcStatic         name 'TWinControl_WndProcStatic',
-  TWinControl_Destroy               name 'TWinControl_Destroy',
   
   TScrollingWinControl_Create       name 'TScrollingWinControl_Create',
   TCustomForm_Create                name 'TCustomForm_Create',
@@ -2061,6 +2063,7 @@ exports
   TPersistent_Destroy               name 'TPersistent_Destroy',
   TComponent_Destroy                name 'TComponent_Destroy',
   TControl_Destroy                  name 'TControl_Destroy',
+  TWinControl_Destroy               name 'TWinControl_Destroy',
   TScrollingWinControl_Destroy      name 'TScrollingWinControl_Destroy',
   TCustomForm_Destroy               name 'TCustomForm_Destroy',
   
@@ -2124,6 +2127,8 @@ exports
   TForm_ShowBool                    name 'TForm_ShowBool',
   TForm_ShowModal                   name 'TForm_ShowModal',
 
+  TDFMParser_Create                 name 'TDFMParser_Create',
+  
   HitTestToStr    name 'HitTestToStr'
   ;
   
