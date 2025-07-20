@@ -12,49 +12,36 @@ uses global, Windows;
 // the internal "export" function's and procedure's ...
 // ---------------------------------------------------------------------------------------
 {$ifdef DLLEXPORT}
-procedure ShowMessage_PChar  (msg: PChar); overload; stdcall; export;
-procedure ShowInfo_PChar     (msg: PChar); overload; stdcall; export;
-procedure ShowWarning_PChar  (msg: PChar); overload; stdcall; export;
-procedure ShowCritical_PChar (msg: PChar); overload; stdcall; export;
-procedure ShowError_PChar    (msg: PChar); overload; stdcall; export;
+procedure ShowMessageS  (msg: PChar); stdcall; export;
+procedure ShowInfoS     (msg: PChar); stdcall; export;
+procedure ShowWarningS  (msg: PChar); stdcall; export;
+procedure ShowCriticalS (msg: PChar); stdcall; export;
+procedure ShowError     (msg: PChar); stdcall; export;
 
-procedure ShowMessage_AnsiString  (msg: AnsiString); overload; stdcall; export;
-procedure ShowInfo_AnsiString     (msg: AnsiString); overload; stdcall; export;
-procedure ShowWarning_AnsiString  (msg: AnsiString); overload; stdcall; export;
-procedure ShowCritical_AnsiString (msg: AnsiString); overload; stdcall; export;
-procedure ShowError_AnsiString    (msg: AnsiString); overload; stdcall; export;
-
-// ---------------------------------------------------------------------------------------
-// internal wrapper for "not exprted" function's and procedure's ...
-// ---------------------------------------------------------------------------------------
-procedure ShowMessage  (msg: PChar); overload; stdcall;
-procedure ShowInfo     (msg: PChar); overload; stdcall;
-procedure ShowWarning  (msg: PChar); overload; stdcall;
-procedure ShowCritical (msg: PChar); overload; stdcall;
-procedure ShowError    (msg: PChar); overload; stdcall;
-
-procedure ShowMessage  (msg: AnsiString); overload; stdcall;
-procedure ShowInfo     (msg: AnsiString); overload; stdcall;
-procedure ShowWarning  (msg: AnsiString); overload; stdcall;
-procedure ShowCritical (msg: AnsiString); overload; stdcall;
-procedure ShowError    (msg: AnsiString); overload; stdcall;
+procedure ShowMessageA  (msg: AnsiString); stdcall; export;
+procedure ShowInfoA     (msg: AnsiString); stdcall; export;
+procedure ShowWarningA  (msg: AnsiString); stdcall; export;
+procedure ShowCriticalA (msg: AnsiString); stdcall; export;
+procedure ShowErrorA    (msg: AnsiString); stdcall; export;
 {$endif DLLEXPORT}
 
 // ---------------------------------------------------------------------------------------
 // the internal "import" function's and procedure's ...
 // ---------------------------------------------------------------------------------------
 {$ifdef DLLIMPORT}
-procedure ShowMessage  (msg: PChar); overload; stdcall; external RTLDLL name 'ShowMessage_PChar';
-procedure ShowInfo     (msg: PChar); overload; stdcall; external RTLDLL name 'ShowInfo_PChar';
-procedure ShowWarning  (msg: PChar); overload; stdcall; external RTLDLL name 'ShowWarning_PChar';
-procedure ShowCritical (msg: PChar); overload; stdcall; external RTLDLL name 'ShowCritical_PChar';
-procedure ShowError    (msg: PChar); overload; stdcall; external RTLDLL name 'ShowError_PChar';
+procedure ShowMessageS  (msg: PChar); stdcall; external RTLDLL name 'ShowMessageS';
+procedure ShowInfoS     (msg: PChar); stdcall; external RTLDLL name 'ShowInfoS';
+procedure ShowInfo      (msg: PChar); stdcall; external RTLDLL name 'ShowInfoS';
+procedure ShowWarningS  (msg: PChar); stdcall; external RTLDLL name 'ShowWarningS';
+procedure ShowCriticalS (msg: PChar); stdcall; external RTLDLL name 'ShowCriticalS';
+procedure ShowErrorS    (msg: PChar); stdcall; external RTLDLL name 'ShowErrorS';
+procedure ShowError     (msg: PChar); stdcall; external RTLDLL name 'ShowErrorS';
 
-procedure ShowMessage  (msg: AnsiString); overload; stdcall; external RTLDLL name 'ShowMessage_AnsoString';
-procedure ShowInfo     (msg: AnsiString); overload; stdcall; external RTLDLL name 'ShowInfo_AnsiString';
-procedure ShowWarning  (msg: AnsiString); overload; stdcall; external RTLDLL name 'ShowWarning_AnsiString';
-procedure ShowCritical (msg: AnsiString); overload; stdcall; external RTLDLL name 'ShowCritical_AnsiString';
-procedure ShowError    (msg: AnsiString); overload; stdcall; external RTLDLL name 'ShowError_AnsiString';
+procedure ShowMessageA  (msg: AnsiString); stdcall; external RTLDLL name 'ShowMessageA';
+procedure ShowInfoA     (msg: AnsiString); stdcall; external RTLDLL name 'ShowInfoA';
+procedure ShowWarningA  (msg: AnsiString); stdcall; external RTLDLL name 'ShowWarningA';
+procedure ShowCriticalA (msg: AnsiString); stdcall; external RTLDLL name 'ShowCriticalA';
+procedure ShowErrorA    (msg: AnsiString); stdcall; external RTLDLL name 'ShowErrorA';
 {$endif DLLIMPORT}
 
 implementation
@@ -62,45 +49,35 @@ implementation
 uses Locales;
 
 {$ifdef DLLEXPORT}
-procedure ShowMessage_PChar  (msg: PChar); stdcall; export; begin MessageBoxA(0, msg, PChar(' '),          MB_OK); end;
-procedure ShowInfo_PChar     (msg: PChar); stdcall; export; begin MessageBoxA(0, msg, PChar('Information'), MB_OK); end;
-procedure ShowError_PChar    (msg: PChar); stdcall; export; begin MessageBoxA(0, msg, PChar('Error'),       MB_OK); end;
-procedure ShowWarning_PChar  (msg: PChar); stdcall; export; begin MessageBoxA(0, msg, PChar('Warning'),     MB_OK); end;
-procedure ShowCritical_PChar (msg: PChar); stdcall; export; begin MessageBoxA(0, msg, PChar('Critical'),    MB_OK); end;
+procedure ShowMessageS  (msg: PChar); stdcall; export; begin MessageBoxA(0, msg, PChar(' '),           MB_OK); end;
+procedure ShowMessage   (msg: PChar); stdcall; export; begin MessageBoxA(0, msg, PChar(' '),           MB_OK); end;
+procedure ShowInfoS     (msg: PChar); stdcall; export; begin MessageBoxA(0, msg, PChar('Information'), MB_OK); end;
+procedure ShowInfo      (msg: PChar); stdcall; export; begin MessageBoxA(0, msg, PChar('Information'), MB_OK); end;
+procedure ShowWarningS  (msg: PChar); stdcall; export; begin MessageBoxA(0, msg, PChar('Warning'),     MB_OK); end;
+procedure ShowCriticalS (msg: PChar); stdcall; export; begin MessageBoxA(0, msg, PChar('Critical'),    MB_OK); end;
+procedure ShowErrorS    (msg: PChar); stdcall; export; begin MessageBoxA(0, msg, PChar('Error'),       MB_OK); end;
+procedure ShowError     (msg: PChar); stdcall; export; begin MessageBoxA(0, msg, PChar('Error'),       MB_OK); end;
 
-procedure ShowMessage_AnsiString  (msg: AnsiString); stdcall; export; begin ShowMessage_PChar  (PChar(msg)); end;
-procedure ShowInfo_AnsiString     (msg: AnsiString); stdcall; export; begin ShowInfo_PChar     (PChar(msg)); end;
-procedure ShowError_AnsiString    (msg: AnsiString); stdcall; export; begin ShowError_PChar    (PChar(msg)); end;
-procedure ShowWarning_AnsiString  (msg: AnsiString); stdcall; export; begin ShowWarning_PChar  (PChar(msg)); end;
-procedure ShowCritical_AnsiString (msg: AnsiString); stdcall; export; begin ShowCritical_PChar (PChar(msg)); end;
-
-procedure ShowMessage  (msg: PChar); stdcall; begin ShowMessage_PChar  (msg); end;
-procedure ShowInfo     (msg: PChar); stdcall; begin ShowInfo_PChar     (msg); end;
-procedure ShowWarning  (msg: PChar); stdcall; begin ShowWarning_PChar  (msg); end;
-procedure ShowCritical (msg: PChar); stdcall; begin ShowCritical_PChar (msg); end;
-procedure ShowError    (msg: PChar); stdcall; begin ShowError_PChar    (msg); end;
-
-procedure ShowMessage  (msg: AnsiString); stdcall; begin ShowMessage_AnsiString  (msg); end;
-procedure ShowInfo     (msg: AnsiString); stdcall; begin ShowInfo_AnsiString     (msg); end;
-procedure ShowWarning  (msg: AnsiString); stdcall; begin ShowWarning_AnsiString  (msg); end;
-procedure ShowCritical (msg: AnsiString); stdcall; begin ShowCritical_AnsiString (msg); end;
-procedure ShowError    (msg: AnsiString); stdcall; begin ShowError_AnsiString    (msg); end;
+procedure ShowMessageA   (msg: AnsiString); stdcall; export; begin ShowMessageS  (PChar(msg)); end;
+procedure ShowInfoA      (msg: AnsiString); stdcall; export; begin ShowInfoS     (PChar(msg)); end;
+procedure ShowWarningA   (msg: AnsiString); stdcall; export; begin ShowWarningS  (PChar(msg)); end;
+procedure ShowCriticalA  (msg: AnsiString); stdcall; export; begin ShowCriticalS (PChar(msg)); end;
+procedure ShowErrorA     (msg: AnsiString); stdcall; export; begin ShowError     (PChar(msg)); end;
 {$endif DLLEXPORT}
 
 {$ifdef DLLEXPORT}
 exports
-  ShowMessage_PChar  name 'ShowMessage_PChar',
-  ShowInfo_PChar     name 'ShowInfo_PChar',
-  ShowWarning_PChar  name 'ShowWarning_PChar',
-  ShowCritical_PChar name 'ShowCritical_PChar',
-  ShowError_PChar    name 'ShowError_PChar',
+  ShowMessageS  name 'ShowMessageS',
+  ShowInfoS     name 'ShowInfoS',
+  ShowWarningS  name 'ShowWarningS',
+  ShowCriticalS name 'ShowCriticalS',
+  ShowError     name 'ShowErrorS',
   
-  ShowMessage_AnsiString  name 'ShowMessage_AnsiString',
-  ShowInfo_AnsiString     name 'ShowInfo_AnsiString',
-  ShowWarning_AnsiString  name 'ShowWarning_AnsiString',
-  ShowCritical_AnsiString name 'ShowCritical_AnsiString',
-  ShowError_AnsiString    name 'ShowError_AnsiString'
-
+  ShowMessageA  name 'ShowMessageA',
+  ShowInfoA     name 'ShowInfoA',
+  ShowWarningA  name 'ShowWarningA',
+  ShowCriticalA name 'ShowCriticalA',
+  ShowErrorA    name 'ShowErrorA'
   ;
 {$endif DLLEXPORT}
 

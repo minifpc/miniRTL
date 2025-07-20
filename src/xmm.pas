@@ -1,4 +1,3 @@
-
 // ---------------------------------------------------------------------------------------
 // Copyright(c) 2025 @paule32 and @fibonacci
 // ---------------------------------------------------------------------------------------
@@ -49,6 +48,19 @@ procedure RtlZeroMemory(dst: pointer; len: sizeuint); stdcall; external KERNEL32
 function RtlCompareMemory(src1, src2: pointer; len: sizeuint): sizeuint; stdcall; external NTDLL;
 
 {$ifdef DLLEXPORT}
+procedure SetUtf16StringLength(var Str: Pointer; CharSize, NewLen: Integer); stdcall; export;
+function  GetUtf16StringLength(Str: Pointer): Integer; stdcall; export;
+procedure FreeUtf16String(var Str: Pointer); stdcall; export;
+
+procedure SetUtf8StringLength(var Str: Pointer; NewByteLen: Integer); stdcall; export;
+function  GetUtf8StringLength(Str: Pointer): Integer; stdcall; export;
+procedure FreeUtf8String(var Str: Pointer); stdcall; export;
+
+procedure SetArrayLength(var Arr: Pointer; ElemSize, NewCount: Integer); stdcall; export;
+function  GetArrayLength(Arr: Pointer): Integer; stdcall; export;
+procedure FreeArray(var Arr: Pointer); stdcall; export;
+
+
 // allocates memory of given size
 function xgetmem(size: ptruint): pointer; stdcall; export;
 // allocates and zeroes memory of given size
@@ -91,6 +103,19 @@ procedure xmminit; stdcall; export;
 {$endif DLLEXPORT}
 
 {$ifdef DLLIMPORT}
+procedure SetUtf16StringLength(var Str: Pointer; CharSize, NewLen: Integer); stdcall; external RTLDLL;
+function  GetUtf16StringLength(Str: Pointer): Integer; stdcall; external RTLDLL;
+procedure FreeUtf16String(var Str: Pointer); stdcall; external RTLDLL;
+
+procedure SetUtf8StringLength(var Str: Pointer; NewByteLen: Integer); stdcall; external RTLDLL;
+function  GetUtf8StringLength(Str: Pointer): Integer; stdcall; external RTLDLL;
+procedure FreeUtf8String(var Str: Pointer); stdcall; external RTLDLL;
+
+procedure SetArrayLength(var Arr: Pointer; ElemSize, NewCount: Integer); stdcall; external RTLDLL;
+function  GetArrayLength(Arr: Pointer): Integer; stdcall; external RTLDLL;
+procedure FreeArray(var Arr: Pointer); stdcall; external RTLDLL;
+
+
 //function xgetmem(size: ptruint): pointer; stdcall; external RTLDLL;
 //function xallocmem(size: ptruint): pointer; stdcall; external RTLDLL;
 
@@ -145,8 +170,206 @@ var
 // swaps target with val; returns the old value of target
 
 {$ifdef DLLEXPORT}
+{$ifndef DLLRES}
+type
+  PStringHeader = ^TStringHeader;
+  TStringHeader = packed record
+    RefCount: LongInt;  // nicht verwendet, nur zur Kompatibilität
+    ByteLen: LongInt;   // Anzahl der Elemente (für Array: Elemente, für String: Zeichen)
+  end;
+
+type
+  PArrayHeader = ^TArrayHeader;
+  TArrayHeader = packed record
+    RefCount: LongInt;
+    ElemCount: LongInt;
+  end;
+{$endif}
+procedure SetUtf16StringLength(var Str: Pointer; CharSize, NewLen: Integer); stdcall; export;
+{$ifndef DLLRES}
+var
+  TotalSize: Integer;
+  Header: PStringHeader;
+  OldHeader: Pointer;
+{$endif}
+begin
+{$ifndef DLLRES}
+  if NewLen <= 0 then
+  begin
+    if Str <> nil then
+    begin
+      FreeMem(Pointer(PByte(Str) - SizeOf(TStringHeader)));
+      Str := nil;
+    end;
+    Exit;
+  end;
+
+  // +1 Zeichen für null-Terminator
+  TotalSize := SizeOf(TStringHeader) + CharSize * (NewLen + 1);
+
+  if Str = nil then
+    Header := PStringHeader(GetMem(TotalSize))
+  else begin
+    OldHeader := Pointer(PByte(Str) - SizeOf(TStringHeader));
+    Header := PStringHeader(ReallocMem(OldHeader, TotalSize));
+  end;
+
+  Header^.RefCount := 1;
+  Header^.ByteLen := NewLen;
+
+  Str := Pointer(PByte(Header) + SizeOf(TStringHeader));
+
+  // Nullterminator setzen
+  FillChar(PByte(Str)[NewLen * CharSize], CharSize, 0);
+{$endif}
+end;
+function GetUtf16StringLength(Str: Pointer): Integer; stdcall; export;
+{$ifndef DLLRES}
+var
+  Header: PStringHeader;
+{$endif}
+begin
+{$ifndef DLLRES}
+  if Str = nil then Exit(0);
+  Header := PStringHeader(PByte(Str) - SizeOf(TStringHeader));
+  Result := Header^.ByteLen;
+{$endif}
+end;
+procedure FreeUtf16String(var Str: Pointer); stdcall; export;
+begin
+{$ifndef DLLRES}
+  if Str <> nil then
+  begin
+    FreeMem(Pointer(PByte(Str) - SizeOf(TStringHeader)));
+    Str := nil;
+  end;
+{$endif}
+end;
+// ---------------------------------------------------------------------------------------
+procedure SetUtf8StringLength(var Str: Pointer; NewByteLen: Integer); stdcall; export;
+{$ifndef DLLRES}
+var
+  TotalSize: Integer;
+  Header: PStringHeader;
+  OldHeader: Pointer;
+{$endif}
+begin
+{$ifndef DLLRES}
+  if NewByteLen <= 0 then
+  begin
+    if Str <> nil then
+    begin
+      FreeMem(Pointer(PByte(Str) - SizeOf(TStringHeader)));
+      Str := nil;
+    end;
+    Exit;
+  end;
+
+  // +1 für null-Terminator
+  TotalSize := SizeOf(TStringHeader) + NewByteLen + 1;
+
+  if Str = nil then
+    Header := PStringHeader(GetMem(TotalSize))
+  else
+  begin
+    OldHeader := Pointer(PByte(Str) - SizeOf(TStringHeader));
+    Header := PStringHeader(ReallocMem(OldHeader, TotalSize));
+  end;
+
+  Header^.RefCount := 1;
+  Header^.ByteLen := NewByteLen;
+
+  Str := Pointer(PByte(Header) + SizeOf(TStringHeader));
+  PByte(Str)[NewByteLen] := 0; // Nullterminierung
+{$endif}
+end;
+function GetUtf8StringLength(Str: Pointer): Integer; stdcall; export;
+{$ifndef DLLRES}
+var
+  Header: PStringHeader;
+{$endif}
+begin
+{$ifndef DLLRES}
+  if Str = nil then Exit(0);
+  Header := PStringHeader(PByte(Str) - SizeOf(TStringHeader));
+  Result := Header^.ByteLen;
+{$endif}
+end;
+procedure FreeUtf8String(var Str: Pointer); stdcall; export;
+begin
+{$ifndef DLLRES}
+  if Str <> nil then
+  begin
+    FreeMem(Pointer(PByte(Str) - SizeOf(TStringHeader)));
+    Str := nil;
+  end;
+{$endif}
+end;
+
+// ---------------------------------------------------------------------------------------
+procedure SetArrayLength(var Arr: Pointer; ElemSize, NewCount: Integer); stdcall; export;
+{$ifndef DLLRES}
+var
+  TotalSize: Integer;
+  Header: PArrayHeader;
+  OldHeader: Pointer;
+{$endif}
+begin
+{$ifndef DLLRES}
+  if NewCount <= 0 then
+  begin
+    if Arr <> nil then
+    begin
+      FreeMem(Pointer(PByte(Arr) - SizeOf(TArrayHeader)));
+      Arr := nil;
+    end;
+    Exit;
+  end;
+
+  TotalSize := SizeOf(TArrayHeader) + ElemSize * NewCount;
+
+  if Arr = nil then
+    Header := PArrayHeader(GetMem(TotalSize))
+  else
+  begin
+    OldHeader := Pointer(PByte(Arr) - SizeOf(TArrayHeader));
+    Header := PArrayHeader(ReallocMem(OldHeader, TotalSize));
+  end;
+
+  Header^.RefCount := 1;
+  Header^.ElemCount := NewCount;
+
+  Arr := Pointer(PByte(Header) + SizeOf(TArrayHeader));
+{$endif}
+end;
+function GetArrayLength(Arr: Pointer): Integer; stdcall; export;
+{$ifndef DLLRES}
+var
+  Header: PArrayHeader;
+{$endif}
+begin
+{$ifndef DLLRES}
+  if Arr = nil then Exit(0);
+  Header := PArrayHeader(PByte(Arr) - SizeOf(TArrayHeader));
+  Result := Header^.ElemCount;
+{$endif}
+end;
+procedure FreeArray(var Arr: Pointer); stdcall; export;
+begin
+{$ifndef DLLRES}
+  if Arr <> nil then
+  begin
+    FreeMem(Pointer(PByte(Arr) - SizeOf(TArrayHeader)));
+    Arr := nil;
+  end;
+{$endif}
+end;
+
+// ---------------------------------------------------------------------------------------
+
 function _atomic32(var target: integer; val: integer): integer; assembler; export;
 asm
+{$ifndef DLLRES}
   {$ifdef CPU64}
   mov    eax, val
 //  lock
@@ -156,6 +379,7 @@ asm
   xchg   [target], val
   mov    eax, val
   {$endif}
+{$endif}
 end;
 {$endif}
 {$ifdef DLLIMPORT}
@@ -181,6 +405,7 @@ function _xgetmemchunk_(size: dword): pointer; stdcall; export;
 var
   i: integer;
 begin
+{$ifndef DLLRES}
   // critical section without try..finally for performance; cuts time in half
   result := nil;
   _xmemchunksbegin;
@@ -203,6 +428,7 @@ begin
 
   // if no more chunks, return nil for fallback to standard GetMem
   _xmemchunksend;
+{$endif}
 end;
 function _xgetmemchunk(size: dword): pointer; stdcall;
 begin
@@ -220,6 +446,7 @@ end;
 {$ifdef DLLEXPORT}
 function xgetmem_a(size: ptruint): pointer; stdcall; export;
 begin
+{$ifndef DLLRES}
   {$ifdef XMMDEBUG}
   writeln('call to xgetmem(', size, ')');
   {$endif}
@@ -250,6 +477,7 @@ begin
 
   // move result pointer past the header
   result := result + sizeof(txmemheader);
+{$endif}
 end;
 function xgetmem(size: ptruint): pointer; stdcall; export;
 begin
@@ -265,7 +493,8 @@ end;
 {$endif DLLIMPORT}
 
 function xallocmem(size: ptruint): pointer; stdcall; export;
-begin   
+begin
+{$ifndef DLLRES}
   {$ifdef XMMDEBUG}
   writeln('call to xallocmem(', size, ')');
   {$endif}
@@ -273,14 +502,18 @@ begin
   if result = nil then exit;
   // zero out the allocated memory
   xfillmem(result, size, 0);
+{$endif}
 end;
 
 {$ifdef DLLEXPORT}
 function xreallocmem_(var p: pointer; size: QWord): pointer; stdcall; export;
+{$ifndef DLLRES}
 var
   h: pxmemheader;
   n: ptruint;
+{$endif}
 begin
+{$ifndef DLLRES}
   {$ifdef XMMDEBUG}
   writeln('call to xreallocmem(', ptruint(p), ', ', size, ')');
   {$endif}
@@ -336,6 +569,7 @@ begin
     xfreemem(p);
     p := result;
   end;
+{$endif}
 end;
 function xreallocmem(var p: pointer; size: QWord): pointer;
 begin
@@ -357,12 +591,14 @@ function xclone_(const p: pointer): pointer; stdcall; export;
 var
   u: ptruint;
 begin
+{$ifndef DLLRES}
   {$ifdef XMMDEBUG}
   writeln('call to xclone(', ptruint(p), ')');
   {$endif}
   u := xmemsize(p);
   result := xgetmem(u);
   xmovemem(p, result, u);
+{$endif}
 end;
 function xclone(const p: pointer): pointer; stdcall;
 begin
@@ -380,27 +616,33 @@ end;
 {$ifdef DLLEXPORT}
 function xmemsize(const p: pointer): ptruint; stdcall; export;
 begin
+{$ifndef DLLRES}
   {$ifdef XMMDEBUG}
   writeln('call to xmemsize(', ptruint(p), ')');
   {$endif}
   result := pxmemheader(p-sizeof(txmemheader))^.size;
+{$endif}
 end;
 {$endif DLLEXPORT}
 
 function xmemrealsize(const p: pointer): ptruint; stdcall; export;
 begin
+{$ifndef DLLRES}
   {$ifdef XMMDEBUG}
   writeln('call to xmemrealsize(', ptruint(p), ')');
   {$endif}
   result := pxmemheader(p-sizeof(txmemheader))^.realsize+sizeof(txmemheader);
+{$endif}
 end;
 
 function xmemavailsize(const p: pointer): ptruint; stdcall; export;
 begin
+{$ifndef DLLRES}
   {$ifdef XMMDEBUG}
   writeln('call to xmemavailsize(', ptruint(p), ')');
   {$endif}
   result := pxmemheader(p-sizeof(txmemheader))^.realsize;
+{$endif}
 end;
 
 {$ifdef DLLEXPORT}
@@ -408,6 +650,7 @@ function xfreemem_(p: pointer): ptruint; stdcall; export;
 var
   h: pxmemheader;
 begin
+{$ifndef DLLRES}
   {$ifdef XMMDEBUG}
   writeln('call to xfreemem(', ptruint(p), ')');
   {$endif}
@@ -431,6 +674,7 @@ begin
   end;
 
   _xmemchunksend;
+{$endif}
 end;
 function xfreemem(p: pointer): ptruint; stdcall;
 begin
@@ -446,49 +690,59 @@ end;
 {$endif DLLIMPORT}
 
 function xzeromem(p: pointer; len: ptruint): ptruint; stdcall; export;
-begin       
+begin
+{$ifndef DLLRES}     
   {$ifdef XMMDEBUG}
   writeln('call to xzeromem(', ptruint(p), ', ', len, ')');
   {$endif}
   result := xfillmem(p, len, 0);
+{$endif}
 end;
 
 {$ifdef DLLEXPORT}
 function xmovemem(const src: pointer; dst: pointer; len: ptruint): ptruint; stdcall; export;
 begin
+{$ifndef DLLRES}
   {$ifdef XMMDEBUG}
   writeln('call to xmovemem(', ptruint(src), ', ', ptruint(dst), ', ', len, ')');
   {$endif}
   RtlMoveMemory(dst, src, len);
   Exit(len);
+{$endif}
 end;
 {$endif DLLEXPORT}
 
 function xfillmem_a(p: pointer; len: ptruint; v: byte): ptruint; stdcall; [public, alias: 'xfillmem_a']; export;
-begin   
+begin
+{$ifndef DLLRES} 
   {$ifdef XMMDEBUG}
   writeln('call to xfillmem:1(', ptruint(p), ', ', len, ', ', v, ')');
   {$endif}
   RtlFillMemory(p, len, v);
   Exit(len);
+{$endif}
 end;
 
 function xfillmem_b(p: pointer; len: ptruint; v: char): ptruint; stdcall; [public, alias: 'xfillmem_b']; export;
-begin    
+begin
+{$ifndef DLLRES}
   {$ifdef XMMDEBUG}
   writeln('call to xfillmem:2(', ptruint(p), ', ', len, ', ', v, ')');
   {$endif}
   RtlFillMemory(p, len, ord(v));
   result := len;
+{$endif}
 end;
 
 {$ifdef DLLEXPORT}
 function xmemdiffat(const p1, p2: pointer; len: ptruint): ptruint; stdcall; export;
-begin       
+begin
+{$ifndef DLLRES}     
   {$ifdef XMMDEBUG}
   writeln('call to xmemdiffat(', ptruint(p1), ', ', ptruint(p2), ', ', len, ')');
   {$endif}
-  Exit(RtlCompareMemory(p1, p2, len));
+  result := RtlCompareMemory(p1, p2, len);
+{$endif}
 end;
 {$endif DLLEXPORT}
 
@@ -506,7 +760,8 @@ end;
 function xgetfreechunks: integer; stdcall; export;
 var
   i: integer;
-begin 
+begin
+{$ifndef DLLRES}
   {$ifdef XMMDEBUG}
   writeln('call to xgetfreechunks()');
   {$endif}     
@@ -514,6 +769,7 @@ begin
   _xmemchunksbegin;
   for i := 0 to high(xmemchunks) do if xmemchunks[i].h.size = 0 then result := result + 1;
   _xmemchunksend;
+{$endif}
 end;
 {$endif DLLEXPORT}
 
@@ -522,6 +778,7 @@ procedure xmminit; stdcall; export;
 var
   i: integer;
 begin
+{$ifndef DLLRES}
   {$ifdef XMMDEBUG}
   writeln('call to xchunksinit()');
   {$endif}
@@ -549,35 +806,55 @@ begin
 
   // exit critical section
   _xmemchunksend;
+{$endif}
 end;
+
+
 {$endif DLLEXPORT}
 
 function xfillmem(p: pointer; len: ptruint; v: byte): ptruint; stdcall; begin result := xfillmem_a(p, len, v); end;
 function xfillmem(p: pointer; len: ptruint; v: char): ptruint; stdcall; begin result := xfillmem_b(p, len, v); end;
 
 {$ifdef DLLEXPORT}
+{$ifndef DLLRES}
 exports
-  _atomic32         name '_atomic32',
+  _atomic32             name '_atomic32',
   
-  xreallocmem       name 'xreallocmem',
-  xgetmem           name 'xgetmem',
-  xallocmem         name 'xallocmem',
-  xclone            name 'xclone',
-  xmemsize          name 'xmemsize',
-  xmemrealsize      name 'xmemrealsize',
-  xmemavailsize     name 'xmemavailsize',
-  xfreemem          name 'xfreemem',
-  xzeromem          name 'xzeromem',
-  xmovemem          name 'xmovemem',
-  xfillmem_a        name 'xfillmem_a',
-  xfillmem_b        name 'xfillmem_b',
-  xmemdiffat        name 'xmemdiffat',
-  xmemcompare       name 'xmemcompare',
-  xgetfreechunks    name 'xgetfreechunks',
-  xmminit           name 'xmminit';
+  xreallocmem           name 'xreallocmem',
+  xgetmem               name 'xgetmem',
+  xallocmem             name 'xallocmem',
+  xclone                name 'xclone',
+  xmemsize              name 'xmemsize',
+  xmemrealsize          name 'xmemrealsize',
+  xmemavailsize         name 'xmemavailsize',
+  xfreemem              name 'xfreemem',
+  xzeromem              name 'xzeromem',
+  xmovemem              name 'xmovemem',
+  xfillmem_a            name 'xfillmem_a',
+  xfillmem_b            name 'xfillmem_b',
+  xmemdiffat            name 'xmemdiffat',
+  xmemcompare           name 'xmemcompare',
+  xgetfreechunks        name 'xgetfreechunks',
+  xmminit               name 'xmminit',
+  
+  SetUtf16StringLength  name 'SetUtf16StringLength',
+  GetUtf16StringLength  name 'GetUtf16StringLength',
+  FreeUtf16String       name 'FreeUtf16String',
+
+  SetUtf8StringLength   name 'SetUtf8StringLength',
+  GetUtf8StringLength   name 'GetUtf8StringLength',
+  FreeUtf8String        name 'FreeUtf8String',
+  
+  SetArrayLength        name 'SetArrayLength',
+  GetArrayLength        name 'GetArrayLength',
+  FreeArray             name 'FreeArray'
+  ;
+{$endif}
 {$endif DLLEXPORT}
+{$ifndef DLLRES}
 initialization
   // initialization: prepares memory chunk pool for allocations (zeros all)
   xmminit;
+{$endif}
 
 end.

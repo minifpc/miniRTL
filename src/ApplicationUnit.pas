@@ -119,7 +119,7 @@ begin
   
   if not Assigned(p) then
   begin
-    ShowError(sError_TApplication_ref);
+    ShowErrorA(sError_TApplication_ref);
     Exit(nil);
   end;
   
@@ -140,7 +140,7 @@ begin
   
   if not Assigned(p) then
   begin
-    ShowError(sError_TApplication_nil);
+    ShowErrorA(sError_TApplication_nil);
     Exit(nil);
   end;
   
@@ -150,7 +150,7 @@ begin
   
   if Args = nil then
   begin
-    ShowError(sError_TApplication_parseArgs);
+    ShowErrorA(sError_TApplication_parseArgs);
     ExitProcess(1);
   end;
   
@@ -171,7 +171,7 @@ begin
   
   if Application = nil then
   begin
-    ShowError(sError_TApplication_ref);
+    ShowErrorA(sError_TApplication_ref);
     Exit;
   end;
 end;
@@ -196,14 +196,14 @@ begin
   
   if not Assigned(Application) then
   begin
-    ShowError(sError_TApplication_ref);
+    ShowErrorA(sError_TApplication_ref);
     Exit;
   end;
 
   TForm(Referenz) := TForm(InstanceClass).Create;
   if not Assigned(Application.FAppForm) then
   begin
-    ShowError(sError_TApplication_ref);
+    ShowErrorA(sError_TApplication_ref);
     halt(2);
   end;
   
@@ -238,13 +238,13 @@ begin
   
   if p = nil then
   begin
-    ShowError(sError_TApplication_ref);
+    ShowErrorA(sError_TApplication_ref);
     Exit(1);
   end;
   
   if form = nil then
   begin
-    ShowError(sError_TForm_nil);
+    ShowErrorA(sError_TForm_nil);
     Exit(1);
   end;
   form.ShowModal;
@@ -254,7 +254,7 @@ function TApplication_Run1(p: TApplication): Integer; stdcall; export;
 begin
   if not Assigned(Application) then
   begin
-    ShowError(sError_TApplication_ref);
+    ShowErrorA(sError_TApplication_ref);
     Exit(1);
   end;
   

@@ -168,8 +168,9 @@ type
   end;
 
 const
-  INVALID_HANDLE_VALUE    = THandle(-1);
-  INVALID_FILE_ATTRIBUTES = DWORD(-1);
+  INVALID_HANDLE_VALUE    = THandle($FFFFFFFF);
+  INVALID_FILE_ATTRIBUTES = DWORD  ($FFFFFFFF);
+  INVALID_FILE_SIZE       = -1;
 
   // Constants for File Access
   GENERIC_READ = $80000000;

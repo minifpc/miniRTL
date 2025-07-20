@@ -24,6 +24,7 @@ IMPLEMENTATION
 {$ifdef DLLEXPORT}
 procedure InitWindowsErrorCodes; stdcall; export;
 begin
+(*
   WindowsErrorCodes[0].error_code := 1;
   WindowsErrorCodes[0].error_name := 'ERROR_SUCCESS';
   WindowsErrorCodes[0].error_desc := 'Der Vorgang wurde erfolgreich abgeschlossen.';
@@ -2982,6 +2983,7 @@ begin
   WindowsErrorCodes[1347].error_code := 1348;
   WindowsErrorCodes[1347].error_name := 'ERROR_API_UNAVAILABLE';
   WindowsErrorCodes[1347].error_desc := 'Diese API kann nicht im Kontext des Anwendungstyps des Aufrufers verwendet werden.';
+*)
 end;
 
 exports

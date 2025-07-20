@@ -202,10 +202,10 @@ type
   funcs
   **************************************** }
 
-procedure fpc_intf_assign(var d: pointer; const s: pointer); compilerproc;
-function fpc_class_as_intf(const s: pointer; const iid: TGUID): IInterface; compilerproc;
-function fpc_intf_as_class(const s: pointer; const aclass: TClass): pointer; compilerproc;
-function fpc_intf_cast(const s: pointer; const iid: TGUID): IInterface; compilerproc;
+procedure fpc_intf_assign  (var   d: pointer; const s: pointer); compilerproc;
+function  fpc_class_as_intf(const s: pointer; const iid: TGUID): IInterface ; compilerproc;
+function  fpc_intf_as_class(const s: pointer; const aclass: TClass): pointer; compilerproc;
+function  fpc_intf_cast    (const s: pointer; const iid: TGUID): IInterface ; compilerproc;
 procedure fpc_intf_decr_ref(var i: pointer); compilerproc;
 procedure fpc_intf_incr_ref(i: pointer); compilerproc;
 
@@ -223,6 +223,7 @@ function IsGUIDEqual(const guid1, guid2: TGUID): boolean; stdcall; external RTLD
 
 function TInterfaceEntry.GetIID: PGUID;
 begin
+{$ifndef DLLRES}
   {$ifdef VER3_0}
   GetIID := IIDRef;
   {$else VER3_0}
@@ -230,10 +231,12 @@ begin
   else
     GetIID := nil;
   {$endif VER3_0}
+{$endif DLLRES}
 end;
 
 function TInterfaceEntry.GetIIDStr: PShortString;
 begin
+{$ifndef DLLRES}
   {$ifdef VER3_0}
   GetIIDStr := IIDStrRef;
   {$else VER3_0}
@@ -241,6 +244,7 @@ begin
   else
     GetIIDStr := nil;
   {$endif VER3_0}
+{$endif DLLRES}
 end;
 
 { ****************************************
@@ -249,7 +253,9 @@ end;
 
 function TVmt.GetvParent: PVMT;
 begin
+{$ifndef DLLRES}
   if vParentRef <> nil then result := vParentRef^ else result := nil;
+{$endif DLLRES}
 end;
 
 { ****************************************
@@ -269,15 +275,19 @@ class function TObject.NewInstance: TObject;
 var
    p: pointer;
 begin
+{$ifndef DLLRES}
   GetMem(p, InstanceSize);
   //writeln('TObject.NewInstance | ', TClass(self).ClassName, ' | memsize = ', MemSize(p), ' | ptr = ', ptruint(p));
   if p <> nil then InitInstance(p);
   result := TObject(p);
+{$endif DLLRES}
 end;
 
 procedure TObject.FreeInstance;
 begin
+{$ifndef DLLRES}
   FreeMem(Pointer(Self));
+{$endif DLLRES}
 end;
 
 function TObject.SafeCallException(exceptobject: TObject; exceptaddr: codepointer): HRESULT;
@@ -286,39 +296,45 @@ begin
 end;
 
 procedure TObject.Free;
-begin                     
+begin
+{$ifndef DLLRES}
   //writeln('TObject.Free | ', ClassName, ClassName, ' | memsize = ', MemSize(pointer(self)), ' | ptr = ', ptruint(pointer(self)));
   if self <> nil then self.Destroy;
+{$endif DLLRES}
 end;
 
 {$ifdef DLLEXPORT}
 procedure InitInterfacePointers(objclass: tclass;instance : pointer); stdcall; export;
+{$ifndef DLLRES}
 var
   ovmt: PVmt;
   i: longint;
   intftable: PInterfaceTable;
   Res: PInterfaceEntry;
+{$endif DLLRES}
 begin
+{$ifndef DLLRES}
   ovmt := PVmt(objclass);
   while assigned(ovmt) and {$ifdef VER3_0}(ovmt^.vIntfTable <> @emptyintf){$else}assigned(ovmt^.vIntfTable){$endif} do
+  begin
+    intftable:=ovmt^.vIntfTable;
+    {$ifdef VER3_0}
+    if assigned(intftable) then
+    {$endif VER3_0}
     begin
-      intftable:=ovmt^.vIntfTable;
-      {$ifdef VER3_0}
-      if assigned(intftable) then
-      {$endif VER3_0}
+      i:=intftable^.EntryCount;
+      Res:=@intftable^.Entries[0];
+      while i>0 do
       begin
-        i:=intftable^.EntryCount;
-        Res:=@intftable^.Entries[0];
-        while i>0 do begin
-          if Res^.IType = etStandard then
-            ppointer(@(pbyte(instance)[Res^.IOffset]))^:=
-              pointer(Res^.VTable);
-          inc(Res);
-          dec(i);
-        end;
+        if Res^.IType = etStandard then
+          ppointer(@(pbyte(instance)[Res^.IOffset]))^ := pointer(Res^.VTable);
+        inc(Res);
+        dec(i);
       end;
-      ovmt:=ovmt^.vParent;
     end;
+    ovmt:=ovmt^.vParent;
+  end;
+{$endif DLLRES}
 end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
@@ -326,9 +342,12 @@ procedure InitInterfacePointers(objclass: tclass;instance : pointer); stdcall; e
 {$endif DLLIMPORT}
 
 class function TObject.InitInstance(Instance: Pointer): TObject;
+{$ifndef DLLRES}
 var
   vmt: PVmt;
+{$endif DLLRES}
 begin
+{$ifndef DLLRES}
   FillChar(Instance^, InstanceSize, 0);
   PPointer(Instance)^ := Pointer(self);
 
@@ -343,41 +362,56 @@ begin
   //end;
 
   result := TObject(Instance);
+{$endif DLLRES}
 end;
 
 class function TObject.ClassType: TClass;
 begin
+{$ifndef DLLRES}
   result := TClass(Pointer(Self));
+{$endif DLLRES}
 end;
 
 class function TObject.ClassInfo: Pointer;
 begin
+{$ifndef DLLRES}
   result := PVmt(Self)^.vTypeInfo;
+{$endif DLLRES}
 end;
 
 class function TObject.ClassName: String;
 begin
+{$ifndef DLLRES}
   result := PVmt(Self)^.vClassName^;
+{$endif DLLRES}
 end;
 
 class function TObject.ClassParent: TClass;
 begin
+{$ifndef DLLRES}
   result := TClass(PVmt(Self)^.vParent);
+{$endif DLLRES}
 end;
 
 class function TObject.InstanceSize: SizeInt;
 begin
+{$ifndef DLLRES}
   result := PVmt(Self)^.vInstanceSize;
+{$endif DLLRES}
 end;
 
 class function TObject.InheritsFrom(aclass: TClass): Boolean;
+{$ifndef DLLRES}
 var
   vmt: PVmt;
+{$endif DLLRES}
 begin
+{$ifndef DLLRES}
   if aclass = nil then exit(false);
   vmt := PVmt(Self);
   while (vmt <> nil) and (vmt <> PVmt(aclass)) do vmt := vmt^.vParent;
   result := vmt = PVmt(aclass);
+{$endif DLLRES}
 end;
 
 procedure TObject.AfterConstruction;
@@ -392,12 +426,14 @@ end;
 // replace it later to more common place?
 function IsGUIDEqual(const guid1, guid2: TGUID): boolean; stdcall; export;
 begin
+{$ifndef DLLRES}
   result:=
   (guid1.D1=guid2.D1) and
   (PDWORD(@guid1.D2)^=PDWORD(@guid2.D2)^) and
   (PDWORD(@guid1.D4[0])^=PDWORD(@guid2.D4[0])^) and
   (PDWORD(@guid1.D4[4])^=PDWORD(@guid2.D4[4])^);
   //result := CompareByte(guid1, guid2, sizeof(TGUID)) = 0;
+{$endif DLLRES}
 end;
 {$endif DLLEXPORT}
 
@@ -410,6 +446,7 @@ function GetInterfaceByEntry(Instance: pointer; IEntry: PInterfaceEntry; out obj
 var
   Getter: TMethod;
 begin
+{$ifndef DLLRES}
   Pointer(Obj) := nil;
   Getter.Data := Instance;
   if Assigned(IEntry) and Assigned(Instance) then case IEntry^.IType of
@@ -439,6 +476,7 @@ begin
       end;
     end;
   result := assigned(pointer(obj));
+{$endif DLLRES}
 end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
@@ -447,10 +485,13 @@ function GetInterfaceByEntry(Instance: pointer; IEntry: PInterfaceEntry; out obj
 
 {$ifdef DLLEXPORT}
 function GetInterface_(objclass: TObject; const iid: TGUID; out obj): boolean; export;
+{$ifndef DLLRES}
 var
   IEntry: PInterfaceEntry;
   Instance: TObject;
+{$endif DLLRES}
 begin
+{$ifndef DLLRES}
   if IsGUIDEqual(IObjectInstance, iid) then begin
     TObject(Obj) := objclass;
     Result := true;
@@ -472,10 +513,13 @@ begin
 
   { Getter function will normally AddRef, so adding another reference here will cause memleak. }
   if result and (IEntry^.IType in [etStandard, etFieldValue]) then IInterface(obj)._AddRef;
+{$endif DLLRES}
 end;
 function TObject.GetInterface(const iid: TGUID; out obj): boolean;
 begin
+{$ifndef DLLRES}
   Exit(GetInterface_(self, iid, obj));
+{$endif DLLRES}
 end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
@@ -488,10 +532,13 @@ end;
 
 {$ifdef DLLEXPORT}
 function GetInterfaceWeak_(objclass: TObject; const iid: TGUID; out obj): boolean; export;
+{$ifndef DLLRES}
 var
   IEntry: PInterfaceEntry;
   Instance: TObject;
+{$endif DLLRES}
 begin
+{$ifndef DLLRES}
   if IsGUIDEqual(IObjectInstance, iid) then begin
     TObject(Obj) := objclass;
     Result := true;
@@ -513,6 +560,7 @@ begin
 
   { Getter function will normally AddRef, so we have to release it, else the ref is not weak. }
   if result and not (IEntry^.IType in [etStandard, etFieldValue]) then IInterface(obj)._Release;
+{$endif DLLRES}
 end;
 function TObject.GetInterfaceWeak(const iid: TGUID; out obj): boolean;
 begin
@@ -529,11 +577,14 @@ end;
 
 {$ifdef DLLEXPORT}
 function GetInterfaceEntry_(objclass: TObject; const iid: TGUID): PInterfaceEntry; export;
+{$ifndef DLLRES}
 var
   i: longint;
   intftable: PInterfaceTable;
   ovmt: PVmt;
+{$endif DLLRES}
 begin
+{$ifndef DLLRES}
   ovmt := PVmt(objclass);
   while Assigned(ovmt) and Assigned(ovmt^.vIntftable) do begin
     intftable := ovmt^.vIntfTable;
@@ -544,6 +595,7 @@ begin
     ovmt := ovmt^.vParent;
   end;
   result := nil;
+{$endif DLLRES}
 end;
 function TObject.GetInterfaceEntry(const iid: TGUID): PInterfaceEntry;
 begin
@@ -570,13 +622,16 @@ end;
 
 function TInterfacedObject._AddRef: LongInt; stdcall;
 begin
+{$ifndef DLLRES}
   // @@todo: InterlockedDecrement/Increment
   inc(FRefCount);
   result := FRefCount;
+{$endif DLLRES}
 end;
 
 function TInterfacedObject._Release: LongInt; stdcall;
 begin
+{$ifndef DLLRES}
   // @@todo: InterlockedDecrement/Increment
   dec(FRefCount);
   result := FRefCount;
@@ -593,13 +648,16 @@ begin
       self.Destroy;
     end;
   end;
+{$endif DLLRES}
 end;
 
 destructor TInterfacedObject.Destroy;
 begin
+{$ifndef DLLRES}
   FRefCount := 0;
   FDestroyCount := 0;
   inherited Destroy;
+{$endif DLLRES}
 end;
 
 procedure TInterfacedObject.AfterConstruction;
@@ -647,8 +705,10 @@ end;
 
 class operator TMethod.<(const aLeft, aRight: TMethod): Boolean; inline;
 begin
+{$ifndef DLLRES}
   Result := (PtrUInt(aLeft.Data) < PtrUInt(aRight.Data)) or
             ((aLeft.Data = aRight.Data) and (PtrUInt(aLeft.Code) < PtrUInt(aRight.Code)));
+{$endif DLLRES}
 end;
 
 class operator TMethod.<=(const aLeft, aRight: TMethod): Boolean; inline;
@@ -673,6 +733,7 @@ var
   tmpi: pointer; // _AddRef before _Release
   tmpi2: pointer; // weak!
 begin
+{$ifndef DLLRES}
   if s = nil then exit(nil);
   tmpi := nil;
   tmpi2 := nil;
@@ -680,6 +741,7 @@ begin
     HandleError(219);
   result := nil;
   pointer(result) := tmpi;
+{$endif DLLRES}
 end;
 function fpc_class_as_intf(const s: pointer; const iid: TGUID): IInterface; compilerproc;
 begin
@@ -698,10 +760,12 @@ function fpcintfasclass(const s: pointer; const aclass: TClass): pointer; stdcal
 var
   tmpo: tobject;
 begin
+{$ifndef DLLRES}
   if s = nil then exit(nil);
   if not ((IUnknown(s).QueryInterface(IObjectInstance, tmpo) = S_OK) and tmpo.InheritsFrom(aclass)) then
     HandleError(219);
   result := tmpo;
+{$endif DLLRES}
 end;
 function fpc_intf_as_class(const s: pointer; const aclass: TClass): pointer; [public, alias: 'FPC_INTF_AS_CLASS']; compilerproc;
 begin
@@ -718,16 +782,20 @@ end;
 
 function fpc_intf_cast(const s: pointer; const iid: TGUID): IInterface; [public, alias: 'FPC_INTF_CAST']; compilerproc;
 begin
+{$ifndef DLLRES}
   msgdebug('@@todo: fpc_intf_cast');
+{$endif DLLRES}
 end;
 
 {$ifdef DLLEXPORT}
 procedure fpcintfdecrref(var i: pointer); stdcall; export;
 begin
+{$ifndef DLLRES}
   if i <> nil then begin
     IUnknown(i)._Release;
     i := nil;
   end;
+{$endif DLLRES}
 end;
 procedure fpc_intf_decr_ref(var i: pointer); compilerproc; [public, alias: 'FPC_INTF_DECR_REF'];
 begin
@@ -752,11 +820,13 @@ end;
 //procedure intf_incr_ref(i: pointer); [external name 'FPC_INTF_INCR_REF'];
 
 {$ifdef DLLEXPORT}
+{$ifndef DLLRES}
 exports
   InitInterfacePointers name 'InitInterfacePointers',
   fpcintfdecrref name 'fpcintfdecrref',
   IsGUIDEqual name 'IsGUIDEqual'
   ;
+{$endif DLLRES}
 {$endif DLLIMPORT}
   
 {$endif}
