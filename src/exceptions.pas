@@ -22,8 +22,8 @@ type
   Exception = class(TObject)
     Message: string;
     Code: integer;
-    constructor Create    (const msg: string; const errcode: integer);
-    constructor Create    (const msg: string);
+    constructor Create    (const msg: string; const errcode: integer);     overload;
+    constructor Create    (const msg: string);                             overload;
     constructor CreateFmt (const msg: string; const args: array of const);
   end;
 

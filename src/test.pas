@@ -8,7 +8,7 @@
 program test;
 
 uses
-  Windows, Dialogs, SysUtils, StrUtils, Exceptions, Forms,
+  Windows, Dialogs, SysUtils, StrUtils, Exceptions, Forms, Stream,
   Locales, global, ErrorData, Container, Graphics, ApplicationUnit;
 
 type
@@ -35,11 +35,14 @@ type
 type
   TVector        = specialize TListVector< Integer >;
   TVectorReverse = TVector.ReverseEnumerator;
-
+  
+  TIntegerFileStream = specialize TFileStream<Integer>;
 var
   Form1 : TForm1;
 
 var
+  FS    : TIntegerFileStream;
+  
   V     : TVector;
   REnum : TVectorReverse;
   
@@ -90,7 +93,7 @@ procedure CleanUp_2; begin WriteLn('cleanup2 called.'); end;
 
 var
   item: Integer;
-
+  tc: TComponent;
 begin
   writeln('start');
   
@@ -116,8 +119,22 @@ begin
   
   writeln('fooo');
   
+  FS := TIntegerFileStream.Create;
+  FS.LoadFromFile('test.$$$');
+  FS.Free;
+  
+  (*
   Form1 := TForm1.Create(100, 100, 500, 400);
-  Form1.ShowModal;
+  if Assigned(Components) then
+  begin
+    for tc in Components do
+    writeln('cn: ' + tc.ClassName);
+  end else
+  begin
+    writeln('no components.');
+  end;
+  
+  Form1.ShowModal;*)
     
   REnum.Free;
   V.Free;

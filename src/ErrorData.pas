@@ -25,6 +25,8 @@ type
   end;
 
 procedure RaiseLastOSError;
+function SysErrorMessage(ErrorCode: DWORD): string;
+
 implementation
 
 uses
@@ -59,6 +61,27 @@ begin
   SetString(MsgStr, MsgBuf, MsgLen);
 
   raise EWindowsError.CreateError(ErrCode, MsgStr);
+end;
+
+function SysErrorMessage(ErrorCode: DWORD): string;
+var
+  Buffer: PChar;
+begin
+  // FormatMessage alloziert intern Speicher für Buffer
+  if FormatMessageA(
+       FORMAT_MESSAGE_ALLOCATE_BUFFER or FORMAT_MESSAGE_FROM_SYSTEM or FORMAT_MESSAGE_IGNORE_INSERTS,
+       nil,
+       ErrorCode,
+       0, // Sprache: 0 = automatisch
+       @Buffer,
+       0,
+       nil
+     ) <> 0 then
+  begin
+    Result := Trim(Buffer);
+    LocalFree(HLOCAL(Buffer)); // Speicher freigeben
+  end else
+  Result := Format('Unbekannter Fehlercode: %d', [ErrorCode]);
 end;
 
 end.

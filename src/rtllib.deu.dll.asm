@@ -1,0 +1,10 @@
+BITS 64
+default rel
+CPU x64
+
+SECTION .text
+	ALIGN 16
+	GLOBAL PASCALMAIN
+PASCALMAIN:
+	ret
+..@c2:

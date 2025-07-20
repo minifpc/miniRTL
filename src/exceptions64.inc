@@ -231,7 +231,9 @@ procedure JumpToHandleSignal;
 //var
 //  res, rip, _rbp, sigtype : dword64;
 begin
+{$ifndef DLLRES}
   writeln('JumpToHandleSignal');
+{$endif DLLRES}
 //  asm
 //    movq (%rbp),%rax
 //    movq %rax,_rbp
@@ -292,6 +294,7 @@ function signals_exception_handler_(
   dispatch  : pointer): integer; stdcall; export;
   function CallSignal(sigtype, frame: longint; must_reset_fpu: boolean): integer;
   begin
+  {$ifndef DLLRES}
     if ex_level >= ex_max_level then exit;
     ex_rip[ex_level] := excontext^.Rip;
     except_signal[ex_level] := sigtype;
@@ -300,10 +303,12 @@ function signals_exception_handler_(
     excontext^.rip := ptruint(@JumpToHandleSignal);
     exrec^.ExceptionCode := 0;
     result := 0;
+  {$endif DLLRES}
   end;
 var
   frame, ret: integer;
 begin
+{$ifndef DLLRES}
   writeln('signals_exception_handler');
 
   frame := excontext^.rbp;
@@ -319,6 +324,7 @@ begin
   ret := CallSignal(SIGSEGV, frame, false);
 
   result := ret;
+{$endif DLLRES}
 end;
 function signals_exception_handler(
   exrec     : PEXCEPTION_RECORD;
@@ -326,7 +332,9 @@ function signals_exception_handler(
   excontext : PCONTEXT;
   dispatch  : pointer): integer; stdcall;
 begin
+{$ifndef DLLRES}
   Exit(signals_exception_handler_(exrec, exframe, excontext, dispatch));
+{$endif DLLRES}
 end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
@@ -336,17 +344,21 @@ function signals_exception_handler(
   excontext : PCONTEXT;
   dispatch  : pointer): integer; stdcall;
 begin
+{$ifndef DLLRES}
   Exit(signals_exception_handler_(exrec, exframe, excontext, dispatch));
+{$endif DLLRES}
 end;
 {$endif DLLIMPORT}
 
 function syswin_x64_exception_handler(ex: PEXCEPTION_POINTERS): integer; stdcall;
 begin
+{$ifndef DLLRES}
   writeln('syswin_x64_exception_handler');
 
   result := signals_exception_handler(@ex^.ExceptionRecord, nil, @ex^.ContextRecord, nil);
 
   wait_for_enter;
+{$endif DLLRES}
 end;
 
 var
@@ -355,24 +367,30 @@ var
 {$ifdef DLLEXPORT}
 procedure install_exception_handlers; export;
 begin
+{$ifndef DLLRES}
   // this thing doesnt work, find out why
   //SetUnhandledExceptionFilter(@syswin_x64_exception_handler);
   vectored_exception_handler := AddVectoredExceptionHandler(1{1 = higher priotity}, @syswin_x64_exception_handler);
+{$endif DLLRES}
 end;
 
 procedure remove_exception_handlers; export;
 begin
+{$ifndef DLLRES}
   //SetUnhandledExceptionFilter(nil);
   if vectored_exception_handler <> nil then
     if RemoveVectoredExceptionHandler(vectored_exception_handler) then
       vectored_exception_handler := nil;
+{$endif DLLRES}
 end;
 
 // x64 only
 function RunErrorCodeSEH(const rec: EXCEPTION_RECORD; const context: TContext): longint; export;
 begin
+{$ifndef DLLRES}
   result := RunErrorCode(rec);
   if (result = -255) then TranslateMxcsr(context.MxCsr, result);
+{$endif DLLRES}
 end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
@@ -387,6 +405,7 @@ var
   localmxcsr: dword;
   localfpucw: word;
 begin
+{$ifndef DLLRES}
   localfpucw := Default8087CW;
   localmxcsr := DefaultMXCSR;
   asm
@@ -395,6 +414,7 @@ begin
     fldcw   localfpucw
     ldmxcsr localmxcsr
   end;
+{$endif DLLRES}
 end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
@@ -407,6 +427,7 @@ function GetBacktrace_(
   Context       : TContext;
   StartingFrame : Pointer;
   out Frames    : PPointer): longint; stdcall; export;
+{$ifndef DLLRES}
 var
   UnwindHistory: UNWIND_HISTORY_TABLE;
   RuntimeFunction: PRUNTIME_FUNCTION;
@@ -414,7 +435,9 @@ var
   EstablisherFrame: QWord;
   ImageBase: QWord;
   FrameCount, FrameBufSize: longint;
+{$endif DLLRES}
 begin
+{$ifndef DLLRES}
   FillChar(UnwindHistory, sizeof(UNWIND_HISTORY_TABLE), 0);
   UnwindHistory.Unwind := 1;
 
@@ -443,13 +466,16 @@ begin
     end;
   until false;
   Result := FrameCount;
+{$endif DLLRES}
 end;
 function GetBacktrace(
   Context       : TContext;
   StartingFrame : Pointer;
   out Frames    : PPointer): longint; stdcall;
 begin
+{$ifndef DLLRES}
   Exit(GetBacktrace_(Context, StartingFrame, Frames));
+{$endif DLLRES}
 end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
@@ -462,7 +488,9 @@ function GetBacktrace(
   StartingFrame : Pointer;
   out Frames    : PPointer): longint; stdcall;
 begin
+{$ifndef DLLRES}
   Exit(GetBacktrace_(Context, StartingFrame, Frames));
+{$endif DLLRES}
 end;
 {$endif DLLIMPORT}
 
@@ -472,13 +500,16 @@ function PushException_(
   var context : TContext;
   out obj     : TObject;
   AcceptNull  : boolean): boolean; stdcall; export;
+{$ifndef DLLRES}
 var
   adr: Pointer;
   exc: PExceptObject;
   Frames: PPointer;
   FrameCount: longint;
   code: longint;
+{$endif DLLRES}
 begin
+{$ifndef DLLRES}
   Adr := Pointer(rec.ExceptionInformation[0]);
   Obj := TObject(rec.ExceptionInformation[1]);
   Framecount := longint(PtrUInt(rec.ExceptionInformation[2]));
@@ -504,10 +535,13 @@ begin
   exc^.Next := ExceptObjectStack;
   ExceptObjectStack := exc;
   Result := true;
+{$endif DLLRES}
 end;
 function PushException(var rec: EXCEPTION_RECORD; var context: TContext; out obj: TObject; AcceptNull: boolean): boolean;
 begin
+{$ifndef DLLRES}
   Exit(PushException_(rec, context, obj, AcceptNull));
+{$endif DLLRES}
 end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
@@ -517,16 +551,21 @@ function PushException(
   out obj     : TObject;
   AcceptNull  : boolean): boolean;
 begin
+{$ifndef DLLRES}
   Exit(PushException_(rec, context, obj, AcceptNull));
+{$endif DLLRES}
 end;
 {$endif DLLIMPORT}
 
 // we need to return the exception object to dispose it
 {$ifdef DLLEXPORT}
 function fpc_popobjectstack_: TObject; stdcall export;
+{$ifndef DLLRES}
 var
   hp: PExceptObject;
+{$endif DLLRES}
 begin
+{$ifndef DLLRES}
   hp := ExceptObjectStack;
   if hp = nil then
     halt(1)
@@ -537,16 +576,21 @@ begin
     dispose(hp);
     erroraddr := nil;
   end;
+{$endif DLLRES}
 end;
 function fpc_popobjectstack: TObject; [public , alias: 'FPC_POPOBJECTSTACK']; compilerproc;
 begin
+{$ifndef DLLRES}
   Exit(fpc_popobjectstack_);
+{$endif DLLRES}
 end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
 function fpc_popobjectstack: TObject; [public , alias: 'FPC_POPOBJECTSTACK']; compilerproc;
 begin
+{$ifndef DLLRES}
   Exit(fpc_popobjectstack_);
+{$endif DLLRES}
 end;
 {$endif DLLIMPORT}
 
@@ -560,13 +604,16 @@ function __FPC_specific_handler_(
   var frame    : TSEHFrame;
   var context  : TCONTEXT;
   var dispatch : TDispatcherContext): EXCEPTION_DISPOSITION; stdcall; export;
+{$ifndef DLLRES}
 var
   TargetRva, ControlRva: DWord;
   scope: PScopeRec;
   scopeIdx: DWord;
   TargetAddr: Pointer;
   obj: TObject;
+{$endif DLLRES}
 begin
+{$ifndef DLLRES}
   writeln('__FPC_specific_handler');
   result := ExceptionContinueSearch;
   ControlRva := dispatch.ControlPc - dispatch.ImageBase;
@@ -611,6 +658,7 @@ begin
       inc(ScopeIdx);
     end;
   end;
+{$endif DLLRES}
 end;
 function __FPC_specific_handler(
   var rec      : EXCEPTION_RECORD;
@@ -618,7 +666,9 @@ function __FPC_specific_handler(
   var context  : TCONTEXT;
   var dispatch : TDispatcherContext): EXCEPTION_DISPOSITION; [public, alias: '__FPC_specific_handler'];
 begin
+{$ifndef DLLRES}
   Exit(__FPC_specific_handler(rec, frame, context, dispatch));
+{$endif DLLRES}
 end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
@@ -633,14 +683,18 @@ function __FPC_specific_handler(
   var context  : TCONTEXT;
   var dispatch : TDispatcherContext): EXCEPTION_DISPOSITION; [public, alias: '__FPC_specific_handler'];
 begin
+{$ifndef DLLRES}
   Exit(__FPC_specific_handler(rec, frame, context, dispatch));
+{$endif DLLRES}
 end;
 {$endif DLLIMPORT}
 // ----
 
 procedure fpc_doneexception; [public, alias: 'FPC_DONEEXCEPTION'] compilerproc;
 begin
+{$ifndef DLLRES}
   internal_popobjectstack.Free;
+{$endif DLLRES}
 end;
 
 procedure fpc_reraise; [public, alias: 'FPC_RERAISE']; compilerproc;
@@ -657,6 +711,7 @@ procedure fpc_raiseexception_(
   anaddr : codepointer;
   aframe : pointer); stdcall; export;
 begin
+{$ifndef DLLRES}
   //writeln('fpc_raiseexception');
 
   if obj = nil then writeln('obj nil');
@@ -667,13 +722,16 @@ begin
     //writeln('exception message = ', TTestException(obj).test);
     writeln(TTestException(obj).test);
   end;
+{$endif DLLRES}
 end;
 procedure fpc_raiseexception(
   obj    : TObject;
   anaddr : codepointer;
   aframe : pointer); [public, alias: 'FPC_RAISEEXCEPTION']; compilerproc;
 begin
+{$ifndef DLLRES}
   fpc_raiseexception_(obj, anaddr, aframe);
+{$endif DLLRES}
 end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
@@ -682,17 +740,21 @@ procedure fpc_raiseexception(
   anaddr : codepointer;
   aframe : pointer); [public, alias: 'FPC_RAISEEXCEPTION']; compilerproc;
 begin
+{$ifndef DLLRES}
   fpc_raiseexception_(obj, anaddr, aframe);
+{$endif DLLRES}
 end;
 {$endif DLLIMPORT}
 
 {$ifdef DLLEXPORT}
+{$ifndef DLLRES}
 exports
   install_exception_handlers name 'install_exception_handlers',
   remove_exception_handlers name 'remove_exception_handlers',
   RunErrorCodeSEH name 'RunErrorCodeSEH',
   SysResetFPU name 'SysResetFPU'
   ;
+{$endif DLLRES}
 {$endif DLLEXPORT}
   
 {$endif}

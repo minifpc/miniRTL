@@ -118,18 +118,14 @@ end;
 { TListVector }
 constructor TListVector.Create(AValue: T1);
 begin
-writeln('vector c');
   inherited Create(AValue);
-writeln('c vector');
 end;
  
  
 { TList }
 constructor TList.Create(AValue: T1);
 begin
-writeln('list c');
   inherited Create;
-writeln('c list');
   FValue  := AValue;
   
   FTop    := self;
@@ -143,7 +139,6 @@ procedure TList.Add(AValue: T1);
 var
   tmp: specialize TList<T1>;
 begin
-writeln('listadd c');
   tmp := TList.Create(AValue);
   tmp.FPrev     := FBottom; 
   

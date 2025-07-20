@@ -1,13 +1,13 @@
 // ---------------------------------------------------------------------------------------
 // Copyright(c) 2025 @paule32 and @fibonacci
 // ---------------------------------------------------------------------------------------
-{$mode delphi}
+{$mode objfpc}{$H+}
 {$M-}
 unit Forms;
 
 interface
 uses
-  Windows, Dialogs, SysUtils, StrUtils, Locales, Classes, ErrorData;
+  Windows, Dialogs, SysUtils, StrUtils, Locales, Classes, Container, ErrorData;
 
 type
   TNotifyEvent = procedure(Sender: TObject) of object;
@@ -148,10 +148,11 @@ type
     destructor Destroy; override;
     
     class function ClassName: String; stdcall; virtual;
+    
+    //property Components[I: Integer]: TComponent read GetComponent;
   published
     property ComponentCount: Integer read GetComponentCount;
     property ComponentIndex: Integer read GetComponentIndex write SetComponentIndex;
-    //property Components[I: Integer]: TComponent read GetComponent;
     property Owner: TComponent read FOwner;
     property Handle: HWND read FHandle;
     property Caption: String read FCaption write SetComponentCaption;
@@ -323,17 +324,11 @@ type
   end;
 
 // ---------------------------------------------------------------------------------------
-// the internal "export" function's and procedure's ...
-// ---------------------------------------------------------------------------------------
-type
-  PComponentsArray = ^TComponentsArray;
-  TComponentsArray = array[0..0] of TComponent;
-
-var
-  Components: PComponentsArray;
-  ComponentsCount: Integer = 0;
-
 {$ifdef DLLEXPORT}
+type
+  TComponentList = specialize TListVector< TComponent >; var
+  Components     : TComponentList; export;
+
 // ---------------------------------------------------------------------------------------
 function  TPersistent_Create            (p: TPersistent            ): TPersistent;          stdcall; export;
 // ---------------------------------------------------------------------------------------
@@ -424,6 +419,10 @@ function HitTestToStr(ht: Integer): string; stdcall; export;
 // the internal "import" function's and procedure's ...
 // ---------------------------------------------------------------------------------------
 {$ifdef DLLIMPORT}
+type
+  TComponentList = specialize TListVector< TComponent >; var
+  Components     : TComponentList; external RTLDLL;
+
 // ---------------------------------------------------------------------------------------
 function  TPersistent_Create            (p: TPersistent             ): TPersistent;          stdcall; external RTLDLL;
 function  TComponent_Create             (p: TComponent ; AOwner: TComponent): TComponent;    stdcall; external RTLDLL;
@@ -515,38 +514,6 @@ procedure fpc_do_exit; external name 'FPC_DO_EXIT';
 
 {$ifdef DLLEXPORT}
 // ---------------------------------------------------------------------------------------
-// alternative to SetLength ...
-// ---------------------------------------------------------------------------------------
-function SetComponentsArrayLength(var Arr: PComponentsArray; oldsize, newsize: Integer): PComponentsArray;
-var
-  NewMem: PComponentsArray;
-  CopyCount, i: Integer;
-begin
-  GetMem  (NewMem , NewSize * sizeof(Integer));
-  FillChar(NewMem^, NewSize * sizeof(Integer), 0);
-  
-  if (Arr <> nil) then
-  begin
-    CopyCount := oldsize;
-    if newsize < oldsize then
-    CopyCount := NewSize;
-    
-    for i := 0 to CopyCount - 1 do
-    NewMem^[i] := Arr^[i];
-    
-    FreeMem(Arr);
-  end;
-  
-  Arr := NewMem;
-  result := Arr;
-end;
-procedure AddComponent(AComp: TComponent);
-begin
-  SetComponentsArrayLength(Components, ComponentsCount, ComponentsCount + 1);
-  Components[ComponentsCount] := AComp;
-  inc(ComponentsCount);
-end;
-// ---------------------------------------------------------------------------------------
 
 { TPersistent }
 
@@ -558,7 +525,7 @@ begin
   
   if p = nil then
   begin
-    ShowError(sError_TPersistent_ref);
+    ShowErrorA(sError_TPersistent_ref);
     exit;
   end;
   
@@ -573,7 +540,7 @@ begin
     
   if p = nil then
   begin
-    ShowError(sError_TForm_ref);
+    ShowErrorA(sError_TForm_ref);
     exit;
   end;
 end;
@@ -588,10 +555,20 @@ begin
   
   if p = nil then
   begin
-    ShowError(sError_TComponent_ref);
+    ShowErrorA(sError_TComponent_ref);
     exit;
   end;
   
+  if not Assigned(Components) then
+  begin
+    writeln('compo new');
+    Components := TComponentList.Create(p);
+  end else
+  begin
+    writeln('compp addd');
+    Components.Add(p);
+  end;
+
   result := p;
 end;
 
@@ -603,7 +580,7 @@ begin
     
   if p = nil then
   begin
-    ShowError(sError_TComponent_ref);
+    ShowErrorA(sError_TComponent_ref);
     exit;
   end;
 end;
@@ -612,7 +589,7 @@ procedure TComponent_SetComponentCaption(p: TComponent; AString: String); stdcal
 begin
   if p = nil then
   begin
-    ShowError(sError_TComponent_notinit);
+    ShowErrorA(sError_TComponent_notinit);
     exit;
   end;
   
@@ -632,7 +609,7 @@ procedure TComponent_SetComponentCount(p: TComponent; AValue: Integer); stdcall;
 begin
   if p = nil then
   begin
-    ShowError(sError_TComponent_ref);
+    ShowErrorA(sError_TComponent_ref);
     exit;
   end;
   p.FCounter := AValue;
@@ -642,7 +619,7 @@ function TComponent_GetComponentCount(p: TComponent): Integer; stdcall; export;
 begin
   if p = nil then
   begin
-    ShowError(sError_TComponent_ref);
+    ShowErrorA(sError_TComponent_ref);
     exit;
   end;
   //result := Length(p.FArray);
@@ -658,7 +635,7 @@ function TComponent_GetComponent(p: TComponent; I: Integer): TComponent; stdcall
 begin
   if p = nil then
   begin
-    ShowError(sError_TComponent_ref);
+    ShowErrorA(sError_TComponent_ref);
     exit;
   end;
   //result := p.FIndex;
@@ -673,7 +650,7 @@ procedure TComponent_SetComponentOwner(p: TComponent; AOwner: TComponent); stdca
 begin
   if p = nil then
   begin
-    ShowError(sError_TComponent_noOwner);
+    ShowErrorA(sError_TComponent_noOwner);
     exit;
   end;
   
@@ -691,7 +668,7 @@ begin
   
   if p = nil then
   begin
-    ShowError(Format('%s: TControl: %s', [sError_Internal, sError_ref]));
+    ShowErrorA(Format('%s: TControl: %s', [sError_Internal, sError_ref]));
     exit;
   end;
   
@@ -706,7 +683,7 @@ begin
     
   if p = nil then
   begin
-    ShowError(sError_TControl_ref);
+    ShowErrorA(sError_TControl_ref);
     exit;
   end;
 end;
@@ -735,7 +712,7 @@ procedure TControl_check(p: TControl);
 begin
   if not Assigned(p) then
   begin
-    ShowError(sError_TControl_ref);
+    ShowErrorA(sError_TControl_ref);
     halt(2);
   end;
 end;
@@ -864,7 +841,7 @@ begin
   
   if p = nil then
   begin
-    ShowError(sError_TWinControl_ref);
+    ShowErrorA(sError_TWinControl_ref);
     exit(nil);
   end;
   
@@ -879,7 +856,7 @@ begin
     
   if p = nil then
   begin
-    ShowError(sError_TWinControl_ref);
+    ShowErrorA(sError_TWinControl_ref);
     exit;
   end;
   
@@ -946,9 +923,8 @@ begin
     WM_COMMAND: begin
       case HiWord(wParam) of
         BN_CLICKED: begin
-          for i := 0 to ComponentsCount - 1 do
+          for tc in Components do
           begin
-            tc := Components[i];
             if tc.Handle = lparam then
             begin
               if Assigned(tc.FWinControl.FOnClick) then
@@ -982,7 +958,7 @@ begin
   
   if p = nil then
   begin
-    ShowError(sError_TScrollingWinControl_ref);
+    ShowErrorA(sError_TScrollingWinControl_ref);
     exit;
   end;
   
@@ -997,7 +973,7 @@ begin
     
   if p = nil then
   begin
-    ShowError(sError_TScrollingWinControl_ref);
+    ShowErrorA(sError_TScrollingWinControl_ref);
     exit;
   end;
 end;
@@ -1015,7 +991,7 @@ begin
   
   if p = nil then
   begin
-    ShowError(sError_TCustomForm_ref);
+    ShowErrorA(sError_TCustomForm_ref);
     exit;
   end;
   
@@ -1030,7 +1006,7 @@ begin
     
   if p = nil then
   begin
-    ShowError(sError_TCustomForm_ref);
+    ShowErrorA(sError_TCustomForm_ref);
     exit;
   end;
 end;
@@ -1049,7 +1025,7 @@ begin
 
   if p = nil then
   begin
-    ShowError('TForm error');
+    ShowErrorA('TForm error');
     exit;
   end;
   
@@ -1083,7 +1059,7 @@ begin
 
   if TWinControl(p) = nil then
   begin
-    ShowError(sError_TForm_ref);
+    ShowErrorA(sError_TForm_ref);
     Halt(2);
   end;
   writeln('ClassName: ' + p.ClassName);
@@ -1108,7 +1084,7 @@ begin
   
   if p.FHandle = 0 then
   begin
-    ShowError('TForm: no handle');
+    ShowErrorA('TForm: no handle');
     Halt(2);
   end;
   
@@ -1136,7 +1112,7 @@ begin
   
   if p = nil then
   begin
-    ShowError(sError_TForm_ref);
+    ShowErrorA(sError_TForm_ref);
     exit;
   end;
   
@@ -1151,7 +1127,7 @@ begin
   
   if p = nil then
   begin
-    ShowError(sError_TForm_ref);
+    ShowErrorA(sError_TForm_ref);
     exit;
   end;
 end;
@@ -1166,7 +1142,7 @@ begin
   
   if not Assigned(p) then
   begin
-    ShowError(sError_TForm_ref);
+    ShowErrorA(sError_TForm_ref);
     halt(2);
   end;
   
@@ -1183,7 +1159,7 @@ procedure TForm_ShowBool(p: TForm; modal: Boolean); stdcall; export;
 begin
   if p = nil then
   begin
-    ShowError(sError_TForm_ref);
+    ShowErrorA(sError_TForm_ref);
     exit;
   end;
 end;
@@ -1201,7 +1177,7 @@ begin
   
   if p = nil then
   begin
-    ShowError(sError_TButton_ref);
+    ShowErrorA(sError_TButton_ref);
     exit;
   end;
 
@@ -1213,8 +1189,6 @@ begin
   AOwner.FHandle, HMENU(p.GetComponentCount),
   hInstanceDLL, Pointer(TWinControl(p)));
   
-  AddComponent(p);
-  p.SetComponentCount(p.GetComponentCount + 1);
   result := p;
 end;
 function TButton_Create(p: TButton; AOwner: TComponent): TButton; stdcall; export;
@@ -1239,7 +1213,7 @@ begin
   
   if p = nil then
   begin
-    ShowError(sError_TCheckBox_ref);
+    ShowErrorA(sError_TCheckBox_ref);
     exit;
   end;
   
@@ -1274,7 +1248,7 @@ begin
   
   if p = nil then
   begin
-    ShowError(sError_TRadioBox_ref);
+    ShowErrorA(sError_TRadioBox_ref);
     exit;
   end;
   
@@ -1309,13 +1283,13 @@ begin
   
   if p = nil then
   begin
-    ShowError(sError_TProgressBar_ref);
+    ShowErrorA(sError_TProgressBar_ref);
     halt(2);
   end;
   
   if AOwner.FHandle = 0 then
   begin
-    ShowError(sError_TComponent_noOwner);
+    ShowErrorA(sError_TComponent_noOwner);
     halt(2);
   end;
   
@@ -1327,7 +1301,7 @@ begin
   
   if p.Handle = 0 then
   begin
-    ShowError(sError_TProgressBar_ref);
+    ShowErrorA(sError_TProgressBar_ref);
     halt(2);
   end;
 
@@ -1360,13 +1334,13 @@ begin
   
   if p = nil then
   begin
-    ShowError(sError_TComboBox_ref);
+    ShowErrorA(sError_TComboBox_ref);
     halt(2);
   end;
   
   if AOwner.FHandle = 0 then
   begin
-    ShowError(sError_TComboBox_noOwner);
+    ShowErrorA(sError_TComboBox_noOwner);
     halt(2);
   end;
   
@@ -1378,7 +1352,7 @@ begin
   
   if p.Handle = 0 then
   begin
-    ShowError(sError_TComboBox_ref);
+    ShowErrorA(sError_TComboBox_ref);
     halt(2);
   end;
 
@@ -1414,13 +1388,13 @@ begin
   
   if p = nil then
   begin
-    ShowError(sError_TSpinDate_ref);
+    ShowErrorA(sError_TSpinDate_ref);
     halt(2);
   end;
   
   if AOwner.FHandle = 0 then
   begin
-    ShowError(sError_TSpinDate_noOwner);
+    ShowErrorA(sError_TSpinDate_noOwner);
     halt(2);
   end;
   
@@ -1432,7 +1406,7 @@ begin
   
   if p.Handle = 0 then
   begin
-    ShowError(sError_TSpinDate_ref);
+    ShowErrorA(sError_TSpinDate_ref);
     halt(2);
   end;
   
@@ -1461,13 +1435,13 @@ begin
   
   if p = nil then
   begin
-    ShowError(sError_TSpinTime_ref);
+    ShowErrorA(sError_TSpinTime_ref);
     halt(2);
   end;
   
   if AOwner.FHandle = 0 then
   begin
-    ShowError(sError_TSpinTime_noOwner);
+    ShowErrorA(sError_TSpinTime_noOwner);
     halt(2);
   end;
   
@@ -1479,7 +1453,7 @@ begin
   
   if p.Handle = 0 then
   begin
-    ShowError(sError_TSpinTime_ref);
+    ShowErrorA(sError_TSpinTime_ref);
     halt(2);
   end;
 
@@ -1508,13 +1482,13 @@ begin
   
   if p = nil then
   begin
-    ShowError(sError_TMemo_ref);
+    ShowErrorA(sError_TMemo_ref);
     halt(2);
   end;
   
   if AOwner.FHandle = 0 then
   begin
-    ShowError(sError_TMemo_noOwner);
+    ShowErrorA(sError_TMemo_noOwner);
     halt(2);
   end;
   
@@ -1527,7 +1501,7 @@ begin
   
   if p.Handle = 0 then
   begin
-    ShowError(sError_TMemo_ref);
+    ShowErrorA(sError_TMemo_ref);
     halt(2);
   end;
 
@@ -1609,7 +1583,7 @@ destructor TComponent.Destroy;
 begin
   if not isInitialized then
   begin
-    ShowError(sError_TComponent_notinit);
+    ShowErrorA(sError_TComponent_notinit);
     exit;
   end else
   begin
@@ -1687,7 +1661,7 @@ destructor TControl.Destroy;
 begin
   if not isInitialized then
   begin
-    ShowError(sError_TControl_notinit);
+    ShowErrorA(sError_TControl_notinit);
     exit;
   end else
   begin
@@ -1857,7 +1831,7 @@ begin
     TButton_Create2(self, AOwner, x,y, w,h);
   end else
   begin
-    ShowError(sError_TButton_isinit);
+    ShowErrorA(sError_TButton_isinit);
   end;
 end;
 constructor TButton.Create(AOwner: TComponent);
@@ -1869,7 +1843,7 @@ begin
     TButton_Create(self, AOwner);
   end else
   begin
-    ShowError(sError_TButton_isinit);
+    ShowErrorA(sError_TButton_isinit);
   end;
 end;
 destructor TButton.Destroy;
@@ -2052,6 +2026,8 @@ end;
 
 {$ifdef DLLEXPORT}
 exports
+  Components                        name 'Components',
+  
   TPersistent_Create                name 'TPersistent_Create',
   TComponent_Create                 name 'TComponent_Create',
   

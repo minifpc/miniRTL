@@ -117,7 +117,9 @@ type
 // required at rebase to one commit before 5bb121e91cc266a93c300054cd6edfeb85a37da9
 procedure fpc_popaddrstack; compilerproc;
 function fpc_pushexceptaddr(ft: longint; _buf, _newaddr: pointer): pjmp_buf; compilerproc;
+{$ifndef DLLRES}
 function fpc_setjmp(var s: jmp_buf): longint; assembler; compilerproc;
+{$endif}
 procedure fpc_longjmp(var s: jmp_buf; value: LongInt); assembler; compilerproc;
 
 procedure HandleErrorAddrFrame(Errno: longint; addr: CodePointer; frame: Pointer); {$ifdef CPUI386} register; {$endif}
@@ -264,20 +266,26 @@ procedure HandleError(errno: LongInt); external name 'FPC_HANDLEERROR';
 {$ifdef DLLEXPORT}
 procedure fpc__ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); stdcall; export;
 begin
+{$ifndef DLLRES}
   pointer(dests) := new_ansistring(length(s1)+length(s2));
   move(s1[1], dests[1], length(s1));
   move(s2[1], dests[length(s1)+1], length(s2));
+{$endif}
 end;
 procedure fpc_ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); compilerproc;
 begin
+{$ifndef DLLRES}
   fpc__ansistr_concat(dests, s1, s2, cp);
+{$endif}
 end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
 procedure fpc__ansistr_concat(var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); stdcall; external RTLDLL;
 procedure fpc_ansistr_concat (var dests: RawByteString; const s1, s2: RawByteString; cp: TSystemCodePage); compilerproc;
 begin
+{$ifndef DLLRES}
   fpc__ansistr_concat(dests, s1, s2, cp);
+{$endif}
 end;
 {$endif DLLIMPORT}
 
@@ -287,12 +295,14 @@ var
   c: char;
   d: dword;
 begin
+{$ifndef DLLRES}
   writeln('press <enter>...');
 
   while true do begin
     ReadConsoleA(StdIn, @c, 1, @d, nil);
     if c = #13 then break;
   end;
+{$endif}
 end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
@@ -316,6 +326,7 @@ procedure fpc_setstring_ansistr_pansichar(var dest: AnsiString; source: PAnsiCha
 var
   i: SizeInt;
 begin
+{$ifndef DLLRES}
   if (source = nil) or (len <= 0) then
   begin
     dest := '';
@@ -325,6 +336,7 @@ begin
   SetLength(dest, len); // alloziert Speicher und setzt Length
   for i := 1 to len do
   dest[i] := source[i - 1]; // PAnsiChar ist 0-basiert, Strings 1-basiert
+{$endif DLLRES}
 end;
 
 function GetExitProcedureCount: Integer; stdcall; export;
@@ -357,6 +369,7 @@ procedure fpc_shortstr_concat(var dests: ShortString; const s1, s2: ShortString)
 var
   len, cap, m: integer;
 begin
+{$ifndef DLLRES}
   len := 0;
   cap := 255;
   // get first string
@@ -373,6 +386,7 @@ begin
   end;
   // and the new length is...
   dests[0] := chr(len);
+{$endif}
 end;
 {$endif DLLEXPORT}
 
@@ -414,11 +428,13 @@ procedure fpc__initializeunits; stdcall; export;
 var
   i: integer;
 begin
+{$ifndef DLLRES}
   for i := 1 to InitFinalTable.TableCount do begin
     if InitFinalTable.Procs[i].InitProc <> nil then begin
       InitFinalTable.Procs[i].InitProc();
     end;
   end;
+{$endif DLLRES}
 end;
 procedure fpc_initializeunits; [public, alias: 'FPC_INITIALIZEUNITS'];
 begin
@@ -457,12 +473,14 @@ procedure fpc__finalizeunits; stdcall; export;
 var
   i: integer;
 begin
+{$ifndef DLLRES}
   writeln('final table count: ' + inttostr(InitFinalTable.TableCount));
   for i := 1 to InitFinalTable.TableCount do begin
     if InitFinalTable.Procs[i].FinalProc <> nil then begin
       InitFinalTable.Procs[i].FinalProc();
     end;
   end;
+{$endif}
 end;
 procedure fpc_finalizeunits; [public, alias: 'FPC_FINALIZEUNITS'];
 begin
@@ -498,6 +516,7 @@ var
   p: TExitProcedure;
   tempi: Integer;
 begin
+{$ifndef DLLRES}
   fpc__finalizeunits;
   
   tempi := GetExitProcedureCount;
@@ -511,6 +530,7 @@ begin
   until tempi = 0;
   
   writeln('end exit');
+{$endif DLLRES}
   ExitProcess(ExitCode);
 end;
 procedure fpc_do_exit; [public, alias: 'FPC_DO_EXIT'];
@@ -531,12 +551,16 @@ end;
  {$ifdef DLLEXPORT}
 {$asmmode att}
 procedure _fpc__leave(a1, a2, a3, a4: pointer); stdcall; assembler; nostackframe; export;
+{$ifndef DLLRES}
 asm
   movl   4(%esp),%eax
   movl   %eax,%fs:(0)
   movl   %ebp,%eax
   call   16(%esp)
 end;
+{$else}asm end;
+{$endif DLLRES}
+
 procedure _fpc_leave(a1, a2, a3, a4: pointer); [public, alias: '_FPC_leave']; stdcall; compilerproc;
 begin
   _fpc__leave(a1, a2, a3, a4);
@@ -578,11 +602,13 @@ function BsrDWord_(Const AValue : DWord): cardinal; stdcall; export;
 var
   tmp: DWord;
 begin
+{$ifndef DLLRES}
   result:=ord(AValue>$FFFF)*16;
   tmp:=AValue shr result;
   result:=result or (ord(tmp>$FF)*8);
   tmp:=tmp shr (result and 8);
   result:=result or BsrByte(byte(tmp));
+{$endif}
 end;
 function BsrDWord(Const AValue : DWord): cardinal;
 begin
@@ -602,6 +628,7 @@ function BsrQWord_(Const AValue : QWord): cardinal; stdcall export;
 var
   tmp: DWord;
 begin
+{$ifndef DLLRES}
   result:=32;
   tmp:=hi(AValue);
   if (tmp=0) then
@@ -610,6 +637,7 @@ begin
       result:=0;
     end;
   result:=result or BsrDword(tmp);
+{$endif DLLRES}
 end;
 function BsrQWord(Const AValue : QWord): cardinal;
 begin
@@ -629,6 +657,7 @@ function fpcdivqword(n, z: qword): qword; stdcall; export;
 var
   shift, lzz, lzn: LongInt;
 begin
+{$ifndef DLLRES}
   { Use the usually faster 32-bit division if possible }
   if (hi(z) = 0) and (hi(n) = 0) then begin
     fpcdivqword := Dword(z) div Dword(n);
@@ -656,6 +685,7 @@ begin
   end;
   n:=n shr 1;
   end;
+{$endif DLLRES}
 end;
 function fpc_div_qword(n, z: qword): qword; [public, alias: 'FPC_DIV_QWORD']; compilerproc;
 begin
@@ -676,6 +706,7 @@ var
   sign: boolean;
   q1, q2: qword;
 begin
+{$ifndef DLLRES}
   //if n = 0 then HandleError(200); // div by zero
   // original: HandleErrorAddrFrameInd(200,get_pc_addr,get_frame);
   // @@todo: ^ search for this, leads to exceptions (implementation?) and other errors that must be handled
@@ -699,6 +730,7 @@ begin
     result := -(q1 div q2)
   else
     result := q1 div q2;
+{$endif DLLRES}
 end;
 function fpc_div_int64(n, z: int64): int64; [public, alias: 'FPC_DIV_INT64']; compilerproc;
 begin
@@ -716,6 +748,7 @@ end;
 // called by HandleError
 {$ifdef DLLEXPORT}
 procedure fpchandleerror(errno: longint); stdcall; export;
+{$ifndef DLLRES}
 const
   errmap: array[200..236] of ansistring = (
     'DivByZero',        'RangeError',      'StackOverflow',     '203',            '204',
@@ -727,19 +760,26 @@ const
     '230',              'iconvError',      'NoThreadSupport',   'SigQuit',        'MissingWStringManager',
     'NoDynLibsSupport', 'ThreadError'
   );
+{$endif DLLRES}
 begin
+{$ifndef DLLRES}
   writeln('fpc_handleerror, errno = ', errno, ', meaning = ', errmap[errno]);
+{$endif}
 end;
 procedure fpc_handleerror(errno: longint); compilerproc; [public, alias: 'FPC_HANDLEERROR'];
 begin
+{$ifndef DLLRES}
   fpchandleerror(errno);
+{$endif}
 end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
 procedure fpchandleerror(errno: longint); stdcall; external RTLDLL;
 procedure fpc_handleerror(errno: longint); compilerproc; [public, alias: 'FPC_HANDLEERROR'];
 begin
+{$ifndef DLLRES}
   fpchandleerror(errno);
+{$endif}
 end;
 {$endif}
 
@@ -758,6 +798,7 @@ end;
 {$ifdef CPU86}
   {$ifdef DLLEXPORT}
 function fpc__setjmp(var s: jmp_buf): longint; assembler; nostackframe; export;
+{$ifndef DLLRES}
 asm
   movl %ebx,jmp_buf.ebx(%eax)
   movl %esi,jmp_buf.esi(%eax)
@@ -774,6 +815,8 @@ asm
   movl jmp_buf.edi(%eax),%edi
   xorl %eax,%eax
 end;
+{$else}asm end;
+{$endif DLLRES}
 function fpc_setjmp(var s: jmp_buf): longint; assembler; nostackframe; [public, alias: 'FPC_SETJMP']; compilerproc;
 begin
   Exit(fpc__setjmp(s));
@@ -789,6 +832,7 @@ end;
 {$else}
   {$ifdef DLLEXPORT}
   function fpcsetjmp(var s: jmp_buf): longint; stdcall; assembler; nostackframe; export;
+  {$ifndef DLLRES}
   asm
     movq     %rbx,jmp_buf.rbx(%rcx)
     movq     %rbp,jmp_buf.rbp(%rcx)
@@ -816,31 +860,41 @@ end;
     fnstcw   jmp_buf.fpucw(%rcx)
     xorl     %eax,%eax
   end;
+  {$else}asm end;
+  {$endif}
   {$asmmode intel}
   function fpc_setjmp(var s: jmp_buf): longint; assembler; nostackframe; [public, alias: 'FPC_SETJMP']; compilerproc;
+  {$ifndef DLLRES}
   asm
     sub rsp, 32          // Shadow space für call
     call fpcsetjmp       // bar erwartet s in rcx
     add rsp, 32          // Stack wieder freigeben
     // Rückgabewert ist bereits in RAX
   end;
+  {$else}asm end;
+  {$endif DLLRES}
   {$endif DLLEXPORT}
   {$ifdef DLLIMPORT}
   {$asmmode intel}
   function fpcsetjmp(var s: jmp_buf): longint; stdcall; external RTLDLL;
   function fpc_setjmp(var s: jmp_buf): longint; assembler; nostackframe; [public, alias: 'FPC_SETJMP']; compilerproc;
+  {$ifndef DLLRES}
   asm
     sub rsp, 32          // Shadow space für call
     call fpcsetjmp       // bar erwartet s in rcx
     add rsp, 32          // Stack wieder freigeben
     // Rückgabewert ist bereits in RAX
   end;
+  {$else}asm end;
+  {$endif DLLRES}
   {$endif DLLIMPORT}
 {$endif CPU86}
+
 
 {$ifdef DLLEXPORT}
 {$asmmode att}
 procedure fpclongjmp(var s: jmp_buf; value: LongInt); assembler; nostackframe; stdcall; export;
+{$ifndef DLLRES}
 asm
   {$ifdef CPU86}
   xchgl %edx,%eax
@@ -886,31 +940,42 @@ asm
   jmpq     jmp_buf.rip(%rcx)
   {$endif}
 end;
+{$else}asm end;
+{$endif DLLRES}
+
 procedure fpc_longjmp(var s: jmp_buf; value: LongInt); assembler; nostackframe; compilerproc; [public, alias: 'FPC_LONGJMP'];
+{$ifndef DLLRES}
 asm
   sub rsp, 64          // Shadow space für call
   call fpclongjmp      // bar erwartet s in rcx
   add rsp, 64          // Stack wieder freigeben
 end;
+{$else}asm end;
+{$endif DLLRES}
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
 procedure fpclongjmp(var s: jmp_buf; value: LongInt); stdcall; external RTLDLL;
 procedure fpc_longjmp(var s: jmp_buf; value: LongInt); assembler; nostackframe; compilerproc; [public, alias: 'FPC_LONGJMP'];
+{$ifndef DLLRES}
 asm
   sub rsp, 64          // Shadow space für call
   call fpclongjmp      // bar erwartet s in rcx
   add rsp, 64          // Stack wieder freigeben
 end;
+{$else}asm end;
+{$endif DLLRES}
 {$endif DLLIMPORT}
 
 procedure HandleErrorAddrFrame(Errno: longint; addr: CodePointer; frame: Pointer); [public, alias: 'FPC_BREAK_ERROR']; {$ifdef CPUI386} register; {$endif}
 begin
+{$ifndef DLLRES}
   if CodePointer(ErrorProc) <> nil then ErrorProc(Errno, addr, frame);
   ErrorCode := Word(Errno);
   ErrorAddr := addr;
   ErrorBase := frame;
   if ExceptAddrStack <> nil then raise TObject(nil) at addr, frame;
   Halt(ErrorCode);
+{$endif DLLRES}
 end;
 
 procedure fpc_overflow; [public, alias: 'FPC_OVERFLOW']; compilerproc;
@@ -928,13 +993,16 @@ end;
 // how about change "pti" from pointer to pdynarraytypedata later?
 {$ifdef DLLEXPORT}
 procedure fpcdynarraysetlength(var p: pointer; pti: pointer; dimcount: sizeint; dims: pdynarrayindex); stdcall; export;
+{$ifndef DLLRES}
 var
   elesize: sizeint;
   eletype, eletypemngd: pointer;
   ti: pointer;
   size: sizeint;
   newp: pdynarray;
+{$endif DLLRES}
 begin
+{$ifndef DLLRES}
   // p        = array data
   // pti      = pdynarraytypedata
   // dimcount = its for nested array: setlength(arr, 5, 5), type array of array of...
@@ -996,6 +1064,7 @@ begin
 
   newp^.refcount := 1;
   newp^.high := dims[0]-1;
+{$endif DLLRES}
 end;
 procedure fpc_dynarray_setlength(var p: pointer; pti: pointer; dimcount: sizeint; dims: pdynarrayindex); [public, alias: 'FPC_DYNARR_SETLENGTH']; compilerproc;
 begin
@@ -1052,6 +1121,7 @@ procedure fpc__dynarray_incr_ref(p: pointer); stdcall; export;
 var
   d: pdynarray;
 begin
+{$ifndef DLLRES}
   if p = nil then exit;
   d := pdynarray(p-sizeof(tdynarray));
   if d^.refcount = 0 then
@@ -1061,6 +1131,7 @@ begin
     //inclocked(d^.refcount);
     // @@todo: thread safe
     inc(d^.refcount);
+{$endif DLLRES}
 end;
 procedure fpc_dynarray_incr_ref(p: pointer); compilerproc; [public, alias: 'FPC_DYNARRAY_INCR_REF'];
 begin
@@ -1080,6 +1151,7 @@ procedure fpc_dynarray_clear(var p: pointer; ti: pointer); [public,alias:'FPC_DY
 var
   d: pdynarray;
 begin
+{$ifndef DLLRES}
   if p = nil then exit;
   d := pdynarray(p-sizeof(tdynarray));
   if d^.refcount = 0 then
@@ -1093,6 +1165,7 @@ begin
     FreeMem(d);
   end;
   p := nil;
+{$endif DLLRES}
 end;
 {$endif DLLEXPORT}
 
@@ -1101,6 +1174,7 @@ Function fpc_chararray_to_ansistr(const arr: array of char; zerobased: boolean =
 var
   i  : SizeInt;
 begin
+{$ifndef DLLRES}
   result := '';
   
   if (zerobased) then
@@ -1129,11 +1203,13 @@ begin
   begin
     Move (arr[0],Pointer(fpc_CharArray_To_AnsiStr)^,i);
   end;
+{$endif DLLRES}
 end;
 {$endif DLLEXPORT}
 
 {$asmmode intel}
 function InterlockedDecrement(var Addend: LongInt): LongInt; assembler;
+{$ifndef DLLRES}
 asm
   {$ifdef CPU64}
   mov rax, -1
@@ -1145,9 +1221,12 @@ asm
   dec eax
   {$endif}
 end;
+{$else}asm end;
+{$endif DLLRES}
 
 {$asmmode intel}
 function InterlockedIncrement(var Addend: LongInt): LongInt; assembler;
+{$ifndef DLLRES}
 asm
   {$ifdef CPU64}
   mov rax, 1
@@ -1159,6 +1238,8 @@ asm
   inc eax
   {$endif}
 end;
+{$else}asm end;
+{$endif DLLRES}
 
 // those are for WIN64
 
@@ -1243,6 +1324,7 @@ end;
 
 {$ifdef DLLEXPORT}
 exports
+{$ifndef DLLRES}
   wait_for_enter            name 'wait_for_enter',
   int_read_from_console     name 'int_read_from_console',
   fpc_chararray_to_ansistr  name 'fpc_chararray_to_ansistr',
@@ -1259,7 +1341,7 @@ exports
   fpc__initializeunits      name 'fpc__initializeunits',
   fpc__finalizeunits        name 'fpc__finalizeunits',
   fpc__do_exit              name 'fpc__do_exit',
-  
+{$endif DLLRES}
   GetExitProcedureCount     name 'GetExitProcedureCount',
   GetExitProcedure          name 'GetExitProcedure',
   AddExitProc               name 'AddExitProc'

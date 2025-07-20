@@ -167,12 +167,15 @@ function FilterException_(
   imagebase : PtrUInt;
   filterRva : DWord;
   errcode   : longint): Pointer; stdcall; export;
+{$ifndef DLLRES}
 var
   exclass: TClass;
   i: integer;
   filter, p: Pointer;
   curfilt: PFilterRec;
+{$endif}
 begin
+{$ifndef DLLRES}
   result := nil;
 
   if rec.ExceptionCode = FPC_EXCEPTION_CODE then
@@ -198,6 +201,7 @@ begin
     if exclass.InheritsFrom(PClass(imagebase+CurFilt^.RvaClass)^) then exit(p);
     {$endif}
   end;
+{$endif}
 end;
 function FilterException(
   var rec   : EXCEPTION_RECORD;
@@ -205,7 +209,9 @@ function FilterException(
   filterRva : DWord;
   errcode   : longint): Pointer; stdcall;
 begin
+{$ifndef DLLRES}
   Exit(FilterException_(rec, imageBase, filterRva, errcode));
+{$endif}
 end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
@@ -220,13 +226,16 @@ function FilterException(
   filterRva : DWord;
   errcode   : longint): Pointer; stdcall;
 begin
+{$ifndef DLLRES}
   Exit(FilterException_(rec, imageBase, filterRva, errcode));
+{$endif}
 end;
 {$endif DLLIMPORT}
 
 {$ifdef DLLEXPORT}
 function RunErrorCode_(const rec: EXCEPTION_RECORD): longint; stdcall; export;
 begin
+{$ifndef DLLRES}
   { negative result means 'FPU reset required' }
   case rec.ExceptionCode of
     STATUS_INTEGER_DIVIDE_BY_ZERO:        result := 200;  // reDivByZero
@@ -249,23 +258,29 @@ begin
   else
     result := 255; // reExternalException
   end;
+{$endif}
 end;
 function RunErrorCode(const rec: EXCEPTION_RECORD): longint; stdcall;
 begin
+{$ifndef DLLRES}
   Exit(RunErrorCode_(rec));
+{$endif}
 end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
 function RunErrorCode_(const rec: EXCEPTION_RECORD): longint; stdcall; external RTLDLL;
 function RunErrorCode(const rec: EXCEPTION_RECORD): longint; stdcall;
 begin
+{$ifndef DLLRES}
   Exit(RunErrorCode_(rec));
+{$endif}
 end;
 {$endif DLLIMPORT}
 
 {$ifdef DLLEXPORT}
 procedure TranslateMxcsr(mxcsr: longword; var code: longint); stdcall; export;
 begin
+{$ifndef DLLRES}
   { we can return only one value, further one's are lost }
   { InvalidOp }
   if (mxcsr and 1) <> 0 then code := -207
@@ -281,6 +296,7 @@ begin
   else if (mxcsr and 32) <> 0 then code := -207
   else { this should not happen }
     code := -255;
+{$endif}
 end;
 {$endif DLLEXPORT}
 {$ifdef DLLIMPORT}
@@ -288,9 +304,11 @@ procedure TranslateMxcsr(mxcsr: longword; var code: longint); stdcall; external 
 {$endif DLLIMPORT}
 
 {$ifdef DLLEXPORT}
+{$ifndef DLLRES}
 exports
   TranslateMxcsr name 'TranslateMxcsr'
   ;
+{$endif}
 {$endif DLLEXPORT}
 
 {$endif}
