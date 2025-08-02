@@ -20,6 +20,7 @@ import subprocess
 import sys            # system specifies
 import os             # operating system stuff
 import platform
+import hashlib
 
 from   io     import StringIO
 
@@ -214,8 +215,8 @@ try:
             else:
                 return False
         except:
-            print(_("Error:\ncold not determine admin or user mode."))
-            print(_("abort."))
+            print(_str("Error:\ncold not determine admin or user mode."))
+            print(_str("abort."))
             return False
     
     # ---------------------------------------------------------
@@ -333,7 +334,7 @@ try:
                     DebugPrint("ATTENTION: Admin rights requered for first start.")
                     run_as_admin()
                 else:
-                    DebugPrint(_("ATTENTION: Application run in Admin mode !"))
+                    DebugPrint(_str("ATTENTION: Application run in Admin mode !"))
                 
                 c64_normal = "/_internal/fonts/C64_Pro-STYLE.ttf"
                 c64_mono   = "/_internal/fonts/C64_Pro_Mono-STYLE.ttf"
@@ -349,7 +350,7 @@ try:
             font_path = "/_internal/fonts/C64_Pro_Mono-STYLE.ttf"
             font_name = load_custom_font(font_path)
         else:
-            print(_("no more supported operating system"))
+            print(_str("no more supported operating system"))
             sys.exit(1)
     
     # ---------------------------------------------------------------------
@@ -506,6 +507,35 @@ if getattr(sys, 'frozen', False):
 def contains_unicode(input_string):
     return any(ord(char) > 127 for char in input_string)
 
+# ------------------------------------------------------------------------
+# \brief  Generiert einen Hash String aus Zeit + Zufall ...
+# \param  nothing
+# \return <string>
+# ------------------------------------------------------------------------
+def unique_hash():
+    # ---------------------------------------
+    # Zeitstempel (mit hoher Auflösung)   ...
+    # ---------------------------------------
+    timestamp = str(time.time_ns())
+    
+    # ---------------------------------------
+    # Zufällige Bytes (16 Byte = 128 Bit) ...
+    # ---------------------------------------
+    random_bytes = os.urandom(16)
+    
+    # ---------------------------------------
+    # Kombinieren von Zeit + Zufall       ...
+    # ---------------------------------------
+    raw_data = timestamp + random_bytes.hex()
+    
+    # ---------------------------------------
+    # SHA-256 Hash erzeugen               ...
+    # ---------------------------------------
+    hashobj = hashlib.sha256(raw_data.encode())
+    unihash = hashobj.hexdigest()
+    
+    return unihash
+
 # ---------------------------------------------------------------------------
 class unexpectedParserException(Exception):
     def __init__(self, text, value=1):
@@ -531,7 +561,7 @@ class e_expr_error(Exception):
 
 class e_expr_empty(Exception):
     def __init__(self, message="expression is empty", line=1):
-        self.message = message + _("\nat line: ") + str(line)
+        self.message = message + _str("\nat line: ") + str(line)
         super().__init__(0)
 
 class IgnoreOuterException(Exception):
@@ -584,10 +614,10 @@ class showMessage(QDialog):
         super(showMessage, self).__init__()
         #
         msgtypes = [
-            [ QMessageBox.Information, "Information" ],
-            [ QMessageBox.Warning,     "Warning" ],
-            [ QMessageBox.Critical,    "Error" ],
-            [ QMessageBox.Critical,    "Exception" ]
+            [ QMessageBox.Information, _str("Information") ],
+            [ QMessageBox.Warning,     _str("Warning") ],
+            [ QMessageBox.Critical,    _str("Error") ],
+            [ QMessageBox.Critical,    _str("Exception") ]
         ]
         
         self.setWindowTitle(msgtypes[msgtype][1])
@@ -599,21 +629,21 @@ class showMessage(QDialog):
         text_box.document().setPlainText(text)
         
         if msgtype == 2:
-            text_no = QPushButton(_("No"))
-            text_ok = QPushButton(_("No"))
+            text_no = QPushButton(_str("No"))
+            text_ok = QPushButton(_str("No"))
             #
             text_no.setMinimumHeight(32)
             text_ok.setMinimumHeight(32)
             #
-            text_no.setStyleSheet(_("msgbox_css"))
-            text_ok.setStyleSheet(_("msgbox_css"))
+            text_no.setStyleSheet(_css("msgbox_css"))
+            text_ok.setStyleSheet(_css("msgbox_css"))
             #
             text_no.clicked.connect(self.no_click)
             text_ok.clicked.connect(self.ok_click)
         
-        text_btn = QPushButton(_("Close"))
+        text_btn = QPushButton(_str("Close"))
         text_btn.setMinimumHeight(32)
-        text_btn.setStyleSheet(_("msgbox_css"))
+        text_btn.setStyleSheet(_css("msgbox_css"))
         text_btn.clicked.connect(self.no_click)
         
         text_lay.addWidget(text_box)
@@ -666,9 +696,14 @@ class globalEnv:
         
         self.v__app__name         = "observer"
         self.v__app__help         = "help"
+        self.v__app__pin_name     = ""
+        self.v__app__pin_control  = ""
+        
+        self.v__class_registry    = {}
         
         self.v__app__name_mo      = self.v__app__name + ".mo"
         self.v__app__help_mo      = self.v__app__help + ".mo"
+        self.v__app__css__mo      = self.v__app__name + ".mo"
         
         self.v__app__cdn_host     = "http://localhost/cdn"
         self.v__app__internal__   = os.path.join(self.v__app__modul__, "_internal")
@@ -950,12 +985,18 @@ class globalEnv:
             'get', 'local', 'parameter', 'if', 'else', 'endif'
         ]
 
-        self.TOKEN_IDENT = 3000
+        self.TOKEN_IDENT  = 3000
+        self.TOKEN_NUMBER = 3001
+        self.TOKEN_STRING = 3002
         
         self.text_code  = ""
         self.temp_code  = ""
         self.code_code  = ""
         self.class_code = ""
+        
+        self.text_code_indent    = 0
+        self.text_code_scope_old = 0
+        self.text_code_scope_new = 0
 
         self.open_paren  = 0
         self.close_paren = 0
@@ -1039,6 +1080,7 @@ class globalEnv:
         self.v__app__locales           = ""
         self.v__app__locales_messages  = ""
         self.v__app__locales_help      = ""
+        self.v__app__locales_css       = ""
         
         self.v__app__img_ext__    = ".png"
         self.v__app__font         = "Arial"
@@ -1286,7 +1328,7 @@ class globalEnv:
             hid = 0
             for idx in range(5, 23):
                 content += "\n[expert_"    + str(idx) + "]\n"
-                elements = eval(_("label_" + str(idx) + "_elements"))
+                elements = eval(_str("label_" + str(idx) + "_elements"))
                 
                 #for item in elements:
                 #    hexer = _(hex(item[0]).upper()[2:]).lower()
@@ -1294,7 +1336,7 @@ class globalEnv:
                 #    infos = getattr(genv, "doc_" + hexer + "_type")
                 #    
                 #    if typso == None:
-                #        showError(_("Error:\nelement item can not get object type."))
+                #        showError(_str("Error:\nelement item can not get object type."))
                 #        return False
                 #        
                 #    #if isinstance(typso, QCheckBox):
@@ -1327,22 +1369,22 @@ class globalEnv:
                 config_file.close()
             return True
         except configparser.NoSectionError as e:
-            showError(_("Error:\nsomething went wrong during saving settings (section)."))
+            showError(_str("Error:\nsomething went wrong during saving settings (section)."))
             return False
             
         except configparser.NoOptionError as e:
-            showError(_("Error:\nsomething went wrong during saving settings (option)."))
+            showError(_str("Error:\nsomething went wrong during saving settings (option)."))
             return False
             
         except configparser.DuplicateSectionError as e:
-            showError(_((""
+            showError(_str((""
             + "Error:\nsetting file logic error.\n"
             + "You can try to fix this error by remove all double section's."
             )))
             return False
             
         except configparser.DuplicateOptionError as e:
-            showError(_((""
+            showError(_str((""
             + "Error:\nsetting file logic error.\n"
             + "You can try to fix this error by remove all double options."
             )))
@@ -1381,10 +1423,10 @@ class globalEnv:
             
             padding = 10
             
-            txt1 = _("Exception occur at parsing:\n")
-            txt2 = _("type"  ).ljust( padding )
-            txt3 = _("code"  ).ljust( padding )
-            txt4 = _("reason").ljust( padding )
+            txt1 = _str("Exception occur at parsing:\n")
+            txt2 = _str("type"  ).ljust( padding )
+            txt3 = _str("code"  ).ljust( padding )
+            txt4 = _str("reason").ljust( padding )
             
             msg  = f"{txt1}"
             msg += f"{txt2}: {exc_type.__name__}\n"
@@ -1488,8 +1530,8 @@ def handle_language(lang):
         #file_path = os.path.join(file_path, "LC_MESSAGES")
         #file_path = os.path.join(file_path, genv. v__app__name_mo + ".gz")
         #
-        _ = read_gzfile_to_memory(genv.v__app__locales_messages)
-        return _
+        _str = read_gzfile_to_memory(genv.v__app__locales_messages)
+        return _str
     except Exception as e:
         exc_type, exc_value, exc_traceback = traceback.sys.exc_info()
         tb = traceback.extract_tb(e.__traceback__)[-1]
@@ -1506,8 +1548,26 @@ def handle_language(lang):
  
 def handle_help(lang):
     try:
-        _h = read_gzfile_to_memory(genv.v__app__locales_help)
-        return _h
+        _hlp = read_gzfile_to_memory(genv.v__app__locales_help)
+        return _hlp
+    except Exception as e:
+        exc_type, exc_value, exc_traceback = traceback.sys.exc_info()
+        tb = traceback.extract_tb(e.__traceback__)[-1]
+        
+        error_str = (""
+        + "Exception occur during handle language:\n"
+        + "type    : " + exc_type.__name__ + "\n"
+        + "value   : " + str(exc_value)    + "\n" + ("-" * 40) + "\n"
+        + "file    : " + tb.filename       + "\n"
+        + "at line : " + str(tb.lineno)    + "\n")
+        
+        showError(error_str)
+        sys.exit(genv.EXIT_FAILURE)
+
+def handle_css(lang):
+    try:
+        _css = read_gzfile_to_memory(genv.v__app__locales_css)
+        return _css
     except Exception as e:
         exc_type, exc_value, exc_traceback = traceback.sys.exc_info()
         tb = traceback.extract_tb(e.__traceback__)[-1]
@@ -1613,17 +1673,20 @@ try:
     
     genv.v__app__locales_messages = os.path.join(genv.v__app__locales, "LC_MESSAGES")
     genv.v__app__locales_help     = os.path.join(genv.v__app__locales, "LC_HELP")
+    genv.v__app__locales_css      = os.path.join(genv.v__app__locales, "LC_STYLE")
     
     genv.v__app__locales_messages = os.path.join(genv.v__app__locales_messages, genv.v__app__name_mo + ".gz")
     genv.v__app__locales_help     = os.path.join(genv.v__app__locales_help    , genv.v__app__help_mo + ".gz")
+    genv.v__app__locales_css      = os.path.join(genv.v__app__locales_css     , genv.v__app__css__mo + ".gz")
     #
     if len(genv.v__app__locales) < 5:
         DebugPrint("Error: locale out of seed.")
         DebugPrint("abort.")
         sys.exit(1)
         
-    _  = handle_language(ini_lang)
-    _h = handle_help    (ini_lang)
+    _str = handle_language(ini_lang)
+    _hlp = handle_help    (ini_lang)
+    _css = handle_css     (ini_lang)
     
     # ------------------------------------------------------------------------
     # determine on which operating the application script runs ...
@@ -1664,9 +1727,9 @@ try:
         myappid = 'kallup-nonprofit.helpndoc.observer.1'
         windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
     except ImportError:
-        DebugPrint(_("windll error"))
+        DebugPrint(_str("windll error"))
     except Exception:
-        DebugPrint(_("common exception occur"))
+        DebugPrint(_str("common exception occur"))
 
 except IgnoreOuterException:
     DebugPrint(genv.v__app__locales)
@@ -1978,7 +2041,7 @@ class TCustomMemoryStream(TStream):
     # --------------------------------------------------------------------
     def SaveToStream(self, Stream=None):
         if Stream == None:
-            showError(_("stream could not save."))
+            showError(_str("stream could not save."))
     
     # --------------------------------------------------------------------
     # writes contents of the stream to a file.
@@ -2204,11 +2267,11 @@ class ClientHandlerThread(QThread):
                     data = self.client_socket.readAll().data().decode()
                     self.new_data.emit(self.client_socket, data)
                 else:
-                    showInfo(_("no data, close connection."))
+                    showInfo(_str("no data, close connection."))
                     self.client_socket.disconnectFromHost()
                     return True
         except Exception as e:
-            showInfo(_("Error:\n file not found.\n") + e)
+            showInfo(_str("Error:\n file not found.\n") + e)
             return False
     
     def handle_disconnection(self):
@@ -2287,13 +2350,13 @@ class CustomFileSystemModel(QFileSystemModel):
         if role == Qt.DisplayRole and index.column() == 2:  # Spalte 2 ist "Type"
             file_info = self.fileInfo(index)
             if file_info.isDir():
-                return _("Directory")
+                return _str("Directory")
             elif file_info.isFile():
                 # Benutzerdefinierte Dateityp-Anzeige
-                file_str = _("File")
+                file_str = _str("File")
                 return f"{file_info.suffix().upper()}-{file_str}"
             else:
-                return _("Unknown")
+                return _str("Unknown")
         return super().data(index, role)
 
 class FileExplorer(QWidget):
@@ -2590,14 +2653,14 @@ class DebugControls(QWidget):
         font = QFont("Arial", 10)
         font.setBold(True)
         
-        self.btn_set_brk   = QPushButton(_("Set break point"))
-        self.btn_del_brk   = QPushButton(_("Del break point"))
+        self.btn_set_brk   = QPushButton(_str("Set break point"))
+        self.btn_del_brk   = QPushButton(_str("Del break point"))
         #
-        self.btn_start     = QPushButton(_("Start"))
-        self.btn_step_into = QPushButton(_("Step Into"))
-        self.btn_step_next = QPushButton(_("Next"))
-        self.btn_step_prev = QPushButton(_("Prev"))
-        self.btn_stop      = QPushButton(_("Stop"))
+        self.btn_start     = QPushButton(_str("Start"))
+        self.btn_step_into = QPushButton(_str("Step Into"))
+        self.btn_step_next = QPushButton(_str("Next"))
+        self.btn_step_prev = QPushButton(_str("Prev"))
+        self.btn_stop      = QPushButton(_str("Stop"))
         
         self.btn_set_brk  .setFont(font)
         self.btn_del_brk  .setFont(font)
@@ -2940,9 +3003,9 @@ class ExecutableExplorer(QWidget):
             # ----------------------------------------------
             # Tab einfügen
             # ----------------------------------------------
-            tab_widget.addTab(vertical_splitter, _("Files"))
-            tab_widget.addTab(mz_info, _("MZ-Info"))
-            tab_widget.addTab(pe_info, _("PE-Info"))
+            tab_widget.addTab(vertical_splitter, _str("Files"))
+            tab_widget.addTab(mz_info, _str("MZ-Info"))
+            tab_widget.addTab(pe_info, _str("PE-Info"))
             
             main_layout.addWidget(tab_widget)
             
@@ -3178,10 +3241,10 @@ Title={self.title}
             + f"line : {tb.lineno}")
             
             msg = QMessageBox()
-            msg.setWindowTitle(_("Error"))
+            msg.setWindowTitle(_str("Error"))
             msg.setText(err_message)
             msg.setIcon(QMessageBox.Warning)
-            msg.setStyleSheet(_("msgbox_css"))
+            msg.setStyleSheet(_css("msgbox_css"))
             
             btn_ok = msg.addButton(QMessageBox.Ok)
             result = msg.exec_()
@@ -3529,7 +3592,7 @@ class createHTMLproject():
             # non-blocking show dialog ...
             # -----------------------------------------
             self.console_new.show()
-            self.console_new.win.append(_("generationg chm file..."))
+            self.console_new.win.append(_str("generationg chm file..."))
             
             # -----------------------------------------
             # set redirect of stdout to dialog
@@ -3585,7 +3648,7 @@ class createHTMLproject():
         self.console_new.win.append(stderr)
     
     def process_finished(self):
-        self.console_new.win.append(_("Command finished."))
+        self.console_new.win.append(_str("Command finished."))
         return
 
 # ------------------------------------------------------------------------------
@@ -4129,7 +4192,7 @@ class DOSConsole(QDialog):
         self.win.setReadOnly(True)
         
         # close button, to close the QDialog
-        btn_close  = QPushButton(_("Close"))
+        btn_close  = QPushButton(_str("Close"))
         btn_close.setMinimumHeight(32)
         btn_close.setFont(QFont(genv.v__app__font_edit,10))
         btn_close.clicked.connect(self.btn_close_clicked)
@@ -4737,7 +4800,7 @@ class C64Console(QDialog):
         printer_box.setMaximumWidth(100)
         
         # close button, to close the QDialog
-        btn_close = QPushButton(_("Close"))
+        btn_close = QPushButton(_str("Close"))
         btn_close.setMinimumHeight(32)
         btn_close.setFont(QFont(genv.v__app__font_edit,10))
         btn_close.clicked.connect(self.btn_close_clicked)
@@ -5293,7 +5356,7 @@ class dbase_command:
 class dbase_TForm(QDialog):
     def __init__(self, parent=None):
         super(dbase_TForm, self).__init__(parent)
-        self.setWindowTitle(_("Main Window"))
+        self.setWindowTitle(_str("Main Window"))
         self.setWindowFlags(
             Qt.Window or
             Qt.WindowMinimizeButtonHint or
@@ -5377,11 +5440,17 @@ print = builtins.print
         
         genv.v__app__logging.info("start parse: " + self.script_name)
         
-        self.err_commentNC = _("comment not closed.")
-        self.err_commandNF = _("command sequence not finished.")
-        self.err_unknownCS = _("unknown command or syntax error.")
+        self.err_commentNC = _str("comment not closed.")
+        self.err_commandNF = _str("command sequence not finished.")
+        self.err_unknownCS = _str("unknown command or syntax error.")
         
         self.current_state = "program"
+        
+        self.program_reach_end = False
+        self.procedure_state   = False
+        
+        self.begin_counter     = 0
+        self.end_counter       = 0
         
         self.source    = ""
 
@@ -5460,7 +5529,7 @@ print = builtins.print
                 if genv.open_pascal_comment_soft > 0 \
                 or genv.open_pascal_comment_hard > 0 :
                     genv.have_errors = True
-                    raise Exception(_("Error:\nno terminated comment found."))
+                    raise Exception(_str("Error:\nno terminated comment found."))
                     
             raise Exception("no more data")
         else:
@@ -5473,7 +5542,7 @@ print = builtins.print
             elif genv.char_curr == '\r':
                 if self.pos >= len(self.source):
                     genv.have_errors = True
-                    raise Exception(_("line ending error."))
+                    raise Exception(_str("line ending error."))
                     
                 self.pos += 1
                 
@@ -5487,7 +5556,7 @@ print = builtins.print
                     return True
                 else:
                     genv.have_errors = True
-                    raise Exception(_("Error:\nEnd Of Line error: ") + str(genv.line_row))
+                    raise Exception(_str("Error:\nEnd Of Line error: ") + str(genv.line_row))
             else:
                 return False
     
@@ -5514,7 +5583,7 @@ print = builtins.print
             self.getChar()
             if not genv.char_curr == '\n':
                 genv.have_errors = True
-                genv.unexpectedError(_("line error"))
+                genv.unexpectedError(_str("line error"))
                 return False
             else:
                 return True
@@ -5556,7 +5625,7 @@ print = builtins.print
             elif genv.char_curr == '.':
                 if have_point == True:
                     genv.have_errors = True
-                    raise Exception(_("Error:\ntoo many points."))
+                    raise Exception(_str("Error:\ntoo many points."))
                 else:
                     have_point = True
                     continue
@@ -5577,7 +5646,7 @@ print = builtins.print
             else:
                 return False
         else:
-            genv.unexpectedError(_("ident expected"))
+            genv.unexpectedError(_str("ident expected"))
             return False
     
     def expect_op(self):
@@ -5618,7 +5687,7 @@ print = builtins.print
     def expect_assign(self):
         genv.char_curr = self.skip_white_spaces(self.dbase_parser)
         if not genv.char_curr == '=':
-            genv.unexpectedError(_("assign sign expected."))
+            genv.unexpectedError(_str("assign sign expected."))
             return '\0'
         return True
     
@@ -5650,7 +5719,7 @@ print = builtins.print
             self.getChar()
             
             if not genv.char_curr == '\n':
-                raise Exception(_("Error:\nEnd of line error."))
+                raise Exception(_str("Error:\nEnd of line error."))
             else:
                 return True
     
@@ -5677,12 +5746,20 @@ print = builtins.print
             #self.ungetChar(1)
             return False
     
-    def check_ident(self):
-        if genv.char_curr.isalpha():
+    def check_ident(self, name='', old=0):
+        if old == 1:
+            if name == '' or self.token_str.lower() == name:
+                return True
+            else:
+                return False
+        elif genv.char_curr.isalpha() or genv.char_curr == '_':
             self.token_str = genv.char_curr
             self.getIdent()
             print("ident: " + self.token_str)
-            return True
+            if name == '' or self.token_str.lower() == name:
+                return True
+            else:
+                return False
         else:
             print("checker: " + self.token_str + "\n> " + genv.char_curr)
             #self.ungetChar(1)
@@ -5694,11 +5771,11 @@ print = builtins.print
             genv.char_prev = genv.char_curr
             self.getChar()
             
-            if self.check_char('{'):
-                genv.open_pascal_comment_hard += 1
-                continue
+            #if self.check_char('{'):
+            #    genv.open_pascal_comment_hard += 1
+            #    continue
                 
-            elif self.check_char('}'):
+            if self.check_char('}'):
                 genv.open_pascal_comment_hard -= 1
                 
                 if genv.open_pascal_comment_hard > 0:
@@ -5739,7 +5816,7 @@ print = builtins.print
                     print("semi ok")
                     break
                 else:
-                    raise Exception(_("SEmicolon expected."))
+                    raise Exception(_str("SEmicolon expected."))
         elif genv.char_curr.isalpha():
             if self.check_ident():
                 print("---> state: " + self.current_state)
@@ -5751,9 +5828,9 @@ print = builtins.print
                     print("ARgument: " + self.token_str)
                     self.handle_pascal_argument()
             else:
-                raise Exception(_("ident expected."))
+                raise Exception(_str("ident expected."))
         else:
-            raise Exception(_("wrong char type."))
+            raise Exception(_str("wrong char type."))
     
     def handle_pascal_argument(self):
         while True:
@@ -5775,11 +5852,11 @@ print = builtins.print
                                 self.handle_pascal_list_end()
                                 break
                     else:
-                        raise Exception(_("argument type expected."))
+                        raise Exception(_str("argument type expected."))
                     break
                 break
             else:
-                raise Exception(_("colon (:) expected."))
+                raise Exception(_str("colon (:) expected."))
             break
             
     def handle_pascal_list_end(self):
@@ -5803,7 +5880,7 @@ print = builtins.print
                 print("procedure ende.")
                 break
             else:
-                raise Exception(_("semicolon (;) expected."))
+                raise Exception(_str("semicolon (;) expected."))
     
     def handle_pascal_argument_type(self):
         #self.ungetChar(1)
@@ -5816,13 +5893,37 @@ print = builtins.print
     # -----------------------------------------------------------------------
     def skip_white_spaces(self, parser_type):  # wöö
         genv.actual_parser = parser_type
-        
+        self.have_point    = False
         while True:
             genv.char_prev = genv.char_curr
             self.getChar()
             
             if self.check_white_spaces():
                 continue
+            
+            elif genv.char_curr.isdigit():
+                self.token_str = genv.char_curr
+                while True:
+                    genv.char_prev = genv.char_curr
+                    self.getChar()
+                    if genv.char_curr == '.':
+                        if have_point:
+                            raise Exception(_str("float point already exists"))
+                        self.have_point = True
+                        self.token_str += '.'
+                        continue
+                    elif genv.char_curr.isdigit():
+                        self.token_str += genv.char_curr
+                        continue
+                    else:
+                        self.ungetChar(1)
+                        return genv.TOKEN_NUMBER
+            
+            elif self.check_char('.'):
+                if parser_type == self.pascal_parser:
+                    return '.'
+                else:
+                    raise Exception(_str("no supported parser."))
             
             elif self.check_char(';'):
                 if parser_type == self.lisp_parser:
@@ -5835,7 +5936,7 @@ print = builtins.print
                             
                         continue
                 elif parser_type == self.pascal_parser:
-                    return True
+                    return ';'
                 else:
                     raise Exception("no supported parser.")
                         
@@ -5843,7 +5944,7 @@ print = builtins.print
                 genv.open_paren -= 1
                 if genv.open_paren < 1:
                     genv.have_errors = True
-                    raise Exception(_("paren underflow."))
+                    raise Exception(_str("paren underflow."))
                 else:
                     continue
             
@@ -5851,7 +5952,7 @@ print = builtins.print
                 genv.open_pascal_comment_hard -= 1
                 if genv.open_pascal_comment_hard < 1:
                     genv.have_errors = True
-                    raise Exception(_("no comment start found."))
+                    raise Exception(_str("no comment start found."))
                 else:
                     continue
                     
@@ -5860,7 +5961,7 @@ print = builtins.print
                     self.handle_pascal_comment_1()
                     continue
                 else:
-                    raise Exception(_("invalid character found."))
+                    raise Exception(_str("invalid character found."))
                     return
             
             elif self.check_char('/'):
@@ -5879,7 +5980,7 @@ print = builtins.print
                             continue
                         continue
                     else:
-                        raise Exception(_("C++ comment expected."))
+                        raise Exception(_str("C++ comment expected."))
                         
             elif self.check_char('('):
                 genv.open_paren += 1
@@ -5906,10 +6007,18 @@ print = builtins.print
                         else:
                             showInfo("Ee: " + genv.char_curr)
                             break
-                            
-            elif self.check_ident():
-                return True
+            
+            elif self.check_char('\n'):
+                continue
+            elif self.check_char('\r'):
+                self.getChar()
+                if not self.check_char('\n'):
+                    raise Exception(_str("LineEnding Error."))
+                else:
+                    continue
                 
+            elif self.check_ident():
+                return genv.TOKEN_IDENT
             else:
                 showError("token: " + self.token_str + "\n> " + genv.char_curr)
                 return False
@@ -5922,7 +6031,7 @@ print = builtins.print
             self.getChar()
             if not genv.char_curr == '\n':
                 genv.have_errors = True
-                genv.unexpectedError(_("invalide line end."))
+                genv.unexpectedError(_str("invalide line end."))
                 return False
             elif (genv.char_curr == '\n') or (genv.char_curr == '\t') or (genv.char_curr == ' '):
                 return True
@@ -5945,7 +6054,7 @@ print = builtins.print
         self.finalize()
         
         if genv.have_errors == True:
-            showError(_("source code has errors."))
+            showError(_str("source code has errors."))
             return
         
         #genv.text_code += "\tcon.reset()\n"
@@ -5971,7 +6080,7 @@ print = builtins.print
         
         #showInfo("runner:\n" + genv.text_code)
         
-        #showInfo(genv.text_code)
+        showInfo(genv.text_code)
         try:
             cachedir = genv.v__app__internal__ + "/__cache__"
             if not os.path.exists(cachedir):
@@ -6011,11 +6120,11 @@ print = builtins.print
             # reset old code ...
             # ---------------------
             genv.class_code  = ""
-            self.text_code   = ""
+            genv.text_code   = ""
             genv.header_code = ""
         except Exception as e:
             genv.class_code  = ""
-            self.text_code   = ""
+            genv.text_code   = ""
             genv.header_code = ""
             showException(traceback.format_exc())
 
@@ -6137,7 +6246,7 @@ class interpreter_dBase(interpreter_base):
             genv.temp_code  += c
             genv.char_curr = self.skip_white_spaces(self.dbase_parser)
             if genv.char_curr == genv.ptNoMoreData:
-                genv.unexpectedError(_("no more data."))
+                genv.unexpectedError(_str("no more data."))
             elif genv.char_curr == '(':
                 self.ungetChar(1)
                 self.handle_parens()
@@ -6168,7 +6277,7 @@ class interpreter_dBase(interpreter_base):
             return genv.char_curr
         else:
             if genv.counter_brace > 0:
-                raise unexpectedParserException(_("missing closed parens"), genv.line_row)
+                raise unexpectedParserException(_str("missing closed parens"), genv.line_row)
                 return '\0'
         return False
     
@@ -6217,7 +6326,7 @@ class interpreter_dBase(interpreter_base):
             genv.last_command = True
             return True
         else:
-            genv.unexpectedError(_("qoute expected"))
+            genv.unexpectedError(_str("qoute expected"))
             return '\0'
     
     def handle_say(self):
@@ -6268,7 +6377,7 @@ class interpreter_dBase(interpreter_base):
                                 #showInfo("getter")
                                 return
                     else:
-                        genv.unexpectedError(_(" l l k k k "))
+                        genv.unexpectedError(_str(" l l k k k "))
                 #
                 genv.char_curr = self.skip_white_spaces(self.dbase_parser)
                 if genv.char_curr in['-','+','*','/']:
@@ -6300,11 +6409,11 @@ class interpreter_dBase(interpreter_base):
                                 showInfo("get not implemented")
                                 break
                         else:
-                            genv.unexpectedError(_("say or get expected"))
+                            genv.unexpectedError(_str("say or get expected"))
                     else:
-                        genv.unexpectedError(_("prev comma"))
+                        genv.unexpectedError(_str("prev comma"))
                 else:
-                    genv.unexpectedError(_("unexpected character found."))
+                    genv.unexpectedError(_str("unexpected character found."))
             elif genv.char_curr.isalpha() or genv.char_curr == '_':
                 #showInfo("a identerig")
                 self.token_str = genv.char_curr
@@ -6317,11 +6426,11 @@ class interpreter_dBase(interpreter_base):
                     continue
                 elif genv.char_curr == ',':
                     if self.prev_expr:
-                        genv.unexpectedError(_("comma prevv"))
+                        genv.unexpectedError(_str("comma prevv"))
                     self.prev_expr = True
                     continue
                 else:
-                    genv.unexpectedError(_("unexpected character found 2."))
+                    genv.unexpectedError(_str("unexpected character found 2."))
             elif genv.char_curr == '(':
                 genv.open_paren += 1
                 genv.temp_code += '('
@@ -6351,21 +6460,21 @@ class interpreter_dBase(interpreter_base):
                             continue
                         elif genv.char_curr == ',':
                             if self.prev_expr:
-                                genv.unexpectedError(_("comma prevv"))
+                                genv.unexpectedError(_str("comma prevv"))
                             self.prev_expr = True
                             continue
                         else:
-                            genv.unexpectedError(_("loliutz"))
+                            genv.unexpectedError(_str("loliutz"))
                 else:
                     continue
             elif genv.char_curr == ',':
                 #showInfo("mupslochj")
                 if self.prev_expr:
-                    genv.unexpectedError(_("comma prevv 22"))
+                    genv.unexpectedError(_str("comma prevv 22"))
                 self.prev_sign = True
                 continue
             else:
-                genv.unexpectedError(_("say command not okay."))
+                genv.unexpectedError(_str("say command not okay."))
                 return '\0'
     
     # -----------------------------------------------
@@ -6555,7 +6664,7 @@ class interpreter_dBase(interpreter_base):
                                     
                                             genv.char_curr = self.skip_white_spaces(self.dbase_parser)
                                             if genv.char_curr == genv.ptNoMoreData:
-                                                raise e_no_more_data(_("endclass expected"))
+                                                raise e_no_more_data(_str("endclass expected"))
                                             if genv.char_curr.isalpha():
                                                 self.token_str = genv.char_curr
                                                 self.getIdent()
@@ -6563,38 +6672,38 @@ class interpreter_dBase(interpreter_base):
                                                     raise e_no_more_data("classend") # + genv.temp_code)
                                                 else:
                                                     genv.have_errors = True
-                                                    genv.unexpectedError(_("endclass expected."))
+                                                    genv.unexpectedError(_str("endclass expected."))
                                             else:
                                                 genv.have_errors = True
-                                                genv.unexpectedError(_("alpha value expected"))
+                                                genv.unexpectedError(_str("alpha value expected"))
                                                 return
                                         else:
                                             genv.have_errors = True
-                                            genv.unexpectedError(_("OF expected"))
+                                            genv.unexpectedError(_str("OF expected"))
                                             return
                                     else:
                                         genv.have_errors = True
-                                        genv.unexpectedError(_("alpha value expected"))
+                                        genv.unexpectedError(_str("alpha value expected"))
                                         return
                                 else:
                                     genv.have_errors = True
-                                    genv.unexpectedError(_("form expected."))
+                                    genv.unexpectedError(_str("form expected."))
                                     return
                             else:
                                 genv.have_errors = True
-                                genv.unexpectedError(_("alpha value expected"))
+                                genv.unexpectedError(_str("alpha value expected"))
                                 return
                         else:
                             genv.have_errors = True
-                            genv.unexpectedError(_("OF expected."))
+                            genv.unexpectedError(_str("OF expected."))
                             return
                     else:
                         genv.have_errors = True
-                        genv.unexpectedError(_("alpha value expected"))
+                        genv.unexpectedError(_str("alpha value expected"))
                         return
                 else:
                     genv.have_errors = True
-                    genv.unexpectedError(_("alpha value expected"))
+                    genv.unexpectedError(_str("alpha value expected"))
                     return
         except e_no_more_data as noerror:
             #showInfo(f"dBase class information:\n{noerror.message}")
@@ -6662,42 +6771,42 @@ class interpreter_dBase(interpreter_base):
                                         break
                                         #sys.exit(1)
                                 else:
-                                    genv.unexpectedError(_("TO expected"))
+                                    genv.unexpectedError(_str("TO expected"))
                                     return '\0'
                             else:
-                                genv.unexpectedError(_("TO expected"))
+                                genv.unexpectedError(_str("TO expected"))
                                 return '\0'
                         else:
-                            genv.unexpectedToken(_("COLOR expected"))
+                            genv.unexpectedToken(_str("COLOR expected"))
                             return '\0'
                 elif self.token_str.lower() == "for":
                     #showInfo("foooor")
                     genv.counter_for += 1
                     if not self.expect_ident():
-                        genv.unexpectedError(_("expected ident."))
+                        genv.unexpectedError(_str("expected ident."))
                     self.ident = self.token_str
                     self.temp_code = self.token_str
-                    self.text_code += ("\t" * genv.counter_indent)
-                    self.text_code += self.token_str
+                    genv.text_code += ("\t" * genv.counter_indent)
+                    genv.text_code += self.token_str
                     if not self.expect_assign():
-                        genv.unexpectedError(_("assign sign expected."))
-                    self.text_code += self.token_str
-                    self.text_code += "_cnt = range("
+                        genv.unexpectedError(_str("assign sign expected."))
+                    genv.text_code += self.token_str
+                    genv.text_code += "_cnt = range("
                     if not self.expect_expr():
-                        genv.unexpectedError(_("expr expected."))
-                    self.text_code += self.temp_code
+                        genv.unexpectedError(_str("expr expected."))
+                    genv.text_code += self.temp_code
                     if not self.expect_ident("to"):
-                        genv.unexpectedError(_("expect TO"))
-                    self.text_code += ", "
+                        genv.unexpectedError(_str("expect TO"))
+                    genv.text_code += ", "
                     if not self.expect_expr():
-                        genv.unexpectedError(_("expr2 expected."))
-                    self.text_code += self.temp_code
-                    self.text_code += ")\n"
-                    self.text_code += ('\t' * genv.counter_indent)
-                    self.text_code += "for "
-                    self.text_code += self.ident
-                    self.text_code += " in "
-                    self.text_code += self.ident + "_cnt:\n"
+                        genv.unexpectedError(_str("expr2 expected."))
+                    genv.text_code += self.temp_code
+                    genv.text_code += ")\n"
+                    genv.text_code += ('\t' * genv.counter_indent)
+                    genv.text_code += "for "
+                    genv.text_code += self.ident
+                    genv.text_code += " in "
+                    genv.text_code += self.ident + "_cnt:\n"
                     continue
                 elif self.token_str.lower() == "next":
                     genv.counter_for -= 1
@@ -6711,7 +6820,7 @@ class interpreter_dBase(interpreter_base):
                     #
                     genv.char_curr = self.skip_white_spaces(self.dbase_parser)
                     if genv.char_curr == genv.ptNoMoreData:
-                        #showInfo(_("temp code"))
+                        #showInfo(_str("temp code"))
                         #showInfo(genv.class_code)
                         raise e_no_more_data("temp code")
                     if genv.char_curr == '=':
@@ -6741,7 +6850,7 @@ class interpreter_dBase(interpreter_base):
                         self.getIdent(genv.char_curr)
                         #showInfo('oo\n' + self.token_str)
                     else:
-                        genv.unexpectedError(_("variable can not assign."))
+                        genv.unexpectedError(_str("variable can not assign."))
                         return '\0'
             elif genv.char_curr == '@':
                 #showInfo('sayer')
@@ -6763,7 +6872,7 @@ class interpreter_dBase(interpreter_base):
                         self.handle_string()
                         genv.char_curr = self.skip_white_spaces(self.dbase_parser)
                         if not genv.char_curr == ']':
-                            genv.unexpectedError(_("] expected."))
+                            genv.unexpectedError(_str("] expected."))
                         else:
                             break
                         #showInfo("STRING: ", self.token_str)
@@ -6793,7 +6902,7 @@ class interpreter_dBase(interpreter_base):
             self.token_str = ""
                         
             if len(self.source) < 1:
-                genv.unexpectedError(_("no data available."))
+                genv.unexpectedError(_str("no data available."))
                 return
             
             # ------------------------------------
@@ -6840,7 +6949,7 @@ class interpreter_dBase(interpreter_base):
                 self.source = genv.header_code
                 
                 if len(self.source) < 1:
-                    showInfo(_("source have no header"))
+                    showInfo(_str("source have no header"))
                     return
                 
                 genv.isGuiApplication = True
@@ -6870,11 +6979,11 @@ class interpreter_dBase(interpreter_base):
                     self.handle_dbase_class(self.source)
                     return
                 else:
-                    showInfo(_("no class found"))
+                    showInfo(_str("no class found"))
                     return
                     
         except noDataNoError:
-            #showInfo("nachricht:\n\n" + self.temp_code)
+            showInfo("nachricht:\n\n" + self.temp_code)
             if not genv.last_command:
                 genv.text_code += ")\n"
                 genv.last_command = True
@@ -6911,7 +7020,7 @@ class interpreter_dBase(interpreter_base):
             if genv.char_curr == genv.ptNoMoreData:
                 genv.have_errors = True
                 raise e_expr_error(
-                    message=_("syntax error."),
+                    message=_str("syntax error."),
                     line=genv.line_row,
                     code=genv.DBASE_EXPR_SYNTAX_ERROR
                     )
@@ -6932,7 +7041,7 @@ class interpreter_dBase(interpreter_base):
                     if genv.char_curr == genv.ptNoMoreData:
                         genv.have_errors = True
                         raise e_expr_error(
-                            message=_("data out."),
+                            message=_str("data out."),
                             line=genv.line.row,
                             code=genv.DBASE_EXPR_SYNTAX_ERROR
                             )
@@ -6952,7 +7061,7 @@ class interpreter_dBase(interpreter_base):
                         if self.token_str.lower() in genv.dbase_keywords:
                             genv.have_errors = True
                             raise e_expr_error(
-                                message=_("keywords not allowed there."),
+                                message=_str("keywords not allowed there."),
                                 line=genv.line_row,
                                 code=genv.DBASE_EXPR_KEYWORD_ERROR
                                 )
@@ -6962,7 +7071,7 @@ class interpreter_dBase(interpreter_base):
                     else:
                         genv.have_errors = True
                         raise e_expr_error(
-                            message=_("numeric or alpha expected."),
+                            message=_str("numeric or alpha expected."),
                             line=genv.line_row,
                             code=genv.DBASE_EXPR_SYNTAX_ERROR
                             )
@@ -6976,7 +7085,7 @@ class interpreter_dBase(interpreter_base):
                 if self.token_str.lower() in genv.dbase_keywords:
                     genv.have_errors = True
                     raise e_expr_error(
-                        message=_("keywords not allowed there."),
+                        message=_str("keywords not allowed there."),
                         line=genv.line_row,
                         code=genv.DBASE_EXPR_KEYWORD_ERROR
                         )
@@ -6986,7 +7095,7 @@ class interpreter_dBase(interpreter_base):
             else:
                 genv.have_errors = True
                 raise e_expr_error(
-                    message=_("if syntax error."),
+                    message=_str("if syntax error."),
                     line=genv.line_row
                     )
                 return 0
@@ -7011,7 +7120,7 @@ class interpreter_dBase(interpreter_base):
                                 self.getIdent(genv.char_curr)
                                 if self.token_str.lower() in genv.dbase_keywords:
                                     genv.have_errors = True
-                                    genv.unexpectedError(_("keywords can not be used as variable"))
+                                    genv.unexpectedError(_str("keywords can not be used as variable"))
                                     return
                                 genv.temp_code += self.token_str
                                 genv.char_curr = self.skip_white_spaces(self.dbase_parser)
@@ -7045,7 +7154,7 @@ class interpreter_dBase(interpreter_base):
                                 self.getIdent(genv.char_curr)
                                 if self.token_str.lower() in genv.dbase_keywords:
                                     genv.have_errors = True
-                                    genv.unexpectedError(_("keywords can not be used as variable"))
+                                    genv.unexpectedError(_str("keywords can not be used as variable"))
                                     return
                                 genv.text_code += self.token_str
                                 genv.char_curr = self.skip_white_spaces(self.dbase_parser)
@@ -7103,31 +7212,31 @@ class interpreter_dBase(interpreter_base):
                                                 continue
                                             else:
                                                 genv.have_errors = True
-                                                genv.unexpectedError(_("closed paren expected."))
+                                                genv.unexpectedError(_str("closed paren expected."))
                                                 return
                                         else:
                                             genv.have_errors = True
-                                            genv.unexpectedError(_("open paren expected."))
+                                            genv.unexpectedError(_str("open paren expected."))
                                             return
                                     else:
                                         genv.have_errors = True
-                                        genv.unexpectedError(_("open expected."))
+                                        genv.unexpectedError(_str("open expected."))
                                         return
                                 else:
                                     genv.have_errors = True
-                                    genv.unexpectedError(_("unexpected character fund."))
+                                    genv.unexpectedError(_str("unexpected character fund."))
                                     return
                             elif genv.char_curr == '(':
                                 showInfo("not implemented paren")
                                 genv.have_errors = True
-                                genv.unexpectedError(_("not implemented."))
+                                genv.unexpectedError(_str("not implemented."))
                                 return
                     elif self.token_str.lower() == "endif":
                         genv.counter_endif += 1
                         showInfo("IF:  " + str(genv.counter_if) + "\nBB: " + str(genv.counter_endif))
                         if not (genv.counter_if == genv.counter_endif):
                             genv.have_errors = True
-                            genv.unexpectedError(_("closed paren overflow."))
+                            genv.unexpectedError(_str("closed paren overflow."))
                             return 0
                         continue
                     else:
@@ -7141,7 +7250,7 @@ class interpreter_dBase(interpreter_base):
                         self.check_token_expr(["readmodal","open"])
                         if b == False:
                             genv.have_errors = True
-                            genv.unexpectedError(_("readmodal or open expected."))
+                            genv.unexpectedError(_str("readmodal or open expected."))
                             return False
                                 
                             showInfo("zzzzzz\n" + genv.text_code)
@@ -7160,14 +7269,14 @@ class interpreter_dBase(interpreter_base):
                             #            c = self.skip_white_spaces(self.dbase_parser)
                             #            if c == genv.ptNoMoreData:
                             #                genv.have_errors = True
-                            #                genv.unexpectedError(_("open paren expected."))
+                            #                genv.unexpectedError(_str("open paren expected."))
                             #                return
                             #            elif c == ')':
                             #                genv.text_code += ')'
                             #                continue
                             #            else:
                             #                genv.have_errors = True
-                            #                genv.unexpectedError(_("unknow character found."))
+                            #                genv.unexpectedError(_str("unknow character found."))
                             #                return
                             #        elif c == '=':
                             #            showInfo("equaallllll")
@@ -7191,15 +7300,15 @@ class interpreter_dBase(interpreter_base):
                             #                            continue
                             #                        else:
                             #                            genv.have_errors = True
-                            #                            genv.unexpectedError(_(".f. or .t. expected"))
+                            #                            genv.unexpectedError(_str(".f. or .t. expected"))
                             #                            return
                             #                    else:
                             #                        genv.have_errors = True
-                            #                        genv.unexpectedError(_("dot '.' expected"))
+                            #                        genv.unexpectedError(_str("dot '.' expected"))
                             #                        return
                             #                else:
                             #                    genv.have_errors = True
-                            #                    genv.unexpectedError(_(".f. or .t. expected"))
+                            #                    genv.unexpectedError(_str(".f. or .t. expected"))
                             #                    return
                             #            elif c.isnumeric():
                             #                showInfo("todo: c.isnumeric()")
@@ -7214,13 +7323,13 @@ class interpreter_dBase(interpreter_base):
                             #                    genv.text_code += "True\r"
                             #                else:
                             #                    genv.have_errors = True
-                            #                    genv.unexpectedError(_("false or true or .t. or .f. expected."))
+                            #                    genv.unexpectedError(_str("false or true or .t. or .f. expected."))
                             #                    return
                             #                showInfo("102\n" + genv.text_code)
                             #                continue
                             #            else:
                             #                genv.have_errors = True
-                            #                genv.unexpectedError(_("boolean value expected."))
+                            #                genv.unexpectedError(_str("boolean value expected."))
                             #                return
                             #else:
                             #    genv.text_code += self.token_str
@@ -7239,26 +7348,26 @@ class interpreter_dBase(interpreter_base):
                                     genv.char_curr = self.skip_white_spaces(self.dbase_parser)
                                     if genv.char_curr == genv.ptNoMoreData:
                                         genv.have_errors = True
-                                        genv.unexpectedError(_("new expected."))
+                                        genv.unexpectedError(_str("new expected."))
                                         return
                                     elif genv.char_curr.isalpha() or genv.char_curr == '_':
                                         self.getIdent(genv.char_curr)
                                         if self.token_str.lower() in genv.dbase_keywords:
                                             genv.have_errors = True
-                                            genv.unexpectedError(_("keywords not allowed there"))
+                                            genv.unexpectedError(_str("keywords not allowed there"))
                                             return
                                         genv.text_code += self.token_str
                                         genv.char_curr = self.skip_white_spaces(self.dbase_parser)
                                         if genv.char_curr == genv.ptNoMoreData:
                                             genv.have_errors = True
-                                            genv.unexpectedError(_("open paren expected."))
+                                            genv.unexpectedError(_str("open paren expected."))
                                             return
                                         elif genv.char_curr == '(':
                                             genv.text_code += '('
                                             genv.char_curr = self.skip_white_spaces(self.dbase_parser)
                                             if genv.char_curr == genv.ptNoMoreData:
                                                 genv.have_errors = True
-                                                genv.unexpectedError(_("open paren expected."))
+                                                genv.unexpectedError(_str("open paren expected."))
                                                 return
                                             elif genv.char_curr == ')':
                                                 genv.text_code += ')\n'
@@ -7282,10 +7391,10 @@ class interpreter_dBase(interpreter_base):
                             break
                 else:
                     genv.have_errors = True
-                    genv.unexpectedError(_("unexpected syntax"))
+                    genv.unexpectedError(_str("unexpected syntax"))
                     return
                 
-                #showInfo("Line: " + str(genv.start_idx) + "\n" + self.text_code)
+                #showInfo("Line: " + str(genv.start_idx) + "\n" + genv.text_code)
                 #showInfo(genv.text_code)
                 #self.update_code(genv.text_code)
             else:
@@ -7295,16 +7404,16 @@ class interpreter_dBase(interpreter_base):
             showInfo("-->IF:  " + str(genv.counter_if) + "\nBB: " + str(genv.counter_endif))
             if not (genv.counter_if == genv.counter_endif):
                 genv.have_errors = True
-                genv.unexpectedError(_("if/endif syntax error."))
+                genv.unexpectedError(_str("if/endif syntax error."))
     
     def check_point(self):
-        genv.char_curr = self.check_token_no_more_data(_("check point"))
+        genv.char_curr = self.check_token_no_more_data(_str("check point"))
         if genv.char_curr == '.':
             genv.text_code += '.'
             return '.'
         else:
             genv.habe_errors = True
-            genv.unexpectedError(_("point expected."))
+            genv.unexpectedError(_str("point expected."))
             return False
     
     def check_token_ident_macro(self, token):
@@ -7312,7 +7421,7 @@ class interpreter_dBase(interpreter_base):
             return True
         else:
             genv.have_errors = True
-            genv.unexpectedError(_("macro condition expected."))
+            genv.unexpectedError(_str("macro condition expected."))
         return False
     
     def check_token_ident(self):
@@ -7323,14 +7432,14 @@ class interpreter_dBase(interpreter_base):
             return True
         else:
             genv.have_errors = True
-            genv.unexpectedError(_("ident expected."))
+            genv.unexpectedError(_str("ident expected."))
         return False
     
     def check_token_keywords(self, tokens):
         for item in tokens:
             if item in genv.dbase_keywords:
                 genv.have_errors = True
-                genv.unexpectedError(_("keywords not allowed there."))
+                genv.unexpectedError(_str("keywords not allowed there."))
                 return False
             else:
                 if item.lower() == self.token_str.lower():
@@ -7386,9 +7495,9 @@ class interpreter_dBase(interpreter_base):
                                 bg_color = genv.convalues[index]
                                 bg_found = True
                             else:
-                                genv.unexpectedError(_("invalide bg color"))
+                                genv.unexpectedError(_str("invalide bg color"))
                         else:
-                            genv.unexpectedError(_("bg error"))
+                            genv.unexpectedError(_str("bg error"))
                     else:
                         self.ungetChar(1)
             elif genv.char_curr == '/':
@@ -7411,9 +7520,9 @@ class interpreter_dBase(interpreter_base):
                             bg_color = genv.convalues[index]
                             bg_found = True
                         else:
-                            genv.unexpectedError(_("invalide bg color"))
+                            genv.unexpectedError(_str("invalide bg color"))
                     else:
-                        genv.unexpectedError(_("bg error"))
+                        genv.unexpectedError(_str("bg error"))
                 else:
                     self.ungetChar(1)
             elif genv.char_curr.isalpha():
@@ -7434,17 +7543,17 @@ class interpreter_dBase(interpreter_base):
                                 bg_color = genv.convalues[index]
                                 bg_found = True
                             else:
-                                genv.unexpectedError(_("invalide bg color"))
+                                genv.unexpectedError(_str("invalide bg color"))
                         else:
-                            genv.unexpectedError(_("bg error"))
+                            genv.unexpectedError(_str("bg error"))
                     else:
                         self.ungetChar(1)
                 else:
                     # todo: variable !!!
-                    genv.unexpectedError(_("invalide fg color"))
+                    genv.unexpectedError(_str("invalide fg color"))
                     #
             else:
-                genv.unexpectedError(_("color error"))
+                genv.unexpectedError(_str("color error"))
         self.fg_color = fg_color
         self.bg_color = bg_color
         
@@ -7487,25 +7596,237 @@ class interpreter_Pascal(interpreter_base):
         script_app_type = ""
         script_app_name = ""
         
-        genv.actual_parser = self.pascal_parser
-        
-        while True:
-            self.skip_white_spaces(self.pascal_parser)
+        try:
+            genv.actual_parser = self.pascal_parser
             
-            # <program> <name> <;>
-            if self.token_str.lower() == "program":
-                self.token_str = ""
+            while True:
+                genv.char_curr = self.skip_white_spaces(self.pascal_parser)
+                genv.char_prev = genv.char_curr
+                
+                # <program> <name> <;>
+                if self.token_str.lower() == "program":
+                    #showInfo("program")
+                    genv.text_code = "def pascal_main():\n"
+                    genv.text_code_scope_new = unique_hash()
+                    genv.text_code_scope_old = genv.text_code_scope_new
+                    genv.text_code_indent += 4
+                    #
+                    self.token_str = ""
+                    while True:
+                        if self.handle_pascal_white_spaces():
+                            continue
+                        if self.check_ident():
+                            #showInfo("program: " + self.token_str)
+                            while True:
+                                if self.handle_pascal_white_spaces():
+                                    continue
+                                if self.check_char(';'):
+                                    #showInfo("program head end")
+                                    self.handle_pascal_program()
+                                    return
+                                else:
+                                    raise Exception(_str("semicolon expected."))
+                            break
+                        else:
+                            raise Exception(_str("ident expected."))
+                    break
+                elif self.token_str.lower() == 'library':
+                    self.token_str = ""
+                    while True:
+                        if self.handle_pascal_white_spaces():
+                            continue
+                        if self.check_ident():
+                            self.handle_pascal_library_ident(self.token_str)
+                            break
+                        else:
+                            raise Exception(_str("ident expected."))
+                    break
+                elif self.token_str.lower() == 'unit':
+                    self.token_str = ""
+                    while True:
+                        if self.handle_pascal_white_spaces():
+                            continue
+                        if self.check_ident():
+                            self.handle_pascal_unit_ident(self.token_str)
+                            break
+                        else:
+                            raise Exception(_str("ident expected."))
+                    break
+                else:
+                    raise Exception(_str("PROGRAM, LIBRARY or UNIT expected."))
+                    
+        except e_no_more_data as nodata:
+            showInfo("no error.\nno more data.")
+        except Exception as e:
+            showError(e)
+            
+    def run(self):
+        #self.finalize()
+        
+        if genv.have_errors == True:
+            showError(_str("source code has errors."))
+            return
+        
+        #genv.text_code += "\tcon.reset()\n"
+        #genv.counter_indent -= 1
+        
+        genv.text_code += "\n"
+        genv.text_code += "if __name__ == '__main__':\n"
+        genv.text_code_indent = 2
+        genv.text_code += (genv.text_code_indent * "  ")
+        genv.text_code += "global console\n"
+        genv.text_code += (genv.text_code_indent * "  ")
+        genv.text_code += "console = DOSConsole()\n"
+        genv.text_code += (genv.text_code_indent * "  ")
+        genv.text_code += "pascal_main()\n"
+        genv.text_code += (genv.text_code_indent * "  ")
+        genv.text_code += "console.exec_()\n"
+        
+        #showInfo("runner:\n" + genv.text_code)
+        
+        showInfo(genv.text_code)
+        try:
+            # ---------------------
+            # prepare output file:
+            # ---------------------
+            cachedir = genv.v__app__internal__ + "/__cache__"
+            if not os.path.exists(cachedir):
+                os.makedirs(cachedir)
+            
+            fname = os.path.basename(self.script_name)
+            fname = os.path.splitext(fname)[0]
+            fname = cachedir+"/"+fname+".bin"
+            
+            # ---------------------
+            # compile text code ...
+            # ---------------------
+            bytecode = compile(genv.text_code, "<string>", "exec")
+            
+            # ---------------------
+            # save binary code ...
+            # ---------------------
+            with open(fname,"wb") as bytefile:
+                marshal.dump(bytecode , bytefile)
+                bytefile.close()
+            
+            bytecode = ""
+            with open(fname,"rb") as bytefile:
+                bytecode = marshal.load(bytefile)
+                bytefile.close()
+            
+                # ---------------------
+                # execute binary code:
+                # ---------------------
+                exec(bytecode, globals())
+            
+            # ---------------------
+            # reset old code ...
+            # ---------------------
+            genv.class_code  = ""
+            genv.text_code   = ""
+            genv.header_code = ""
+        except Exception as e:
+            genv.class_code  = ""
+            genv.text_code   = ""
+            genv.header_code = ""
+            showException(traceback.format_exc())
+            
+    def handle_pascal_program(self):
+        while True:
+            if self.program_reach_end:
+                break
+            if self.handle_pascal_white_spaces():
+                continue
+            if self.check_ident("begin"):
+                genv.text_code += (genv.text_code_indent * " ")
+                self.text_update()
+                #
+                self.begin_counter += 1
+                #showInfo("begin I")
+                while True:
+                    if self.handle_pascal_white_spaces():
+                        continue
+                    if self.check_ident("end"):
+                        genv.text_code += (genv.text_code_indent * " ")
+                        genv.text_code += "return\n"
+                        genv.text_code_indent -= 4
+                        #
+                        self.end_counter += 1
+                        while True:
+                            if self.handle_pascal_white_spaces():
+                                continue
+                            if self.check_char('.'):
+                                return
+                            else:
+                                raise Exception(_str("point expected."))
+                    elif self.check_ident("begin", 1):
+                        genv.text_code += (genv.text_code_indent * " ")
+                        self.text_update()
+                        #
+                        self.begin_counter += 1
+                        while True:
+                            if self.handle_pascal_white_spaces():
+                                continue
+                            if self.check_ident("end"):
+                                genv.text_code += (genv.text_code_indent * " ")
+                                genv.text_code += "\nreturn\n"
+                                genv.text_code_indent -= 4
+                                #
+                                self.end_counter += 1
+                                #showInfo("end inner")
+                                while True:
+                                    if self.handle_pascal_white_spaces():
+                                        continue
+                                    if self.check_char(';'):
+                                        #showInfo("inner semi end")
+                                        break
+                                    else:
+                                        raise Exception(_str("semicolon expected."))
+                                break
+                            else:
+                                raise Exception(_str("keyword expected."))
+                        break
+                    else:
+                        raise Exception('keyword expected.')
+                continue
+            elif self.check_ident("procedure", 1):
+                #showInfo("PROOOOO")
                 while True:
                     if self.handle_pascal_white_spaces():
                         continue
                     if self.check_ident():
-                        self.handle_pascal_program_ident()
-                        break
+                        #showInfo("procedure: " + self.token_str)
+                        genv.text_code += (genv.text_code_indent * " ")
+                        self.text_update()
+                        self.handle_pascal_procedure(self.token_str)
                     else:
-                        raise Exception(_("ident expected."))
-                break
+                        raise Exception(_str("procedure name expected."))
+                continue
+            elif self.check_ident("function", 1):
+                #showInfo("fufufu")
+                while True:
+                    if self.handle_pascal_white_spaces():
+                        continue
+                    if self.check_ident(''):
+                        self.handle_pascal_function_name(self.token_str)
+                        if self.check_char(';'):
+                            #showInfo("ooooooo")
+                            break
+                        else:
+                            raise Exception(_str("semicolon expected."))
+                    else:
+                        raise Exception(_str("function name expected."))
+            else:
+                raise Exception(_str("BEGIN, PROCEDURE or FUNCTION expected."))
     
-    def handle_pascal_program_ident(self):
+    def text_update(self):
+        genv.text_code += "def scope_"
+        genv.text_code += str(genv.text_code_scope_new) + "():\n"
+        genv.text_code_scope_old = genv.text_code_scope_new
+        genv.text_code_scope_new = unique_hash()
+        genv.text_code_indent += 4
+        
+    def handle_pascal_library_ident(self):
         while True:
             if self.handle_pascal_white_spaces():
                 continue
@@ -7514,19 +7835,26 @@ class interpreter_Pascal(interpreter_base):
                     if self.handle_pascal_white_spaces():
                         continue                                    
                     if not self.check_ident():
-                        raise Exception(_("ident expecred."))
+                        raise Exception(_str("ident expecred."))
                     if self.token_str.lower() == "begin":
+                        genv.text_code += (genv.text_code_indent * " ")
+                        self.text_update()
+                        #
+                        self.begin_counter += 1
                         self.handle_pascal_body()
                         #self.handle_pascal_tail()
                         break
                     elif self.token_str.lower() == "procedure":
+                        genv.text_code += (genv.text_code_indent * " ")
+                        self.text_update()
+                        #
                         self.handle_pascal_procedure_name()
                         print("AAAAA")
                         
                     elif self.token_str.lower() == "function":
                         self.handle_pascal_function()
             else:
-                raise Exception(_("semicolon expected."))
+                raise Exception(_str("semicolon expected."))
     
     def handle_pascal_white_spaces(self):
         genv.char_prev = genv.char_curr
@@ -7542,18 +7870,216 @@ class interpreter_Pascal(interpreter_base):
             return True
         else:
             return False
-            
-    def handle_pascal_procedure_name(self):
+    
+    def handle_pascal_ident(self):
         while True:
-            if self.handle_pascal_white_spaces():
-                continue
-            if self.check_ident():
-                print("procedure name: " + self.token_str)
-                self.current_state = "procedure"
-                self.handle_pascal_white_spaces()
-                return True
+            genv.char_curr = self.skip_white_spaces(self.pascal_parser)
+            if genv.char_curr == genv.TOKEN_IDENT:
+                return self.handle_pascal_procedure(self.token_str)
             else:
-                return False
+                raise Exception(_str("ident expected."))
+        return False
+    
+    def handle_pascal_tail(self):
+        self.block_const = False
+        self.block_var   = False
+        self.token_array = [genv.TOKEN_IDENT, genv.TOKEN_NUMBER, genv.TOKEN_STRING]
+        while True:
+            genv.char_curr = self.skip_white_spaces(self.pascal_parser)
+            if genv.char_curr == genv.TOKEN_IDENT:
+                if self.token_str.lower() == "const":
+                    print("const-->> " + self.token_str)
+                    self.block_var = False
+                    self.block_const = True
+                    while True:
+                        self.skip_white_spaces(self.pascal_parser)
+                        if genv.char_curr == genv.TOKEN_IDENT:
+                            self.skip_white_spaces(self.pascal_parser)
+                            if self.check_char('='):
+                                self.skip_white_spaces(self.pascal_parser)
+                                if genv.char_curr in self.token_array:
+                                    self.skip_white_spaces(self.pascal_parser)
+                                    if genv.char_curr == ',':
+                                        continue
+                                    if genf.char_curr == ';':
+                                        break
+                                else:
+                                    raise Exception(_str("IDENT, NUMBER or STRING expected."))
+                            else:
+                                raise Exception(_str("CONST Assing sign expected."))
+                        else:
+                            raise Exception(_str("CONST ident expected."))
+                    continue
+                elif self.token_str.lower() == "var":
+                    self.block_const = False
+                    self.block_var = True
+                    while True:
+                        self.skip_white_spaces(self.pascal_parser)
+                        if genv.char_curr == genv.TOKEN_IDENT:
+                            self.skip_white_spaces(self.pascal_parser)
+                            if self.check_char(','):
+                                continue
+                            elif self.check_char(':'):
+                                self.skip_white_spaces(self.pascal_parser)
+                                if genv.char_curr == genv.TOKEN_IDENT:
+                                    self.skip_white_spaces(self.pascal_parser)
+                                    if self.check_char(';'):
+                                        break
+                                    else:
+                                        raise Exception(_str("semicolon expected."))
+                                else:
+                                    raise Exception(_str("ident expected."))
+                            else:
+                                raise Exception(_str("VAR double dot sing expected"))
+                        else:
+                            raise Exception(_str("VAR ident expected."))
+                    continue
+                elif self.token_str.lower() == "begin":
+                    genv.text_code += (genv.text_code_indent * " ")
+                    self.text_update()
+                    #
+                    self.begin_counter += 1
+                    self.block_const = False
+                    self.block_var = False
+                    self.token_str = ""
+                    self.handle_pascal_body()
+                elif self.token_str.lower() == "procedure":
+                    genv.text_code += (genv.text_code_indent * " ")
+                    self.text_update()
+                    #
+                    return self.handle_pascal_tail()
+                elif self.token_str.lower() == "function":
+                    genv.text_code += (genv.text_code_indent * " ")
+                    self.text_update()
+                    #
+                    return self.handle_pascal_tail()
+                else:
+                    raise Exception(_str("ident expected."))
+    
+    def handle_pascal_body(self):
+        while True:
+            genv.char_curr = self.skip_white_spaces(self.pascal_parser)
+            print("-->" + str(genv.char_curr) + "<--")
+            if genv.char_curr == genv.TOKEN_IDENT:
+                print("IDD: " + self.token_str)
+                if self.token_str.lower() == "end":
+                    genv.text_code += (genv.text_code_indent * " ")
+                    genv.text_code_scope_new = unique_hash()
+                    genv.text_code += "return\n"
+                    genv.text_code_indent -= 4
+                    #
+                    self.end_counter += 1
+                    #print("begin counter2 => " + str(self.begin_counter))
+                    genv.char_curr = self.skip_white_spaces(self.pascal_parser)
+                    if self.check_char(';'):
+                        print("end ende ;")
+                        self.token_str = ""
+                        if self.begin_counter < 1:
+                            continue
+                    elif self.check_char('.'):
+                        genv.program_reach_end = True
+                        genv.text_code += (genv.text_code_indent * " ")
+                        genv.text_code += "return\n"
+                        genv.text_code_indent -= 4
+                        print("pro ende")
+                        self.run()
+                        raise e_no_more_data(_str("no more runner"))
+                    else:
+                        raise Exception(_str("semi expected."))
+                        
+                elif self.token_str.lower() == "procedure":
+                    print("--EEEE---")
+                    genv.char_curr = self.skip_white_spaces(self.pascal_parser)
+                    if genv.char_curr == genv.TOKEN_IDENT:
+                        print("proceduire: " + self.token_str)
+                        self.handle_pascal_procedure(self.token_str)
+                    else:
+                        raise Exception(_str("ident expected."))
+                        
+                elif self.token_str.lower() == "function":
+                    pass #todo
+                    
+                elif self.token_str.lower() == "begin":
+                    genv.text_code += (genv.text_code_indent * " ")
+                    self.text_update()
+                    #
+                    self.begin_counter += 1
+                    print("beginner")
+                    self.handle_pascal_body()
+                else:
+                    raise Exception(_str("end or begin expected."))
+            else:
+                print("-------> " + self.token_str + " | " + genv.char_curr)
+                raise Exception(_str("BEGIN or END expected."))
+    
+    def handle_pascal_procedure(self, name):
+        genv.char_curr = self.skip_white_spaces(self.pascal_parser)
+        if self.begin_counter == self.end_counter:
+            self.begin_counter = 0
+            self.end_counter = 0
+        else:
+            raise Exception(_str("too many END or BEGIN keywords found."))
+        if self.check_char('('):
+            genv.text_code += "("
+            while True:
+                self.skip_white_spaces(self.pascal_parser)
+                if self.check_char(')'):
+                    genv.text_code += ")"
+                    self.skip_white_spaces(self.pascal_parser)
+                    if self.check_char(';'):
+                        genv.text_code += ":\n"
+                        genv.text_code_ident += 4
+                        return self.handle_pascal_tail()
+                    else:
+                        raise Exception(_str("semi expected."))
+                elif genv.char_curr == genv.TOKEN_IDENT:
+                    if self.token_str.lower() == "const" or \
+                       self.token_str.lower() == "var":
+                           self.handle_pascal_tail()
+                    elif self.token_str.lower == "begin":
+                        print("begin tail")
+                        genv.text_code += (genv.text_code_indent * " ")
+                        self.text_update()
+                        #
+                        self.begin_counter += 1
+                        self.handle_pascal_body()
+                        if self.begin_counter > 0:
+                            raise Exception(_str("begin not terminated."))
+                        else:
+                            while True:
+                                if self.handle_pascal_white_spaces():
+                                    continue
+                                if self.check_ident("procedure"):
+                                    print("MMMMM")
+                                    genv.char_curr = self.skip_white_spaces(self.pascal_parser)
+                                    if genv.char_curr == genv.TOKEN_IDENT:
+                                        print("PROCE: " + self.token_str)
+                                        continue
+                                    else:
+                                        raise Exception(_str("procedure ident expected."))
+                                elif self.check_ident("function", 1):
+                                    genv.char_curr = self.skip_white_spaces(self.pascal_parser)
+                                    if genv.char_curr == genv.TOKEN_IDENT:
+                                        print("FUNC: " + self.token_str)
+                                        continue
+                                    else:
+                                        raise Exception(_str("function ident expected."))
+                        print("RETTT")
+                        return
+                    else:
+                        raise Exception(_str("CONST, VAR or BEGIN expected."))
+                else:
+                    raise Exception(_str("semicolon or point expected."))
+        elif self.check_char(';'):
+            genv.text_code += (genv.text_code_indent * " ")
+            genv.text_code += "return\n"
+            genv.text_code_indent -= 4
+            genv.text_code += (genv.text_code_indent * " ")
+            genv.text_code += "def " + self.token_str + "():\n"
+            genv.text_code_indent += 4
+            #
+            #genv.text_code_indent += 4
+            return self.handle_pascal_tail()
                 
     def handle_pascal_function(self):
         while True:
@@ -7565,12 +8091,13 @@ class interpreter_Pascal(interpreter_base):
                 self.handle_pascal_white_spaces()
                 break
                 
-    def handle_pascal_body(self):
+    def handle_pascal_body_alt(self):
         while True:
             if self.handle_pascal_white_spaces():
                 continue
             if self.check_ident():
                 if self.token_str.lower() == "end":
+                    self.end_counter += 1
                     while True:
                         if self.handle_pascal_white_spaces():
                             continue
@@ -7658,7 +8185,7 @@ class interpreter_Pascal(interpreter_base):
                                                                     else:
                                                                         print("g: " + genv.char_curr)
                                                                         print("t: " + self.token_str)
-                                                                        raise Exception(_("Point expected."))
+                                                                        raise Exception(_str("Point expected."))
                                                                 break
                                                     break
                                     else:
@@ -7670,10 +8197,10 @@ class interpreter_Pascal(interpreter_base):
                                 self.handle_pascal_procedure_name()
                                 continue
                         else:
-                            raise Exception(_("point (.) expected."))
+                            raise Exception(_str("point (.) expected."))
                     break
                 else:
-                    raise Exception(_("syntax error."))
+                    raise Exception(_str("syntax error."))
                 
     def handle_pascal_begin(self):
         pass
@@ -7681,14 +8208,6 @@ class interpreter_Pascal(interpreter_base):
     def handle_pascal_end(self):
         pass
         
-    def handle_pascal_tail(self):
-        while True:
-            if self.handle_pascal_white_spaces():
-                continue
-            if self.check_ident():
-                showInfo("oooo====>> " + self.token_str)
-                break
-    
     def handle_pascal_code(self, token):
         return
     
@@ -7724,6 +8243,9 @@ class interpreter_Java(interpreter_base):
         
     def parse(self):
         self.token_str = ""
+        while True:
+            if not self.skip_white_spaces(self.java_parser):
+                break
 
 class javaDSL():
     def __init__(self, script_name):
@@ -7780,6 +8302,232 @@ class lispDSL():
         self.parser = None
         self.parser = interpreter_LISP(script_name)
         self.parser.parse()
+
+# ---------------------------------------------------------------------------
+# \brief  display a transpile/compiler dialog to show the progress of trans-
+#         pile/converter status.
+# ---------------------------------------------------------------------------
+class CustomCompileTitleBar(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setFixedHeight(30)
+        
+        layout = QHBoxLayout()
+        layout.setContentsMargins(5, 0, 5, 0)
+        layout.setSpacing(3)
+
+        self.title = QLabel(_str("Convert ..."))
+        self.title.setStyleSheet("color:yellow;font-weight:bold;")
+        layout.addWidget(self.title)
+        layout.addStretch()
+
+        self.close_button = QPushButton("X")
+        self.close_button.setFixedSize(30, 20)
+        self.close_button.setStyleSheet("QPushButton { background: transparent; color: white; border: none; }"
+                                        "QPushButton:hover { background: red; }")
+        self.close_button.clicked.connect(parent.close)
+        layout.addStretch()
+        layout.addWidget(self.close_button)
+        self.setLayout(layout)
+
+        self.offset = None
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.offset = event.globalPos() - self.parent().frameGeometry().topLeft()
+
+    def mouseMoveEvent(self, event):
+        if self.offset is not None and event.buttons() == Qt.LeftButton:
+            self.parent().move(event.globalPos() - self.offset)
+    
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        rect = self.rect()
+
+        # Windows 98 artiger Verlauf: Dunkelblau → Hellblau
+        gradient = QLinearGradient(0, 0, rect.width(), 0)
+        gradient.setColorAt(0.0, QColor(0, 0, 128))     # Dunkelblau
+        gradient.setColorAt(1.0, QColor(0, 128, 255))   # Hellblau
+
+        painter.fillRect(rect, QBrush(gradient))
+        super().paintEvent(event)
+ 
+# ---------------------------------------------------------------------------
+class CompileDialogFrame(QFrame):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setFrameShape(QFrame.Panel)
+        self.setFrameShadow(QFrame.Sunken)
+        self.setMaximumHeight(36)
+        self.setMinimumHeight(36)
+        self.setLineWidth(2)
+
+# ---------------------------------------------------------------------------
+class CompileDialogSubFrame():
+    def __init__(self, parent=None, lay=None, lbl1="lbl1", lbl2="lbl2", bfont=None, nfont=None, flag=0):
+        label_1 = QLabel(lbl1)
+        label_2 = QLabel(lbl2)
+        #
+        label_1.setFont(bfont)
+        label_2.setFont(nfont)
+        #
+        label_1.setAlignment(Qt.AlignLeft)
+        label_2.setAlignment(Qt.AlignRight)
+        if flag == 1:
+            label_1.setMaximumWidth(74)
+            label_2.setAlignment(Qt.AlignLeft)
+        #
+        frame  = CompileDialogFrame(parent)
+        layout = QHBoxLayout()
+        #
+        layout.addWidget(label_1)
+        layout.addWidget(label_2)
+        #
+        frame .setLayout(layout)
+        lay   .addWidget(frame)
+        #
+        parent.main_lay.addLayout(lay)
+
+# ---------------------------------------------------------------------------
+class CompilePanel(QFrame):
+    def __init__(self, parent=None, width=500, height=215, color="#e0e0e0"):
+        super().__init__(parent)
+        self.width    = width
+        self.height   = height
+        self.color    = color
+        self.pal      = self.palette()
+        self.main_lay = QVBoxLayout(self)
+        
+        nfont = QFont(genv.v__app__font)
+        nfont.setPointSize(10)
+        nfont.setBold(False)
+        self.setFont(nfont)
+        
+        bfont = QFont(genv.v__app__font)
+        bfont.setPointSize(10)
+        bfont.setBold(False)
+        bfont.setBold(True)
+        #
+        self.pal.setColor(QPalette.Window, QColor(self.color))
+        self.setPalette(self.pal)
+        self.setFixedSize(self.width, self.height)
+        # -------------------------------------------------------
+        self.setFrameShape(QFrame.Panel)
+        self.setFrameShadow(QFrame.Sunken)
+        self.setLineWidth(2)
+        
+        # -------------------------------------------------------
+        self.hlayout_a = QHBoxLayout()
+        self.hlayout_b = QHBoxLayout()
+        #
+        self.panel_1 = CompileDialogSubFrame(self, self.hlayout_a, _str("Project:"  ), "TestProject", bfont, nfont, 1)
+        self.panel_2 = CompileDialogSubFrame(self, self.hlayout_b, _str("Compiling:"), "C:\\PATH\\Test.pas", bfont, nfont, 1)
+
+        # -------------------------------------------------------
+        self.hlayout_c = QHBoxLayout()
+        #
+        self.panel_3 = CompileDialogSubFrame(self, self.hlayout_c, _str("Current Line:"), "0", bfont, nfont)
+        self.panel_4 = CompileDialogSubFrame(self, self.hlayout_c, _str("Total Lines:" ), "0", bfont, nfont)
+        
+        # -------------------------------------------------------
+        self.hlayout_d = QHBoxLayout()
+        #
+        self.panel_5 = CompileDialogSubFrame(self, self.hlayout_d, _str("Hints:"   ), "0", bfont, nfont)
+        self.panel_6 = CompileDialogSubFrame(self, self.hlayout_d, _str("Warnings:"), "0", bfont, nfont)
+        self.panel_7 = CompileDialogSubFrame(self, self.hlayout_d, _str("Errors:"  ), "0", bfont, nfont)
+
+# ---------------------------------------------------------------------------
+# Hintergrund-Worker im eigenen Thread
+# ---------------------------------------------------------------------------
+class ConverterWorkerThread(QThread):
+    progress = pyqtSignal(str)
+    finished = pyqtSignal()
+
+    def run(self):
+        i = 0
+        while True:
+            i = i + 1
+            time.sleep(0.01)
+            self.progress.emit(f"Arbeite... {i + 1}/5")
+        self.finished.emit()
+
+# ---------------------------------------------------------------------------
+# \brief  class that display the converter dialog. In this class/dialog the
+#         source code will:
+#         1. transpile from original dsl to python
+#         2. compile   from python to bytecode
+#         3. bytecode  will be gzip to pack the bytecode
+#         4. after al the bytecode (depack) will execute
+# ---------------------------------------------------------------------------
+class ConvertZipExecute(QDialog):
+    def __init__(self, parser=None, parent=None):
+        super(ConvertZipExecute, self).__init__(parent)
+        print("parser: " + str(parser))
+        self.windowtitle = "Convert ..."
+        self.setWindowTitle(self.windowtitle)
+        
+        # --------------------------------
+        # Fenster-Flags setzen:
+        # -> no Close
+        # -> no Minimize
+        # -> no Question sign
+        # --------------------------------
+        #self.flags = ( Qt.Window
+        #| Qt.CustomizeWindowHint
+        #| Qt.WindowTitleHint )
+        #self.flags &= ~Qt.WindowContextHelpButtonHint
+        #self.setWindowFlags(self.flags)
+        
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setStyleSheet("border-color: red;")
+        
+        vlayout = QVBoxLayout()
+        
+        self.title_bar     = CustomCompileTitleBar(self)
+        self.compile_panel = CompilePanel(self)
+        
+        self.progressLabel = QLabel(_str("Progres: 100 %"))
+        self.progressBar   = QProgressBar()
+        self.progressBar.setTextVisible(False)
+        #
+        self.progressBar.setMinimum(1)
+        self.progressBar.setMaximum(100)
+        self.progressBar.setValue(18)
+        #
+        self.button = QPushButton(_str("Close"))
+        self.button.setMinimumHeight(32)
+        self.button.clicked.connect(self.buttonClick)
+        
+        vlayout.addWidget(self.title_bar)
+        vlayout.addWidget(self.compile_panel)
+        vlayout.addWidget(self.progressLabel)
+        vlayout.addWidget(self.progressBar)
+        vlayout.addWidget(self.button)
+        
+        self.setLayout(vlayout)
+        
+        self.thread = ConverterWorkerThread()
+        self.thread.progress.connect(self.on_progress)
+        self.thread.finished.connect(self.on_finished)
+        
+        # Start erst ganz am Ende (z.B. per Timer nach show)
+        QTimer.singleShot(0, self.start_thread)
+        self.exec_()
+    
+    def start_thread(self):
+        print("Starte Thread...")
+        self.thread.start()
+        
+    def on_progress(self, message):
+        #self.label.setText(message)
+        print(message)
+
+    def on_finished(self):
+        #self.label.setText("Thread abgeschlossen.")
+        print("Thread fertig.")
+        
+    def buttonClick(self):
+        self.close()
 
 class C64BasicWorkerThread(QThread):
     progress = pyqtSignal(int)
@@ -8071,15 +8819,15 @@ class C64BasicParser:
                                                         break
                                                     continue
                                                 else:
-                                                    raise SyntaxError(_(f"symbol expected."))
+                                                    raise SyntaxError(_str(f"symbol expected."))
                                             else:
-                                                raise SyntaxError(_(f"number expected."))
+                                                raise SyntaxError(_str(f"number expected."))
                                         else:
-                                            raise SyntaxError(_(f"SYmbol expected."))
+                                            raise SyntaxError(_str(f"SYmbol expected."))
                                     else:
-                                        raise SyntaxError(_(f"string expected."))
+                                        raise SyntaxError(_str(f"string expected."))
                                 else:
-                                    raise SyntaxError(_(f"Symbol expected."))
+                                    raise SyntaxError(_str(f"Symbol expected."))
                             elif tokens \
                             and (tokens[self.token_index][0].upper() == "COMMAND") \
                             and (tokens[self.token_index][1].upper() == "LEFT"):
@@ -8118,15 +8866,15 @@ class C64BasicParser:
                                                         break
                                                     continue
                                                 else:
-                                                    raise SyntaxError(_(f"symbol expected."))
+                                                    raise SyntaxError(_str(f"symbol expected."))
                                             else:
-                                                raise SyntaxError(_(f"number expected."))
+                                                raise SyntaxError(_str(f"number expected."))
                                         else:
-                                            raise SyntaxError(_(f"SYmbol expected."))
+                                            raise SyntaxError(_str(f"SYmbol expected."))
                                     else:
-                                        raise SyntaxError(_(f"string expected."))
+                                        raise SyntaxError(_str(f"string expected."))
                                 else:
-                                    raise SyntaxError(_(f"Symbol expected."))
+                                    raise SyntaxError(_str(f"Symbol expected."))
                                 continue
                             elif tokens \
                             and (tokens[self.token_index][0].upper() == "STRING"):
@@ -8140,7 +8888,7 @@ class C64BasicParser:
                                 and (tokens[self.token_index][1] == '+'):
                                     self.token_index += 1
                                     if self.token_index >= len(tokens):
-                                        raise SyntaxError(_(f"string expected at line: {line_number}."))
+                                        raise SyntaxError(_str(f"string expected at line: {line_number}."))
                                     if tokens \
                                     and (tokens[self.token_index][0].upper() == "STRING"):
                                         string = tokens[self.token_index][1][1:-1]
@@ -8168,7 +8916,7 @@ class C64BasicParser:
                                                     and (tokens[self.token_index][0].upper() == "NUMBER"):
                                                         number = int(tokens[self.token_index][1])
                                                         if number > len(string):
-                                                            raise SyntaxError(_(f"string index out of bounds at line: {line_number}."))
+                                                            raise SyntaxError(_str(f"string index out of bounds at line: {line_number}."))
                                                         string_left += " + " + string_left[number:]
                                                         print_parts.append('"'  + string + '"')
                                                         self.token_index += 1
@@ -8177,19 +8925,19 @@ class C64BasicParser:
                                                         and (tokens[self.token_index][1] == ')'):
                                                             string += "---"
                                                         else:
-                                                            raise SyntaxError(_(f"closed paren expected at line: {line_number}."))
+                                                            raise SyntaxError(_str(f"closed paren expected at line: {line_number}."))
                                                     else:
-                                                        raise SyntaxError(_(f"number expected at line: {line_number}."))
+                                                        raise SyntaxError(_str(f"number expected at line: {line_number}."))
                                                 else:
-                                                    raise SyntacError(_(f"comma expected at line: {line_number}."))
+                                                    raise SyntacError(_str(f"comma expected at line: {line_number}."))
                                             else:
-                                                raise SyntaxError(_(f"string expected at line: {line_number}."))
+                                                raise SyntaxError(_str(f"string expected at line: {line_number}."))
                                         else:
-                                            raise SyntaxError(_(f"open paren expected at line: {line_number}."))
+                                            raise SyntaxError(_str(f"open paren expected at line: {line_number}."))
                                     else:
-                                        raise SyntaxError(_(f"command expected at line: {line_number}."))
+                                        raise SyntaxError(_str(f"command expected at line: {line_number}."))
                                 else:
-                                    raise SyntaxError(_(f"symbol expected at line: {line_number}."))
+                                    raise SyntaxError(_str(f"symbol expected at line: {line_number}."))
                             #else:
                             #    print_parts.append(token[1])
                         
@@ -8208,11 +8956,11 @@ class C64BasicParser:
                         target_line = tokens[self.token_index][1]
                         function_code.append(f"{self.nbsp2}self.current_line = {target_line}")
                 except IndexError as e:
-                    showInfo(_(f"Index Error:\n{e}"))
+                    showInfo(_str(f"Index Error:\n{e}"))
                 except ValueError as e:
-                    showInfo(_(f"Value Error:\n{e}"))
+                    showInfo(_str(f"Value Error:\n{e}"))
                 except Exception  as e:
-                    showInfo(_(f"Exception Error:\n{e}"))
+                    showInfo(_str(f"Exception Error:\n{e}"))
                 
                 # ----------------------------------
                 # Standardabschluss der Funktion
@@ -8573,7 +9321,7 @@ class PascalParser:
         # Starte die Validierung der Struktur
         success, start_index = self.validate_structure(self.pascal_grammar)
         if not success:
-            showError(_(f"syntax error:\n{genv.source_errors}"))
+            showError(_str(f"syntax error:\n{genv.source_errors}"))
         return
         
     def handle_multi_line_comment(self, match, line_number):
@@ -8939,14 +9687,14 @@ class interpreter_DoxyGen(interpreter_base):
                             return 0
                         else:
                             if self.close_str == False:
-                                genv.unexpectedToken(_("string not terminated."))
+                                genv.unexpectedToken(_str("string not terminated."))
                                 return 0
                             genv.line_col  = 1
                             genv.line_row += 1
                             break
                     elif genv.char_curr == '\n':
                         if self.close_str == False:
-                            genv.unexpectedToken(_("string not terminated."))
+                            genv.unexpectedToken(_str("string not terminated."))
                             return 0
                         genv.line_col  = 1
                         genv.line_row += 1
@@ -8956,7 +9704,7 @@ class interpreter_DoxyGen(interpreter_base):
                 if self.close_str:
                     continue
                 else:
-                    genv.unexpectedToken(_("string not terminated."))
+                    genv.unexpectedToken(_str("string not terminated."))
                     return 0
             elif genv.char_curr == '\t' or genv.char_curr == ' ':
                 genv.line_col += 1
@@ -9007,7 +9755,7 @@ class interpreter_DoxyGen(interpreter_base):
                 return 0
     
     def check_token(self):
-        res = json.loads(_("doxytoken"))
+        res = json.loads(_str("doxytoken"))
         result = False
         if self.token_str in res:
             DebugPrint(f"token: {self.token_str} is okay.")
@@ -9219,7 +9967,7 @@ class myLineEdit(QLineEdit):
         self.setMinimumHeight(26)
         self.setMaximumWidth(250)
         self.setText(self.name)
-        self.cssColor = _("edit_css")
+        self.cssColor = _css("edit_css")
         self.setStyleSheet(self.cssColor)
     
     def mouseDoubleClickEvent(self, event):
@@ -9233,7 +9981,7 @@ class myTextEdit(QTextEdit):
     def __init__(self, name=""):
         super().__init__()
         self.name = name
-        self.cssColor = _("text_css")
+        self.cssColor = _css("text_css")
         self.setStyleSheet(self.cssColor)
         self.setText(self.name)
     
@@ -9263,7 +10011,7 @@ class OverlayWidget(QWidget):
         self.setGeometry(
         self.xpos,
         self.ypos, 250, 120)
-        self.setStyleSheet(_("overlaycss"))
+        self.setStyleSheet(_css("overlaycss"))
         
         self.caption = text
         
@@ -9504,7 +10252,7 @@ class myIconButton(QWidget):
         self.image_fg = self.image_fg.replace("\\", "/")
         self.image_bg = self.image_bg.replace("\\", "/")
         
-        style = _("labelico_css")        \
+        style = _css("labelico_css")     \
         .replace("{fg}", self.image_fg)  \
         .replace("{bg}", self.image_bg)  \
         .replace("{bc}", self.bordercolor)
@@ -9534,16 +10282,16 @@ class myCustomLabel(QLabel):
         super().__init__(text)
         
         self.helpID     = helpID
-        self.helpText   = _(helpText.replace('A', ''))
+        self.helpText   = _str(helpText.replace('A', ''))
         
-        self.helpToken  = _(f"{helpID:04X}")
+        self.helpToken  = _str(f"{helpID:04X}")
         print("---> " + self.helpToken)
         self.helpAnchor = 'https://doxygen.nl/manual/config.html#cfg_' + self.helpToken.lower()
     
     def enterEvent(self, event):
         if genv.sv_help == None:
             genv.sv_help = customScrollView_help()
-            genv.sv_help.setStyleSheet(_("ScrollBarCSS"))
+            genv.sv_help.setStyleSheet(_css("ScrollBarCSS"))
         
         genv.sv_help.setText(self.helpText)
     
@@ -9602,7 +10350,7 @@ class myCustomScrollArea(QScrollArea):
             self.font_a.setFamily(font_secondary)
             self.font_a.setPointSize(11)
         
-        self.supported_langs = _("supported_langs")
+        self.supported_langs = _str("supported_langs")
         
         self.content_widget = QWidget(self)
         self.content_widget.setMinimumHeight(self.height()-150)
@@ -9715,8 +10463,8 @@ class myCustomScrollArea(QScrollArea):
             h = h.replace('0XA', '')
             
             helpID   = i[0]
-            helpText = _("h" + f"{helpID:04X}")
-            tokennum = _(f"{helpID:04X}")
+            helpText = _str("h" + f"{helpID:04X}")
+            tokennum = _str(f"{helpID:04X}")
             
             vw_1 = self.addHelpLabel(
                 tokennum,
@@ -9780,10 +10528,10 @@ class myCustomScrollArea(QScrollArea):
                 
                 if vw_2.isChecked():
                     setattr(genv, doc0, 1)
-                    vw_2.setText(_(" YES"))
+                    vw_2.setText(_str(" YES"))
                 else:
                     setattr(genv, doc0, 0)
-                    vw_2.setText(_(" NO"))
+                    vw_2.setText(_str(" NO"))
                 #
                 lh_0.addWidget(vw_2)
                 
@@ -9848,7 +10596,7 @@ class myCustomScrollArea(QScrollArea):
         obj_src  = getattr(genv, obj_name2)
         
         if len(obj_src.text().strip()) < 1:
-            showInfo(_("Error:\nsource input line is empty."))
+            showInfo(_str("Error:\nsource input line is empty."))
             return False
         
         obj_dst.insertPlainText(obj_src.text() + "\r\n")
@@ -9868,7 +10616,7 @@ class myCustomScrollArea(QScrollArea):
                 del lines[current_line]
                 
         except IndexError:
-            showInfo(_("Warning:\nIndex out of bounds.\nDid you set the right focus ?"))
+            showInfo(_str("Warning:\nIndex out of bounds.\nDid you set the right focus ?"))
             return False
             
         edit_box.setPlainText("\n".join(lines))
@@ -9886,7 +10634,7 @@ class myCustomScrollArea(QScrollArea):
 class customScrollView_1(myCustomScrollArea):
     def __init__(self, parent, number, hid, name="uuuu"):
         super(customScrollView_1, self).__init__(number, hid, name)
-        self.setStyleSheet(_("ScrollBarCSS"))
+        self.setStyleSheet(_css("ScrollBarCSS"))
         
         self.parent = parent
         self.name   = name
@@ -9904,7 +10652,7 @@ class customScrollView_1(myCustomScrollArea):
         
         w_layout_0 = QHBoxLayout()
         w_layout_0.setAlignment(Qt.AlignLeft)
-        widget_1_label_1 = self.addLabel(_("Provide some informations about the Project you are documenting"), True)
+        widget_1_label_1 = self.addLabel(_str("Provide some informations about the Project you are documenting"), True)
         widget_1_label_1.setMinimumWidth(250)
         widget_1_label_1.setMaximumWidth(450)
         w_layout_0.addWidget(widget_1_label_1)
@@ -9917,9 +10665,9 @@ class customScrollView_1(myCustomScrollArea):
         v_layout_1 = QVBoxLayout()
         v_widget_1 = QWidget()
         
-        l_label_1 = self.addLabel(_("Project name:")          , False, v_layout_1)
-        l_label_2 = self.addLabel(_("Project author:")        , False, v_layout_1)
-        l_label_3 = self.addLabel(_("Project version or id: "), False, v_layout_1)
+        l_label_1 = self.addLabel(_str("Project name:")          , False, v_layout_1)
+        l_label_2 = self.addLabel(_str("Project author:")        , False, v_layout_1)
+        l_label_3 = self.addLabel(_str("Project version or id: "), False, v_layout_1)
         
         l_label_1.setFont(font)
         l_label_2.setFont(font)
@@ -9941,12 +10689,12 @@ class customScrollView_1(myCustomScrollArea):
         
         layout_4 = QHBoxLayout()
         layout_4.setAlignment(Qt.AlignLeft)
-        widget_4_label_1 = self.addLabel(_("Project logo:"), False, layout_4)
+        widget_4_label_1 = self.addLabel(_str("Project logo:"), False, layout_4)
         widget_4_label_1.setFont(font)
         widget_4_label_1.setMaximumWidth(160)
         layout_4.addWidget(widget_4_label_1)
         #
-        widget_4_pushb_1 = self.addPushButton(_("Select"), layout_4)
+        widget_4_pushb_1 = self.addPushButton(_str("Select"), layout_4)
         widget_4_pushb_1.setMinimumHeight(32)
         widget_4_pushb_1.setMinimumWidth(84)
         widget_4_pushb_1.setMaximumWidth(84)  ; font.setBold(True)
@@ -9978,7 +10726,7 @@ class customScrollView_1(myCustomScrollArea):
         
         layout_6 = QHBoxLayout()
         layout_6.setAlignment(Qt.AlignLeft)
-        widget_6_label_1 = self.addLabel(_("Source dir:"), False, layout_6)
+        widget_6_label_1 = self.addLabel(_str("Source dir:"), False, layout_6)
         widget_6_label_1.setMinimumWidth(100)
         widget_6_label_1.setMaximumWidth(100)
         widget_6_label_1.setFont(font)
@@ -9994,7 +10742,7 @@ class customScrollView_1(myCustomScrollArea):
         widget_6_edit_1.setMaximumWidth(280)
         widget_6_edit_1.setFont(font)
         #
-        widget_6_pushb_1 = self.addPushButton(_("Select"), layout_6)
+        widget_6_pushb_1 = self.addPushButton(_str("Select"), layout_6)
         widget_6_pushb_1.setMinimumHeight(40)
         widget_6_pushb_1.setMaximumHeight(40)
         widget_6_pushb_1.setMinimumWidth(84)
@@ -10007,7 +10755,7 @@ class customScrollView_1(myCustomScrollArea):
         
         layout_7 = QHBoxLayout()
         layout_7.setAlignment(Qt.AlignLeft)
-        widget_7_label_1 = self.addLabel(_("Destination dir:"), False, layout_7)
+        widget_7_label_1 = self.addLabel(_str("Destination dir:"), False, layout_7)
         widget_7_label_1.setMinimumWidth(100)
         widget_7_label_1.setMaximumWidth(100)
         widget_7_label_1.setFont(font)
@@ -10022,7 +10770,7 @@ class customScrollView_1(myCustomScrollArea):
         widget_7_edit_1.setMaximumWidth(280)
         widget_7_edit_1.setFont(font)
         #
-        widget_7_pushb_1 = self.addPushButton(_("Select"), layout_7)
+        widget_7_pushb_1 = self.addPushButton(_str("Select"), layout_7)
         widget_7_pushb_1.setMinimumHeight(40)
         widget_7_pushb_1.setMaximumHeight(40)
         widget_7_pushb_1.setMinimumWidth(84)
@@ -10047,7 +10795,7 @@ class customScrollView_1(myCustomScrollArea):
         layout_9 = QHBoxLayout()
         layout_9.setAlignment(Qt.AlignLeft)
 
-        widget_9_checkbutton_1 = addCheckBox("doxygen_project_scan_recursiv",_("Scan recursive"))
+        widget_9_checkbutton_1 = addCheckBox("doxygen_project_scan_recursiv",_str("Scan recursive"))
         widget_9_checkbutton_1.setMaximumWidth(300)
         widget_9_checkbutton_1.setFont(font)
         
@@ -10055,8 +10803,8 @@ class customScrollView_1(myCustomScrollArea):
         layout  .addLayout(layout_9)
         
         layout_10 = QVBoxLayout()
-        widget_10_button_1 = QPushButton(_("Convert") ,self); widget_10_button_1.setStyleSheet(_(genv.css_button_style))
-        widget_10_button_2 = QPushButton(_("HelpNDoc"),self); widget_10_button_2.setStyleSheet(_(genv.css_button_style))
+        widget_10_button_1 = QPushButton(_str("Convert") ,self); widget_10_button_1.setStyleSheet(_css(genv.css_button_style))
+        widget_10_button_2 = QPushButton(_str("HelpNDoc"),self); widget_10_button_2.setStyleSheet(_css(genv.css_button_style))
         
         widget_10_button_1.clicked.connect(self.widget_10_button_1_click)
         #
@@ -10078,21 +10826,21 @@ class customScrollView_1(myCustomScrollArea):
             options         = dialog.options()
             genv.doc_srcdir = dialog.getExistingDirectory(
                 None,
-                _("Select source directory"),
+                _str("Select source directory"),
                 options=options)
             
             if len(genv.doc_srcdir.strip()) < 1:
-                showError(_("Error:\ncould not select source directory."))
+                showError(_str("Error:\ncould not select source directory."))
                 return False
                 
             item = self.findChild(myLineEdit, "doxygen_project_srcdir")
             if not item:
-                showError(_("Error:\ncould not found source directory object."))
+                showError(_str("Error:\ncould not found source directory object."))
                 return False
             
             if "_internal" in genv.doc_dstdir \
             or "_internal" in genv.doc_srcdir:
-                showError(_("Error:\n_internal dir tree can not be delete."))
+                showError(_str("Error:\n_internal dir tree can not be delete."))
                 _internal = True
                 item.setText("")
                 return False
@@ -10111,27 +10859,27 @@ class customScrollView_1(myCustomScrollArea):
             options         = dialog.options()
             genv.doc_dstdir = dialog.getExistingDirectory(
                 None,
-                _("Select target directory"),
+                _str("Select target directory"),
                 options=options)
             
             if len(genv.doc_dstdir.strip()) < 1:
-                showError(_("Error:\ncould not select target directory."))
+                showError(_str("Error:\ncould not select target directory."))
                 return False
                 
             item = self.findChild(myLineEdit, "doxygen_project_dstdir")
             if not item:
-                showError(_("Error:\ncould not found source directory object."))
+                showError(_str("Error:\ncould not found source directory object."))
                 return False
             
             if "_internal" in genv.doc_dstdir \
             or "_internal" in genv.doc_srcdir:
-                showError(_("Error:\n_Internal dir tree can not be delete."))
+                showError(_str("Error:\n_Internal dir tree can not be delete."))
                 _internal = True
                 item.setText("")
                 return False
             
             if len(genv.doc_dstdir.split()) < 1:
-                showError(_("Error:\ndirectory string is empty."))
+                showError(_str("Error:\ndirectory string is empty."))
                 return False
             else:
                 item.setText(genv.doc_dstdir)
@@ -10152,7 +10900,7 @@ class customScrollView_1(myCustomScrollArea):
             file_filter  = "PNG Picture (*.png);;All Files (*)"
             file_name, p = dialog.getOpenFileName(
                 None,
-                _("Select Picture"),
+                _str("Select Picture"),
                 "",
                 file_filter,
                 options=options
@@ -10163,10 +10911,10 @@ class customScrollView_1(myCustomScrollArea):
                     pixa = QPixmap(file_name)
                     item.setPixmap(pixa)
                 else:
-                    showError(_("Error:\nlogo pixmap object not found."))
+                    showError(_str("Error:\nlogo pixmap object not found."))
                     return False
             else:
-                showError(_("Error:\ncould not select picture"))
+                showError(_str("Error:\ncould not select picture"))
                 return False
             return True
         
@@ -10180,20 +10928,20 @@ class customScrollView_1(myCustomScrollArea):
             options         = dialog.options()
             genv.doc_srcdir = dialog.getExistingDirectory(
                 None,
-                _("Select directory"),
+                _str("Select directory"),
                 options=options)
                 
             if not genv.doc_srcdir:
-                showError(_("Error:\ncould not select source directory"))
+                showError(_str("Error:\ncould not select source directory"))
                 return False
                 
             item = self.findChild(myLineEdit, "doxygen_project_srcdir")
             if not item:
-                showError(_("Error:\ncould not found source directory object."))
+                showError(_str("Error:\ncould not found source directory object."))
                 return False
             
             if "_internal" in genv.doc_srcdir:
-                showError(_("Error:\n_Internal dir tree can not be delete."))
+                showError(_str("Error:\n_Internal dir tree can not be delete."))
                 _internal = True
                 item.setText("")
                 return False
@@ -10214,20 +10962,20 @@ class customScrollView_1(myCustomScrollArea):
             options         = dialog.options()
             genv.doc_dstdir = dialog.getExistingDirectory(
                 None,
-                _("Select directory"),
+                _str("Select directory"),
                 options=options)
             
             if not genv.doc_dstdir:
-                showError(_("Error:\ncould not select directory"))
+                showError(_str("Error:\ncould not select directory"))
                 return False
             
             item = self.findChild(myLineEdit, "doxygen_project_dstdir")
             if not item:
-                showError(_("Error:\ncould not found target directory object."))
+                showError(_str("Error:\ncould not found target directory object."))
                 return False
             
             if "_internal" in genv.doc_dstdir:
-                showError(_("Error:\n_Internal dir tree can not be delete."))
+                showError(_str("Error:\n_Internal dir tree can not be delete."))
                 _internal = True
                 item.setText("")
                 return False
@@ -10238,11 +10986,11 @@ class customScrollView_1(myCustomScrollArea):
     def widget_10_button_1_click(self):
         if genv.HelpAuthoringConverterMode == 0:
             msg = QMessageBox()
-            msg.setWindowTitle(_("Error"))
-            msg.setText(_("no project type given.\n"
+            msg.setWindowTitle(_str("Error"))
+            msg.setText(_str("no project type given.\n"
             + "currently only DOXYGEN and HELPNDOC"))
             msg.setIcon(QMessageBox.Warning)
-            msg.setStyleSheet(_("msgbox_css"))
+            msg.setStyleSheet(_css("msgbox_css"))
             
             btn_ok = msg.addButton(QMessageBox.Ok)
             result = msg.exec_()            
@@ -10250,9 +10998,9 @@ class customScrollView_1(myCustomScrollArea):
         if len(genv.doxygen_project_file) < 2:
             msg = QMessageBox()
             msg.setWindowTitle("Error")
-            msg.setText(_("no project file given."))
+            msg.setText(_str("no project file given."))
             msg.setIcon(QMessageBox.Warning)
-            msg.setStyleSheet(_("msgbox_css"))
+            msg.setStyleSheet(_css("msgbox_css"))
             
             btn_ok = msg.addButton(QMessageBox.Ok)
             result = msg.exec_()            
@@ -10264,12 +11012,12 @@ class customScrollView_1(myCustomScrollArea):
                 doxyfile = genv.v__app__config['doxygen']['config']
                 if not os.path.exists(doxyfile):
                     msg = QMessageBox()
-                    msg.setWindowTitle(_("Error"))
+                    msg.setWindowTitle(_str("Error"))
                     msg.setText(_(
                     + "Error: Doxyfile configuration does not exists.\n"
                     + "Command aborted."))
                     msg.setIcon(QMessageBox.Warning)
-                    msg.setStyleSheet(_("msgbox_css"))
+                    msg.setStyleSheet(_css("msgbox_css"))
                     
                     btn_ok = msg.addButton(QMessageBox.Ok)
                     result = msg.exec_()            
@@ -10284,13 +11032,13 @@ class customScrollView_1(myCustomScrollArea):
 class customScrollView_2(myCustomScrollArea):
     def __init__(self, parent, number, hid, name):
         super(customScrollView_2, self).__init__(number, hid, name)
-        self.setStyleSheet(_("ScrollBarCSS"))
+        self.setStyleSheet(_css("ScrollBarCSS"))
         self.init_ui()
     
     def init_ui(self):
         self.label_1.hide()
         
-        label_2 = self.addLabel(_("opti00"), True)
+        label_2 = self.addLabel(_str("opti00"), True)
         label_2.setMinimumHeight(30)
         label_2.setMinimumWidth(200)
         
@@ -10298,9 +11046,9 @@ class customScrollView_2(myCustomScrollArea):
             group_box = QGroupBox("")
             group_layout = QVBoxLayout()
             
-            self.rb1 = addRadioButton("o1",_("opti01"))
-            self.rb2 = addRadioButton("o2",_("opti02"))
-            self.cb1 = addCheckBox   ("o3",_("opti03"))
+            self.rb1 = addRadioButton("o1",_str("opti01"))
+            self.rb2 = addRadioButton("o2",_str("opti02"))
+            self.cb1 = addCheckBox   ("o3",_str("opti03"))
             
             self.rb1.setObjectName("doxygen_mode_document_entries_only")
             self.rb2.setObjectName("doxygen_mode_all_entries")
@@ -10325,7 +11073,7 @@ class customScrollView_2(myCustomScrollArea):
             group_layout = QVBoxLayout()
             
             for x in range(4,11):
-                widget = addRadioButton("mode_opti0" + str(x), _("opti0" + str(x)))
+                widget = addRadioButton("mode_opti0" + str(x), _str("opti0" + str(x)))
                 widget.clicked.connect(self.radio_button_clicked)
                 group_layout.addWidget(widget)
                 
@@ -10363,7 +11111,7 @@ class customScrollView_2(myCustomScrollArea):
             opti = item.objectName()[-1]
             
             if not isinstance(item, QRadioButton):
-                showError(_("Error:\nradio button internal error."))
+                showError(_str("Error:\nradio button internal error."))
                 return False
             
             if genv.v__app__config_help == None:
@@ -10386,13 +11134,13 @@ class customScrollView_3(myCustomScrollArea):
         super(customScrollView_3, self).__init__(number, hid, name)
         self.content_widget.setMinimumHeight(420)
         self.setWidgetResizable(True)
-        self.setStyleSheet(_("ScrollBarCSS"))
+        self.setStyleSheet(_css("ScrollBarCSS"))
         self.init_ui()
     
     def init_ui(self):
         self.label_1.hide()
         
-        label = self.addLabel(_("Select the output format(s) to generate:"), True)
+        label = self.addLabel(_str("Select the output format(s) to generate:"), True)
         
         self.group_box1 = QGroupBox(" ")
         self.group_box1.setFont(QFont("Arial", 10))
@@ -10403,10 +11151,10 @@ class customScrollView_3(myCustomScrollArea):
         # HTML
         self.w0 = addCheckBox("output_html","HTML", True)
         #
-        self.w1 = addRadioButton("output_plain_html",  _("plain HTML"))
-        self.w2 = addRadioButton("output_navi",        _("with navigation Panel"))
-        self.w3 = addRadioButton("output_prepare_chm", _("prepare for compressed HTML .chm"))
-        self.w4 = addCheckBox   ("output_search_func", _("with search function"))
+        self.w1 = addRadioButton("output_plain_html",  _str("plain HTML"))
+        self.w2 = addRadioButton("output_navi",        _str("with navigation Panel"))
+        self.w3 = addRadioButton("output_prepare_chm", _str("prepare for compressed HTML .chm"))
+        self.w4 = addCheckBox   ("output_search_func", _str("with search function"))
         
         self.w1.setEnabled(False)
         self.w2.setEnabled(False)
@@ -10436,9 +11184,9 @@ class customScrollView_3(myCustomScrollArea):
         # LaTeX
         self.l0 = addCheckBox("output_latex", "LaTeX", True)
         #
-        self.l1 = addRadioButton("output_latex_pdf", _("an intermediate format for hyper-linked PDF"))
-        self.l2 = addRadioButton("output_latex_imm", _("an intermediate format for PDF"))
-        self.l3 = addRadioButton("output_latex_ps",  _("an intermediate format for PostScript"))
+        self.l1 = addRadioButton("output_latex_pdf", _str("an intermediate format for hyper-linked PDF"))
+        self.l2 = addRadioButton("output_latex_imm", _str("an intermediate format for PDF"))
+        self.l3 = addRadioButton("output_latex_ps",  _str("an intermediate format for PostScript"))
         
         self.l1.setEnabled(False)
         self.l2.setEnabled(False)
@@ -10663,20 +11411,20 @@ class customScrollView_4(myCustomScrollArea):
         super(customScrollView_4, self).__init__(number, hid, name)
         self.content_widget.setMinimumHeight(420)
         self.setWidgetResizable(True)
-        self.setStyleSheet(_("ScrollBarCSS"))
+        self.setStyleSheet(_css("ScrollBarCSS"))
         self.init_ui()
     
     def init_ui(self):
         self.label_1.hide()
         
-        lbl1 = self.addLabel(_("Diagrams to generate:"), True)
+        lbl1 = self.addLabel(_str("Diagrams to generate:"), True)
         #
-        btn1 = addRadioButton("dia_not", _("No diagrams"))
-        btn2 = addRadioButton("dia_txt", _("Text only"))
-        btn3 = addRadioButton("dia_bin", _("Use built-in diagram generator"))
-        btn4 = addRadioButton("dia_dot", _("Use Dot-Tool from the GrappVz package"))
+        btn1 = addRadioButton("dia_not", _str("No diagrams"))
+        btn2 = addRadioButton("dia_txt", _str("Text only"))
+        btn3 = addRadioButton("dia_bin", _str("Use built-in diagram generator"))
+        btn4 = addRadioButton("dia_dot", _str("Use Dot-Tool from the GrappVz package"))
         #
-        lbl2 = self.addLabel(_("Dot graphs to generate:"), True)
+        lbl2 = self.addLabel(_str("Dot graphs to generate:"), True)
         
         self.layout.addWidget(lbl1)
         self.layout.addWidget(btn1)
@@ -10691,13 +11439,13 @@ class customScrollView_4(myCustomScrollArea):
         btn4.clicked.connect(self.radiobtn_on_click)
         
         check_array = [
-            ["graph_class" , _("Class graph")],
-            ["graph_colab" , _("Colaboration diagram")],
-            ["graph_overh" , _("Overall Class hiearchy")],
-            ["graph_inc"   , _("Include dependcy graphs")],
-            ["graph_incby" , _("Included by dependcy graphs")],
-            ["graph_call"  , _("Call graphs")],
-            ["graph_callby", _("Called-by graphs")]
+            ["graph_class" , _str("Class graph")],
+            ["graph_colab" , _str("Colaboration diagram")],
+            ["graph_overh" , _str("Overall Class hiearchy")],
+            ["graph_inc"   , _str("Include dependcy graphs")],
+            ["graph_incby" , _str("Included by dependcy graphs")],
+            ["graph_call"  , _str("Call graphs")],
+            ["graph_callby", _str("Called-by graphs")]
         ]
         for chk in check_array:
             check_box = addCheckBox(chk[0], chk[1])
@@ -10809,11 +11557,11 @@ class customScrollViewDoxygen(myCustomScrollArea):
         
         self.content_widget.setMinimumHeight(2380)
         self.setWidgetResizable(True)
-        self.setStyleSheet(_("ScrollBarCSS"))
+        self.setStyleSheet(_css("ScrollBarCSS"))
         print("-o-o")
         self.label_1.hide()
         ## 0xA0100
-        label_elements = _("label_" + str(self.number) + "_elements")
+        label_elements = _str("label_" + str(self.number) + "_elements")
         print("----")
         popo = self.addElements(number, label_elements, hid)
         print("popo " + str(number) + ": " + str(popo))
@@ -10989,7 +11737,7 @@ class doxygenImageTracker(QWidget):
         self.set_style()
     
     def set_style(self):
-        style = _("doxtrack_css") \
+        style = _css("doxtrack_css") \
         .replace("{1i}",genv.v__app__doxygen__ + str(1) + genv.v__app__img_ext__) \
         .replace("{1b}",self.bordercolor ) \
         .replace("{2i}",genv.v__app__doxygen__ + str(2) + genv.v__app__img_ext__) \
@@ -11054,7 +11802,7 @@ class helpNDocImageTracker(QWidget):
         txt1 = genv.v__app__hlpndoc__ + str(1) + genv.v__app__img_ext__
         txt2 = genv.v__app__hlpndoc__ + str(2) + genv.v__app__img_ext__
         
-        style = _("doxtrack_css") \
+        style = _css("doxtrack_css") \
         .replace("{1i}",txt1).replace("{1b}",self.bordercolor ) \
         .replace("{2i}",txt2).replace("{2b}",self.bordercolor )
         
@@ -11121,7 +11869,7 @@ class MyPushButton(QLabel):
         fg = self.btn_img_fg.replace("\\","/")
         bg = self.btn_img_bg.replace("\\","/")
         
-        style = _("push_css") \
+        style = _css("push_css") \
         .replace("{fg}",fg)   \
         .replace("{bg}",bg)
         
@@ -11138,10 +11886,10 @@ class MyProjectOption():
         msg = None
         msg = QMessageBox()
         msg.setWindowTitle("Information")
-        msg.setText(_(genv.project_not_known))
+        msg.setText(_str(genv.project_not_known))
         
         msg.setIcon(QMessageBox.Question)
-        msg.setStyleSheet(_("msgbox_css"))
+        msg.setStyleSheet(_css("msgbox_css"))
         
         btn_doxy = QPushButton("Doxygen")
         btn_help = QPushButton("HelpNDoc")
@@ -11189,8 +11937,8 @@ class OpenProjectButton(QPushButton):
         file_path = ""
         icon_size = 20
         
-        dialog.setWindowTitle(_("Open Project File"))
-        dialog.setStyleSheet (_("QFileDlog"))
+        dialog.setWindowTitle(_str("Open Project File"))
+        dialog.setStyleSheet (_css("QFileDlog"))
         
         dialog.setFileMode(QFileDialog.AnyFile)
         dialog.setViewMode(QFileDialog.Detail)
@@ -11210,9 +11958,9 @@ class OpenProjectButton(QPushButton):
         if not file_path:
             msg = QMessageBox()
             msg.setWindowTitle("Information")
-            msg.setText(_("no source file given.\n"))
+            msg.setText(_str("no source file given.\n"))
             msg.setIcon(QMessageBox.Question)
-            msg.setStyleSheet(_("msgbox_css"))
+            msg.setStyleSheet(_css("msgbox_css"))
             
             btn_ok = msg.addButton(QMessageBox.Ok)
             result = msg.exec_()            
@@ -11222,11 +11970,11 @@ class OpenProjectButton(QPushButton):
             msg = None
             msg = QMessageBox()
             msg.setWindowTitle("Information")
-            msg.setText(_(
+            msg.setText(_str(
                 "You selected a file, that can not be open.\n"
                 "no file will be open."))
             msg.setIcon(QMessageBox.Question)
-            msg.setStyleSheet(_("msgbox_css"))
+            msg.setStyleSheet(_css("msgbox_css"))
             
             btn_ok = msg.addButton(QMessageBox.Ok)
             result = msg.exec_()
@@ -11246,7 +11994,7 @@ class OpenProjectButton(QPushButton):
             elif genv.doc_type == 1:
                 genv.doc_framework = genv.DOC_FRAMEWORK_HELPNDOC
             else:
-                showError(_("Error:\ncan not determine doc type."))
+                showError(_str("Error:\ncan not determine doc type."))
                 return False
         
         except configparser.NoOptionError as error:
@@ -11259,7 +12007,7 @@ class OpenProjectButton(QPushButton):
             genv.doc_framework = genv.DOC_FRAMEWORK_HELPNDOC
             self.parent.trigger_mouse_press(genv.img_hlpndoc)
         else:
-            showInfo(_("Error: help framework not known."))
+            showInfo(_str("Error: help framework not known."))
             return False
         return True
 
@@ -11277,9 +12025,9 @@ class myExitDialog(QDialog):
         self.hlayout    = QHBoxLayout()
         
         self.vlayout    = QVBoxLayout()
-        self.helpButton = QPushButton(_("&Help"))
-        self.prevButton = QPushButton(_("&Cancel"))
-        self.exitButton = QPushButton(_("&Exit"))
+        self.helpButton = QPushButton(_str("&Help"))
+        self.prevButton = QPushButton(_str("&Cancel"))
+        self.exitButton = QPushButton(_str("&Exit"))
         
         self.helpButton.setDefault(True)
         self.prevButton.setDefault(True)
@@ -11295,7 +12043,7 @@ class myExitDialog(QDialog):
         
         self.finished.connect(self.on_finished)
         
-        self.hexitText = QLabel(_("Would you realy exit the Application?"))
+        self.hexitText = QLabel(_str("Would you realy exit the Application?"))
         
         self.hlayout.addLayout(self.vlayout)
         self.hlayout.addWidget(self.hexitText)
@@ -11421,7 +12169,7 @@ class addEventField(QLabel):
         self.btn.setMaximumHeight(15)
         self.btn.setMaximumHeight(15)
         
-        css_rhs = _("edit_css")
+        css_rhs = _css("edit_css")
         
         self.rhs = QLineEdit()
         self.rhs.setMaximumWidth((self.width()+92)//2)
@@ -11470,16 +12218,16 @@ class addProperty(QLabel):
         self.lhs     = self
         
         if kind == 1:
-            css_rhs = _("spin_css")
+            css_rhs = _css("spin_css")
         
         elif kind == 2:
-            css_rhs = _("edit_css")
+            css_rhs = _css("edit_css")
         
         elif kind == 3:
-            css_rhs = _("check_css")
+            css_rhs = _css("check_css")
         
         elif kind == 4:
-            css_rhs = _("combo_css")
+            css_rhs = _css("combo_css")
         
         self.ftext_spacer = ' ' * 9
         self.ttext_spacer = ' ' * 15
@@ -12142,14 +12890,14 @@ class EditorTranslate(QWidget):
         self.layout.setContentsMargins(0,0,0,0)
         self.layout.setSpacing(0)
         
-        self.group_box = QGroupBox(_(" Choose a Translation: "))
+        self.group_box = QGroupBox(_str(" Choose a Translation: "))
         self.group_box.setFont(font)
         self.group_layout = QVBoxLayout()
         
         #self.dummyl = QLabel(" ")
-        self.radio1 = QRadioButton(_("Convert to FPC Pascal"))
-        self.radio2 = QRadioButton(_("Convert to GNU C++"))
-        self.radio3 = QRadioButton(_("Convert to Byte-Code"))
+        self.radio1 = QRadioButton(_str("Convert to FPC Pascal"))
+        self.radio2 = QRadioButton(_str("Convert to GNU C++"))
+        self.radio3 = QRadioButton(_str("Convert to Byte-Code"))
         
         self.radio1.setObjectName("pascal")
         self.radio2.setObjectName("gnucpp")
@@ -12213,7 +12961,7 @@ class EditorTextEdit(QPlainTextEdit):
         self.mode   = mode
         self.parser = parent
         
-        self.setStyleSheet(_("ScrollBarCSS"))
+        self.setStyleSheet(_css("ScrollBarCSS"))
         self.setObjectName(file_name)
         
         self.file_name = file_name
@@ -12253,7 +13001,7 @@ class EditorTextEdit(QPlainTextEdit):
         
         if self.mode == 0:
             if not os.path.exists(file_name):
-                showInfo(_(f"Error: file does not exists: {file_name}"))
+                showInfo(_str(f"Error: file does not exists: {file_name}"))
                 return
             
             # Datei einlesen und Text setzen
@@ -12263,19 +13011,71 @@ class EditorTextEdit(QPlainTextEdit):
         self.highlightCurrentLine()
     
     # todo: check directory !
-    def check_default(self):
+    def check_default(self, flag=False):
         file_path = genv.default_file_path
         try:
             if genv.active_side_button == genv.SIDE_BUTTON_PASCAL:
                 file_path = file_path + "pascal/default.pas"
                 file_path = file_path.replace('\\', '/')
                 
-                if os.path.exists(file_path):
-                    os.remove(file_path)
+                msg = QMessageBox()
+                msg.setWindowTitle("Warning")
+                msg.setText(
+                    "The directory for the default file all ready exists."
+                    "Would you like remove it?")
+                msg.setIcon(QMessageBox.Warning)
+                
+                btn_yes = msg.addButton(QMessageBox.Yes())
+                btn_yes = msg.addButton(QMessageBox.No())
+                
+                msg.setStyleSheet(_css("msgbox_css"))
+                result = msg.exec_()
+                
+                if result == QMessageBox.Yes:
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
                         
             elif genv.active_side_button == genv.SIDE_BUTTON_DBASE:
                 file_path = file_path + "dbase/default.prg"
                 file_path = file_path.replace('\\', '/')
+                
+                msg = QMessageBox()
+                msg.setWindowTitle("Warning")
+                msg.setText(
+                    "The directory for the default file all ready exists."
+                    "Would you like remove it?")
+                msg.setIcon(QMessageBox.Warning)
+                
+                btn_yes = msg.addButton(QMessageBox.Yes())
+                btn_yes = msg.addButton(QMessageBox.No())
+                
+                msg.setStyleSheet(_css("msgbox_css"))
+                result = msg.exec_()
+                
+                if result == QMessageBox.Yes:
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+                        
+            elif genv.active_side_button == genv.SIDE_BUTTON_JAVA:
+                file_path = file_path + "java/default.java"
+                file_path = file_path.replace('\\', '/')
+                
+                msg = QMessageBox()
+                msg.setWindowTitle("Warning")
+                msg.setText(
+                    "The directory for the default file all ready exists."
+                    "Would you like remove it?")
+                msg.setIcon(QMessageBox.Warning)
+                
+                btn_yes = msg.addButton(QMessageBox.Yes())
+                btn_yes = msg.addButton(QMessageBox.No())
+                
+                msg.setStyleSheet(_css("msgbox_css"))
+                result = msg.exec_()
+                
+                if result == QMessageBox.Yes:
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
             
             showInfo("cd: " + file_path)
             os.chdir(os.path.dirname   (file_path))
@@ -12283,12 +13083,14 @@ class EditorTextEdit(QPlainTextEdit):
             
             return True
         except FileNotFoundError as e:
-            self.showExceptionHandler(e)
-            return False
+            if flag:
+                self.showExceptionHandler(e)
+                return False
             
         except PermissionError as e:
-            self.showExceptionHandler(e)
-            return False
+            if flag:
+                self.showExceptionHandler(e)
+                return False
             
         except Exception as e:
             self.showExceptionHandler(e)
@@ -12454,6 +13256,44 @@ class EditorTextEdit(QPlainTextEdit):
         
         super().mousePressEvent(event)
     
+    # ----------------------------------------------------------------------
+    # \brief This function definition is a helper to save storage resources.
+    #        It will be used more as one alone.
+    # ----------------------------------------------------------------------
+    def handle_exception(self, err, msg):
+        tb = traceback.extract_tb(sys.exc_info()[2])
+        last_line = tb[-1]
+        # -----------------------------------------
+        # Traceback extrahieren ...
+        # -----------------------------------------
+        tb = sys.exc_info()[2]
+        while tb.tb_next:  # zum letzten Frame durchhangeln
+            tb = tb.tb_next
+        frame = tb.tb_frame
+        # -----------------------------------------
+        line_numb = tb.tb_lineno
+        name_clas = ""
+        code_line = traceback.extract_tb(tb)[-1].line
+        file_name = frame.f_code.co_filename
+        func_name = frame.f_code.co_name
+        # -----------------------------------------
+        # Klassenname ermitteln (wenn möglich) ...
+        # -----------------------------------------
+        if 'self' in frame.f_locals:
+            name_clas = type(frame.f_locals['self']).__name__
+        # -----------------------------------------
+        error_text = (""
+            + msg  + ":\n"
+            + _str("Error") + ": "       + str(err) + "\n\n"
+            + _str("Error in File")+": " + str(file_name) + "\n"
+            + _str("At Line")+"      : " + str(line_numb) + "\n"
+            + _str("In Function")+"  : " + str(func_name) + "\n"
+            + _str("In Class")+"     : " + str(name_clas) + "\n"
+            + _str("Code")+"         : " + str(code_line)
+        )
+        showError(error_text)
+        return
+    
     def keyPressEvent(self, event):
         if event.key() == Qt.Key.Key_Escape:
             #if not genv.c64_parser.c64_exec_thread == None:
@@ -12478,6 +13318,26 @@ class EditorTextEdit(QPlainTextEdit):
                         
                 self.parse_source(genv.SIDE_BUTTON_DBASE, script_name)
                 
+            elif self.edit_type == "java":
+                if not script_name:
+                    if script_name.endswith("/"):
+                        script_name += "default.java"
+                        self.check_default()
+                try:
+                    with open(script_name,'w', encoding="utf-8") as file:
+                        file.write(self.toPlainText())
+                        file.close()
+                        
+                    self.parse_source(genv.SIDE_BUTTON_JAVA, script_name)
+                    return
+                    
+                except PermissionError as e:
+                    showError(_str(f"not enough permissions:\n{e}"))
+                    return
+                except Exception as e:
+                    showError(_str(f"A Common Exception occired:\n{w}"))
+                    return
+                    
             elif self.edit_type == "pascal":
                 if not script_name:
                     if script_name.endswith("/"):
@@ -12487,16 +13347,20 @@ class EditorTextEdit(QPlainTextEdit):
                     with open(script_name,'w',encoding='utf-8') as file:
                         file.write(self.toPlainText())
                         file.close()
-                        
-                    self.parse_source(genv.SIDE_BUTTON_PASCAL, script_name)
+                    #
+                    prg = ConvertZipExecute(interpreter_Pascal(script_name))
                     return
                     
                 except PermissionError as e:
-                    showError(_(f"not enough permissions:\n{e}"))
+                    showError(_str(f"not enough permissions:\n{e}"))
+                    return
+                except AttributeError as e:
+                    return self.handle_exception(e, _str("Attribute Error occured"))
+                except ENoSourceHeader as e:
+                    showError(f"SourceReaderError:\n{e}")
                     return
                 except Exception as e:
-                    showError(_(f"A Common Exception occired:\n{w}"))
-                    return
+                    return self.handle_exception(e, _str("A common Exception occured"))
                 
             elif self.edit_type == "lisp":
                 self.parse_source(genv.SIDE_BUTTON_LISP, script_name)
@@ -12507,8 +13371,8 @@ class EditorTextEdit(QPlainTextEdit):
         elif event.key() == Qt.Key_S and event.modifiers() == Qt.ControlModifier:
             options = QFileDialog.Options()
             file_name, a = QFileDialog.getSaveFileName(self,
-                _("Save Text"), "",
-                _("Text files (*.prg);;All Files (*)"),
+                _str("Save Text"), "",
+                _str("Text files (*.prg);;All Files (*)"),
                 options=options)
             if file_name:
                 try:
@@ -12523,22 +13387,22 @@ class EditorTextEdit(QPlainTextEdit):
                     # Bestätigung anzeigen
                     # --------------------------------------------------
                     QMessageBox.information(self,
-                        _("Success"),
-                        _("File successfully saved."))
+                        _str("Success"),
+                        _str("File successfully saved."))
                     return
                 except Exception as e:
                     QMessageBox.critical(self,
-                        _("Error"),
-                        _("Error during saving file"))
+                        _str("Error"),
+                        _str("Error during saving file"))
                     return
             else:
-                showInfo(_("something went wrong"))
+                showInfo(_str("something went wrong"))
                 return
         elif event.key() == Qt.Key_O and event.modifiers() == Qt.ControlModifier:
             options = QFileDialog.Options()
             file_name, a = QFileDialog.getOpenFileName(self,
-                _("Load Text"), "",
-                _("Text files (*.prg);;All Files (*)"),
+                _str("Load Text"), "",
+                _str("Text files (*.prg);;All Files (*)"),
                 options=options)
             if file_name:
                 try:
@@ -12546,16 +13410,16 @@ class EditorTextEdit(QPlainTextEdit):
                         self.setPlainText(file.read())
                         file.close()
                     QMessageBox.information(self,
-                        _("Success"),
-                        _("File successfully loaded."))
+                        _str("Success"),
+                        _str("File successfully loaded."))
                     return
                 except Exception as e:
                     QMessageBox.critical(self,
-                        _("Error"),
-                        _("Error during loading file"))
+                        _str("Error"),
+                        _str("Error during loading file"))
                     return
             else:
-                showInfo(_("something went wrong"))
+                showInfo(_str("something went wrong"))
                 return
         else:
             super().keyPressEvent(event)
@@ -12585,7 +13449,7 @@ class EditorTextEdit(QPlainTextEdit):
             python_code = parser.convert_to_python(parsed)
             
             if not python_code:
-                showInfo(_(f"no code for parser."))
+                showInfo(_str(f"no code for parser."))
                 return
                 
             # ------------------------------------------
@@ -12602,10 +13466,10 @@ class EditorTextEdit(QPlainTextEdit):
                 try:
                     os.makedirs(directory_path)
                 except PermissionError as e:
-                    showError(_("no permissions to create directory"))
+                    showError(_str("no permissions to create directory"))
                     return False
                 except Exception as e:
-                    showError(_(f"unexpected error occured:\n{e}"))
+                    showError(_str(f"unexpected error occured:\n{e}"))
                     return False
             try:
                 with open(python_file, "w") as f:
@@ -12613,10 +13477,10 @@ class EditorTextEdit(QPlainTextEdit):
                     f.close()
                     
             except PermissionError as e:
-                showError(_(f"no permissions to open script file:\n{e}"))
+                showError(_str(f"no permissions to open script file:\n{e}"))
                 return
             except Exception as e:
-                showError(_(f"unexpected error occured:\n{e}"))
+                showError(_str(f"unexpected error occured:\n{e}"))
                 return
             
             # ------------------------------------------
@@ -12628,10 +13492,10 @@ class EditorTextEdit(QPlainTextEdit):
                 with open(bytecode_file, "wb") as f:
                     marshal.dump(compiled_code, f)
             except PermissionError as e:
-                showError(_("no permissions to write byte code file."))
+                showError(_str("no permissions to write byte code file."))
                 return
             except Exception as e:
-                showError(_(f"unexpected error occured:\n{e}"))
+                showError(_str(f"unexpected error occured:\n{e}"))
                 return
             
             print("Python Code:")
@@ -12652,9 +13516,9 @@ class EditorTextEdit(QPlainTextEdit):
         while tb.tb_next:
             tb = tb.tb_next
         
-        err_line  = _(f"Error in File: {tb.tb_frame.f_code.co_filename}\n")
-        err_line += _(f"Error in Line: {tb.tb_lineno}\n")
-        err_line += _(f"Error Message: {str(e)}")
+        err_line  = _str(f"Error in File: {tb.tb_frame.f_code.co_filename}\n")
+        err_line += _str(f"Error in Line: {tb.tb_lineno}\n")
+        err_line += _str(f"Error Message: {str(e)}")
         
         showError(err_line)
         return
@@ -12668,19 +13532,19 @@ class EditorTextEdit(QPlainTextEdit):
             f"tokens:   {genv.source_tokens}  \n"
             f"errors:   {genv.source_errors}  ")
         
-        #one_liner = _("online comments:\n")
+        #one_liner = _str("online comments:\n")
         #
         #for line_num, matches in result["single_line"]:
         #    one_liner += f"Line {line_num}: {', '.join(matches)}"
         #    one_liner += "\n"
         # 
-        # two_liner = _("multie line comments:\n")
+        # two_liner = _str("multie line comments:\n")
         # 
         # for start, end, comment in result["multi_line"]:
         #     two_liner += f"start line: {start} end line: {end}:\n{comment}"
         #     two_liner += f"\n"
         # 
-        # err_liner = _("comments with error's:\n")
+        # err_liner = _str("comments with error's:\n")
         # 
         # for start, end, error, comment in result["errors"]:
         #     err_liner += f"start line: {start} end line: {end}: "
@@ -12723,7 +13587,7 @@ class myGridViewer(QWidget):
         self.object_inspector = QTreeWidget()
         self.object_inspector.setIconSize(QSize(20,20))
         self.object_inspector.setFont(font1)
-        self.object_inspector.setStyleSheet(_("inspect_css"))
+        self.object_inspector.setStyleSheet(_css("inspect_css"))
         
         headerLabel = ["Name", "Count"]
         self.object_inspector.setColumnCount(len(headerLabel))
@@ -12740,7 +13604,7 @@ class myGridViewer(QWidget):
         self.property_page.setContentsMargins(0,0,0,0)
         self.property_page.setMinimumWidth(244)
         self.property_page.setMaximumWidth(244)
-        self.property_page.setStyleSheet(_("tab_widget_2"))
+        self.property_page.setStyleSheet(_css("tab_widget_2"))
         #
         self.property_tabs1 = QWidget()
         self.property_tabs2 = QWidget()
@@ -13469,9 +14333,9 @@ class myAddTableDialog(QDialog):
         self.layout_top3 = QVBoxLayout()
         self.btn_move_add_1 = QPushButton(">>")
         self.btn_move_del_1 = QPushButton("<<")
-        self.btn_move_add_2 = QPushButton(_("Add"))
-        self.btn_move_clr_1 = QPushButton(_("Remove"))
-        self.btn_move_clr_2 = QPushButton(_("Clear"))
+        self.btn_move_add_2 = QPushButton(_str("Add"))
+        self.btn_move_clr_1 = QPushButton(_str("Remove"))
+        self.btn_move_clr_2 = QPushButton(_str("Clear"))
         #
         self.layout_top3.addWidget(self.btn_move_add_1)
         self.layout_top3.addWidget(self.btn_move_del_1)
@@ -14299,7 +15163,7 @@ class OpenProFileDialog(QDialog):
             msg.setIcon(QMessageBox.Information)
             btn_ok = msg.addButton(QMessageBox.Ok)
             
-            msg.setStyleSheet(_("msgbox_css"))
+            msg.setStyleSheet(_css("msgbox_css"))
             result = msg.exec_()
             return input_string[:length]
         else:
@@ -14338,7 +15202,7 @@ class OpenProFileDialog(QDialog):
             msg.setIcon(QMessageBox.Information)
             btn_ok = msg.addButton(QMessageBox.Ok)
             
-            msg.setStyleSheet(_("msgbox_css"))
+            msg.setStyleSheet(_css("msgbox_css"))
             result = msg.exec_()
             return
         
@@ -14379,7 +15243,7 @@ class OpenProFileDialog(QDialog):
             msg.setIcon(QMessageBox.Warning)
             btn_ok = msg.addButton(QMessageBox.Ok)
             
-            msg.setStyleSheet(_("msgbox_css"))
+            msg.setStyleSheet(_css("msgbox_css"))
             result = msg.exec_()
             msg = None
             pass
@@ -14399,7 +15263,7 @@ class OpenProFileDialog(QDialog):
             msg.setIcon(QMessageBox.Warning)
             btn_ok = msg.addButton(QMessageBox.Ok)
             
-            msg.setStyleSheet(_("msgbox_css"))
+            msg.setStyleSheet(_css("msgbox_css"))
             result = msg.exec_()
             pass
         # read try block
@@ -14416,7 +15280,7 @@ class OpenProFileDialog(QDialog):
             msg.setIcon(QMessageBox.Warning)
             btn_ok = msg.addButton(QMessageBox.Ok)
             
-            msg.setStyleSheet(_("msgbox_css"))
+            msg.setStyleSheet(_css("msgbox_css"))
             result = msg.exec_()
             pass
         #
@@ -14491,7 +15355,7 @@ class CustomWidget0(QWidget):
         
         self.context_menu = None
         self.context_menu = QMenu(self)
-        self.context_menu.setStyleSheet(_("css_menu_button"))
+        self.context_menu.setStyleSheet(_css("css_menu_button"))
         
         self.action01 = None
         self.action02 = None
@@ -14642,34 +15506,34 @@ class scrollBoxTableCreatorDBF(QWidget):
         hlayout = QHBoxLayout()
         vlayout = QVBoxLayout()
         
-        le = QLineEdit(); l1 = QLabel(_("Name:"))
-        cb = QComboBox(); l2 = QLabel(_("Type:"))
-        fl = QLineEdit(); l3 = QLabel(_("Length:"))
-        pr = QLineEdit(); l4 = QLabel(_("Prec:"))
-        pk = QComboBox(); l5 = QLabel(_("Pry.Key:"))
+        le = QLineEdit(); l1 = QLabel(_str("Name:"))
+        cb = QComboBox(); l2 = QLabel(_str("Type:"))
+        fl = QLineEdit(); l3 = QLabel(_str("Length:"))
+        pr = QLineEdit(); l4 = QLabel(_str("Prec:"))
+        pk = QComboBox(); l5 = QLabel(_str("Pry.Key:"))
         #
-        db = QPushButton(_("DEL"))
+        db = QPushButton(_str("DEL"))
         db.setMinimumWidth(32)
         db.setMinimumHeight(18)
         
         cb_array = [
-            _("C CHAR"),
-            _("N NUMERIK"),
-            _("F FLOAT"),
-            _("D DATE"),
-            _("L LOGICAL"),
-            _("M MEMO"),
-            _("B BINARY"),
-            _("G GENERAL"),
-            _("P PICTURE"),
-            _("I INTEGER"),
-            _("Y CURRENCY")
+            _str("C CHAR"),
+            _str("N NUMERIK"),
+            _str("F FLOAT"),
+            _str("D DATE"),
+            _str("L LOGICAL"),
+            _str("M MEMO"),
+            _str("B BINARY"),
+            _str("G GENERAL"),
+            _str("P PICTURE"),
+            _str("I INTEGER"),
+            _str("Y CURRENCY")
         ]
         for item in cb_array:
             cb.addItem(item)
         
-        pk.addItem(_("TRUE"))
-        pk.addItem(_("FALSE"))
+        pk.addItem(_str("TRUE"))
+        pk.addItem(_str("FALSE"))
         
         genv.f_edit.append(le)
         genv.t_edit.append(cb)
@@ -14807,13 +15671,13 @@ class TableModelAll(QAbstractTableModel):
     
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         headers = [
-            _("Forms"),
-            _("Programs"),
-            _("Reports"),
-            _("Tables"),
-            _("Images"),
-            _("SQL"),
-            _("Other")
+            _str("Forms"),
+            _str("Programs"),
+            _str("Reports"),
+            _str("Tables"),
+            _str("Images"),
+            _str("SQL"),
+            _str("Other")
         ]
         if role == Qt.DisplayRole:
             if orientation == Qt.Horizontal:
@@ -14858,8 +15722,8 @@ class TableModelForms(QAbstractTableModel):
     
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         headers = [
-            _("Forms"),
-            _("Remarks")
+            _str("Forms"),
+            _str("Remarks")
         ]
         if role == Qt.DisplayRole:
             if orientation == Qt.Horizontal:
@@ -14890,8 +15754,8 @@ class TableModelPrograms(QAbstractTableModel):
     
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         headers = [
-            _("Programs"),
-            _("Remarks")
+            _str("Programs"),
+            _str("Remarks")
         ]
         if role == Qt.DisplayRole:
             if orientation == Qt.Horizontal:
@@ -14945,8 +15809,8 @@ class TableModelReports(QAbstractTableModel):
     
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         headers = [
-            _("Reports"),
-            _("Remarks")
+            _str("Reports"),
+            _str("Remarks")
         ]
         if role == Qt.DisplayRole:
             if orientation == Qt.Horizontal:
@@ -14988,8 +15852,8 @@ class TableModelTables(QAbstractTableModel):
     
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         headers = [
-            _("Tables"),
-            _("Remarks")
+            _str("Tables"),
+            _str("Remarks")
         ]
         if role == Qt.DisplayRole:
             if orientation == Qt.Horizontal:
@@ -15031,8 +15895,8 @@ class TableModelImages(QAbstractTableModel):
     
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         headers = [
-            _("Images"),
-            _("Remarks")
+            _str("Images"),
+            _str("Remarks")
         ]
         if role == Qt.DisplayRole:
             if orientation == Qt.Horizontal:
@@ -15074,8 +15938,8 @@ class TableModelQueries(QAbstractTableModel):
     
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         headers = [
-            _("Query"),
-            _("Remarks")
+            _str("Query"),
+            _str("Remarks")
         ]
         if role == Qt.DisplayRole:
             if orientation == Qt.Horizontal:
@@ -15117,8 +15981,8 @@ class TableModelOthers(QAbstractTableModel):
     
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         headers = [
-            _("Other"),
-            _("Remarks")
+            _str("Other"),
+            _str("Remarks")
         ]
         if role == Qt.DisplayRole:
             if orientation == Qt.Horizontal:
@@ -15306,7 +16170,7 @@ class applicationProjectWidget(QWidget):
     def __init__(self, parent=None):
         super(applicationProjectWidget, self).__init__(parent)
         
-        self.setStyleSheet(_("ScrollBarCSS"))
+        self.setStyleSheet(_css("ScrollBarCSS"))
         
         self.font   = QFont(genv.v__app__font, 11)
         self.model  = QStandardItemModel()
@@ -15321,14 +16185,14 @@ class applicationProjectWidget(QWidget):
         
         self.dbase_path    = "./"
         
-        self.pro_files     = _("Project Files")
-        self.pro_forms     = _("Forms")
-        self.pro_reports   = _("Reports")
-        self.pro_programs  = _("Programs")
-        self.pro_tables    = _("Desktop Tables")
-        self.pro_queries   = _("SQL")
-        self.pro_images    = _("Images")
-        self.pro_others    = _("Others")
+        self.pro_files     = _str("Project Files")
+        self.pro_forms     = _str("Forms")
+        self.pro_reports   = _str("Reports")
+        self.pro_programs  = _str("Programs")
+        self.pro_tables    = _str("Desktop Tables")
+        self.pro_queries   = _str("SQL")
+        self.pro_images    = _str("Images")
+        self.pro_others    = _str("Others")
         
         self.dbase_path_forms    = ""
         self.dbase_path_reports  = ""
@@ -15347,7 +16211,7 @@ class applicationProjectWidget(QWidget):
         self.child_item_others   = None
         
         self.selected_item = None
-        css_linestyle = _("editfield_css")
+        css_linestyle = _css("editfield_css")
         
         main_layout = QHBoxLayout(self)
         main_layout.setContentsMargins(0,0,0,0)
@@ -15509,13 +16373,13 @@ class applicationProjectWidget(QWidget):
         self.list_view.setFont(QFont(genv.v__app__font,11))
         
         self.lay_push = QHBoxLayout()
-        self.add_push = QPushButton(_("Add"))
-        self.clr_push = QPushButton(_("Clear All"))
-        self.del_push = QPushButton(_("Remove"))
+        self.add_push = QPushButton(_str("Add"))
+        self.clr_push = QPushButton(_str("Clear All"))
+        self.del_push = QPushButton(_str("Remove"))
         #
-        self.add_push.setStyleSheet(_(genv.css_button_style))
-        self.clr_push.setStyleSheet(_(genv.css_button_style))
-        self.del_push.setStyleSheet(_(genv.css_button_style))
+        self.add_push.setStyleSheet(_css(genv.css_button_style))
+        self.clr_push.setStyleSheet(_css(genv.css_button_style))
+        self.del_push.setStyleSheet(_css(genv.css_button_style))
         #
         self.add_push.setMinimumHeight(36)
         self.clr_push.setMinimumHeight(36)
@@ -15572,27 +16436,27 @@ class applicationProjectWidget(QWidget):
             # Context menu for tree items
             menu = myCustomContextMenu(self, item_text)
             
-            action_array = [                      # check, open
-                [ _("Run"),                       False, False, "F2"  ],
-                [ _("Open in Designer"),          False, True,  ""    ],
-                [ _("Open in Source Editor"),     False, True, ""    ],
-                [ "--",                           False, True, ""    ],
-                [ _("New"),                       False, True, ""    ],
-                [ _("Add Files to Project..."),   False, True, ""    ],
-                [ _("Delete"),                    True , True , "Del" ],
-                [ "--",                           False, False, ""    ],
-                [ _("New Folder"),                False, False, ""    ],
-                [ "--",                           False, False, ""    ],
-                [ _("Set as Main"),               False, False, ""    ],
-                [ _("Exclude from Build"),        False, False, ""    ],
-                [ _("Include in Target Image"),   False, False, ""    ],
-                [ "--",                           False, False, ""    ],
-                [ _("Project Properties"),        False, False, ""    ],
-                [ _("File Properties"),           False, False, ""    ],
-                [ _("Folder Properties"),         False, False, ""    ],
-                [ "--",                           False, False, ""    ],
-                [ _("Clear"),                     False, False, ""    ],
-                [ _("Clear Items"),               False, False, ""    ]
+            action_array = [                       # check, open
+                [ _str("Run"),                       False, False, "F2"  ],
+                [ _str("Open in Designer"),          False, True , ""    ],
+                [ _str("Open in Source Editor"),     False, True , ""    ],
+                [ "--",                              False, True , ""    ],
+                [ _str("New"),                       False, True , ""    ],
+                [ _str("Add Files to Project..."),   False, True , ""    ],
+                [ _str("Delete"),                    True , True , "Del" ],
+                [ "--",                              False, False, ""    ],
+                [ _str("New Folder"),                False, False, ""    ],
+                [ "--",                              False, False, ""    ],
+                [ _str("Set as Main"),               False, False, ""    ],
+                [ _str("Exclude from Build"),        False, False, ""    ],
+                [ _str("Include in Target Image"),   False, False, ""    ],
+                [ "--",                              False, False, ""    ],
+                [ _str("Project Properties"),        False, False, ""    ],
+                [ _str("File Properties"),           False, False, ""    ],
+                [ _str("Folder Properties"),         False, False, ""    ],
+                [ "--",                              False, False, ""    ],
+                [ _str("Clear"),                     False, False, ""    ],
+                [ _str("Clear Items"),               False, False, ""    ]
             ]
             for act in action_array:
                 action = QAction(act[0], self)
@@ -15603,11 +16467,11 @@ class applicationProjectWidget(QWidget):
         else:
             # Context menu for empty space
             menu = QMenu()
-            menu.setStyleSheet(_("css_menu_button"))
+            menu.setStyleSheet(_css("css_menu_button"))
             
-            action1 = QAction(_("Add"), self)
-            action2 = QAction(_("Clear"), self)
-            action3 = QAction(_("Clear All"), self)
+            action1 = QAction(_str("Add"), self)
+            action2 = QAction(_str("Clear"), self)
+            action3 = QAction(_str("Clear All"), self)
             
             menu.addAction(action1)
             menu.addSeparator()
@@ -15768,7 +16632,7 @@ class applicationProjectWidget(QWidget):
         
         self.dialog_edlay = QHBoxLayout()
         self.dialog_edit  = QLineEdit()
-        self.dialog_edit.setStyleSheet(_("editfield_css"))
+        self.dialog_edit.setStyleSheet(_css("editfield_css"))
         
         dialog_push = QPushButton("...")
         dialog_push.setMinimumHeight(28)
@@ -15895,7 +16759,7 @@ class applicationProjectWidget(QWidget):
                 btn_nok.setFont(self.font)
                 btn_yes.setFont(self.font)
                 
-                msg.setStyleSheet(_("msgbox_css"))
+                msg.setStyleSheet(_css("msgbox_css"))
                 self.result = msg.exec_()
                 
             if not os.path.isfile(file_path):
@@ -16023,7 +16887,7 @@ class applicationProjectWidget(QWidget):
         btn_ok = msg.addButton(QMessageBox.Ok)
         btn_ok.setFont(self.font)
         
-        msg.setStyleSheet(_("msgbox_css"))
+        msg.setStyleSheet(_css("msgbox_css"))
         result = msg.exec_()
     
     # -----------------------------------------------
@@ -16075,7 +16939,7 @@ class applicationProjectWidget(QWidget):
         path_name = self.path_edit.text()
         hlay_name = self.hlay_edit.text()
         #
-        path_mess = _("config file could not be write.")
+        path_mess = _str("config file could not be write.")
         
         config_array = [
             [self.pro_forms,    "Form"    ],
@@ -16089,7 +16953,7 @@ class applicationProjectWidget(QWidget):
         for conf in config_array:
             try:
                 genv.v__app__config.read(path_name)
-                if self.selected_item.text() == _(conf[0]):
+                if self.selected_item.text() == _str(conf[0]):
                     genv.v__app__config[self.db_pro][conf[1]] = path_name
                     try:
                         with open(hlay_name, "w", encoding="utf-8") as configfile:
@@ -16302,7 +17166,7 @@ class applicationProjectWidget(QWidget):
                         
                         self.model_others.updateData(self.data_others)
                         return
-                elif parent_item.text() == _(self.pro_forms):
+                elif parent_item.text() == _str(self.pro_forms):
                     self.path_edit.clear()
                     self.path_edit.setText(self.dbase_path_forms)
                     return
@@ -16331,7 +17195,7 @@ class applicationProjectWidget(QWidget):
                     self.path_edit.setText(self.dbase_path_others)
                     return
             else:
-                if item.text() == _(self.pro_files):
+                if item.text() == _str(self.pro_files):
                     self.path_edit.clear()
                     self.path_edit.setText(self.dbase_path)
                     
@@ -16379,7 +17243,7 @@ class CustomTitleBar(QWidget):
         layout.setSpacing(0)
         
         self.title_label = QLabel(self.title)
-        self.title_label.setStyleSheet(_("DialogTitleBar"))
+        self.title_label.setStyleSheet(_css("DialogTitleBar"))
         
         self.minimize_button = QPushButton()
         self.minimize_button.setIcon(self.minimize_icon)
@@ -16459,7 +17323,7 @@ class ApplicationDesignPage():
         self.designs_layout  = QVBoxLayout()
         self.designs_layout.setContentsMargins(2,2,2,2)
         self.designs_palette = QWidget()
-        self.designs_palette.setStyleSheet(_("bggy"))
+        self.designs_palette.setStyleSheet(_css("bggy"))
         self.designs_palette.setMinimumHeight(85)
         self.designs_palette.setMaximumHeight(85)
         #
@@ -16484,14 +17348,14 @@ class ApplicationDesignPage():
         self.palette_widget_lhs.setText(chr1)
         self.palette_widget_rhs.setText(chr2)
         #
-        self.palette_widget_lhs.setStyleSheet(_("bglg"))
-        self.palette_widget_mid.setStyleSheet(_("bggy"))
-        self.palette_widget_rhs.setStyleSheet(_("bglg"))
+        self.palette_widget_lhs.setStyleSheet(_css("bglg"))
+        self.palette_widget_mid.setStyleSheet(_css("bggy"))
+        self.palette_widget_rhs.setStyleSheet(_css("bglg"))
         #
         #
         self.palette_widget_mid_layout = QHBoxLayout()
         self.palette_widget_mid_tabs   = QTabWidget()
-        self.palette_widget_mid_tabs.setStyleSheet(_("designertab"))
+        self.palette_widget_mid_tabs.setStyleSheet(_css("designertab"))
         
         #######
         addDesignerTabs(self.palette_widget_mid_tabs)
@@ -16506,7 +17370,7 @@ class ApplicationDesignPage():
         ####
         
         self.designs_viewer  = myGridViewer(self.parent)
-        self.designs_viewer.setStyleSheet(_("bgwh"))
+        self.designs_viewer.setStyleSheet(_css("bgwh"))
         
         self.designs_layout.addWidget(self.designs_palette)
         self.designs_layout.addWidget(self.designs_viewer)
@@ -16533,6 +17397,303 @@ class ApplicationDesignPage():
         #self.btn1.setStyleSheet("background-color:red;color:yellow;")
         #self.btn2.setStyleSheet("background-color:yellow;color:black;")
         #self.btn3.setStyleSheet("background-color:blue;color:white;")
+
+class CustomDialogTitleBar(QLabel):
+    def __init__(self, parent=None, title=""):
+        super().__init__("📁 " + title, parent)
+        self.parent = parent
+        self.title  = title
+        
+        self.setFixedHeight(30)
+        self.setStyleSheet("""
+            background-color: blue;
+            color: yellow;
+            font-weight: bold;
+            padding-left: 10px;
+        """)
+        
+        self.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.parent = parent
+        self._drag_pos = None
+        
+        self.close_btn = QPushButton("✕", self)
+        self.close_btn.setStyleSheet("background: none; color: yellow; border: none; font-size: 14pt;")
+        self.close_btn.setFixedSize(30, 30)
+        self.close_btn.clicked.connect(parent.close)
+    
+    def resizeEvent(self, event):
+        self.close_btn.move(self.width() - 35, 0)
+    
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self._drag_pos = event.globalPos() - self.parent.frameGeometry().topLeft()
+            event.accept()
+    
+    def mouseMoveEvent(self, event):
+        if self._drag_pos and event.buttons() == Qt.LeftButton:
+            self.parent.move(event.globalPos() - self._drag_pos)
+            event.accept()
+
+class DrivePanel(QWidget):
+    def __init__(self, model, on_path_selected, parent=None):
+        super().__init__(parent)
+        self.on_path_selected = on_path_selected
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(4, 4, 4, 4)
+        layout.setSpacing(4)
+
+        # Schnellauswahl
+        quick_layout = QHBoxLayout()
+        for name, path in self.get_quick_paths().items():
+            btn = QPushButton(name)
+            btn.setIcon(QIcon.fromTheme("folder"))
+            btn.setStyleSheet("color: yellow; background-color: #333; border: 1px solid #555;")
+            btn.setFixedHeight(28)
+            btn.clicked.connect(lambda _, p=path: self.select_quick_path(p))
+            quick_layout.addWidget(btn)
+        layout.addLayout(quick_layout)
+
+        # TreeView für Laufwerke & Verzeichnisse
+        self.model = model
+        self.tree  = QTreeView()
+        self.tree.setModel(self.model)
+        self.tree.setRootIndex(self.model.index(QDir.rootPath()))
+        self.tree.setHeaderHidden(False)
+        self.tree.setAnimated(True)
+
+        # Icons (automatisch durch QFileSystemModel)
+        self.tree.setIconSize(QSize(16, 16))
+
+        self.tree.setStyleSheet("""
+            QTreeView { background-color: #111; color: yellow; }
+            QHeaderView::section { background-color: lightgray; color: black; }
+        """ + _css("scrollbar_stylesheet"))
+        
+        self.tree.setColumnWidth(0, 180)
+
+        # Auswahl-Callback verbinden
+        self.tree.selectionModel().selectionChanged.connect(self.on_selection_changed)
+
+        layout.addWidget(self.tree)
+
+    def get_quick_paths(self):
+        home = QDir.homePath()
+        quick_paths = {
+            "Home": home,
+            "Desktop": os.path.join(home, "Desktop"),
+            "Downloads": os.path.join(home, "Downloads")
+        }
+        return {k: v for k, v in quick_paths.items() if os.path.exists(v)}
+
+    def select_quick_path(self, path):
+        index = self.model.index(path)
+        if index.isValid():
+            self.tree.setCurrentIndex(index)
+            self.tree.scrollTo(index)
+            self.on_path_selected(path)
+
+    def on_selection_changed(self, selected, _):
+        index = self.tree.currentIndex()
+        if index.isValid():
+            path = self.model.filePath(index)
+            self.on_path_selected(path)
+
+class CustomFileDialog(QDialog):
+    def __init__(self, parent=None, title=""):
+        super().__init__()
+        
+        self.parent = parent
+        self.title  = title
+        
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setMinimumSize(640, 460)
+        self.setMaximumSize(640, 460)
+        
+        # Roter Rahmen
+        self.setStyleSheet("""
+            QDialog {
+                background-color: #202020;
+                color: yellow;
+                border: 4px solid red;
+                border-radius: 6px;
+            }
+        """)
+        
+        self.visited_dirs = []
+        self.selected_file = ""
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+
+        # Titelleiste
+        self.title_bar = CustomDialogTitleBar(self, self.title)
+        layout.addWidget(self.title_bar)
+
+        # Pfad-Verlauf
+        self.path_combo = QComboBox()
+        self.path_combo.setStyleSheet("background-color: #333; color: yellow;")
+        self.path_combo.activated.connect(self.navigate_to_path)
+        layout.addWidget(self.path_combo)
+
+        # Splitter
+        splitter = QSplitter()
+        layout.addWidget(splitter)
+
+        # Linke Seite: Verzeichnisse
+        self.dir_model = QFileSystemModel()
+        self.dir_model.setFilter(QDir.AllDirs | QDir.NoDotAndDotDot)
+        self.dir_model.setRootPath(QDir.rootPath())
+        
+        self.tree_left = DrivePanel(self.dir_model, on_path_selected=self.on_drive_selected)
+        self.tree_left.setStyleSheet("""
+            QTreeView {
+                background-color: #111;
+                font-family: "Arial";
+                width: 100px;
+                color: yellow;
+                font-size: 10pt;
+            }
+            QHeaderView::section {
+                background-color: lightgray;
+                color: black;
+                font-size: 10pt;
+            }
+        """ + _css("scrollbar_stylesheet"))
+        splitter.addWidget(self.tree_left)
+        
+        # Rechte Seite: Dateien
+        self.file_model = QFileSystemModel()
+        self.file_model.setFilter(QDir.Files | QDir.AllDirs)
+        self.file_model.setRootPath(QDir.rootPath())
+
+        self.tree_right = QTreeView()
+        self.tree_right.setModel(self.file_model)
+        self.tree_right.setRootIndex(self.file_model.index(QDir.rootPath()))
+        self.tree_right.clicked.connect(self.on_file_clicked)
+        self.tree_right.doubleClicked.connect(self.on_right_double_click)
+        self.tree_right.setStyleSheet("""
+            QTreeView {
+                background-color: #111;
+                font-family: "Arial";
+                width: 100px;
+                color: yellow;
+                font-size: 10pt;
+            }
+            QHeaderView::section {
+                background-color: lightgray;
+                color: black;
+                font-size: 10pt;
+            }
+        """ + _css("scrollbar_stylesheet"))
+        splitter.addWidget(self.tree_right)
+        
+        # Filter
+        filter_layout = QHBoxLayout()
+        self.filter_combo = QComboBox()
+        self.filter_combo.addItems(["*.*", "*.py", "*.txt", "*.md", "*.jpg", "*.png"])
+        self.filter_combo.setEditable(True)
+        self.filter_combo.setStyleSheet("""
+            QComboBox {
+                font-family: "Arial";
+                background-color: #222;
+                font-size: 10pt;
+                color: yellow;
+                border: 1px solid #444;
+            }
+        """)
+        self.filter_combo.currentTextChanged.connect(self.update_file_filter)
+        self.filter_label = QLabel(_str("Rilter:"))
+        self.filter_label.setStyleSheet("""
+            QLabel {
+                font-family: "Arial";
+                width: 100px;
+                color: yellow;
+                font-size: 10pt;
+            }
+        """)
+        filter_layout.addWidget(self.filter_label)
+        filter_layout.addWidget(self.filter_combo)
+        layout.addLayout(filter_layout)
+        
+        # Infobox
+        self.info_box = QGroupBox("Datei-Information")
+        self.info_label = QLabel("Größe: -")
+        self.info_box.setFixedHeight(50)
+        info_layout = QVBoxLayout()
+        info_layout.addWidget(self.info_label)
+        self.info_box.setLayout(info_layout)
+        self.info_box.setStyleSheet("QGroupBox { color: lightgray; } QLabel { color: yellow; }")
+        layout.addWidget(self.info_box)
+        
+        # Buttons
+        button_layout = QHBoxLayout()
+        self.ok_button = QPushButton("Öffnen")
+        self.cancel_button = QPushButton("Abbrechen")
+        self.close_button = QPushButton("Schließen")
+        
+        for btn in (self.ok_button, self.cancel_button, self.close_button):
+            btn.setStyleSheet("background-color: #444; color: yellow; padding: 5px;")
+        self.ok_button.clicked.connect(self.accept)
+        self.cancel_button.clicked.connect(self.reject)
+        self.close_button.clicked.connect(self.close)
+        
+        button_layout.addWidget(self.ok_button)
+        button_layout.addWidget(self.cancel_button)
+        button_layout.addWidget(self.close_button)
+        layout.addLayout(button_layout)
+    
+    def update_file_filter(self, pattern):
+        self.file_model.setNameFilters([pattern])
+        self.file_model.setNameFilterDisables(False)
+    
+    def on_drive_selected(self, path):
+        if QDir(path).exists():
+            index = self.dir_model.index(path)
+            if index.isValid():
+                self.tree_right.setRootIndex(index)
+
+            # ComboBox aktualisieren
+            if self.path_combo.findText(path) == -1:
+                self.path_combo.insertItem(0, path)
+            self.path_combo.setCurrentText(path)
+    
+    def on_dir_clicked(self, index):
+        path = self.dir_model.filePath(index)
+        self.tree_right.setRootIndex(self.file_model.index(path))
+        self.update_path_combo(path)
+    
+    def on_file_clicked(self, index):
+        path = self.file_model.filePath(index)
+        if QFileInfo(path).isFile():
+            size = QFileInfo(path).size()
+            self.info_label.setText(f"Größe: {size} Bytes")
+            self.selected_file = path
+    
+    def on_right_double_click(self, index):
+        path = self.file_model.filePath(index)
+        if QFileInfo(path).isDir():
+            self.tree_right.setRootIndex(self.file_model.index(path))
+            self.update_path_combo(path)
+        else:
+            self.selected_file = path
+            self.accept()
+    
+    def update_path_combo(self, path):
+        if path not in self.visited_dirs:
+            self.visited_dirs.append(path)
+            self.path_combo.addItem(path)
+        self.path_combo.setCurrentText(path)
+    
+    def navigate_to_path(self, index):
+        path = self.path_combo.itemText(index)
+        self.tree_right.setRootIndex(self.file_model.index(path))
+    
+    def get_selected_file(self):
+        return self.selected_file
+    
+    def setNameFilters(self, filter=[]):
+        return
 
 class ButtonWidget(QWidget):
     def __init__(self, text, parent=None):
@@ -16638,8 +17799,9 @@ class ApplicationEditorsPage(QObject):
         self.text   = text
         self.mode   = 0
         
-        self.editor_object = None
-        self.tabs_editor   = None
+        self.editor_counter = 0
+        self.editor_objects = [None]
+        self.tabs_editor    = None
         
         try:
             self.setObjectName(self.text)
@@ -16649,8 +17811,8 @@ class ApplicationEditorsPage(QObject):
             
             self.tabs_editor = QTabWidget()
             self.tabs_editor.setTabsClosable(True) 
-            self.tabs_editor.tabCloseRequested.connect(self.close_tab) 
-            self.tabs_editor.setStyleSheet(_(genv.css_tabs))
+            self.tabs_editor.tabCloseRequested.connect(self.close_tab)
+            self.tabs_editor.setStyleSheet(_css(genv.css_tabs))
             self.tabs_editor.setContentsMargins(1,0,0,1)
             
             self.tabs_editor_menu = QListWidget()
@@ -16702,58 +17864,45 @@ class ApplicationEditorsPage(QObject):
         except Exception as e:
             showException(traceback.format_exc())
     
-    def open_new_editor(self, file_path, mode=0):
-        self.mode = mode
-        
+    def open_new_editor(self, file_path):
+        self.create_editor(file_path)
+    
+    def create_editor(self, file_path):
         file_layout_widget = QWidget()
         file_layout        = QHBoxLayout()
-        file_layout.setSpacing(0)
+        found              = False
         
-        found = False
+        if self.editor_counter > 0:
+            self.editor = self.editor_objects[self.editor_counter-1]
+        else:
+            self.editor = self.editor_objects[self.editor_counter]
         
-        if  genv.editor_counter == 0:
-            genv.editor_counter = 1
-            for entry in genv.editors_entries[self.text]:
-                if  entry["name"].endswith(file_path):
-                    entry["name"]   = ""
-                    entry["object"] = None
-                    break
-        
-        showInfo(f">> {genv.editors_entries[self.text]}")
-        
-        for entry in genv.editors_entries[self.text]:
-            if entry["name"] == file_path:
-                showInfo("already open.")
-                found = True
-                break
-        if not found:
-            #showInfo(f"---> {self.text}\n---> {file_path}")
-            self.editor_object = EditorTextEdit(
-                self,
-                file_path,
-                self.text,
-                self.mode)
+        if self.editor == None:
+            self.editor = EditorTextEdit(self,
+                     file_path,
+                     self.text,
+                     self.mode)
+                     
+            self.editor.setContentsMargins(1,0,0,1)
+            self.editor.file_path = file_path
             
-            self.editor_object.setContentsMargins(1,0,0,1)
-            new_editor    = {
-                "object": self.editor_object,
-                "name":   file_path
-            }
-            
-            genv.editors_entries[self.text].append(new_editor)
-            
-            showInfo(f"{genv.editors_entries}")
+            self.editor_objects[self.editor_counter] = self.editor
             
             file_layout_widget = QWidget()
             file_layout        = QVBoxLayout()
-            file_layout.setSpacing(0)
-            
-            file_layout.addWidget(self.editor_object)
-            file_layout_widget.setLayout(
-            file_layout)
             
             file_layout_widget.setContentsMargins(1,0,0,1)
+            file_layout.setContentsMargins(1,0,0,1)
+            file_layout.setSpacing(0)
+            
+            file_layout.addWidget(self.editor)
+            file_layout_widget.setLayout(file_layout)
+            
             self.tabs_editor.addTab(file_layout_widget, os.path.basename(file_path))
+            self.editor_counter = self.editor_counter + 1
+        else:
+            showInfo("already open.")
+            found = True
     
     def on_editor_menu_item_clicked(self, item):
         widget = self.tabs_editor_menu.itemWidget(item)
@@ -16762,19 +17911,21 @@ class ApplicationEditorsPage(QObject):
             text = text.split(':')
             
             if text[0] == "label 0":
-                if  self.editor_object == None:
-                    self.editor_object = EditorTextEdit(
-                        self,  "",
-                        self.text,
-                        self.mode)
-                self.editor_object.check_default()
-                return
+                if genv.active_side_button == genv.SIDE_BUTTON_DBASE:
+                    self.open_new_editor("./examples/dbase/default.prg")
+                    return
+                if genv.active_side_button == genv.SIDE_BUTTON_PASCAL:
+                    self.open_new_editor("./examples/pascal/default.pas")
+                    return
+                if genv.active_side_button == genv.SIDE_BUTTON_JAVA:
+                    self.open_new_editor("./examples/java/default.java")
+                    return
                     
             elif text[0] == "label 1":
                 file_path = self.open_dialog()
                 filename  = os.path.basename(file_path)
                 if len(filename) < 1:
-                    showInfo("len < 1")
+                    #showInfo("len < 1")
                     return
                 widget.setObjectName('label 1:' + file_path)
                 #
@@ -16820,8 +17971,8 @@ class ApplicationEditorsPage(QObject):
                         prg.parse()
                         
                     elif genv.current_focus.edit_type == "pascal":
-                        prg = interpreter_Pascal(script_name)
-                        prg.parse()
+                        prg = ConvertZipExecute(interpreter_Pascal(script_name))
+                        return
                         
                     elif genv.current_focus.edit_type == "java":
                         prg = interpreter_Java(script_name)
@@ -16877,30 +18028,66 @@ class ApplicationEditorsPage(QObject):
         # Schließt den Tab an der angegebenen Position
         if 0 <= index < self.tabs_editor.count():
             file_path = self.tabs_editor.tabText(index)
+            file_indx = self.editor_objects[index]
+            file_name = file_indx.file_path
+            file_text = file_indx.toPlainText()
+            print("name: " + file_name)
+            
             try:
-                for entry in genv.editors_entries["dbase"]:
-                    if entry["name"].endswith(file_path):
-                        entry["name"] = ""
-                        entry["object"] = None
-                        self.tabs_editor.removeTab(index)
-                        return
-            except KeyError as e:
-                print("key error")
+                if file_name.endswith("default.java"):
+                    file_temp = "./examples/java"
+                    file_path = file_temp + "/default.java"
+                    
+                    msg = QMessageBox()
+                    
+                    msg.setWindowTitle("Warning")
+                    msg.setText(_str("New File: Would you save it ?"))
+                    msg.setIcon(QMessageBox.Warning)
+                    
+                    btn_yes    = msg.addButton(QMessageBox.Yes)
+                    btn_no     = msg.addButton(QMessageBox.No)
+                    btn_cancel = msg.addButton(QMessageBox.Cancel)
+                    
+                    msg.setStyleSheet(_css("msgbox_css"))
+                    result = msg.exec_()
+                    
+                    if result == QMessageBox.Yes:
+                        if not os.path.isdir(file_temp):
+                            file_dir  = Path(file_temp)
+                            file_dir.mkdir(parents=True, exist_ok=True)
+                            
+                        with open(file_path, "w", encoding="utf-8") as srcfile:
+                            srcfile.write(file_text)
+                            srcfile.close()
+                        self.close_tab_default(index)
+                    
+                    elif result == QMessageBox.No:
+                        self.close_tab_default(index)
+            except Exception as e:
+                showError(f"Error: {str(e)}\nDetails:\n{traceback.format_exc()}")
+    
+    def close_tab_default(self, index):
+        self.editor_objects[index] = None
+        self.tabs_editor.removeTab(index)
+        
+        self.editor_counter = self.editor_counter - 1
+        if  self.editor_counter < 0:
+            self.editor_counter = 0
     
     def showNoEditorMessage(self):
         msg = QMessageBox()
-        msg.setWindowTitle(_("Warning"))
-        msg.setText(_("no editor focused - do nothing.\n"))
+        msg.setWindowTitle(_str("Warning"))
+        msg.setText(_str("no editor focused - do nothing.\n"))
         msg.setIcon(QMessageBox.Warning)
         
         btn_ok = msg.addButton(QMessageBox.Ok)
         
-        msg.setStyleSheet(_("msgbox_css"))
+        msg.setStyleSheet(_css("msgbox_css"))
         msg.exec_()
     
     def checkBeforeSave(self):
-        return
         try:
+            self.focused_widget = self.editor
             if not self.focused_widget:
                 self.showNoEditorMessage()
                 return
@@ -16919,7 +18106,7 @@ class ApplicationEditorsPage(QObject):
         btn_yes = msg.addButton(QMessageBox.Yes)
         btn_no  = msg.addButton(QMessageBox.No)
         
-        msg.setStyleSheet(_("msgbox_css"))
+        msg.setStyleSheet(_css("msgbox_css"))
         result = msg.exec_()
         
         if result == QMessageBox.Yes:
@@ -16932,11 +18119,11 @@ class ApplicationEditorsPage(QObject):
                         msg = None
                         msg = QMessageBox()
                         msg.setWindowTitle("Warning")
-                        msg.setText(_("Error: file could not be saved:") + f"\n{script_name}.")
+                        msg.setText(_str("Error: file could not be saved:") + f"\n{script_name}.")
                         msg.setIcon(QMessageBox.Warning)
                         btn_ok = msg.addButton(QMessageBox.Ok)
                         
-                        msg.setStyleSheet(_("msgbox_css"))
+                        msg.setStyleSheet(_css("msgbox_css"))
                         result = msg.exec_()
                         DebugPrint(f"Error: file does not exists: {script_name}.")
                         return
@@ -16950,73 +18137,66 @@ class ApplicationEditorsPage(QObject):
         file_path = ""
         icon_size = 20
 
-        dialog   = QFileDialog (self.editor_object, _("Open file"))
-        
-        dialog.setWindowTitle(_("Open File"))
-        dialog.setOption     (QFileDialog.DontUseNativeDialog, True)
-        #dialog.setAcceptMode (QFileDialog.AcceptSave)
-        dialog.setStyleSheet (_("QFileDlog"))
-            
-        dialog.setFileMode(QFileDialog.AnyFile)
-        dialog.setViewMode(QFileDialog.Detail)
-        
+        dialog = QFileDialog(self.parent, _str("Open file"))
+        dialog.setOption(QFileDialog.DontUseNativeDialog, True)
+                
         if self.objectName() == "dbase":
             dialog.setNameFilters([
-                _("Program Files")  + " (*.prg)",
-                _("Database Files") + " (*.dbf, *.db)",
-                _("Query Files")    + " (*.sql)",
-                _("Text Files")     + " (*.txt *.md)",
-                _("All Files")      + " (*)"])
+                _str("Program Files")  + " (*.prg)",
+                _str("Database Files") + " (*.dbf, *.db)",
+                _str("Query Files")    + " (*.sql)",
+                _str("Text Files")     + " (*.txt *.md)",
+                _str("All Files")      + " (*)"])
         elif self.objectName() == "pascal":
             dialog.setNameFilters([
-                _("Pascal Files")  + " (*.pas *.pp)",
-                _("Include Files") + " (*.inc)",
-                _("Text Files")    + " (*.txt *.md)",
-                _("All Files")     + " (*)"])
+                _str("Pascal Files")  + " (*.pas *.pp)",
+                _str("Include Files") + " (*.inc)",
+                _str("Text Files")    + " (*.txt *.md)",
+                _str("All Files")     + " (*)"])
         elif self.objectName() == "isoc":
             dialog.setNameFilters([
-                _("C++ Program Files") + " (*.c *.cc *.cpp *.c++)",
-                _("C++ Header Files")  + " (*.h *.hh *.hpp *.h++)",
-                _("C++ Include Files") + " (*.inc)",
-                _("Text Files")        + " (*.txt *.md)",
-                _("All Files")         + " (*)"])
+                _str("C++ Program Files") + " (*.c *.cc *.cpp *.c++)",
+                _str("C++ Header Files")  + " (*.h *.hh *.hpp *.h++)",
+                _str("C++ Include Files") + " (*.inc)",
+                _str("Text Files")        + " (*.txt *.md)",
+                _str("All Files")         + " (*)"])
         elif self.objectName() == "python":
             dialog.setNameFilters([
-                _("Python Files") + " (*.py *.pyw)",
-                _("Text Files")   + " (*.txt *.md)",
-                _("All Files")    + " (*)"])
+                _str("Python Files") + " (*.py *.pyw)",
+                _str("Text Files")   + " (*.txt *.md)",
+                _str("All Files")    + " (*)"])
         elif self.objectName() == "lisp":
             dialog.setNameFilters([
-                _("Lisp Files") + " (*.lisp *.lsp *.l *.el)",
-                _("Text Files")   + " (*.txt *.md)",
-                _("All Files")    + " (*)"])
+                _str("Lisp Files") + " (*.lisp *.lsp *.l *.el)",
+                _str("Text Files")   + " (*.txt *.md)",
+                _str("All Files")    + " (*)"])
         elif self.objectName() == "prolog":
             dialog.setNameFilters([
-                _("Prolog Files") + " (*.pl *.pro)",
-                _("Text Files")   + " (*.txt *.md)",
-                _("All Files")    + " (*)"])
+                _str("Prolog Files") + " (*.pl *.pro)",
+                _str("Text Files")   + " (*.txt *.md)",
+                _str("All Files")    + " (*)"])
         elif self.objectName() == "java":
             dialog.setNameFilters([
-                _("Java Files")   + " (*.java)",
-                _("Text Files")   + " (*.txt *.md)",
-                _("All Files")    + " (*)"])
+                _str("Java Files")   + " (*.java)",
+                _str("Text Files")   + " (*.txt *.md)",
+                _str("All Files")    + " (*)"])
         elif self.objectName() == "javascript":
             dialog.setNameFilters([
-                _("JavaScript Files") + " (*.js)",
-                _("HTML Files")       + " (*.html *.htm)",
-                _("CSS Files")        + " (*.css)",
-                _("XML Files")        + " (*.xml)",
-                _("Text Files")       + " (*.txt *.md)",
-                _("All Files")        + " (*)"])
+                _str("JavaScript Files") + " (*.js)",
+                _str("HTML Files")       + " (*.html *.htm)",
+                _str("CSS Files")        + " (*.css)",
+                _str("XML Files")        + " (*.xml)",
+                _str("Text Files")       + " (*.txt *.md)",
+                _str("All Files")        + " (*)"])
         elif self.objectName() == "c64":
             dialog.setNameFilters([
-                _("BASIC Files")  + " (*.bas)",
-                _("All Files")    + " (*)"])
+                _str("BASIC Files")  + " (*.bas)",
+                _str("All Files")    + " (*)"])
         else:
             dialog.setNameFilters([
-                _("All Files") + " (*)"])
+                _str("All Files") + " (*)"])
         
-        dialog.setOption(QFileDialog.DontUseNativeDialog, True)
+        #dialog.setOption(QFileDialog.DontUseNativeDialog, True)
         #if mode == 0:
         #    if dialog.exec_() == QFileDialog.Accepted:
         #        file_path = dialog.selectedFiles()[0]
@@ -17039,7 +18219,7 @@ class ApplicationEditorsPage(QObject):
         #else:
         #    default_file += ".txt"
         #
-        if dialog.exec_() == QFileDialog.Accepted:
+        if dialog.exec_() == QDialog.Accepted:
             # -----------------------------------
             # Gewählte Datei und Filter abrufen
             # -----------------------------------
@@ -17047,7 +18227,7 @@ class ApplicationEditorsPage(QObject):
             #showInfo("--->> " + file_path)
             
             if len(file_path) < 1:
-                showInfo(_("no file name given"))
+                showInfo(_str("no file name given"))
                 return
                 
             # -----------------------------------
@@ -17064,20 +18244,19 @@ class ApplicationEditorsPage(QObject):
                 return self.check_file(file_path)
                 
             except PermissionError as e:
-                showError(_(f"you have no permissions to write the " +
+                showError(_str(f"you have no permissions to write the " +
                 f"file.\n{e}"))
-                return ""
             except Exception as e:
-                showError(_(f"unhandled exception occured."))
-                return ""
+                showError(_str(f"unhandled exception occured."))
+        return ""
                 
     def check_file(self, file_path):
         if not file_path:
             msg = QMessageBox()
             msg.setWindowTitle("Information")
-            msg.setText(_("no source file given.\n"))
+            msg.setText(_str("no source file given.\n"))
             msg.setIcon(QMessageBox.Question)
-            msg.setStyleSheet(_("msgbox_css"))
+            msg.setStyleSheet(_str("msgbox_css"))
             
             btn_ok = msg.addButton(QMessageBox.Ok)
             result = msg.exec_()            
@@ -17087,11 +18266,11 @@ class ApplicationEditorsPage(QObject):
             msg = None
             msg = QMessageBox()
             msg.setWindowTitle("Information")
-            msg.setText(_(
+            msg.setText(_str(
                 "You selected a file, that can not be open.\n"
                 "no file will be open."))
             msg.setIcon(QMessageBox.Question)
-            msg.setStyleSheet(_("msgbox_css"))
+            msg.setStyleSheet(_str("msgbox_css"))
             
             btn_ok = msg.addButton(QMessageBox.Ok)
             result = msg.exec_()
@@ -17102,7 +18281,7 @@ class ApplicationTabWidget(QTabWidget):
     def __init__(self, tabs, parent=None):
         super(ApplicationTabWidget, self).__init__(parent)
         
-        self.setStyleSheet(_(genv.css_tabs))
+        self.setStyleSheet(_css(genv.css_tabs))
         self.hide()
         
         self.tabs = []
@@ -17518,10 +18697,22 @@ class GridGraphicsView(QGraphicsView):
 
 
 class DraggableComponent(QGraphicsRectItem):
-    def __init__(self, name, x=0, y=0, width=50, height=50, view=None, label="", connections=[], resizable_horizontal=True):
+    def __init__(self, name, x=0, y=0, width=50, height=50, view=None, label="", connections=[]):
         super().__init__(0, 0, width, height)
-        self.setFlag(QGraphicsItem.ItemIsMovable)
-        self.setFlag(QGraphicsItem.ItemIsSelectable)
+        self.carray = [
+            "chip_7400_pin14", "chip_7408_pin14"
+        ]
+        if name in self.carray:
+            print("dragger")
+            self.setFlag(QGraphicsItem.ItemIsSelectable, False)
+            self.setFlag(QGraphicsItem.ItemIsMovable, False)
+            
+            self.setFlag(QGraphicsItem.ItemIgnoresTransformations, True)
+            self.setFlag(QGraphicsItem.ItemIgnoresParentOpacity, True)
+        else:
+            self.setFlag(QGraphicsItem.ItemIsMovable, True)
+            self.setFlag(QGraphicsItem.ItemIsSelectable, True)
+        
         self.setPos(x, y)
         self.name = name
         self.label = label
@@ -17532,16 +18723,6 @@ class DraggableComponent(QGraphicsRectItem):
         self.scroll_timer.setSingleShot(True)
         self.scroll_timer.timeout.connect(self.resume_movement)
         self.is_scrolling = False
-        self.resizable_horizontal = resizable_horizontal
-        
-        if self.resizable_horizontal == False:
-            self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, False)
-            self.setFlag(QGraphicsItem.ItemIsSelectable, False)
-            self.setFlag(QGraphicsItem.ItemIsMovable, False)
-        else:
-            self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
-            self.setFlag(QGraphicsItem.ItemIsSelectable, True)
-            self.setFlag(QGraphicsItem.ItemIsMovable, True)
         
     def paint(self, painter, option, widget):
         # Hintergrundfarbe und Rahmen zeichnen
@@ -17573,10 +18754,7 @@ class DraggableComponent(QGraphicsRectItem):
         if not self.is_scrolling:
             delta = event.scenePos() - self.last_snap_pos
             snapped_x, snapped_y = self.last_snap_pos.x(), self.last_snap_pos.y()
-
-            if self.resizable_horizontal and abs(delta.x()) >= 10:
-                snapped_x += 10 * (1 if delta.x() > 0 else -1)
-
+            
             if abs(delta.y()) >= 10:
                 snapped_y += 10 * (1 if delta.y() > 0 else -1)
 
@@ -17703,22 +18881,65 @@ class FormDesigner(QWidget):
         self.scene.addItem(battery)
         self.scene.addItem(wire1)
 
+class PinParent():
+    def __init__(self, cparent, cname):
+        self.cparent = cparent
+        self.cname   = cname
+
+# ---------------------------------------------------------------------------
+# \brief This class stands for a soldering pin that can be connected with a
+#        given wire end point. The other wire end point can be bind to other
+#        pin connection.
+#
+# \param parent - the scene/view parent
+# \param name   - the component registry name
+# \param label  - the component display name (graphics)
+# \param x      - the x-coord position in the view relative to the component
+# \param y      - the y-coord position in the view relative to the component
+# \param w      - the component width
+# \param h      - the component height
+#
+# \author paule32.jk
+# ---------------------------------------------------------------------------
 class PinConnection(QGraphicsItem):
-    def __init__(self, parent, name, label="", x=0, y=0, w=20, h=20):
-        super().__init__(parent)
-        self.width    = w
-        self.height   = h
-        self.top      = y
-        self.left     = x
-        self.name     = name
-        self.label    = label
-        self.pin_size = QSizeF(self.width, self.height)
-        self.pin_rect = QRectF(self.left, self.top, self.width, self.height)
-        
-        self.setAcceptHoverEvents(True)
-        self.setAcceptedMouseButtons(Qt.AllButtons)
-        self.setFlag(QGraphicsItem.ItemIsSelectable, False)
-        self.setFlag(QGraphicsItem.ItemIsMovable, False)
+    def __new__(cls, parent, view, name, label, *args, **kwargs):
+        if name in genv.v__class_registry:
+            #print(f"Instance with name: '{name}' already exists.")
+            return genv.v__class_registry[name]
+        else:
+            print(f"create new instance: '{name}'")
+            instance = super().__new__(cls)
+            instance.daddy = parent
+            instance.label = label
+            instance.view  = view
+            genv.v__class_registry[name] = instance
+            return instance
+    
+    def __init__(self, parent, view, name, label="", x=0, y=0, w=20, h=20):
+        # Init wird ggf. mehrfach aufgerufen, daher hier absichern:
+        if not hasattr(self, "_initialized"):
+            super().__init__(parent)
+            self._initialized = True  # einmalige Initialisierung
+            self.view = view
+            self.name = name
+            #
+            self.width    = w
+            self.height   = h
+            self._top     = y
+            self._left    = x
+            self.label    = label
+            
+            self.pin_size = QSizeF(self.width, self.height)
+            self.pin_rect = QRectF(self._left, self._top, self.width, self.height)
+            
+            self.setAcceptHoverEvents(True)
+            self.setAcceptedMouseButtons(Qt.AllButtons)
+            
+            self.setFlag(QGraphicsItem.ItemIsSelectable, False)
+            self.setFlag(QGraphicsItem.ItemIsMovable, False)
+            
+            self.setFlag(QGraphicsItem.ItemIgnoresTransformations, True)
+            self.setFlag(QGraphicsItem.ItemIgnoresParentOpacity, True)
         
     def boundingRect(self):
         return self.pin_rect
@@ -17735,7 +18956,20 @@ class PinConnection(QGraphicsItem):
         painter.drawText(self.pin_rect, Qt.AlignCenter, self.label)
     
     def mousePressEvent(self, event):
-        print("Name: " + self.name + ", " + self.label)
+        genv.maus_x = self._left
+        genv.maus_y = self._top
+        print("Name:   " + self.name + ", " + self.label)
+        print("Label:  " + genv.v__class_registry[self.name].label)
+        print("Parent: " + str(genv.v__class_registry[self.name].daddy))
+        print("Item:   " + str(genv.v__class_registry[self.name].view.selected_item))
+        event.accept()
+    
+    def mouseReleaseEvent(self, event):
+        genv.v__class_registry[self.name].view.selected_item = None
+        event.accept()
+    
+    def mouseMoveEvent(self, event):
+        # Ignoriere jegliche Verschiebung
         event.accept()
 
 class AndGateComponent(DraggableComponent):
@@ -17809,60 +19043,222 @@ class AndGateComponent(DraggableComponent):
                 return
 
 class AndGateComponentRotated90(DraggableComponent):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-    
     def paint(self, painter, option, widget):
         painter.setRenderHint(QPainter.Antialiasing)
         rect = self.rect()
-        center = rect.center()
 
-        # Save state
-        painter.save()
-
-        # Drehe alles (Gate, Pins, etc.)
-        painter.translate(center)
-        painter.rotate(90)
-        painter.translate(-center)
-
-        # Farben & Linien
-        painter.setBrush(QColor(173, 216, 230))
-        painter.setPen(QPen(Qt.black, 2))
-
-        # AND-Gatter Pfad
-        path = QPainterPath()
-        path.moveTo(rect.left(), rect.top())
-        path.lineTo(rect.center().x() - 20, rect.top())
-        path.arcTo(rect.center().x() - 20, rect.top(), rect.width() / 2, rect.height(), 80, -180)
-        path.lineTo(rect.left(), rect.bottom())
-        path.closeSubpath()
-
-        painter.drawPath(path)
-        painter.fillPath(path, QColor(173, 216, 230))
-
-        # Linien
-        painter.drawLine(QPointF(rect.left(), rect.top()), QPointF(rect.center().x(), rect.top()))
-        painter.drawLine(QPointF(rect.left(), rect.bottom()), QPointF(rect.center().x(), rect.bottom()))
-
-        # Pin-Größe
-        self.pin_size = QSizeF(20, 20)
-        painter.setPen(QPen(Qt.black, 1))
-        painter.setBrush(Qt.white)
-
-        # Pins zeichnen (Koordinaten im unrotierten Raum)
-        painter.rotate(-90)
+        # Farben & Einstellungen
+        pin_size = QSizeF(20, 20)
+        pin_inset = 10
+        arc_overlap = 40  # <- NEU: Halbkreis 20 Pixel nach oben verschieben
+        gatterfarbe = QColor(173, 216, 230)
         
+        painter.setPen(QPen(Qt.black, 2))
+        painter.setBrush(gatterfarbe)
+
+        # ----- Rechteckkörper -----
+        body_top = rect.top() + pin_size.height() - pin_inset
+        body_height = rect.height() * 0.6
+        body_rect = QRectF(rect.left(), body_top, rect.width(), body_height)
+
+        painter.drawRect(body_rect)
+        painter.fillRect(body_rect, gatterfarbe)
+
+        # ----- Halbkreis: nach unten gewölbt, überlappt 20 Pixel -----
+        arc_radius = rect.width() / 2
+        arc_center_x = rect.center().x()
+        arc_center_y = body_rect.bottom() - arc_overlap
+        arc_rect = QRectF(
+            arc_center_x - arc_radius,
+            arc_center_y,
+            2 * arc_radius,
+            2 * arc_radius
+        )
+
+        # Bogen nach außen/unten
+        arc_path = QPainterPath()
+        arc_path.moveTo(arc_rect.left(), arc_center_y)
+        arc_path.arcTo(arc_rect, 180, 180)
+        arc_path.lineTo(arc_rect.right(), arc_center_y)
+        arc_path.lineTo(arc_rect.left(), arc_center_y)
+        arc_path.closeSubpath()
+
+        painter.drawPath(arc_path)
+        painter.fillPath(arc_path, gatterfarbe)
+
+        # ----- Text im Rechteck -----
         painter.setPen(Qt.black)
         painter.setFont(QFont("Arial", 8))
-        painter.drawText(QRectF(rect.left()-30,24,20,21), Qt.AlignCenter, "AND")
-        
-        self.pin_rect_a = QRectF(rect.left()+(self.pin_size.width()*1), -(self.pin_size.height()), self.pin_size.width() - 1, self.pin_size.height())
-        self.pin_rect_b = QRectF(rect.left()+(self.pin_size.width()*2), -(self.pin_size.height()), self.pin_size.width() - 1, self.pin_size.height())
-        self.pin_rect_c = QRectF(rect.left()+(self.pin_size.width()+8), rect.height()            , self.pin_size.width() - 1, self.pin_size.height())
-        
-        pin_a = PinConnection(self, "pin_a", "A", self.pin_rect_a.left(), self.pin_rect_a.top(), self.pin_rect_a.width(), self.pin_rect_a.height())
-        pin_b = PinConnection(self, "pin_b", "B", self.pin_rect_b.left(), self.pin_rect_b.top(), self.pin_rect_b.width(), self.pin_rect_b.height())
-        pin_c = PinConnection(self, "pin_c", "C", self.pin_rect_c.left(), self.pin_rect_c.top(), self.pin_rect_c.width(), self.pin_rect_c.height())
+        painter.drawText(body_rect, Qt.AlignCenter, "AND")
+
+        # ----- Pins -----
+        painter.setPen(QPen(Qt.black, 1))
+        painter.setBrush(Qt.white)
+        pin_spacing = rect.width() / 3
+
+        # Eingang A
+        pin_a_x = (rect.left() + pin_spacing - pin_size.width() / 2) - 3
+        pin_a_y = rect.top()
+        self.pin_rect_a = QRectF(pin_a_x, pin_a_y, pin_size.width(), pin_size.height())
+        painter.drawRect(self.pin_rect_a)
+        painter.drawText(self.pin_rect_a, Qt.AlignCenter, "A")
+
+        # Eingang B
+        pin_b_x = (rect.left() + 2 * pin_spacing - pin_size.width() / 2) + 3
+        self.pin_rect_b = QRectF(pin_b_x, pin_a_y, pin_size.width(), pin_size.height())
+        painter.drawRect(self.pin_rect_b)
+        painter.drawText(self.pin_rect_b, Qt.AlignCenter, "B")
+
+        # Ausgang C (mittig unterhalb des Halbkreises)
+        pin_c_x = rect.center().x() - pin_size.width() / 2
+        pin_c_y = arc_rect.bottom()
+        self.pin_rect_c = QRectF(pin_c_x, pin_c_y, pin_size.width(), pin_size.height())
+        painter.drawRect(self.pin_rect_c)
+        painter.drawText(self.pin_rect_c, Qt.AlignCenter, "C")
+
+class AndGateComponentRotated180(DraggableComponent):
+    def paint(self, painter, option, widget):
+        painter.setRenderHint(QPainter.Antialiasing)
+        rect = self.rect()
+
+        pin_size = QSizeF(20, 20)
+        pin_inset = 10
+        arc_overlap = 40
+        gatterfarbe = QColor(173, 216, 230)
+
+        painter.setPen(QPen(Qt.black, 2))
+        painter.setBrush(gatterfarbe)
+
+        # Rechteckkörper (unten)
+        body_bottom = rect.bottom() - pin_size.height() + pin_inset
+        body_height = rect.height() * 0.6
+        body_rect = QRectF(rect.left(), body_bottom - body_height, rect.width(), body_height)
+
+        painter.drawRect(body_rect)
+        painter.fillRect(body_rect, gatterfarbe)
+
+        # Halbkreis (oben gewölbt = nach außen oben)
+        arc_radius = rect.width() / 2
+        arc_center_x = rect.center().x()
+        arc_center_y = body_rect.top() + arc_overlap
+        arc_rect = QRectF(
+            arc_center_x - arc_radius,
+            arc_center_y - 2 * arc_radius,
+            2 * arc_radius,
+            2 * arc_radius
+        )
+
+        arc_path = QPainterPath()
+        arc_path.moveTo(arc_rect.left(), arc_center_y)
+        arc_path.arcTo(arc_rect, 180, -180)
+        arc_path.lineTo(arc_rect.right(), arc_center_y)
+        arc_path.lineTo(arc_rect.left(), arc_center_y)
+        arc_path.closeSubpath()
+
+        painter.drawPath(arc_path)
+        painter.fillPath(arc_path, gatterfarbe)
+
+        # Text
+        painter.setPen(Qt.black)
+        painter.setFont(QFont("Arial", 8))
+        painter.drawText(body_rect, Qt.AlignCenter, "AND")
+
+        # Pins
+        painter.setPen(QPen(Qt.black, 1))
+        painter.setBrush(Qt.white)
+        pin_spacing = rect.width() / 3
+
+        # Eingang A (unten links)
+        pin_a_x = (rect.left() + pin_spacing - pin_size.width() / 2) - 3
+        pin_a_y = rect.bottom() - pin_size.height()
+        self.pin_rect_a = QRectF(pin_a_x, pin_a_y, pin_size.width(), pin_size.height())
+        painter.drawRect(self.pin_rect_a)
+        painter.drawText(self.pin_rect_a, Qt.AlignCenter, "A")
+
+        # Eingang B (unten rechts)
+        pin_b_x = (rect.left() + 2 * pin_spacing - pin_size.width() / 2) + 3
+        self.pin_rect_b = QRectF(pin_b_x, pin_a_y, pin_size.width(), pin_size.height())
+        painter.drawRect(self.pin_rect_b)
+        painter.drawText(self.pin_rect_b, Qt.AlignCenter, "B")
+
+        # Ausgang (oben)
+        pin_c_x = rect.center().x() - pin_size.width() / 2
+        pin_c_y = arc_rect.top() - pin_size.height()
+        self.pin_rect_c = QRectF(pin_c_x, pin_c_y, pin_size.width(), pin_size.height())
+        painter.drawRect(self.pin_rect_c)
+        painter.drawText(self.pin_rect_c, Qt.AlignCenter, "C")
+
+class AndGateComponentRotated270(DraggableComponent):
+    def paint(self, painter, option, widget):
+        painter.setRenderHint(QPainter.Antialiasing)
+        rect = self.rect()
+
+        pin_size = QSizeF(20, 20)
+        pin_inset = 10
+        arc_overlap = 40
+        gatterfarbe = QColor(173, 216, 230)
+
+        painter.setPen(QPen(Qt.black, 2))
+        painter.setBrush(gatterfarbe)
+
+        # Rechteckkörper (rechts)
+        body_right = rect.right() - pin_size.width() + pin_inset
+        body_width = rect.width() * 0.6
+        body_rect = QRectF(body_right - body_width, rect.top(), body_width, rect.height())
+
+        painter.drawRect(body_rect)
+        painter.fillRect(body_rect, gatterfarbe)
+
+        # Halbkreis (links gewölbt = nach außen links)
+        arc_radius = rect.height() / 2
+        arc_center_y = rect.center().y()
+        arc_center_x = body_rect.left() + arc_overlap
+        arc_rect = QRectF(
+            arc_center_x - 2 * arc_radius,
+            arc_center_y - arc_radius,
+            2 * arc_radius,
+            2 * arc_radius
+        )
+
+        arc_path = QPainterPath()
+        arc_path.moveTo(arc_center_x, arc_rect.top())
+        arc_path.arcTo(arc_rect, 90, 180)
+        arc_path.lineTo(arc_center_x, arc_rect.bottom())
+        arc_path.lineTo(arc_center_x, arc_rect.top())
+        arc_path.closeSubpath()
+
+        painter.drawPath(arc_path)
+        painter.fillPath(arc_path, gatterfarbe)
+
+        # Text
+        painter.setPen(Qt.black)
+        painter.setFont(QFont("Arial", 8))
+        painter.drawText(body_rect, Qt.AlignCenter, "AND")
+
+        # Pins
+        painter.setPen(QPen(Qt.black, 1))
+        painter.setBrush(Qt.white)
+        pin_spacing = rect.height() / 3
+
+        # Eingang A (rechts oben)
+        pin_a_x = rect.right() - pin_size.width()
+        pin_a_y = (rect.top() + pin_spacing - pin_size.height() / 2) - 3
+        self.pin_rect_a = QRectF(pin_a_x, pin_a_y, pin_size.width(), pin_size.height())
+        painter.drawRect(self.pin_rect_a)
+        painter.drawText(self.pin_rect_a, Qt.AlignCenter, "A")
+
+        # Eingang B (rechts unten)
+        pin_b_y = (rect.top() + 2 * pin_spacing - pin_size.height() / 2) + 3
+        self.pin_rect_b = QRectF(pin_a_x, pin_b_y, pin_size.width(), pin_size.height())
+        painter.drawRect(self.pin_rect_b)
+        painter.drawText(self.pin_rect_b, Qt.AlignCenter, "B")
+
+        # Ausgang (links)
+        pin_c_x = arc_rect.left() - pin_size.width()
+        pin_c_y = rect.center().y() - pin_size.height() / 2
+        self.pin_rect_c = QRectF(pin_c_x, pin_c_y, pin_size.width(), pin_size.height())
+        painter.drawRect(self.pin_rect_c)
+        painter.drawText(self.pin_rect_c, Qt.AlignCenter, "C")
 
 class OrGateComponent(DraggableComponent):
     def paint(self, painter, option, widget):
@@ -18128,19 +19524,19 @@ class XorGateComponentRotated270(DraggableComponent):
 class XorGateComponentRotated180(DraggableComponent):
     def paint(self, painter, option, widget):
         painter.setRenderHint(QPainter.Antialiasing)
-
+        
         original_rect = self.rect()
         adjusted_width = original_rect.width() - 5
         rect = QRectF(original_rect.topLeft(), QSizeF(adjusted_width, original_rect.height()))
-
+        
         painter.setPen(QPen(Qt.black, 2))
         painter.setBrush(QColor(173, 216, 230))  # hellblau
-
+        
         path = QPainterPath()
-
+        
         w = rect.width()
         h = rect.height()
-
+        
         def rotate_point_180(p):
             # 180 Grad Drehung um die linke obere Ecke des Rechtecks
             x = p.x() - rect.left()
@@ -18148,7 +19544,7 @@ class XorGateComponentRotated180(DraggableComponent):
             new_x = w - x
             new_y = h - y
             return QPointF(rect.left() + new_x, rect.top() + new_y)
-
+        
         # Zusätzlicher innerer linker Bogen (typisch für XOR)
         offset = w * 0.11
         inner_start = rotate_point_180(QPointF(rect.left() - offset, rect.bottom()))
@@ -18156,30 +19552,30 @@ class XorGateComponentRotated180(DraggableComponent):
         inner_end = rotate_point_180(QPointF(rect.left() - offset, rect.top()))
         path.moveTo(inner_start)
         path.quadTo(inner_control, inner_end)
-
+        
         # Linker Bogen (konkav nach rechts)
         start = rotate_point_180(QPointF(rect.left(), rect.bottom()))
         control_left = rotate_point_180(QPointF(rect.left() + w * 0.3, rect.center().y()))
         end = rotate_point_180(QPointF(rect.left(), rect.top()))
         path.moveTo(start)
         path.quadTo(control_left, end)
-
+        
         # Gerade obere Linie zur rechten Seite
         top_right_entry = rotate_point_180(QPointF(rect.right() - w * 0.1, rect.top()))
         path.lineTo(top_right_entry)
-
+        
         # Verstärkte rechte Wölbung (größerer Bauch)
         control_right = rotate_point_180(QPointF(rect.right() + w * 0.25, rect.center().y()))
         bottom_right_exit = rotate_point_180(QPointF(rect.right() - w * 0.1, rect.bottom()))
         path.quadTo(control_right, bottom_right_exit)
-
+        
         # Gerade untere Linie zurück zur linken Seite
         path.lineTo(start)
-
+        
         # Zeichnen
         painter.drawPath(path)
         painter.fillPath(path, QColor(173, 216, 230))
-
+        
         # Pins links (2 Eingänge) jetzt unten (wegen 180 Grad Drehung)
         pin_length = 10
         pin_y1 = rect.bottom() - h * 0.3
@@ -18187,12 +19583,12 @@ class XorGateComponentRotated180(DraggableComponent):
         pin_x_in = rect.right() + pin_length
         painter.drawLine(QPointF(pin_x_in, pin_y1), QPointF(rect.right() - 6, pin_y1))
         painter.drawLine(QPointF(pin_x_in, pin_y2), QPointF(rect.right() - 6, pin_y2))
-
+        
         # Ausgangs-Pin rechts jetzt links (wegen 180 Grad Drehung)
         pin_x_out = rect.left() - pin_length - 5
         pin_y_out = rect.center().y()
         painter.drawLine(QPointF(rect.left(), pin_y_out), QPointF(pin_x_out, pin_y_out))
-
+        
         # Label zentriert
         painter.setPen(Qt.black)
         painter.setFont(QFont("Arial", 8))
@@ -18730,11 +20126,13 @@ class AndGateSymbol(QGraphicsItem):
         super().__init__(parent)
         self.width = width
         self.height = height
+        
         self.setFlag(QGraphicsItem.ItemIsMovable, False)
         self.setFlag(QGraphicsItem.ItemIsSelectable, False)
         self.setFlag(QGraphicsItem.ItemIsFocusable, False)
+        
         self.setAcceptedMouseButtons(Qt.NoButton)
-    
+        
     def boundingRect(self):
         return QRectF(0, 0, self.width, self.height)
     
@@ -18765,47 +20163,6 @@ class AndGateSymbol(QGraphicsItem):
         # Ausgang (rechts)
         out_y = self.height / 4
         painter.drawLine(QPointF(self.width, out_y), QPointF(self.width + 10, out_y))
-
-class AndGateSymbol2(QGraphicsItem):
-    def __init__(self, width=20, height=20, parent=None):
-        super().__init__(parent)
-        self.width  = width
-        self.height = height
-        self.setAcceptedMouseButtons(Qt.AllButtons) 
-        
-        self.setFlag(QGraphicsItem.ItemIgnoresTransformations)
-        self.setFlag(QGraphicsItem.ItemIsMovable, False)
-        self.setFlag(QGraphicsItem.ItemIsSelectable, False)
-        self.setFlag(QGraphicsItem.ItemIsFocusable, False)
-        
-    def boundingRect(self):
-        return QRectF(0, 0, self.width, self.height)
-    
-    def paint(self, painter, option, widget):
-        painter.setPen(QPen(Qt.black, 1.5))
-        painter.setBrush(QBrush(Qt.lightGray))
-        
-        rect = QRectF(0, 0, self.width, self.height)
-        radius = self.width / 2
-        
-        # Rechte Seite Bogen (AND)
-        path = QPainterPath()
-        path.moveTo(0, 0)
-        path.lineTo(radius, 0)
-        path.arcTo(0, 0, self.width, self.height, 90, -180)
-        path.lineTo(0, self.height)
-        path.lineTo(0, 0)
-        
-        painter.drawPath(path)
-        
-        # AND Gatter Labels
-        painter.setFont(QFont('Small', 8))
-        painter.setPen(Qt.black)
-        label_rect = QRectF(2, 4, 19, 14)
-        painter.drawText(label_rect, Qt.AlignLeft, 'AND')
-    
-    def mousePressEvent(self, event):
-        event.ignore() 
 
 class NotAndGateSymbol2(QGraphicsItem):
     def __init__(self, width=20, height=20, parent=None):
@@ -18860,67 +20217,42 @@ class ConnectionLine(QGraphicsPathItem):
         self.setPen(QPen(Qt.black, 1.5))
 
 class Chip7408Component(DraggableComponent):
-    def __init__(self, name="7408", x=0, y=0, width=300, height=150, view=None, label="7408", connections=[], resizable_horizontal=False):
-        super().__init__(name, x, y, width, height, view, label, connections, resizable_horizontal)
+    def __init__(self, name="7408", xpos=0, ypos=0, width=300, height=150, view=None, scene=None, label="7408", degree=0, connections=[]):
+        super().__init__(name, xpos, ypos, width, height, view, label, connections)
         self.setBrush(QColor(220, 220, 220))  # hellgrau Chipfarbe
+        self.painted = False
+        self.degree  = degree
+        self.xpos    = xpos
+        self.ypos    = ypos
+        self.view    = view
+        self.scene   = scene
         
         # Positionen für 4 Gatter (2 oben, 2 unten)
-        gate_width = 24
-        gate_height = 21
-        spacing_x = 10
-        spacing_y = 10
+        self.gate_width  = 24
+        self.gate_height = 21
+        spacing_x   = 10
+        spacing_y   = 10
         
-        # Oben links
-        g1 = AndGateSymbol2(gate_width, gate_height, self)
-        g1.setPos(65, 25)
+        self.pin_size = QSizeF(20, 20)
+        self.bounds   = self.sceneBoundingRect()
         
-        # Oben rechts
-        g2 = AndGateSymbol2(gate_width, gate_height, self)
-        g2.setPos(self.rect().width() - gate_width - 31, 25)
-        
-        # Unten links
-        g3 = AndGateSymbol2(gate_width, gate_height, self)
-        g3.setPos(40, self.rect().height() - gate_height - 25)
-        
-        # Unten rechts
-        g4 = AndGateSymbol2(gate_width, gate_height, self)
-        g4.setPos(self.rect().width() - gate_width - 60, self.rect().height() - gate_height - 25)
-        
-        # Als Kindobjekte hinzufügen (damit sie mitverschoben werden)
-        for g in [g1, g2, g3, g4]:
-            g.setParentItem(self)
-    
     def paint(self, painter: QPainter, option, widget=None):
         rect = self.rect()
-
+        
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setPen(QPen(Qt.black, 2))
         painter.setBrush(QColor(220, 220, 220))
         painter.drawRoundedRect(rect, 10, 10)
-
+        
         pin_size = QSizeF(20, 20)
-        spacing = (rect.width() - 40) / 6  # für 7 Pins → 6 Lücken
+        spacing = (pin_size.width() - 40) / 6  # für 7 Pins → 6 Lücken
         pin_x_offset = -10  # alle Pins 10px nach links verschieben
         pin_y_adjust = 5     # Y-Anpassung für Pins
 
-        # Obere Pins (14 bis 8)
-        for i, pin in enumerate(range(14, 7, -1)):
-            x = 20 + i * spacing + pin_x_offset
-            y = rect.top() - pin_size.height() + pin_y_adjust
-            pin_rect = QRectF(x, y, pin_size.width(), pin_size.height())
-            pin_num  = PinConnection(self, "chip_7408", str(pin),
-                       pin_rect.left (), pin_rect.top(),
-                       pin_rect.width(), pin_rect.height())
+        spacing = (rect.width() - 40) / 6  # für 7 Pins → 6 Lücken
+        pin_x_offset = -10  # alle Pins 10px nach links verschieben
+        pin_y_adjust = 5     # Y-Anpassung für Pins
         
-        # Untere Pins (1 bis 7)
-        for i, pin in enumerate(range(1, 8)):
-            x = 20 + i * spacing + pin_x_offset
-            y = rect.bottom() - pin_y_adjust
-            pin_rect = QRectF(x, y, pin_size.width(), pin_size.height())
-            pin_num  = PinConnection(self, "chip_7408", str(pin),
-                       pin_rect.left (), pin_rect.top(),
-                       pin_rect.width(), pin_rect.height())
-
         # Linke Wölbung (Halbkreis nach innen rechts)
         radius = 15
         center_y = rect.center().y()
@@ -18943,6 +20275,13 @@ class Chip7408Component(DraggableComponent):
         
         pen = QPen(Qt.black, 1.2)
         painter.setPen(pen)
+        
+        #-----
+        self.paint_and_gate(painter, 65, 25)
+        self.paint_and_gate(painter, 40, self.rect().height() - self.gate_height - 25)
+        self.paint_and_gate(painter,     self.rect().width () - self.gate_width  - 31, 25)
+        self.paint_and_gate(painter,     self.rect().width () - self.gate_width  - 60, self.rect().height() - self.gate_height - 25)
+        #-----
         
         # Beispiel: Gatter unten links (Pin 1, 2 → Eingang, Pin 3 → Ausgang)
         # Positionen anpassen an tatsächliche Gatter/Pin-Kästchen
@@ -19004,10 +20343,118 @@ class Chip7408Component(DraggableComponent):
             painter.setPen(Qt.black)
             label_rect = QRectF(rect.left(), rect.center().y() - 10, rect.width(), 20)
             painter.drawText(label_rect, Qt.AlignCenter, self.label)
+        
+        #self.copy_item()
+        
+        if self.degree == 0:
+            # Obere Pins (14 bis 8)
+            for i, pin in enumerate(range(14, 7, -1)):
+                x = 20 + i * spacing + pin_x_offset
+                y = rect.top() - pin_size.height() + pin_y_adjust
+                pin_rect = QRectF(x, y, pin_size.width(), pin_size.height())
+                pin_num  = PinConnection(self, self.view, "chip_7408_pin" + str(pin), str(pin),
+                           pin_rect.left (), pin_rect.top(),
+                           pin_rect.width(), pin_rect.height())
+
+            # Untere Pins (1 bis 7)
+            for i, pin in enumerate(range(1, 8)):
+                x = 20 + i * spacing + pin_x_offset
+                y = rect.bottom() - pin_y_adjust
+                pin_rect = QRectF(x, y, pin_size.width(), pin_size.height())
+                pin_num  = PinConnection(self, self.view, "chip_7408_pin" + str(pin), str(pin),
+                           pin_rect.left (), pin_rect.top(),
+                           pin_rect.width(), pin_rect.height())
+                           
+        elif self.degree == 90:
+            # Mittelpunkt des Rechtecks (Zentrum der Drehung)
+            cx = rect.center().x()
+            cy = rect.center().y()
+
+            # Obere Pins (14 bis 8)
+            for i, pin in enumerate(range(14, 7, -1)):
+                x = 20 + i * spacing + pin_x_offset
+                y = rect.top() - pin_size.height() + pin_y_adjust
+
+                # Manuelle Drehung um 90 Grad (im Uhrzeigersinn)
+                dx = x - cx
+                dy = y - cy
+                rotated_x = cx + dy
+                rotated_y = cy - dx
+
+                pin_rect = QRectF(rotated_x, rotated_y, pin_size.width(), pin_size.height())
+                pin_num  = PinConnection(self, self.view, "chip_7408_pin" + str(pin), str(pin),
+                            pin_rect.left(), pin_rect.top(),
+                            pin_rect.width(), pin_rect.height())
+
+            # Untere Pins (1 bis 7)
+            for i, pin in enumerate(range(1, 8)):
+                x = 20 + i * spacing + pin_x_offset
+                y = rect.bottom() - pin_y_adjust
+
+                # Manuelle Drehung um 90 Grad (im Uhrzeigersinn)
+                dx = x - cx
+                dy = y - cy
+                rotated_x = cx + dy
+                rotated_y = cy - dx
+
+                pin_rect = QRectF(rotated_x, rotated_y, pin_size.width(), pin_size.height())
+                pin_num  = PinConnection(self, self.view, "chip_7408_pin" + str(pin), str(pin),
+                            pin_rect.left(), pin_rect.top(),
+                            pin_rect.width(), pin_rect.height())
+    
+    def paint_and_gate(self, painter, xpos, ypos):
+        painter.setPen(QPen(Qt.black, 1.5))
+        painter.setBrush(QBrush(Qt.lightGray))
+        
+        #g1.setPos(65, 25)
+        grect = QRectF(xpos, ypos, self.gate_width, self.gate_height)
+        
+        # Rechte Seite Bogen (AND)
+        path = QPainterPath()
+        path.moveTo(xpos, ypos)
+        path.lineTo(xpos + self.gate_width-10, ypos)
+        path.arcTo (xpos, ypos, self.gate_width, self.gate_height, 90, -180)
+        path.lineTo(xpos, self.gate_height+ ypos)
+        path.lineTo(xpos, ypos)
+        
+        painter.drawPath(path)
+        
+        # AND Gatter Labels
+        painter.setFont(QFont('Small', 8))
+        painter.setPen(Qt.black)
+        label_grect = QRectF(xpos + 2, ypos + 4, 19, 14)
+        painter.drawText(label_grect, Qt.AlignLeft, 'AND')
+    
+    def mousePressEvent(self, event):
+        genv.v__app__pin_name     = ""
+        genv.v__app__pin_control  = "7408"
+    
+    def copy_item(self):
+        if   self.degree ==   0: self.single_copy(0)
+        elif self.degree ==  90: self.single_copy(1)
+        elif self.degree == 180: self.single_copy(2)
+        elif self.degree == 270: self.single_copy(3)
+    
+    def single_copy(self, n=0):
+        if  self.painted == False:
+            self.painted  = True
+            # item in pixmap rendern
+            self.pixmap_item = QPixmap(int(self.bounds.width()), int(self.bounds.height()))
+            self.pixmap_item.fill(Qt.transparent)
+            painter = QPainter(self.pixmap_item)
+            self.scene.render(painter, target=QRectF(self.pixmap_item.rect()), source=self.bounds)
+            painter.end()
+            # pixmap um 90 grad drehen
+            self.transform = QTransform().rotate(n * 90) # n x 90 degree => 90
+            self.pixmap_t1 = self.pixmap_item.transformed(self.transform, Qt.SmoothTransformation)
+            self.pixmap_r1 = QGraphicsPixmapItem(self.pixmap_t1)
+            self.pixmap_r1.setPos(self.xpos, self.ypos)
+            self.scene.addItem(self.pixmap_r1)
+            #self.view.show()
 
 class Chip7400Component(DraggableComponent):
-    def __init__(self, name="7408", x=0, y=0, width=300, height=150, view=None, label="7400", connections=[], resizable_horizontal=False):
-        super().__init__(name, x, y, width, height, view, label, connections, resizable_horizontal)
+    def __init__(self, name="7408", x=0, y=0, width=300, height=150, view=None, label="7400", connections=[]):
+        super().__init__(name, x, y, width, height, view, label, connections)
         self.setBrush(QColor(220, 220, 220))  # hellgrau Chipfarbe
         
         # Positionen für 4 Gatter (2 oben, 2 unten)
@@ -19054,7 +20501,7 @@ class Chip7400Component(DraggableComponent):
             x = 20 + i * spacing + pin_x_offset
             y = rect.top() - pin_size.height() + pin_y_adjust
             pin_rect = QRectF(x, y, pin_size.width(), pin_size.height())
-            pin_num  = PinConnection(self, "chip_740 0", str(pin),
+            pin_num  = PinConnection(self, self.view, "chip_7400_pin" + str(pin), str(pin),
                        pin_rect.left (), pin_rect.top(),
                        pin_rect.width(), pin_rect.height())
         
@@ -19063,7 +20510,7 @@ class Chip7400Component(DraggableComponent):
             x = 20 + i * spacing + pin_x_offset
             y = rect.bottom() - pin_y_adjust
             pin_rect = QRectF(x, y, pin_size.width(), pin_size.height())
-            pin_num  = PinConnection(self, "chip_740 0", str(pin),
+            pin_num  = PinConnection(self, self.view, "chip_7400_pin" + str(pin), str(pin),
                        pin_rect.left (), pin_rect.top(),
                        pin_rect.width(), pin_rect.height())
         
@@ -19150,7 +20597,11 @@ class Chip7400Component(DraggableComponent):
             painter.setPen(Qt.black)
             label_rect = QRectF(rect.left(), rect.center().y() - 10, rect.width(), 20)
             painter.drawText(label_rect, Qt.AlignCenter, self.label)
-
+    
+    def mousePressEvent(self, event):
+        genv.v__app__pin_name     = ""
+        genv.v__app__pin_control  = "7408"
+        
 class CircuitDesigner(QWidget):
     def __init__(self):
         super().__init__()
@@ -19171,86 +20622,97 @@ class CircuitDesigner(QWidget):
         self.init_components()
 
     def init_components(self):
-        # Bauteile mit individuellen Beschriftungen und Verankerungen hinzufügen
-        and_gate = DraggableComponentFormDesigner(
-            "AND-Gate", x=100, y=100, view=self.view, label="AND",
-            connections=[
-                (QPointF(-10, 10), QPointF( 0, 10)),    # Linke obere Verankerung
-                (QPointF(-10, 30), QPointF( 0, 30)),    # Linke untere Verankerung
-                (QPointF( 50, 20), QPointF(60, 20))     # Rechte Verankerung
-            ]
-        )
-        
-        lamp = DraggableComponentFormDesigner(
-            "Lamp", x=200, y=200, view=self.view, label="LED",
-            connections=[
-                (QPointF(-10, 20), QPointF( 0, 20)),    # Linke Verankerung
-                (QPointF( 50, 20), QPointF(60, 20))     # Rechte Verankerung
-            ]
-        )
-        
-        battery = DraggableComponentFormDesigner(
-            "Battery", x=300, y=300, view=self.view, label="SRC",
-            connections=[
-                (QPointF(-10, 20), QPointF( 0, 20)),    # Linke Verankerung
-                (QPointF( 50, 20), QPointF(60, 20))     # Rechte Verankerung
-            ]
-        )
-        
-        wire1 = DraggableComponent(
-            "Wire1", x=200, y=100, width=100, height=2, view=self.view,
-            connections=[
-                (QPointF(  0,0), QPointF(  0,0)),
-                (QPointF(100,0), QPointF(100,0))
-            ]
-        )
-        
-        and_gate2 = AndGateComponent(
-            "AND-Gate", x=100, y=100, width=60, height=50, view=self.view, label="AND",
-            connections=[
-                (QPointF(-10, 15), QPointF(0, 15)),
-                (QPointF(-10, 35), QPointF(0, 35)),
-                (QPointF(60, 25), QPointF(70, 25))
-            ]
-        )
-
-        or_gate = OrGateComponent(
-            "OR-Gate", x=200, y=150, width=60, height=50, view=self.view, label="OR",
-            connections=[
-                (QPointF(-10, 15), QPointF(30, 15)),
-                (QPointF(-10, 35), QPointF(30, 35)),
-                (QPointF(60, 25), QPointF(70, 25))
-            ]
-        )
-        
-        and_gate = AndGateComponentRotated90(
-            "AND-Gate", x=200, y=150, width=75, height=40, view=self.view, label="AND",
-            connections=[
-                (QPointF(-10, 15), QPointF(30, 15)),
-                (QPointF(-10, 35), QPointF(30, 35)),
-                (QPointF(60, 25), QPointF(70, 25))
-            ]
-        )
-        and_gate.setScale(0.95)
-        
-        chip7408 = Chip7408Component(self, x=50, y=50, width=200, height=100, view=self.view,
-        resizable_horizontal=False)
+        chip7408 = Chip7408Component(self,
+        xpos   =  50,
+        ypos   =  50,
+        width  = 200,
+        height = 100,
+        degree =   0,
+        view   = self.view,
+        scene  = self.scene)
         chip7408.setScale(0.95)
-        
-        chip7400 = Chip7400Component(self, x=50, y=150, width=200, height=100, view=self.view,
-        resizable_horizontal=False)
-        chip7400.setScale(0.95)
-        
-        self.scene.addItem(and_gate)
-        self.scene.addItem(lamp)
-        self.scene.addItem(battery)
-        self.scene.addItem(wire1)
-        self.scene.addItem(and_gate2)
-        self.scene.addItem(or_gate)
-        self.scene.addItem(and_gate)
-        
         self.scene.addItem(chip7408)
-        self.scene.addItem(chip7400)
+        
+        testing = 0
+        # Bauteile mit individuellen Beschriftungen und Verankerungen hinzufügen
+        if testing == 1:
+            and_gate = DraggableComponentFormDesigner(
+                "AND-Gate", x=100, y=100, view=self.view, label="AND",
+                connections=[
+                    (QPointF(-10, 10), QPointF( 0, 10)),    # Linke obere Verankerung
+                    (QPointF(-10, 30), QPointF( 0, 30)),    # Linke untere Verankerung
+                    (QPointF( 50, 20), QPointF(60, 20))     # Rechte Verankerung
+                ]
+            )
+            
+            lamp = DraggableComponentFormDesigner(
+                "Lamp", x=200, y=200, view=self.view, label="LED",
+                connections=[
+                    (QPointF(-10, 20), QPointF( 0, 20)),    # Linke Verankerung
+                    (QPointF( 50, 20), QPointF(60, 20))     # Rechte Verankerung
+                ]
+            )
+            
+            battery = DraggableComponentFormDesigner(
+                "Battery", x=300, y=300, view=self.view, label="SRC",
+                connections=[
+                    (QPointF(-10, 20), QPointF( 0, 20)),    # Linke Verankerung
+                    (QPointF( 50, 20), QPointF(60, 20))     # Rechte Verankerung
+                ]
+            )
+            
+            wire1 = DraggableComponent(
+                "Wire1", x=200, y=100, width=100, height=2, view=self.view,
+                connections=[
+                    (QPointF(  0,0), QPointF(  0,0)),
+                    (QPointF(100,0), QPointF(100,0))
+                ]
+            )
+            
+            and_gate2 = AndGateComponent(
+                "AND-Gate", x=100, y=100, width=75, height=40, view=self.view, label="AND",
+                connections=[
+                    (QPointF(-10, 15), QPointF(0, 15)),
+                    (QPointF(-10, 35), QPointF(0, 35)),
+                    (QPointF(60, 25), QPointF(70, 25))
+                ]
+            )
+
+            or_gate = OrGateComponent(
+                "OR-Gate", x=200, y=150, width=60, height=50, view=self.view, label="OR",
+                connections=[
+                    (QPointF(-10, 15), QPointF(30, 15)),
+                    (QPointF(-10, 35), QPointF(30, 35)),
+                    (QPointF(60, 25), QPointF(70, 25))
+                ]
+            )
+            
+            and_gate = AndGateComponentRotated270(
+                "AND-Gate", x=200, y=150, width=75, height=40, view=self.view, label="AND",
+                connections=[
+                    (QPointF(-10, 15), QPointF(30, 15)),
+                    (QPointF(-10, 35), QPointF(30, 35)),
+                    (QPointF(60, 25), QPointF(70, 25))
+                ]
+            )
+            and_gate.setScale(0.95)
+            
+            #chip7408 = Chip7408Component(self, x=50, y=50, width=200, height=100, view=self.view, scene=self.scene)
+            #chip7408.setScale(0.95)
+            
+            #chip7400 = Chip7400Component(self, x=50, y=150, width=200, height=100, view=self.view)
+            #chip7400.setScale(0.95)
+            
+            self.scene.addItem(and_gate)
+            self.scene.addItem(lamp)
+            self.scene.addItem(battery)
+            self.scene.addItem(wire1)
+            self.scene.addItem(and_gate2)
+            self.scene.addItem(or_gate)
+            self.scene.addItem(and_gate)
+        
+        #self.scene.addItem(chip7408)
+        #self.scene.addItem(chip7400)
 
 class GradientButton(QPushButton):
     def __init__(self, text, parent=None):
@@ -19315,7 +20777,7 @@ class ClickableImage(QPushButton):
         self.setMaximumSize(110, 30)
         
         self.setStyleSheet("border:none;font-weight:bold;")
-        self.setText(_("Donate"))
+        self.setText(_str("Donate"))
         
         self.clicked.connect(self.on_button_click)
         
@@ -19323,7 +20785,7 @@ class ClickableImage(QPushButton):
     
     def on_button_click(self):
         DebugPrint("jjjj")
-        html_code = _("paypaldonate")
+        html_code = _str("paypaldonate")
         with open("temp_form.html", "w") as file:
             file.write(html_code)
         webbrowser.open("temp_form.html")
@@ -19409,36 +20871,38 @@ class CustomMenuBar(QMenuBar):
         self.setContentsMargins(0,0,0,0)
         self.parent = parent
         
+        ctrl_n = _str("Ctrl+N")
+        
         self.menu_list = [
-            [_("&File"),
+            [_str("&File"),
                 [
-                    [_("New Help")      , 1, "Ctrl+N", self.parent.menu_file_clicked_new_help   ],
-                    [_("New dBase")     , 1, "Ctrl+N", self.parent.menu_file_clicked_new_dbase   ],
-                    [_("New Pascal")    , 1, "Ctrl+N", self.parent.menu_file_clicked_new_pascal   ],
-                    [_("New C/C++")     , 1, "Ctrl+N", self.parent.menu_file_clicked_new_cpp   ],
-                    [_("New Java")      , 1, "Ctrl+N", self.parent.menu_file_clicked_new_java   ],
-                    [_("New JavaScript"), 1, "Ctrl+N", self.parent.menu_file_clicked_new_javascript   ],
-                    [_("New Python")    , 1, "Ctrl+N", self.parent.menu_file_clicked_new_python   ],
-                    [_("New Fortran")   , 1, "Ctrl+N", self.parent.menu_file_clicked_new_fortran   ],
-                    [_("New Prolog")    , 1, "Ctrl+N", self.parent.menu_file_clicked_new_prolog   ],
-                    [_("New LISP")      , 1, "Ctrl+N", self.parent.menu_file_clicked_new_lisp   ],
+                    [_str("New Help")      , 1, ctrl_n, self.parent.menu_file_clicked_new_help        ],
+                    [_str("New dBase")     , 1, ctrl_n, self.parent.menu_file_clicked_new_dbase       ],
+                    [_str("New Pascal")    , 1, ctrl_n, self.parent.menu_file_clicked_new_pascal      ],
+                    [_str("New C/C++")     , 1, ctrl_n, self.parent.menu_file_clicked_new_cpp         ],
+                    [_str("New Java")      , 1, ctrl_n, self.parent.menu_file_clicked_new_java        ],
+                    [_str("New JavaScript"), 1, ctrl_n, self.parent.menu_file_clicked_new_javascript  ],
+                    [_str("New Python")    , 1, ctrl_n, self.parent.menu_file_clicked_new_python      ],
+                    [_str("New Fortran")   , 1, ctrl_n, self.parent.menu_file_clicked_new_fortran     ],
+                    [_str("New Prolog")    , 1, ctrl_n, self.parent.menu_file_clicked_new_prolog      ],
+                    [_str("New LISP")      , 1, ctrl_n, self.parent.menu_file_clicked_new_lisp        ],
                     #
-                    [_("Open")          , 0, "Ctrl+O", self.parent.menu_file_clicked_open  ],
-                    [_("Save")          , 0, "Ctrl+S", self.parent.menu_file_clicked_save  ],
-                    [_("Save as...")    , 0, ""      , self.parent.menu_file_clicked_saveas],
-                    [_("Exit")          , 0, "Ctrl+X", self.parent.menu_file_clicked_exit  ]
+                    [_str("Open")          , 0, "Ctrl+O", self.parent.menu_file_clicked_open  ],
+                    [_str("Save")          , 0, "Ctrl+S", self.parent.menu_file_clicked_save  ],
+                    [_str("Save as...")    , 0, ""      , self.parent.menu_file_clicked_saveas],
+                    [_str("Exit")          , 0, "Ctrl+X", self.parent.menu_file_clicked_exit  ]
                 ]
             ],
-            [_("&Edit"),
+            [_str("&Edit"),
                 [
-                    [_("Undo")     , 0, ""      , self.parent.menu_edit_clicked_undo     ],
-                    [_("Redo")     , 0, ""      , self.parent.menu_edit_clicked_redo     ],
-                    [_("Clear All"), 0, "Ctrl+0", self.parent.menu_edit_clicked_clearall ]
+                    [_str("Undo")     , 0, ""      , self.parent.menu_edit_clicked_undo     ],
+                    [_str("Redo")     , 0, ""      , self.parent.menu_edit_clicked_redo     ],
+                    [_str("Clear All"), 0, "Ctrl+0", self.parent.menu_edit_clicked_clearall ]
                 ]
             ],
-            [_("&Help"),
+            [_str("&Help"),
                 [
-                    [_("About..."), 0, "F1", self.parent.menu_help_clicked_about ]
+                    [_str("About..."), 0, "F1", self.parent.menu_help_clicked_about ]
                 ]
             ]
         ]
@@ -19471,9 +20935,9 @@ class FileWatcherGUI(QDialog):
         # Alle Qt-Warnungen stummschalten
         QLoggingCategory.setFilterRules("*.debug=false\n*.warning=false")
         
-        genv.css_menu_item_style  = _("css_menu_item_style")
-        genv.css_menu_label_style = _("css_menu_label_style")
-        genv.css_menu_item        = _("css_menu_item")
+        genv.css_menu_item_style  = _css("css_menu_item_style")
+        genv.css_menu_label_style = _css("css_menu_label_style")
+        genv.css_menu_item        = _css("css_menu_item")
         
         self.font = QFont(genv.v__app__font, 10)
         self.setFont(self.font)
@@ -19532,7 +20996,7 @@ class FileWatcherGUI(QDialog):
             genv.help_dialog.setAttribute(Qt.WA_DeleteOnClose, True)
         
         elif event.key() == Qt.Key_Escape:
-            exitBox = myExitDialog(_("Exit Dialog"))
+            exitBox = myExitDialog(_str("Exit Dialog"))
             exitBox.exec_()
         elif event.key() == Qt.Key_Enter or event.key() == Qt.Key_Return:
             if self.worker_hasFocus == True:
@@ -19766,7 +21230,7 @@ class FileWatcherGUI(QDialog):
         #
         pro_name = name
         if state == 1:
-            pro_name += "\t" + _("Project")
+            pro_name += "\t" + _str("Project")
         
         self.menu_label = QLabel(pro_name)
         self.menu_label.setContentsMargins(0,0,0,0)
@@ -19795,18 +21259,18 @@ class FileWatcherGUI(QDialog):
             DebugPrint(f"Item text: {item_text}")
             # Context menu for tree items
             menu = QMenu()
-            menu.setStyleSheet(_("css_menu_button"))
+            menu.setStyleSheet(_css("css_menu_button"))
             
-            action1 = QAction(_("Add Topic"), self)
-            action2 = QAction(_("Add Sub Topic"), self)
-            action3 = QAction(_("Rename Topic"), self)
+            action1 = QAction(_str("Add Topic"), self)
+            action2 = QAction(_str("Add Sub Topic"), self)
+            action3 = QAction(_str("Rename Topic"), self)
             #
-            action4 = QAction(_("Move Up"), self)
-            action5 = QAction(_("Move Down"), self)
-            action6 = QAction(_("Move Left"), self)
-            action7 = QAction(_("Move Right"), self)
+            action4 = QAction(_str("Move Up"), self)
+            action5 = QAction(_str("Move Down"), self)
+            action6 = QAction(_str("Move Left"), self)
+            action7 = QAction(_str("Move Right"), self)
             #
-            action8 = QAction(_("Delete"), self)
+            action8 = QAction(_str("Delete"), self)
             
             menu.addAction(action1)
             menu.addAction(action2)
@@ -20053,7 +21517,7 @@ class FileWatcherGUI(QDialog):
         self.tool_bar = QToolBar()
         #self.tool_bar.hide()
         self.tool_bar.setMinimumHeight(26)
-        self.tool_bar.setStyleSheet(_(genv.toolbar_css))
+        self.tool_bar.setStyleSheet(_css(genv.toolbar_css))
         self.tool_bar.setMaximumHeight(32)
         self.tool_bar.setContentsMargins(0,0,0,0)
         
@@ -20099,23 +21563,23 @@ class FileWatcherGUI(QDialog):
         self.side_widget.setContentsMargins(0,0,0,0)
         self.side_scroll.setContentsMargins(0,0,0,0)
         
-        self.side_btn0  = myIconButton(self,  0, _("Help")      , _("Help Authoring for/with:\no doxygen\no HelpNDoc"))
-        self.side_btn1  = myIconButton(self,  1, _("dBASE")     , _("dBASE data base programming\nlike in the old days...\nbut with SQLite -- dBase keep alive !"))
-        self.side_btn2  = myIconButton(self,  2, _("Pascal")    , _("Pascal old school programming\no Delphi\no FPC"))
-        self.side_btn3  = myIconButton(self,  3, _("ISO C")     , _("C / C++ embeded programming\nor cross platform"))
-        self.side_btn4  = myIconButton(self,  4, _("Java")      , _("Java modern cross programming\nfor any device"))
-        self.side_btn5  = myIconButton(self,  5, _("JavaScript"), _("JavaScript programming"))
-        self.side_btn6  = myIconButton(self,  6, _("Python")    , _("Python modern GUI programming\nlets rock AI\nand TensorFlow"))
-        self.side_btn7  = myIconButton(self,  7, _("Prolog")    , _("Prolog - logical programming."))
-        self.side_btn8  = myIconButton(self,  8, _("Fortran")   , _("Fortran old school"))
-        self.side_btn9  = myIconButton(self,  9, _("LISP")      , _("LISP traditional programming\nultimate old school"))
-        self.side_btn10 = myIconButton(self, 10, _("BASIC")     , _("Beginner programmer"))
+        self.side_btn0  = myIconButton(self,  0, _str("Help")      , _str("Help Authoring for/with:\no doxygen\no HelpNDoc"))
+        self.side_btn1  = myIconButton(self,  1, _str("dBASE")     , _str("dBASE data base programming\nlike in the old days...\nbut with SQLite -- dBase keep alive !"))
+        self.side_btn2  = myIconButton(self,  2, _str("Pascal")    , _str("Pascal old school programming\no Delphi\no FPC"))
+        self.side_btn3  = myIconButton(self,  3, _str("ISO C")     , _str("C / C++ embeded programming\nor cross platform"))
+        self.side_btn4  = myIconButton(self,  4, _str("Java")      , _str("Java modern cross programming\nfor any device"))
+        self.side_btn5  = myIconButton(self,  5, _str("JavaScript"), _str("JavaScript programming"))
+        self.side_btn6  = myIconButton(self,  6, _str("Python")    , _str("Python modern GUI programming\nlets rock AI\nand TensorFlow"))
+        self.side_btn7  = myIconButton(self,  7, _str("Prolog")    , _str("Prolog - logical programming."))
+        self.side_btn8  = myIconButton(self,  8, _str("Fortran")   , _str("Fortran old school"))
+        self.side_btn9  = myIconButton(self,  9, _str("LISP")      , _str("LISP traditional programming\nultimate old school"))
+        self.side_btn10 = myIconButton(self, 10, _str("BASIC")     , _str("Beginner programmer"))
         #
-        self.side_btn11 = myIconButton(self, 11, _("PE-Win32")  , _("Microsoft Windows PE"))
-        self.side_btn12 = myIconButton(self, 12, _("ELF-Linux") , _("ELF-Linux"))
-        self.side_btn13 = myIconButton(self, 13, _("Console")   , _("Your classical style of commands"))
+        self.side_btn11 = myIconButton(self, 11, _str("PE-Win32")  , _str("Microsoft Windows PE"))
+        self.side_btn12 = myIconButton(self, 12, _str("ELF-Linux") , _str("ELF-Linux"))
+        self.side_btn13 = myIconButton(self, 13, _str("Console")   , _str("Your classical style of commands"))
         #
-        self.side_btn14 = myIconButton(self, 14, _("Locales"), _(""
+        self.side_btn14 = myIconButton(self, 14, _str("Locales"), _str(""
             + "Localization your Application with different supported languages\n"
             + "around the World.\n"
             + "Used by tools like msgfmt - the Unix Tool for generationg .mo files.\n"))
@@ -20129,7 +21593,7 @@ class FileWatcherGUI(QDialog):
         self.side_btn21 = myIconButton(self, 21, "Squid", "Configure Squid")
         self.side_btn22 = myIconButton(self, 22, "Electro", "electronic simulations")
         self.side_btn23 = myIconButton(self, 23, "C-64", "The most popular Commodore C-64\from int the 1980er")
-        self.side_btn24 = myIconButton(self, 24, _("Settings")   , _("Settings for this Application\n\n"))
+        self.side_btn24 = myIconButton(self, 24, _str("Settings")   , _str("Settings for this Application\n\n"))
         
         self.side_btn0.bordercolor = "lime"
         self.side_btn0.state       = 2
@@ -20143,7 +21607,7 @@ class FileWatcherGUI(QDialog):
         self.side_scroll.setWidgetResizable(True)
         self.side_scroll.setMinimumWidth(130)
         self.side_scroll.setMaximumWidth(130)
-        self.side_scroll.setStyleSheet(_("ScrollBarCSS"))
+        self.side_scroll.setStyleSheet(_css("ScrollBarCSS"))
         self.side_scroll.setWidget(self.side_widget)
         
         #self.main_content_layout.addWidget(self.side_scroll)
@@ -20191,7 +21655,7 @@ class FileWatcherGUI(QDialog):
         
         # front view
         self.help_tabs = QTabWidget()
-        self.help_tabs.setStyleSheet(_(genv.css_tabs))
+        self.help_tabs.setStyleSheet(_css(genv.css_tabs))
         self.help_tabs.setMinimumWidth(800)
         
         # help
@@ -20205,13 +21669,13 @@ class FileWatcherGUI(QDialog):
         self.tab5   = QWidget()
         
         # add tabs
-        self.help_tabs.addTab(self.tab0_0, _("Help Project"))
-        self.help_tabs.addTab(self.tab1_0, _("Pre-/Post Actions"))
-        self.help_tabs.addTab(self.tab3,   _("DoxyGen"))
-        self.help_tabs.addTab(self.tab5,   _("HelpNDoc"))
-        self.help_tabs.addTab(self.tab4,   _("Content"))
+        self.help_tabs.addTab(self.tab0_0, _str("Help Project"))
+        self.help_tabs.addTab(self.tab1_0, _str("Pre-/Post Actions"))
+        self.help_tabs.addTab(self.tab3,   _str("DoxyGen"))
+        self.help_tabs.addTab(self.tab5,   _str("HelpNDoc"))
+        self.help_tabs.addTab(self.tab4,   _str("Content"))
         
-        self.help_tabs.addTab(genv.servers_scroll, _("Servers"))
+        self.help_tabs.addTab(genv.servers_scroll, _str("Servers"))
         
         self.tab_widget_tabs = QTabWidget(self.tab4)
         #self.tab_widget_tabs.setMinimumWidth(830)
@@ -20224,11 +21688,11 @@ class FileWatcherGUI(QDialog):
         
         self.tab_html   = QWidget()
         
-        self.tab_widget_tabs.addTab(self.tab2, _("Topics"))
+        self.tab_widget_tabs.addTab(self.tab2, _str("Topics"))
         self.tab_widget_tabs.addTab(self.tab_html, "HTML"  )
         
         
-        self.help_tabs.addTab(self.tab0_0, _("Help Project"))
+        self.help_tabs.addTab(self.tab0_0, _str("Help Project"))
         self.front_content_layout.addWidget(self.help_tabs)
         self.front_content_layout.setSpacing(0)
         self.front_content_layout.addStretch()
@@ -20280,7 +21744,7 @@ class FileWatcherGUI(QDialog):
         list_layout_a.addLayout(list_layout_1)
         
         genv.list_widget_1.setFocusPolicy(Qt.NoFocus)
-        genv.list_widget_1.setStyleSheet(_(genv.css__widget_item))
+        genv.list_widget_1.setStyleSheet(_css(genv.css__widget_item))
         genv.list_widget_1.setMinimumHeight(300)
         genv.list_widget_1.setMaximumWidth(200)
         
@@ -20293,10 +21757,10 @@ class FileWatcherGUI(QDialog):
         genv.list_widget_1.itemClicked.connect(self.handle_item_click_1)
         list_layout_1.addWidget(genv.list_widget_1)
         
-        genv.scrollview_1 = customScrollView_1(self, 1, 0, _("Project"))
-        genv.scrollview_2 = customScrollView_2(self, 2, 0, _("Mode"));     genv.scrollview_2.hide()
-        genv.scrollview_3 = customScrollView_3(self, 3, 0, _("Output"));   genv.scrollview_3.hide()
-        genv.scrollview_4 = customScrollView_4(self, 4, 0, _("Diagrams")); genv.scrollview_4.hide()
+        genv.scrollview_1 = customScrollView_1(self, 1, 0, _str("Project"))
+        genv.scrollview_2 = customScrollView_2(self, 2, 0, _str("Mode"));     genv.scrollview_2.hide()
+        genv.scrollview_3 = customScrollView_3(self, 3, 0, _str("Output"));   genv.scrollview_3.hide()
+        genv.scrollview_4 = customScrollView_4(self, 4, 0, _str("Diagrams")); genv.scrollview_4.hide()
         
         list_layout_1.addWidget(genv.scrollview_1)
         list_layout_1.addWidget(genv.scrollview_2)
@@ -20329,7 +21793,7 @@ class FileWatcherGUI(QDialog):
         list_layout_b.addLayout(list_layout_2)
         
         genv.list_widget_2.setFocusPolicy(Qt.NoFocus)
-        genv.list_widget_2.setStyleSheet(_(genv.css__widget_item))
+        genv.list_widget_2.setStyleSheet(_css(genv.css__widget_item))
         genv.list_widget_2.setMinimumHeight(300)
         genv.list_widget_2.setMaximumWidth(200)
         
@@ -20386,7 +21850,7 @@ class FileWatcherGUI(QDialog):
         genv.scrollers[17] = genv.scrollview_22
         
         genv.sv_help = customScrollView_help()
-        genv.sv_help.setStyleSheet(_("ScrollBarCSS"))
+        genv.sv_help.setStyleSheet(_css("ScrollBarCSS"))
         
         vl = QVBoxLayout()
         vl.setSpacing(0)
@@ -20412,11 +21876,11 @@ class FileWatcherGUI(QDialog):
         DebugPrint("---> " + self.tab2_file_path)
         
         self.tab2_tree_view = QTreeView()
-        self.tab2_tree_view.setStyleSheet(_(genv.css_model_header) + _("ScrollBarCSS"))
+        self.tab2_tree_view.setStyleSheet(_css(genv.css_model_header) + _css("ScrollBarCSS"))
         self.tab2_tree_view.clicked.connect(self.on_treeview_clicked)
         
         self.tab2_tree_model = QStandardItemModel()
-        self.tab2_tree_model.setHorizontalHeaderLabels([_("Topic name"), "ID", "Status", "Help icon", "In Build"])
+        self.tab2_tree_model.setHorizontalHeaderLabels([_str("Topic name"), "ID", "Status", "Help icon", "In Build"])
         self.tab2_tree_model.dataChanged.connect(self.on_data_changed)
         self.tab2_tree_view.setModel(self.tab2_tree_model)
         
@@ -20427,39 +21891,39 @@ class FileWatcherGUI(QDialog):
         self.tab2_tree_view.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tab2_tree_view.customContextMenuRequested.connect(self.open_context_topics_menu)
         
-        self.tab2_pushbuttonAdd = QPushButton(_("Add"))
+        self.tab2_pushbuttonAdd = QPushButton(_str("Add"))
         self.tab2_pushbuttonAdd.setMinimumHeight(32)
-        self.tab2_pushbuttonAdd.setStyleSheet(_(genv.css_button_style))
+        self.tab2_pushbuttonAdd.setStyleSheet(_css(genv.css_button_style))
         
-        self.tab2_pushbuttonAddSub = QPushButton(_("Add Sub Topic"))
+        self.tab2_pushbuttonAddSub = QPushButton(_str("Add Sub Topic"))
         self.tab2_pushbuttonAddSub.setMinimumHeight(32)
-        self.tab2_pushbuttonAddSub.setStyleSheet(_(genv.css_button_style))
+        self.tab2_pushbuttonAddSub.setStyleSheet(_css(genv.css_button_style))
         
         self.topics_layout = QVBoxLayout()
         
-        self.tab2_pushbuttonRename    = QPushButton(_("Rename Topic"))
+        self.tab2_pushbuttonRename    = QPushButton(_str("Rename Topic"))
         self.tab2_pushbuttonRename.setMinimumHeight(32)
-        self.tab2_pushbuttonRename.setStyleSheet(_(genv.css_button_style))
+        self.tab2_pushbuttonRename.setStyleSheet(_css(genv.css_button_style))
         
-        self.tab2_pushbuttonMoveUp    = QPushButton(_("Move Up"))
+        self.tab2_pushbuttonMoveUp    = QPushButton(_str("Move Up"))
         self.tab2_pushbuttonMoveUp.setMinimumHeight(32)
-        self.tab2_pushbuttonMoveUp.setStyleSheet(_(genv.css_button_style))
+        self.tab2_pushbuttonMoveUp.setStyleSheet(_css(genv.css_button_style))
         
-        self.tab2_pushbuttonMoveDown  = QPushButton(_("Move Down"))
+        self.tab2_pushbuttonMoveDown  = QPushButton(_str("Move Down"))
         self.tab2_pushbuttonMoveDown.setMinimumHeight(32)
-        self.tab2_pushbuttonMoveDown.setStyleSheet(_(genv.css_button_style))
+        self.tab2_pushbuttonMoveDown.setStyleSheet(_css(genv.css_button_style))
         
-        self.tab2_pushbuttonMoveLeft  = QPushButton(_("Move Left"))
+        self.tab2_pushbuttonMoveLeft  = QPushButton(_str("Move Left"))
         self.tab2_pushbuttonMoveLeft.setMinimumHeight(32)
-        self.tab2_pushbuttonMoveLeft.setStyleSheet(_(genv.css_button_style))
+        self.tab2_pushbuttonMoveLeft.setStyleSheet(_css(genv.css_button_style))
         
-        self.tab2_pushbuttonMoveRight = QPushButton(_("Move Right"))
+        self.tab2_pushbuttonMoveRight = QPushButton(_str("Move Right"))
         self.tab2_pushbuttonMoveRight.setMinimumHeight(32)
-        self.tab2_pushbuttonMoveRight.setStyleSheet(_(genv.css_button_style))
+        self.tab2_pushbuttonMoveRight.setStyleSheet(_css(genv.css_button_style))
         
-        self.tab2_pushbuttonRemove    = QPushButton(_("Delete"))
+        self.tab2_pushbuttonRemove    = QPushButton(_str("Delete"))
         self.tab2_pushbuttonRemove.setMinimumHeight(32)
-        self.tab2_pushbuttonRemove.setStyleSheet(_(genv.css_button_style))
+        self.tab2_pushbuttonRemove.setStyleSheet(_css(genv.css_button_style))
         
         top_array = [
             self.tab2_pushbuttonAdd,
@@ -20531,7 +21995,7 @@ class FileWatcherGUI(QDialog):
         font = QFont(genv.v__app__font, 11)
         font.setPointSize(11)
         #
-        self.tab0_fold_text1 = QLabel(_("Project:"))
+        self.tab0_fold_text1 = QLabel(_str("Project:"))
         self.tab0_fold_text1.setMaximumWidth(84)
         self.tab0_fold_text1.setFont(font)
         
@@ -20570,8 +22034,8 @@ class FileWatcherGUI(QDialog):
         #
         lyfont = QFont("Arial",10)
         
-        update = QLabel(_("search for updates"))
-        server = QLabel(_("connect to server"))
+        update = QLabel(_str("search for updates"))
+        server = QLabel(_str("connect to server"))
         
         update.setFont(lyfont)
         server.setFont(lyfont)
@@ -20644,7 +22108,7 @@ class FileWatcherGUI(QDialog):
         
         # ScrollArea
         scroll_area = QScrollArea()
-        scroll_area.setStyleSheet(_("ScrollBarCSS"))
+        scroll_area.setStyleSheet(_css("ScrollBarCSS"))
         scroll_area.setWidgetResizable(True)
         scro_layout.addWidget(scroll_area)
         
@@ -20694,7 +22158,7 @@ class FileWatcherGUI(QDialog):
         self.tab0_path = QDir.homePath()
         
         self.tab0_help_list1   = QListWidget()
-        self.tab0_help_list1.setStyleSheet(_("ScrollBarCSS"))
+        self.tab0_help_list1.setStyleSheet(_css("ScrollBarCSS"))
         self.tab0_help_list1.setMinimumWidth(320)
         self.tab0_help_list1.setMaximumWidth(320)
         self.tab0_help_list1.setMaximumHeight(150)
@@ -20703,7 +22167,7 @@ class FileWatcherGUI(QDialog):
         self.tab0_help_list1.font().setBold(True)
         self.tab0_help_list1.itemClicked.connect(self.tab0_help_list1_item_click)
         
-        self.list_blue_item1 = QListWidgetItem(_("Page Template:"))
+        self.list_blue_item1 = QListWidgetItem(_str("Page Template:"))
         self.list_blue_item1.setBackground(QColor("navy"))
         self.list_blue_item1.setForeground(QColor("yellow"))
         self.list_blue_item1.setFlags(
@@ -20711,15 +22175,15 @@ class FileWatcherGUI(QDialog):
         self.tab0_help_list1.addItem(self.list_blue_item1)
         
         liste = [
-            [_("HTML WebSite Template")],
-            [_("PDF  Portable Docuement Format")]
+            [_str("HTML WebSite Template")],
+            [_str("PDF  Portable Docuement Format")]
         ]
         for item in liste:
             self.list_item1 = QListWidgetItem(_(item[0]))
             self.list_item1.setFont(self.tab0_help_list1.font())
             self.tab0_help_list1.addItem(self.list_item1)
         
-        self.list_blue_item2 = QListWidgetItem(_("empty"))
+        self.list_blue_item2 = QListWidgetItem(_str("empty"))
         self.list_blue_item2.setBackground(QColor("white"))
         self.list_blue_item2.setForeground(QColor("white"))
         self.list_blue_item2.setFlags(
@@ -20728,7 +22192,7 @@ class FileWatcherGUI(QDialog):
         
         ###
         self.tab0_help_list2   = QListWidget()
-        self.tab0_help_list2.setStyleSheet(_("ScrollBarCSS"))
+        self.tab0_help_list2.setStyleSheet(_css("ScrollBarCSS"))
         self.tab0_help_list2.setMinimumWidth(320)
         self.tab0_help_list2.setMaximumWidth(320)
         self.tab0_help_list2.setIconSize(QSize(34,34))
@@ -20736,7 +22200,7 @@ class FileWatcherGUI(QDialog):
         self.tab0_help_list2.font().setBold(True)
         self.tab0_help_list2.itemClicked.connect(self.tab0_help_list2_item_click)
         
-        self.list_blue_item3 = QListWidgetItem(_("Project Template:"))
+        self.list_blue_item3 = QListWidgetItem(_str("Project Template:"))
         self.list_blue_item3.setBackground(QColor("navy"))
         self.list_blue_item3.setForeground(QColor("yellow"))
         self.list_blue_item3.setFlags(
@@ -20744,10 +22208,10 @@ class FileWatcherGUI(QDialog):
         self.tab0_help_list2.addItem(self.list_blue_item3)
         
         liste = [
-            [_("Empty Project")         , os.path.join("emptyproject" + genv.v__app__img_ext__) ],
-            [_("Recipe")                , os.path.join("recipe"       + genv.v__app__img_ext__) ],
-            [_("API Project")           , os.path.join("api"          + genv.v__app__img_ext__) ],
-            [_("Software Documentation"), os.path.join("software"     + genv.v__app__img_ext__) ],
+            [_str("Empty Project")         , os.path.join("emptyproject" + genv.v__app__img_ext__) ],
+            [_str("Recipe")                , os.path.join("recipe"       + genv.v__app__img_ext__) ],
+            [_str("API Project")           , os.path.join("api"          + genv.v__app__img_ext__) ],
+            [_str("Software Documentation"), os.path.join("software"     + genv.v__app__img_ext__) ],
         ]
         for item in liste:
             self.list_item2 = QListWidgetItem(_(item[0]))
@@ -20757,7 +22221,7 @@ class FileWatcherGUI(QDialog):
         
         ###
         self.tab0_help_list3   = QListWidget()
-        self.tab0_help_list3.setStyleSheet(_("ScrollBarCSS"))
+        self.tab0_help_list3.setStyleSheet(_css("ScrollBarCSS"))
         self.tab0_help_list3.setMinimumWidth(320)
         self.tab0_help_list3.setMaximumWidth(320)
         self.tab0_help_list3.setIconSize(QSize(34,34))
@@ -20765,7 +22229,7 @@ class FileWatcherGUI(QDialog):
         self.tab0_help_list3.font().setBold(True)
         self.tab0_help_list3.itemDoubleClicked.connect(self.tab0_help_list3_item_click)
         
-        self.list_blue_item3 = QListWidgetItem(_("Projects:"))
+        self.list_blue_item3 = QListWidgetItem(_str("Projects:"))
         self.list_blue_item3.setBackground(QColor("navy"))
         self.list_blue_item3.setForeground(QColor("yellow"))
         self.list_blue_item3.setFlags(
@@ -20806,8 +22270,8 @@ class FileWatcherGUI(QDialog):
         # ------------------
         # left, top part ...
         # ------------------
-        self.tab1_fold_text = QLabel(_("Directory:"), self.tab1_0)
-        self.tab1_file_text = QLabel(_("File:"), self.tab1_0)
+        self.tab1_fold_text = QLabel(_str("Directory:"), self.tab1_0)
+        self.tab1_file_text = QLabel(_str("File:"), self.tab1_0)
         #
         self.tab1_left_layout.addWidget(self.tab1_fold_text)
         
@@ -20834,7 +22298,7 @@ class FileWatcherGUI(QDialog):
         self.tab1_file_tree = QTreeView()
         self.tab1_file_list = QListView()
         
-        self.tab1_file_tree.setStyleSheet(_(genv.css_model_header) + _("ScrollBarCSS"))
+        self.tab1_file_tree.setStyleSheet(_css(genv.css_model_header) + _css("ScrollBarCSS"))
         
         self.tab1_file_tree.setModel(self.tab1_dir_model)
         self.tab1_file_list.setModel(self.tab1_file_model)
@@ -20851,7 +22315,7 @@ class FileWatcherGUI(QDialog):
         
         # Eingabezeile für den Pfad
         self.tab1_path_lineEdit = QLineEdit(self.tab1_0)
-        self.tab1_path_lineEdit.setStyleSheet(_(genv.css_button_style))
+        self.tab1_path_lineEdit.setStyleSheet(_css(genv.css_button_style))
         self.tab1_path_lineButton = QPushButton("...")
         self.tab1_path_lineButton.setMinimumWidth(28)
         self.tab1_path_lineButton.setMaximumHeight(28)
@@ -20866,19 +22330,19 @@ class FileWatcherGUI(QDialog):
         
         # Start und Stop Buttons
         self.tab1_startButton = QPushButton("Start", self.tab1_0)
-        self.tab1_startButton.setStyleSheet(_(genv.css_button_style))
+        self.tab1_startButton.setStyleSheet(_css(genv.css_button_style))
         self.tab1_startButton.clicked.connect(self.startWatching)
         self.tab1_left_layout.addWidget(self.tab1_startButton)
         
         self.tab1_stopButton = QPushButton('Stop', self.tab1_0)
-        self.tab1_stopButton.setStyleSheet(_(genv.css_button_style))
+        self.tab1_stopButton.setStyleSheet(_css(genv.css_button_style))
         self.tab1_stopButton.clicked.connect(self.stopWatching)
         self.tab1_left_layout.addWidget(self.tab1_stopButton)
         
         # ComboBox für Zeitangaben
         self.tab1_timeComboBox = QComboBox(self.tab1_0)
         self.tab1_timeComboBox.addItems(["10", "15", "20", "25", "30", "60", "120"])
-        self.tab1_timeComboBox.setStyleSheet(_(genv.css_button_style))
+        self.tab1_timeComboBox.setStyleSheet(_css(genv.css_button_style))
         self.tab1_timeComboBox.setMaximumWidth(49)
         self.tab1_left_layout.addWidget(self.tab1_timeComboBox)
         
@@ -20888,10 +22352,10 @@ class FileWatcherGUI(QDialog):
         
         # mitte Seite
         self.tab1_preActionList = QListWidget(self.tab1_0)
-        self.tab1_preActionList.setStyleSheet(_("ScrollBarCSS"))
-        self.tab1_preActionList_Label  = QLabel(_("Content:"), self.tab1_0)
+        self.tab1_preActionList.setStyleSheet(_css("ScrollBarCSS"))
+        self.tab1_preActionList_Label  = QLabel(_str("Content:"), self.tab1_0)
         self.tab1_preActionList_Editor = QPlainTextEdit()
-        self.tab1_preActionList_Editor.setStyleSheet(_("ScrollBarCSS"))
+        self.tab1_preActionList_Editor.setStyleSheet(_css("ScrollBarCSS"))
         #
         self.tab1_middle_layout.addWidget(self.tab1_preActionList)
         self.tab1_middle_layout.addWidget(self.tab1_preActionList_Label)
@@ -20899,8 +22363,8 @@ class FileWatcherGUI(QDialog):
         
         #
         self.tab1_preActionComboBox = QComboBox(self.tab1_0)
-        self.tab1_preActionComboBox.addItems([_(" Message"), _(" Script"), " URL", " FTP"])
-        self.tab1_preActionComboBox.setStyleSheet(_(css_combobox_style))
+        self.tab1_preActionComboBox.addItems([_str(" Message"), _str(" Script"), " URL", " FTP"])
+        self.tab1_preActionComboBox.setStyleSheet(_css(css_combobox_style))
         self.tab1_timeComboBox.setMaximumWidth(49)
         self.tab1_middle_layout.addWidget(self.tab1_preActionComboBox)
         
@@ -20910,7 +22374,7 @@ class FileWatcherGUI(QDialog):
         self.tab1_pre_layout = QHBoxLayout()
         
         self.tab1_preEditLineText = QLineEdit(self.tab1_0)
-        self.tab1_preEditLineText.setStyleSheet(_(genv.css_button_style))
+        self.tab1_preEditLineText.setStyleSheet(_css(genv.css_button_style))
      
         self.tab1_path_lineButton.setMaximumHeight(28)
         
@@ -20919,14 +22383,14 @@ class FileWatcherGUI(QDialog):
         
         self.tab1_middle_layout.addLayout(self.tab1_pre_layout)
         
-        self.tab1_preAddButton = QPushButton(_("Add"))
-        self.tab1_preAddButton.setStyleSheet(_(genv.css_button_style))
+        self.tab1_preAddButton = QPushButton(_str("Add"))
+        self.tab1_preAddButton.setStyleSheet(_css(genv.css_button_style))
         #
-        self.tab1_preDelButton = QPushButton(_("Delete"))
-        self.tab1_preDelButton.setStyleSheet(_(genv.css_button_style))
+        self.tab1_preDelButton = QPushButton(_str("Delete"))
+        self.tab1_preDelButton.setStyleSheet(_css(genv.css_button_style))
         #            
-        self.tab1_preClrButton = QPushButton(_("Clear All"))
-        self.tab1_preClrButton.setStyleSheet(_(genv.css_button_style))
+        self.tab1_preClrButton = QPushButton(_str("Clear All"))
+        self.tab1_preClrButton.setStyleSheet(_css(genv.css_button_style))
         
         self.tab1_preAddButton.clicked.connect(self.button_clicked_preadd)
         self.tab1_preDelButton.clicked.connect(self.button_clicked_preDel)
@@ -20939,18 +22403,18 @@ class FileWatcherGUI(QDialog):
         
         # rechte Seite
         self.tab1_postActionList = QListWidget(self.tab1_0)
-        self.tab1_postActionList.setStyleSheet(_("ScrollBarCSS"))
-        self.tab1_postActionList_Label  = QLabel(_("Content:"), self.tab1_0)
+        self.tab1_postActionList.setStyleSheet(_css("ScrollBarCSS"))
+        self.tab1_postActionList_Label  = QLabel(_str("Content:"), self.tab1_0)
         self.tab1_postActionList_Editor = QPlainTextEdit()
-        self.tab1_postActionList_Editor.setStyleSheet(_("ScrollBarCSS"))
+        self.tab1_postActionList_Editor.setStyleSheet(_css("ScrollBarCSS"))
         #
         self.tab1_right_layout.addWidget(self.tab1_postActionList)
         self.tab1_right_layout.addWidget(self.tab1_postActionList_Label)
         self.tab1_right_layout.addWidget(self.tab1_postActionList_Editor)
         
         self.tab1_postActionComboBox = QComboBox(self.tab1_0)
-        self.tab1_postActionComboBox.addItems([_(" Message"), _(" Script"), " URL", " FTP"])
-        self.tab1_postActionComboBox.setStyleSheet(_(css_combobox_style))
+        self.tab1_postActionComboBox.addItems([_str(" Message"), _str(" Script"), " URL", " FTP"])
+        self.tab1_postActionComboBox.setStyleSheet(_css(css_combobox_style))
         self.tab1_right_layout.addWidget(self.tab1_postActionComboBox)
         
         self.tab1_postEditLineLabel = QLabel("Text / File:", self.tab1_0)
@@ -20959,19 +22423,19 @@ class FileWatcherGUI(QDialog):
         self.tab1_post_layout = QHBoxLayout()
         
         self.tab1_postEditLineText = QLineEdit(self.tab1_0)
-        self.tab1_postEditLineText.setStyleSheet(_(genv.css_button_style))
+        self.tab1_postEditLineText.setStyleSheet(_css(genv.css_button_style))
         #
         self.tab1_post_layout.addWidget(self.tab1_postEditLineText)
         self.tab1_right_layout.addLayout(self.tab1_post_layout)
         
-        self.tab1_postAddButton = QPushButton(_("Add"))
-        self.tab1_postAddButton.setStyleSheet(_(genv.css_button_style))
+        self.tab1_postAddButton = QPushButton(_str("Add"))
+        self.tab1_postAddButton.setStyleSheet(_css(genv.css_button_style))
         #
-        self.tab1_postDelButton = QPushButton(_("Delete"))
-        self.tab1_postDelButton.setStyleSheet(_(genv.css_button_style))
+        self.tab1_postDelButton = QPushButton(_str("Delete"))
+        self.tab1_postDelButton.setStyleSheet(_css(genv.css_button_style))
         #
-        self.tab1_postClrButton = QPushButton(_("Clear All"))
-        self.tab1_postClrButton.setStyleSheet(_(genv.css_button_style))
+        self.tab1_postClrButton = QPushButton(_str("Clear All"))
+        self.tab1_postClrButton.setStyleSheet(_css(genv.css_button_style))
         
         self.tab1_postAddButton.clicked.connect(self.button_clicked_postadd)
         self.tab1_postDelButton.clicked.connect(self.button_clicked_postDel)
@@ -20989,7 +22453,7 @@ class FileWatcherGUI(QDialog):
         self.page1    = QWebEnginePage(self.profile1, self.webView1)
         
         self.webView1.setPage(self.page1)
-        self.webView1.setHtml(_(genv.html_content), baseUrl = QUrl.fromLocalFile('.'))
+        self.webView1.setHtml(_str(genv.html_content), baseUrl = QUrl.fromLocalFile('.'))
         
         self.tab5_top_layout.addWidget(self.webView1);            
         self.tab0_top_layout.addLayout(self.tab0_left_layout)
@@ -21037,7 +22501,7 @@ class FileWatcherGUI(QDialog):
     def radio_button_toggled(self):
         sender = self.sender()
         if sender.isChecked():
-            showInfo(_("Attention:\nproject properties was changed."))
+            showInfo(_str("Attention:\nproject properties was changed."))
             text = sender.text()
             if text.startswith("C++"):
                 genv.doc_lang = genv.DOC_LANG_CPP
@@ -21052,7 +22516,7 @@ class FileWatcherGUI(QDialog):
             elif text.startswith("Fortran"):
                 genv.doc_lang = genv.DOC_LANG_FORTRAN
             else:
-                showError(_("Error:\nunknown help project language."))
+                showError(_str("Error:\nunknown help project language."))
                 return False
         
         genv.v__app_win.write_config_part()
@@ -21071,7 +22535,7 @@ class FileWatcherGUI(QDialog):
             genv.doc_recursiv = self.findChild(QCheckBox,  "doxygen_project_scan_recursiv")
             
             if not hasattr(genv.doc_logo, "pixmap_name"):
-                showError(_("Error:\ncan not get pixmap name."))
+                showError(_str("Error:\ncan not get pixmap name."))
                 return False
             genv.doc_logo = genv.doc_logo.pixmap_name
             
@@ -21094,7 +22558,7 @@ class FileWatcherGUI(QDialog):
             return False
             
         except PermissionError as e:
-            showError(_("Error:\nyou have no permissions to write config file."))
+            showError(_str("Error:\nyou have no permissions to write config file."))
             return False
             
     def tab0_help_list3_item_click(self, item):
@@ -21105,7 +22569,7 @@ class FileWatcherGUI(QDialog):
                 found = True
                 break
         if not found:
-            showError(_("Error:\nproject name item error."))
+            showError(_str("Error:\nproject name item error."))
             return False
         
         file_path = item.text()
@@ -21127,7 +22591,7 @@ class FileWatcherGUI(QDialog):
                 genv.v__app__config_help.read(genv.v__app__config_ini_help)
         
         except PermissionError:
-            showError(_("Error:\nyou have not enough permissions to read/write files."))
+            showError(_str("Error:\nyou have not enough permissions to read/write files."))
             return False
             
         except configparser.NoSectionError as e:
@@ -21168,8 +22632,8 @@ class FileWatcherGUI(QDialog):
                 item2 = self.tab0_help_list2.item(genv.doc_template + 1)
                 
             except configparser.NoOptionError as e:
-                content = (""
-                + _("Error:\nset default values\n\n")
+                content = (_str(""
+                + "Error:\nset default values\n\n")
                 + "Error: " + str(e) + "\n"
                 + "Details:\n"       + traceback.format_exc())
                 showError(content)
@@ -21201,8 +22665,8 @@ class FileWatcherGUI(QDialog):
                 genv.v__app_win.write_config_part()
                 
             except configparser.NoSectionError as e:
-                content = (""
-                + _("Error:\nset default values\n\n")
+                content = (_str(""
+                + "Error:\nset default values\n\n")
                 + "Error: " + str(e) + "\n"
                 + "Details:\n"       + traceback.format_exc())
                 showError(content)
@@ -21233,7 +22697,7 @@ class FileWatcherGUI(QDialog):
                 #
                 genv.v__app_win.write_config_part()
                 
-            text1 = _("Error:\ncould not found object:\n")
+            text1 = _str("Error:\ncould not found object:\n")
             if genv.doc_framework == genv.DOC_FRAMEWORK_DOXYGEN:
                 if genv.img_doxygen.bordercolor == "lime":
                     self.trigger_mouse_press(genv.img_doxygen)
@@ -21244,7 +22708,7 @@ class FileWatcherGUI(QDialog):
                 self.help_tabs.removeTab(3)
                 self.help_tabs.removeTab(2)
                 self.help_tabs.removeTab(1)
-                self.help_tabs.insertTab(1, self.tab3, _("DoxyGen"))
+                self.help_tabs.insertTab(1, self.tab3, _str("DoxyGen"))
                 self.help_tabs.setCurrentIndex(1)
                 #
                 txt2 = "doxygen_project_name"
@@ -21301,8 +22765,8 @@ class FileWatcherGUI(QDialog):
                 if item1:
                     if not os.path.exists(genv.doc_srcdir):
                         msg = QMessageBox()
-                        msg.setWindowTitle(_("Confirmation"))
-                        msg.setText(_(""
+                        msg.setWindowTitle(_str("Confirmation"))
+                        msg.setText(_str(""
                         + "Error:\nsource dir is not a valid directorie item.\n"
                         + "Either it is not a directory or the path to the\n"
                         + "directory does not exists.\n\n"
@@ -21313,7 +22777,7 @@ class FileWatcherGUI(QDialog):
                         btn_yes = msg.addButton(QMessageBox.Yes)
                         btn_no  = msg.addButton(QMessageBox.No)
                         
-                        msg.setStyleSheet(_("msgbox_css"))
+                        msg.setStyleSheet(_css("msgbox_css"))
                         result = msg.exec_()
                         
                         if result == QMessageBox.Yes:
@@ -21326,7 +22790,7 @@ class FileWatcherGUI(QDialog):
                                 item2.repaint()
                                 #
                             except FileNotFoundError as e:
-                                showError(_("Error:\nsource directory could not be found/created."))
+                                showError(_str("Error:\nsource directory could not be found/created."))
                                 item1.setText(genv.doc_srcdir)
                                 item2.setText(genv.doc_dstdir)
                                 #
@@ -21335,7 +22799,7 @@ class FileWatcherGUI(QDialog):
                                 #
                                 return False
                             except PermissionError as e:
-                                showError(_("Error:\nno permissions to create the source directory."))
+                                showError(_str("Error:\nno permissions to create the source directory."))
                                 item1.setText(genv.doc_srcdir)
                                 item2.setText(genv.doc_dstdir)
                                 #
@@ -21344,7 +22808,7 @@ class FileWatcherGUI(QDialog):
                                 #
                                 return False
                             except Exception as e:
-                                showError(_("Error:\nsource directory could not be created."))
+                                showError(_str("Error:\nsource directory could not be created."))
                                 item1.setText(genv.doc_srcdir)
                                 item2.setText(genv.doc_dstdir)
                                 #
@@ -21354,11 +22818,11 @@ class FileWatcherGUI(QDialog):
                                 return False
                                 
                         elif result == QMessageBox.No:
-                            showError(_("Error:\nuser aborted creeat the directory."))
+                            showError(_str("Error:\nuser aborted creeat the directory."))
                             found = False
                             
                     if (not os.path.isdir(genv.doc_srcdir)) or (os.path.isfile(genv.doc_srcdir)):
-                        showError(_(""
+                        showError(_str(""
                         + "Error:\nsource dir is not a valid directorie item.\n"
                         + "Either it is not a directory or the path to the\n"
                         + "directory does not exists."))
@@ -21378,8 +22842,8 @@ class FileWatcherGUI(QDialog):
                 if item2:
                     if not os.path.exists(genv.doc_dstdir):
                         msg = QMessageBox()
-                        msg.setWindowTitle(_("Confirmation"))
-                        msg.setText(_(""
+                        msg.setWindowTitle(_str("Confirmation"))
+                        msg.setText(_str(""
                         + "Error:\ntarget dir is not a valid directorie item.\n"
                         + "Either it is not a directory or the path to the\n"
                         + "directory does not exists.\n\n"
@@ -21390,7 +22854,7 @@ class FileWatcherGUI(QDialog):
                         btn_yes = msg.addButton(QMessageBox.Yes)
                         btn_no  = msg.addButton(QMessageBox.No)
                         
-                        msg.setStyleSheet(_("msgbox_css"))
+                        msg.setStyleSheet(_css("msgbox_css"))
                         result = msg.exec_()
                         
                         if result == QMessageBox.Yes:
@@ -21398,29 +22862,29 @@ class FileWatcherGUI(QDialog):
                                 os.makedirs  (genv.doc_dstdir, exist_ok=True)
                                 item2.setText(genv.doc_dstdir)
                             except FileNotFoundError as e:
-                                showError(_("Error:\ntarget directory could not be found/created."))
+                                showError(_str("Error:\ntarget directory could not be found/created."))
                                 item1.setText(""); item1.repaint()
                                 item2.setText(""); item2.repaint()
                                 #
                                 return False
                             except PermissionError as e:
-                                showError(_("Error:\nno permissions to create the target directory."))
+                                showError(_str("Error:\nno permissions to create the target directory."))
                                 item1.setText(""); item1.repaint()
                                 item2.setText(""); item2.repaint()
                                 return False
                             except Exception as e:
-                                showError(_("Error:\ntarget directory could not be created."))
+                                showError(_str("Error:\ntarget directory could not be created."))
                                 item1.setText(""); item1.repaint()
                                 item2.setText(""); item2.repaint()
                                 return False
                                 
                         elif result == QMessageBox.No:
-                            showError(_("Error:\nuser aborted creeat the directory."))
+                            showError(_str("Error:\nuser aborted creeat the directory."))
                             found = False
                     else:
                         msg = QMessageBox()
-                        msg.setWindowTitle(_("Confirmation"))
-                        msg.setText(_(""
+                        msg.setWindowTitle(_str("Confirmation"))
+                        msg.setText(_str(""
                         + "Error:\ntarget dir already exists.\n"
                         + "Would you DELETE and RE-CREATE the directory ?"))
                         
@@ -21429,14 +22893,14 @@ class FileWatcherGUI(QDialog):
                         btn_yes = msg.addButton(QMessageBox.Yes)
                         btn_no  = msg.addButton(QMessageBox.No)
                         
-                        msg.setStyleSheet(_("msgbox_css"))
+                        msg.setStyleSheet(_css("msgbox_css"))
                         result = msg.exec_()
                         
                         if result == QMessageBox.Yes:
                             try:
                                 if "_internal" in genv.doc_dstdir \
                                 or "_internal" in genv.doc_srcdir:
-                                    showError(_("Error:\n_internal dir tree can not be delete."))
+                                    showError(_str("Error:\n_internal dir tree can not be delete."))
                                     _internal = True
                                 else:
                                     _internal = False
@@ -21444,17 +22908,17 @@ class FileWatcherGUI(QDialog):
                                     os.makedirs  (genv.doc_dstdir, exist_ok=True)
                                     
                             except FileNotFoundError as e:
-                                showError(_("Error:\ndirectory could not be found/created."))
+                                showError(_str("Error:\ndirectory could not be found/created."))
                                 return False
                             except PermissionError as e:
-                                showError(_("Error:\nno permissions to create the target directory."))
+                                showError(_str("Error:\nno permissions to create the target directory."))
                                 return False
                             except Exception as e:
-                                showError(_("Error:\ntarget directory could not be created."))
+                                showError(_str("Error:\ntarget directory could not be created."))
                                 return False
                         
                     if (not os.path.isdir(genv.doc_dstdir)) or (os.path.isfile(genv.doc_dstdir)):
-                        showError(_(""
+                        showError(_str(""
                         + "Error:\ntarget dir is not a valid directorie item.\n"
                         + "Either it is not a directory or the path to the\n"
                         + "directory does not exists."))
@@ -21465,7 +22929,7 @@ class FileWatcherGUI(QDialog):
                     
                     if "_internal" in genv.doc_dstdir \
                     or "_internal" in genv.doc_srcdir:
-                        showError(_("Error:\n_internal dir tree can not be delete."))
+                        showError(_str("Error:\n_internal dir tree can not be delete."))
                         _internal = True
                         return False
                     else:
@@ -21522,10 +22986,10 @@ class FileWatcherGUI(QDialog):
                             "mode_opti0" + str(int(radio_no) + 4))
                             
                     except FileNotFoundError as e:
-                        showError(_("Error:\nfile could not be found/created."))
+                        showError(_str("Error:\nfile could not be found/created."))
                         return False
                     except PermissionError as e:
-                        showError(_("Error:\nno permissions to read/write file."))
+                        showError(_str("Error:\nno permissions to read/write file."))
                         return False
                     except Exception as e:
                         showError(f"Error: {str(e)}\nDetails:\n{traceback.format_exc()}")
@@ -21549,7 +23013,7 @@ class FileWatcherGUI(QDialog):
                         item2.setChecked(True)
                         genv.doc_entries = 1
                     else:
-                        showError(_("Error:\ndocument entries check logic error."))
+                        showError(_str("Error:\ndocument entries check logic error."))
                         return False
                 else:
                     showError(text1 + textA + "\n" + textB)
@@ -21567,7 +23031,7 @@ class FileWatcherGUI(QDialog):
                     else:
                         genv.doc_cross = -1
                         genv.v__app_win.write_config_part()
-                        showError(_("Error:\ncross ref check logic error."))
+                        showError(_str("Error:\ncross ref check logic error."))
                         return False
                 else:
                     genv.doc_cross = -1
@@ -21588,11 +23052,11 @@ class FileWatcherGUI(QDialog):
                     else:
                         genv.doc_recursiv = -1
                         genv.v__app_win.write_config_part()
-                        showError(_("Error:\nscan recursiv check logic error."))
+                        showError(_str("Error:\nscan recursiv check logic error."))
                         return False
                 
                 if not radio_item:
-                    showError(_("Error:\ncan not get opti radio button"))
+                    showError(_str("Error:\ncan not get opti radio button"))
                     return False
                     
                 radio_item.setChecked(True)
@@ -21910,9 +23374,9 @@ class FileWatcherGUI(QDialog):
                 i   = 1
                 for idx in range(5, 23):
                     try:
-                        elements = eval(_("label_" + str(idx) + "_elements"))
+                        elements = eval(_str("label_" + str(idx) + "_elements"))
                         helpID   = hid + i
-                        tokenID  = _("A" + f"{helpID:04X}")
+                        tokenID  = _str("A" + f"{helpID:04X}")
                         
                         hid += 0x100
                         i   += 1
@@ -21930,12 +23394,12 @@ class FileWatcherGUI(QDialog):
                                 #showInfo("checkbox: " + tokenID + "\nis not check")
                                 setattr(genv, "doc_" + tokenID, 0)
                                 tok_object.setChecked(False)
-                                tok_object.setText(_(" NO"))
+                                tok_object.setText(_str(" NO"))
                             else:
                                 #showInfo("checkbox: " + tokenID + "\nis checked")
                                 setattr(genv, "doc_" + tokenID, 1)
                                 tok_object.setChecked(True)
-                                tok_object.setText(_(" YES 3"))
+                                tok_object.setText(_str(" YES 3"))
                         print(tokenID)
                         
                     except configparser.NoOptionError:
@@ -21948,7 +23412,7 @@ class FileWatcherGUI(QDialog):
                         ## 0xA0100
                         hid = 0
                         for idx in range(5, 23):
-                            elements = eval(_("label_" + str(idx) + "_elements"))
+                            elements = eval(_str("label_" + str(idx) + "_elements"))
                             hid     += 0x100
                             
                             if hid == 0xa00:
@@ -21957,7 +23421,7 @@ class FileWatcherGUI(QDialog):
                             i = 0
                             for item in elements:
                                 helpID  = hid + i + 1
-                                tokenID = _("A" + f"{helpID:04X}")
+                                tokenID = _str("A" + f"{helpID:04X}")
                                 
                                 value = getattr(genv, "doc_" + tokenID + "_type")
                                 
@@ -21976,11 +23440,11 @@ class FileWatcherGUI(QDialog):
                     self.trigger_mouse_press(genv.img_hlpndoc)
                 self.help_tabs.removeTab(2)
                 self.help_tabs.removeTab(1)
-                self.help_tabs.insertTab(1, self.tab1_0, _("Pre-/Post Actions"))
-                self.help_tabs.insertTab(2, self.tab2  , _("Topics"))
-                self.help_tabs.insertTab(3, self.tab4  , _("Content"))
+                self.help_tabs.insertTab(1, self.tab1_0, _str("Pre-/Post Actions"))
+                self.help_tabs.insertTab(2, self.tab2  , _str("Topics"))
+                self.help_tabs.insertTab(3, self.tab4  , _str("Content"))
             else:
-                showError(_("Error:\nframework have no valid setting options."))
+                showError(_str("Error:\nframework have no valid setting options."))
                 return False
         except Exception as e:
             showError(f"Error: {str(e)}\nDetails:\n{traceback.format_exc()}")
@@ -22051,19 +23515,19 @@ class FileWatcherGUI(QDialog):
     def tab0_help_list2_item_click(self, item):
         text = item.text()
         DebugPrint(text)
-        if text == _("Empty Project"):
+        if text == _str("Empty Project"):
             genv.doc_template = genv.DOC_TEMPLATE_EMPTY
             genv.v__app_win.write_config_part()
             return True
-        elif text == _("Recipe"):
+        elif text == _str("Recipe"):
             genv.doc_template = genv.DOC_TEMPLATE_RECIPE
             genv.v__app_win.write_config_part()
             return True
-        elif text == _("API Project"):
+        elif text == _str("API Project"):
             genv.doc_template = genv.DOC_TEMPLATE_API
             genv.v__app_win.write_config_part()
             return True
-        elif text == _("Software Documentation"):
+        elif text == _str("Software Documentation"):
             genv.doc_template = genv.DOC_TEMPLATE_SOFTWARE
             genv.v__app_win.write_config_part()
             return True
@@ -22086,16 +23550,16 @@ class FileWatcherGUI(QDialog):
         bool_flagC = False
         bool_flagD = False
         
-        path_error = _(""
+        path_error = _str(""
         + "Warning:\nA project with the corresponding name already exists.\n"
         + "All data will be lost and override with new informations.")
         
         file_path = Path(self.tab0_fold_edit1.text())
         if not self.tab0_fold_edit1.text().endswith(".pro"):
-            showError(_("Error:\nproject name does not fit the requirements."))
+            showError(_str("Error:\nproject name does not fit the requirements."))
             return False
         if file_path.is_dir():
-            showError(_("Error:\ngiven file not a file type (is dir)."))
+            showError(_str("Error:\ngiven file not a file type (is dir)."))
             return False
         if file_path.exists():
             # ------------------------------------------
@@ -22107,7 +23571,7 @@ class FileWatcherGUI(QDialog):
             
             for item in items:
                 if item.text() == genv.v__app__config_project_ini:
-                    #showError(_("Error:\nproject already exists."))
+                    #showError(_str("Error:\nproject already exists."))
                     showError(path_error)
                     return False
             
@@ -22157,7 +23621,7 @@ class FileWatcherGUI(QDialog):
         or not (bool_flagB == True) \
         or not (bool_flagC == True) \
         or not (bool_flagD == True):
-            showError(_("Error:\nNo project documentation selected."))
+            showError(_str("Error:\nNo project documentation selected."))
             return False
         # ------------------------------
         genv.v__app__config_project_ini = self.tab0_fold_edit1.text()
@@ -22165,7 +23629,7 @@ class FileWatcherGUI(QDialog):
         new = pro.replace('"', '')
         pro = pro.lower()
         if not pro.endswith(".pro"):
-            showError(_("Error:\nproject file does not fit requierements."))
+            showError(_str("Error:\nproject file does not fit requierements."))
             return False
         genv.v__app__config_project_ini = new
         DebugPrint(new)
@@ -22185,7 +23649,7 @@ class FileWatcherGUI(QDialog):
                     f.close()
             except Exception as e:
                 DebugPrint(e)
-                showError(_("Error:\nproject file could not create."))
+                showError(_str("Error:\nproject file could not create."))
                 genv.doc_project_open = False
                 return False
         # -----------------------------------------------------------
@@ -22199,7 +23663,7 @@ class FileWatcherGUI(QDialog):
             
         except Exception as e:
             DebugPrint(e)
-            showError(_("Error:\ncofigparser module error."))
+            showError(_str("Error:\ncofigparser module error."))
             genv.doc_project_open = False
             return False
         
@@ -22212,7 +23676,7 @@ class FileWatcherGUI(QDialog):
         
         for item in items:
             if item.text() == genv.v__app__config_project_ini:
-                showError(_("Error:\nproject already exists."))
+                showError(_str("Error:\nproject already exists."))
                 return False
             
         list_item = QListWidgetItem(genv.v__app__config_project_ini)
@@ -22230,8 +23694,8 @@ class FileWatcherGUI(QDialog):
         file_path = ""
         icon_size = 20
         
-        dialog.setWindowTitle(_("Open Project File"))
-        dialog.setStyleSheet (_("QFileDlog"))
+        dialog.setWindowTitle(_str("Open Project File"))
+        dialog.setStyleSheet (_css("QFileDlog"))
         
         dialog.setFileMode(QFileDialog.AnyFile)
         dialog.setViewMode(QFileDialog.Detail)
@@ -22251,9 +23715,9 @@ class FileWatcherGUI(QDialog):
         if not file_path:
             msg = QMessageBox()
             msg.setWindowTitle("Information")
-            msg.setText(_("no source file given.\n"))
+            msg.setText(_str("no source file given.\n"))
             msg.setIcon(QMessageBox.Question)
-            msg.setStyleSheet(_("msgbox_css"))
+            msg.setStyleSheet(_css("msgbox_css"))
             
             btn_ok = msg.addButton(QMessageBox.Ok)
             result = msg.exec_()            
@@ -22263,11 +23727,11 @@ class FileWatcherGUI(QDialog):
             msg = None
             msg = QMessageBox()
             msg.setWindowTitle("Information")
-            msg.setText(_(
+            msg.setText(_str(
                 "You selected a file, that can not be open.\n"
                 "no file will be open."))
             msg.setIcon(QMessageBox.Question)
-            msg.setStyleSheet(_("msgbox_css"))
+            msg.setStyleSheet(_css("msgbox_css"))
             
             btn_ok = msg.addButton(QMessageBox.Ok)
             result = msg.exec_()
@@ -22289,7 +23753,7 @@ class FileWatcherGUI(QDialog):
         elif genv.doc_framework == genv.DOC_FRAMEWORK_HELPNDOC:
             self.trigger_mouse_press(genv.img_hlpndoc)
         else:
-            showInfo(_("Error: help framework not known."))
+            showInfo(_str("Error: help framework not known."))
             return False
         return True
     
@@ -22332,7 +23796,7 @@ class FileWatcherGUI(QDialog):
     # dbase
     def handleDBase(self):
         self.dbase_tabs = QTabWidget()
-        self.dbase_tabs.setStyleSheet(_(genv.css_tabs))
+        self.dbase_tabs.setStyleSheet(_css(genv.css_tabs))
         self.dbase_tabs.hide()
         
         self.dbase_tabs_project_widget = QWidget()
@@ -22345,12 +23809,12 @@ class FileWatcherGUI(QDialog):
         #
         self.dbase_tabs_project_widget.setContentsMargins(1,1,1,1)
         ####
-        self.dbase_tabs.addTab(self.dbase_tabs_project_widget, _("dBASE Project"))
-        self.dbase_tabs.addTab(self.dbase_tabs_editors_widget, _("dBASE Editor"))
-        self.dbase_tabs.addTab(self.dbase_tabs_designs_widget, _("dBASE Designer"))
-        self.dbase_tabs.addTab(self.dbase_tabs_builder_widget, _("dBASE SQL Builder"))
-        self.dbase_tabs.addTab(self.dbase_tabs_datatab_widget, _("dBASE Data Tables"))
-        self.dbase_tabs.addTab(self.dbase_tabs_reports_widget, _("dBASE Reports"))
+        self.dbase_tabs.addTab(self.dbase_tabs_project_widget, _str("dBASE Project"))
+        self.dbase_tabs.addTab(self.dbase_tabs_editors_widget, _str("dBASE Editor"))
+        self.dbase_tabs.addTab(self.dbase_tabs_designs_widget, _str("dBASE Designer"))
+        self.dbase_tabs.addTab(self.dbase_tabs_builder_widget, _str("dBASE SQL Builder"))
+        self.dbase_tabs.addTab(self.dbase_tabs_datatab_widget, _str("dBASE Data Tables"))
+        self.dbase_tabs.addTab(self.dbase_tabs_reports_widget, _str("dBASE Reports"))
         ####
         self.dbase_project = ApplicationProjectPage(self.front_content_widget, self.dbase_tabs_project_widget, "dbase")
         self.dbase_editors = ApplicationEditorsPage(self, self.dbase_tabs_editors_widget, "dbase")
@@ -22377,7 +23841,7 @@ class FileWatcherGUI(QDialog):
         self.dbase_builder_layout.setContentsMargins(2,2,2,2)
         
         self.dbase_builder_widget_table = QWidget()
-        self.dbase_builder_widget_table.setStyleSheet(_("bggy"))
+        self.dbase_builder_widget_table.setStyleSheet(_css("bggy"))
         self.dbase_builder_widget_table.setMaximumHeight(56)
         
         
@@ -22392,7 +23856,7 @@ class FileWatcherGUI(QDialog):
         self.dbase_builder_widget_view.layout().addWidget(self.dbase_builder_window_2)
         
         self.dbase_builder_widget_join = QTableWidget()
-        self.dbase_builder_widget_join.setStyleSheet(_("join_build"))
+        self.dbase_builder_widget_join.setStyleSheet(_css("join_build"))
         
         self.dbase_builder_widget_join.horizontalHeader().setStretchLastSection(True) 
         self.dbase_builder_widget_join.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) 
@@ -22459,7 +23923,7 @@ class FileWatcherGUI(QDialog):
     # Electro
     def handleElectro(self):
         self.electro_tabs = QTabWidget()
-        self.electro_tabs.setStyleSheet(_(genv.css_tabs))
+        self.electro_tabs.setStyleSheet(_css(genv.css_tabs))
         self.electro_tabs.hide()
         
         self.electro_tabs_designer_widget = QWidget()
@@ -22476,16 +23940,16 @@ class FileWatcherGUI(QDialog):
         #self.electro_tabs.addLayout(hlayout)
         self.electro_tabs_designer_widget.setLayout(hlayout)
         
-        self.electro_tabs.addTab(self.electro_tabs_designer_widget, _("electro"))
+        self.electro_tabs.addTab(self.electro_tabs_designer_widget, _str("electro"))
         self.main_layout.addWidget(self.electro_tabs)
         return
             
     # pascal
     def handlePascal(self):
         self.pascal_tabs = ApplicationTabWidget([
-            _("Pascal Project"),
-            _("Pascal Editor"),
-            _("Pascal Designer")])
+            _str("Pascal Project"),
+            _str("Pascal Editor"),
+            _str("Pascal Designer")])
         self.pascal_project  = ApplicationProjectPage(self, self.pascal_tabs.getTab(0), "pascal")
         self.pascal_editors  = ApplicationEditorsPage(self, self.pascal_tabs.getTab(1), "pascal")
         self.pascal_designer = ApplicationDesignPage(
@@ -22496,9 +23960,9 @@ class FileWatcherGUI(QDialog):
     # isoc
     def handleIsoC(self):
         self.isoc_tabs = ApplicationTabWidget([
-            _("ISO-C Project"),
-            _("ISO-C Editor"),
-            _("ISO-C Designer")])
+            _str("ISO-C Project"),
+            _str("ISO-C Editor"),
+            _str("ISO-C Designer")])
         self.isoc_project  = ApplicationProjectPage(self, self.isoc_tabs.getTab(0), "isoc")
         self.isoc_editors  = ApplicationEditorsPage(self, self.isoc_tabs.getTab(1), "isoc")
         self.isoc_designer = ApplicationDesignPage(
@@ -22509,9 +23973,9 @@ class FileWatcherGUI(QDialog):
     # java
     def handleJava(self):
         self.java_tabs = ApplicationTabWidget([
-            _("Java Project"),
-            _("Java Editor"),
-            _("Java Designer")])
+            _str("Java Project"),
+            _str("Java Editor"),
+            _str("Java Designer")])
         self.java_project  = ApplicationProjectPage(self, self.java_tabs.getTab(0), "java")
         self.java_editors  = ApplicationEditorsPage(self, self.java_tabs.getTab(1), "java")
         self.java_designer = ApplicationDesignPage(
@@ -22522,9 +23986,9 @@ class FileWatcherGUI(QDialog):
     # python
     def handlePython(self):
         self.python_tabs = ApplicationTabWidget([
-            _("Python Project"),
-            _("Python Editor"),
-            _("Python Designer")])
+            _str("Python Project"),
+            _str("Python Editor"),
+            _str("Python Designer")])
         self.python_project  = ApplicationProjectPage(self, self.python_tabs.getTab(0), "python")
         self.python_editors  = ApplicationEditorsPage(self, self.python_tabs.getTab(1), "python")
         self.python_designer = ApplicationDesignPage(
@@ -22535,9 +23999,9 @@ class FileWatcherGUI(QDialog):
     # prolog
     def handleProlog(self):
         self.prolog_tabs = ApplicationTabWidget([
-            _("Prolog Project"),
-            _("Prolog Editor"),
-            _("Prolog Designer")])
+            _str("Prolog Project"),
+            _str("Prolog Editor"),
+            _str("Prolog Designer")])
         self.prolog_project  = ApplicationProjectPage(self, self.prolog_tabs.getTab(0), "prolog")
         self.prolog_editors  = ApplicationEditorsPage(self, self.prolog_tabs.getTab(1), "prolog")
         self.prolog_designer = ApplicationDesignPage(
@@ -22548,9 +24012,9 @@ class FileWatcherGUI(QDialog):
     # fortran
     def handleFortran(self):
         self.fortran_tabs = ApplicationTabWidget([
-            _("Fortran Project"),
-            _("Fortran Editor"),
-            _("Fortran Designer")])
+            _str("Fortran Project"),
+            _str("Fortran Editor"),
+            _str("Fortran Designer")])
         self.fortran_project  = ApplicationProjectPage(self, self.fortran_tabs.getTab(0), "fortran")
         self.fortran_editors  = ApplicationEditorsPage(self, self.fortran_tabs.getTab(1), "fortran")
         self.fortran_designer = ApplicationDesignPage(
@@ -22561,9 +24025,9 @@ class FileWatcherGUI(QDialog):
     # lisp
     def handleLISP(self):
         self.lisp_tabs = ApplicationTabWidget([
-            _("LISP Project"),
-            _("LISP Editor"),
-            _("LISP Designer")])
+            _str("LISP Project"),
+            _str("LISP Editor"),
+            _str("LISP Designer")])
         self.lisp_project  = ApplicationProjectPage(self, self.lisp_tabs.getTab(0), "lisp")
         self.lisp_editors  = ApplicationEditorsPage(self, self.lisp_tabs.getTab(1), "lisp")
         self.lisp_designer = ApplicationDesignPage(
@@ -22574,9 +24038,9 @@ class FileWatcherGUI(QDialog):
     # javascript
     def handleJavaScript(self):
         self.javascript_tabs = ApplicationTabWidget([
-            _("JavaScript Project"),
-            _("JavaScript Editor"),
-            _("JavaScript Designer")])
+            _str("JavaScript Project"),
+            _str("JavaScript Editor"),
+            _str("JavaScript Designer")])
         self.javascript_project  = ApplicationProjectPage(self, self.javascript_tabs.getTab(0), "javascript")
         self.javascript_editors  = ApplicationEditorsPage(self, self.javascript_tabs.getTab(1), "javascript")
         self.javascript_designer = ApplicationDesignPage(
@@ -22587,16 +24051,16 @@ class FileWatcherGUI(QDialog):
     # locale
     def handleLocales(self):
         self.locale_tabs = QTabWidget()
-        self.locale_tabs.setStyleSheet(_(genv.css_tabs))
+        self.locale_tabs.setStyleSheet(_css(genv.css_tabs))
         self.locale_tabs.hide()
         
         self.locale_tabs_project_widget = QWidget()
         self.locale_tabs_editors_widget = QWidget()
         self.locale_tabs_designs_widget = QWidget()
         #
-        self.locale_tabs.addTab(self.locale_tabs_project_widget, _("Locales Project"))
-        self.locale_tabs.addTab(self.locale_tabs_editors_widget, _("Locales Editor"))
-        self.locale_tabs.addTab(self.locale_tabs_designs_widget, _("Locales Designer"))
+        self.locale_tabs.addTab(self.locale_tabs_project_widget, _str("Locales Project"))
+        self.locale_tabs.addTab(self.locale_tabs_editors_widget, _str("Locales Editor"))
+        self.locale_tabs.addTab(self.locale_tabs_designs_widget, _str("Locales Designer"))
         ####
         self.main_layout.addWidget(self.locale_tabs)
         
@@ -22618,7 +24082,7 @@ class FileWatcherGUI(QDialog):
         self.text_edit = QPlainTextEdit()
         self.text_edit.setFont(font2)
         
-        self.load_button = QPushButton(_("Load .mo File"))
+        self.load_button = QPushButton(_str("Load .mo File"))
         self.load_button.setFont(font)
         self.load_button.setMinimumHeight(31)
         self.load_button.clicked.connect(self.load_mo_file)
@@ -22647,7 +24111,7 @@ class FileWatcherGUI(QDialog):
     
     def handlePEWindows(self):
         self.pe_windows_tabs = QTabWidget()
-        self.pe_windows_tabs.setStyleSheet(_(genv.css_tabs))
+        self.pe_windows_tabs.setStyleSheet(_css(genv.css_tabs))
         self.pe_windows_tabs.hide()
         
         self.pe_windows_tabs_project_widget = QWidget()
@@ -22656,33 +24120,33 @@ class FileWatcherGUI(QDialog):
         #
         self.pe_windows_tabs_exe_dll_viewer = ExecutableExplorer()
         #
-        self.pe_windows_tabs.addTab(self.pe_windows_tabs_project_widget, _("Win32 Project"))
-        self.pe_windows_tabs.addTab(self.pe_windows_tabs_editors_widget, _("Editor"))
-        self.pe_windows_tabs.addTab(self.pe_windows_tabs_designs_widget, _("Console"))
-        self.pe_windows_tabs.addTab(self.pe_windows_tabs_exe_dll_viewer, _("Tools"))
+        self.pe_windows_tabs.addTab(self.pe_windows_tabs_project_widget, _str("Win32 Project"))
+        self.pe_windows_tabs.addTab(self.pe_windows_tabs_editors_widget, _str("Editor"))
+        self.pe_windows_tabs.addTab(self.pe_windows_tabs_designs_widget, _str("Console"))
+        self.pe_windows_tabs.addTab(self.pe_windows_tabs_exe_dll_viewer, _str("Tools"))
         ####
         self.main_layout.addWidget(self.pe_windows_tabs)
             
     def handleELFLinux(self):
         self.elf_linux_tabs = QTabWidget()
-        self.elf_linux_tabs.setStyleSheet(_(genv.css_tabs))
+        self.elf_linux_tabs.setStyleSheet(_css(genv.css_tabs))
         self.elf_linux_tabs.hide()
         
         self.elf_linux_tabs_project_widget = QWidget()
         self.elf_linux_tabs_editors_widget = QWidget()
         self.elf_linux_tabs_designs_widget = QWidget()
         #
-        self.elf_linux_tabs.addTab(self.elf_linux_tabs_project_widget, _("ELF Project"))
-        self.elf_linux_tabs.addTab(self.elf_linux_tabs_editors_widget, _("Editor"))
-        self.elf_linux_tabs.addTab(self.elf_linux_tabs_designs_widget, _("Console"))
+        self.elf_linux_tabs.addTab(self.elf_linux_tabs_project_widget, _str("ELF Project"))
+        self.elf_linux_tabs.addTab(self.elf_linux_tabs_editors_widget, _str("Editor"))
+        self.elf_linux_tabs.addTab(self.elf_linux_tabs_designs_widget, _str("Console"))
         ####
         self.main_layout.addWidget(self.elf_linux_tabs)
     
     def handleBasic(self):
         self.basic_tabs = ApplicationTabWidget([
-            _("BASIC Project"),
-            _("Editor"),
-            _("Console")])
+            _str("BASIC Project"),
+            _str("Editor"),
+            _str("Console")])
         self.basic_tabs_project_widget = ApplicationProjectPage(self, self.basic_tabs.getTab(0), "basic")
         self.basic_tabs_editors_widget = ApplicationEditorsPage(self, self.basic_tabs.getTab(1), "basic")
         self.basic_tabs_designs_widget = QWidget()
@@ -22691,7 +24155,7 @@ class FileWatcherGUI(QDialog):
         
     def handleConsole(self):
         self.console_tabs = QTabWidget()
-        self.console_tabs.setStyleSheet(_(genv.css_tabs))
+        self.console_tabs.setStyleSheet(_css(genv.css_tabs))
         self.console_tabs.hide()
         
         vlayout = QVBoxLayout()
@@ -22699,7 +24163,7 @@ class FileWatcherGUI(QDialog):
         
         font = QFont("Arial", 10)
         
-        group_box = QGroupBox(_("Selecte OS: "))
+        group_box = QGroupBox(_str("Selecte OS: "))
         group_box.setFont(font)
         
         os_radio_button1 = QRadioButton("MS-DOS")
@@ -22735,26 +24199,26 @@ class FileWatcherGUI(QDialog):
         
         self.console_tabs_chm_widget = QWidget()
         self.console_tabs_chm_widget.setLayout(hlayout)
-        self.console_tabs.addTab(self.console_tabs_chm_widget, _("Console"))
+        self.console_tabs.addTab(self.console_tabs_chm_widget, _str("Console"))
         ###
         self.main_layout.addWidget(self.console_tabs)
         return
     
     def handleTodo(self):
         self.todo_tabs = QTabWidget()
-        self.todo_tabs.setStyleSheet(_(genv.css_tabs))
+        self.todo_tabs.setStyleSheet(_css(genv.css_tabs))
         self.todo_tabs.hide()
         
         self.todo_tabs_chm_widget = QWidget()
-        self.todo_tabs.addTab(self.todo_tabs_chm_widget, _("Todo"))
+        self.todo_tabs.addTab(self.todo_tabs_chm_widget, _str("Todo"))
         ###
         self.main_layout.addWidget(self.todo_tabs)
         return
     
     def handleSetup(self):
         self.setup_tabs = ApplicationTabWidget([
-            _("Setup Project"),
-            _("Setup Editor")])
+            _str("Setup Project"),
+            _str("Setup Editor")])
         self.setup_project  = ApplicationProjectPage(self, self.setup_tabs.getTab(0), "setup")
         self.setup_editors  = ApplicationEditorsPage(self, self.setup_tabs.getTab(1), "setup")
         ###
@@ -22763,8 +24227,8 @@ class FileWatcherGUI(QDialog):
     
     def handleCertSSL(self):
         self.certssl_tabs = ApplicationTabWidget([
-            _("SSL Cert Project"),
-            _("SSL Cert Editor")])
+            _str("SSL Cert Project"),
+            _str("SSL Cert Editor")])
         
         font = QFont("Arial", 10)
         
@@ -22803,7 +24267,7 @@ class FileWatcherGUI(QDialog):
         tab1_scroll_area   .setWidget(tab1_content_widget)
         
         tab1_hlayout_1 = QHBoxLayout()
-        tab1_label_1 = QLabel(_("Display Name:"))
+        tab1_label_1 = QLabel(_str("Display Name:"))
         tab1_label_1.setMinimumWidth(120)
         tab1_label_1.setFont(font)
         #
@@ -22812,14 +24276,14 @@ class FileWatcherGUI(QDialog):
         
         tab1_hlayout_2 = QHBoxLayout()
         #
-        tab1_label_2   = QLabel(_("Usage:"))
+        tab1_label_2   = QLabel(_str("Usage:"))
         tab1_label_2.setMinimumWidth(120)
         tab1_label_2.setFont(font)
         #
         tab1_combo = QComboBox()
         tab1_combo.setFont(font)
-        tab1_combo.addItem(_("Personel"))
-        tab1_combo.addItem(_("Web Hosting"))
+        tab1_combo.addItem(_str("Personel"))
+        tab1_combo.addItem(_str("Web Hosting"))
         
         tab1_hlayout_1.addWidget(tab1_label_1)
         tab1_hlayout_1.addWidget(tab1_edit)
@@ -22831,9 +24295,9 @@ class FileWatcherGUI(QDialog):
         
         tab1_button_layout = QHBoxLayout()
         
-        tab1_button_cert_new = QPushButton(_("Create Cert"))
-        tab1_button_cert_add = QPushButton(_("Append Cert"))
-        tab1_button_cert_del = QPushButton(_("Delete Cert"))
+        tab1_button_cert_new = QPushButton(_str("Create Cert"))
+        tab1_button_cert_add = QPushButton(_str("Append Cert"))
+        tab1_button_cert_del = QPushButton(_str("Delete Cert"))
         
         tab1_button_cert_new.clicked.connect(self.on_click_cert_new)
         tab1_button_cert_add.clicked.connect(self.on_click_cert_add)
@@ -22872,18 +24336,18 @@ class FileWatcherGUI(QDialog):
         
         #
         linedits = [
-            [ _("CA Name"),                 "trashserver.net"          ],      # 0
-            [ _("Organization Name"),       "Internet Widgits Pty Ltd" ],      # 1
-            [ _("Unit Name"),               "IT"                       ],      # 2
-            [ _("Localy Name"),             "Landshut"                 ],      # 3
-            [ _("State or Province"),       "BY"                       ],      # 4
-            [ _("Country (2 letter code)"), "DE"                       ],      # 5
-            [ _("E-Mail"),                  "ssl@master@domain.com"    ],      # 6
-            [ _("Valide Date"),             1                          ],      # 7
-            [ _("CA key File"),             "ca-key.pem"               ],      # 8
-            [ _("CA csr File"),             "ca-csr.pem"               ],      # 9
-            [ _("Password"),                "xyz"                      ],      # 10
-            [ _("Chiper Bits"),             1                          ]       # 11
+            [ _str("CA Name"),                 "trashserver.net"          ],      # 0
+            [ _str("Organization Name"),       "Internet Widgits Pty Ltd" ],      # 1
+            [ _str("Unit Name"),               "IT"                       ],      # 2
+            [ _str("Localy Name"),             "Landshut"                 ],      # 3
+            [ _str("State or Province"),       "BY"                       ],      # 4
+            [ _str("Country (2 letter code)"), "DE"                       ],      # 5
+            [ _str("E-Mail"),                  "ssl@master@domain.com"    ],      # 6
+            [ _str("Valide Date"),             1                          ],      # 7
+            [ _str("CA key File"),             "ca-key.pem"               ],      # 8
+            [ _str("CA csr File"),             "ca-csr.pem"               ],      # 9
+            [ _str("Password"),                "xyz"                      ],      # 10
+            [ _str("Chiper Bits"),             1                          ]       # 11
         ]
         #
         v_layout = QVBoxLayout()
@@ -22896,7 +24360,7 @@ class FileWatcherGUI(QDialog):
             h_label.setFont(font)
             h_label.setMinimumWidth(180)
             if i == 7:
-                h_labl_beg = QLabel(_("Begin: "))
+                h_labl_beg = QLabel(_str("Begin: "))
                 h_labl_beg.setFont(font)
                 #
                 h_edit_beg = QDateEdit()
@@ -22904,7 +24368,7 @@ class FileWatcherGUI(QDialog):
                 h_edit_beg.setDate(QDate.currentDate())
                 h_edit_beg.setFont(font)
                 #
-                h_labl_end = QLabel(_(" End: "))
+                h_labl_end = QLabel(_str(" End: "))
                 h_labl_end.setFont(font)
                 #
                 h_edit_end = QDateEdit()
@@ -22956,10 +24420,10 @@ class FileWatcherGUI(QDialog):
         
         tab2_content_layout.addLayout(v_layout)
         #
-        push_saveca = QPushButton(_("Save CA Data"))
-        push_create = QPushButton(_("Create CA"))
-        push_delete = QPushButton(_("Delete CA"))
-        push_cleara = QPushButton(_("Clear All"))
+        push_saveca = QPushButton(_str("Save CA Data"))
+        push_create = QPushButton(_str("Create CA"))
+        push_delete = QPushButton(_str("Delete CA"))
+        push_cleara = QPushButton(_str("Clear All"))
         
         push_saveca.clicked.connect(self.on_click_saveca_ca)
         push_create.clicked.connect(self.on_click_create_ca)
@@ -23002,8 +24466,8 @@ class FileWatcherGUI(QDialog):
         tab2_layout.addWidget(tab2_scroll_area)
         tab2.setLayout(tab2_layout)
         
-        self.cert_tab.addTab(tab1, _("Create SSL"))
-        self.cert_tab.addTab(tab2, _("Create CA"))
+        self.cert_tab.addTab(tab1, _str("Create SSL"))
+        self.cert_tab.addTab(tab2, _str("Create CA"))
         
         vlayout.addWidget(self.tree_widget)
         vlayout.addWidget(self.cert_tab)
@@ -23040,8 +24504,8 @@ class FileWatcherGUI(QDialog):
     
     def handleGitHub(self):
         self.github_tabs = ApplicationTabWidget([
-            _("GitHub Project"),
-            _("GitHub Editor")])
+            _str("GitHub Project"),
+            _str("GitHub Editor")])
         self.github_project  = ApplicationProjectPage(self, self.github_tabs.getTab(0), "github")
         self.github_editors  = ApplicationEditorsPage(self, self.github_tabs.getTab(1), "github")
         ###
@@ -23077,7 +24541,7 @@ class FileWatcherGUI(QDialog):
     
     def handleApache(self):
         self.apache_tabs = ApplicationTabWidget([
-            _("Web Server Configuration")])
+            _str("Web Server Configuration")])
         
         main_layout = QHBoxLayout()
         splitter = QSplitter(Qt.Horizontal)
@@ -23112,8 +24576,8 @@ class FileWatcherGUI(QDialog):
         
         # iis
         push_layout_iis = QHBoxLayout()
-        push_start_iis  = QPushButton(_("Start Server"))
-        push_stop_iis   = QPushButton(_("Stop Server"))
+        push_start_iis  = QPushButton(_str("Start Server"))
+        push_stop_iis   = QPushButton(_str("Stop Server"))
         #
         push_start_iis.clicked.connect(self.iis_server_start)
         push_stop_iis .clicked.connect(self.iis_server_stop)
@@ -23130,8 +24594,8 @@ class FileWatcherGUI(QDialog):
         
         # apache 2.4
         push_layout_apache = QHBoxLayout()
-        push_start_apache  = QPushButton(_("Start Server"))
-        push_stop_apache   = QPushButton(_("Stop Server"))
+        push_start_apache  = QPushButton(_str("Start Server"))
+        push_stop_apache   = QPushButton(_str("Stop Server"))
         #
         push_start_apache.clicked.connect(self.apache_server_start)
         push_stop_apache .clicked.connect(self.apache_server_stop)
@@ -23148,8 +24612,8 @@ class FileWatcherGUI(QDialog):
         
         # tomcat
         push_layout_tomcat = QHBoxLayout()
-        push_start_tomcat  = QPushButton(_("Start Server"))
-        push_stop_tomcat   = QPushButton(_("Stop Server"))
+        push_start_tomcat  = QPushButton(_str("Start Server"))
+        push_stop_tomcat   = QPushButton(_str("Stop Server"))
         #
         push_start_tomcat.clicked.connect(self.tomcat_server_start)
         push_stop_tomcat .clicked.connect(self.tomcat_server_stop)
@@ -23171,9 +24635,9 @@ class FileWatcherGUI(QDialog):
         
         # iis
         label_layout_iis = QHBoxLayout()
-        label_clients_iis = QLabel(_("Client's Connected: 0"))
+        label_clients_iis = QLabel(_str("Client's Connected: 0"))
         label_clients_iis.setFont(font)
-        pushr_clients_iis = QPushButton(_("Send Repair Message"))
+        pushr_clients_iis = QPushButton(_str("Send Repair Message"))
         pushr_clients_iis.setMinimumHeight(26)
         pushr_clients_iis.setMinimumWidth(210)
         pushr_clients_iis.setFont(font)
@@ -23186,9 +24650,9 @@ class FileWatcherGUI(QDialog):
         
         # apache 2.4
         label_layout_apache = QHBoxLayout()
-        label_clients_apache = QLabel(_("Client's Connected: 0"))
+        label_clients_apache = QLabel(_str("Client's Connected: 0"))
         label_clients_apache.setFont(font)
-        pushr_clients_apache = QPushButton(_("Send Repair Message"))
+        pushr_clients_apache = QPushButton(_str("Send Repair Message"))
         pushr_clients_apache.setMinimumHeight(26)
         pushr_clients_apache.setMinimumWidth(210)
         pushr_clients_apache.setFont(font)
@@ -23201,9 +24665,9 @@ class FileWatcherGUI(QDialog):
         
         # tomcat
         label_layout_tomcat = QHBoxLayout()
-        label_clients_tomcat = QLabel(_("Client's Connected: 0"))
+        label_clients_tomcat = QLabel(_str("Client's Connected: 0"))
         label_clients_tomcat.setFont(font)
-        pushr_clients_tomcat = QPushButton(_("Send Repair Message"))
+        pushr_clients_tomcat = QPushButton(_str("Send Repair Message"))
         pushr_clients_tomcat.setMinimumHeight(26)
         pushr_clients_tomcat.setMinimumWidth(210)
         pushr_clients_tomcat.setFont(font)
@@ -23246,11 +24710,11 @@ class FileWatcherGUI(QDialog):
         icon_list_iis.setIconSize(QSize(32, 32))
         
         icon_items_iis = [
-            [_("Connection"),      genv.v__app__img__int__ + "/earth.ico"],
-            [_("SSL Certs"),       genv.v__app__img__int__ + "/certmgr.ico"],
-            [_("Network Adapter"), genv.v__app__img__int__ + "/nic.ico"]
+            [_str("Connection"),      genv.v__app__img__int__ + "/earth.ico"],
+            [_str("SSL Certs"),       genv.v__app__img__int__ + "/certmgr.ico"],
+            [_str("Network Adapter"), genv.v__app__img__int__ + "/nic.ico"]
         ]
-        strings_iss = [_("Connection"), _("SSL Certs"), _("Network Adapter")]
+        strings_iss = [_str("Connection"), _str("SSL Certs"), _str("Network Adapter")]
         max_length_iss = max(len(s)+3 for s in strings_iss)
         padded_strings_iis = [s.center(max_length_iss) for s in strings_iss]
         i = 0
@@ -23273,11 +24737,11 @@ class FileWatcherGUI(QDialog):
         icon_list_apache.setIconSize(QSize(32, 32))
         
         icon_items_apache = [
-            [_("Connection"),      genv.v__app__img__int__ + "/earth.ico"],
-            [_("SSL Certs"),       genv.v__app__img__int__ + "/certmgr.ico"],
-            [_("Network Adapter"), genv.v__app__img__int__ + "/nic.ico"]
+            [_str("Connection"),      genv.v__app__img__int__ + "/earth.ico"],
+            [_str("SSL Certs"),       genv.v__app__img__int__ + "/certmgr.ico"],
+            [_str("Network Adapter"), genv.v__app__img__int__ + "/nic.ico"]
         ]
-        strings_apache = [_("Connection"), _("SSL Certs"), _("Network Adapter")]
+        strings_apache = [_str("Connection"), _str("SSL Certs"), _str("Network Adapter")]
         max_length_apache = max(len(s)+3 for s in strings_apache)
         padded_strings_apache = [s.center(max_length_apache) for s in strings_apache]
         i = 0
@@ -23300,11 +24764,11 @@ class FileWatcherGUI(QDialog):
         icon_list_tomcat.setIconSize(QSize(32, 32))
         
         icon_items_tomcat = [
-            [_("Connection"),      genv.v__app__img__int__ + "/earth.ico"],
-            [_("SSL Certs"),       genv.v__app__img__int__ + "/certmgr.ico"],
-            [_("Network Adapter"), genv.v__app__img__int__ + "/nic.ico"]
+            [_str("Connection"),      genv.v__app__img__int__ + "/earth.ico"],
+            [_str("SSL Certs"),       genv.v__app__img__int__ + "/certmgr.ico"],
+            [_str("Network Adapter"), genv.v__app__img__int__ + "/nic.ico"]
         ]
-        strings_tomcat = [_("Connection"), _("SSL Certs"), _("Network Adapter")]
+        strings_tomcat = [_str("Connection"), _str("SSL Certs"), _str("Network Adapter")]
         max_length_tomcat = max(len(s)+3 for s in strings_tomcat)
         padded_strings_tomcat = [s.center(max_length_tomcat) for s in strings_tomcat]
         i = 0
@@ -23331,8 +24795,8 @@ class FileWatcherGUI(QDialog):
     
     def handleMySQL(self):
         self.mysql_tabs = ApplicationTabWidget([
-            _("MySQL Project"),
-            _("MySQL Editor")])
+            _str("MySQL Project"),
+            _str("MySQL Editor")])
         self.mysql_project  = ApplicationProjectPage(self, self.mysql_tabs.getTab(0), "mysql")
         self.mysql_editors  = ApplicationEditorsPage(self, self.mysql_tabs.getTab(1), "mysql")
         ###
@@ -23341,8 +24805,8 @@ class FileWatcherGUI(QDialog):
     
     def handleSquid(self):
         self.squid_tabs = ApplicationTabWidget([
-            _("Squid Project"),
-            _("Squid Editor")])
+            _str("Squid Project"),
+            _str("Squid Editor")])
         self.squid_project  = ApplicationProjectPage(self, self.squid_tabs.getTab(0), "squid")
         self.squid_editors  = ApplicationEditorsPage(self, self.squid_tabs.getTab(1), "squid")
         ###
@@ -23351,12 +24815,12 @@ class FileWatcherGUI(QDialog):
     
     def handleSettings(self):
         self.settings_tabs = QTabWidget()
-        self.settings_tabs.setStyleSheet(_(genv.css_tabs))
+        self.settings_tabs.setStyleSheet(_css(genv.css_tabs))
         self.settings_tabs.hide()
         
         self.settings_tabs_chm_widget = QWidget()
         #
-        self.settings_tabs.addTab(self.settings_tabs_chm_widget, _("Settings"))
+        self.settings_tabs.addTab(self.settings_tabs_chm_widget, _str("Settings"))
         ###
         self.main_layout.addWidget(self.settings_tabs)
         
@@ -23385,7 +24849,7 @@ class FileWatcherGUI(QDialog):
         self.settings_tabs_chm_widget.setLayout(vlay)
     
     def load_mo_file(self):
-        file_name, _ = QFileDialog.getOpenFileName(self, _("Open .mo file"), '', 'MO Files (*.mo)')
+        file_name, _ = QFileDialog.getOpenFileName(self, _str("Open .mo file"), '', 'MO Files (*.mo)')
         if file_name:
             self.po = polib.mofile(file_name)
             self.list_widget.clear()
@@ -23418,7 +24882,7 @@ class FileWatcherGUI(QDialog):
         DebugPrint(el)
     
     def handleLocalesProject(self):
-        edit_css = _("edit_css")
+        edit_css = _css("edit_css")
         
         font = QFont(genv.v__app__font, 10)
         self.locale_tabs_project_widget.setFont(font)
@@ -23450,7 +24914,7 @@ class FileWatcherGUI(QDialog):
         edit1.setObjectName("doxygen_project_name")
         edit1.setFont(font2)
         edit1.setStyleSheet(edit_css)
-        edit1.setPlaceholderText(_("Example Project"))
+        edit1.setPlaceholderText(_str("Example Project"))
         vlayout1.addWidget(edit1)
         #
         lblA = QLabel("Project File:")
@@ -23556,7 +25020,7 @@ class FileWatcherGUI(QDialog):
         
         # Create the drives tree
         self.drives_treeLocales = QTreeWidget()
-        self.drives_treeLocales.setHeaderLabels([_("Drive"), _("Available Space"), _("Total Size")])
+        self.drives_treeLocales.setHeaderLabels([_str("Drive"), _str("Available Space"), _str("Total Size")])
         self.drives_treeLocales.setMinimumHeight(120)
         #self.drives_treeLocales.setMaximumWidth(380)
         self.drives_treeLocales.header().setSectionResizeMode(QHeaderView.Interactive)
@@ -23718,7 +25182,7 @@ class FileWatcherGUI(QDialog):
             # Popup-Menü erstellen
             menu = QMenu()
             menu.setFont(font)
-            menu.setStyleSheet(_("menu_css"))
+            menu.setStyleSheet(_css("menu_css"))
             
             # Aktionen zum Menü hinzufügen
             newone_action = QAction("New Project ...", self)
@@ -23787,7 +25251,7 @@ class FileWatcherGUI(QDialog):
     
     def handleCommodoreC64(self):
         self.c64_tabs = QTabWidget()
-        self.c64_tabs.setStyleSheet(_(genv.css_tabs))
+        self.c64_tabs.setStyleSheet(_css(genv.css_tabs))
         self.c64_tabs.hide()
         
         
@@ -23796,10 +25260,10 @@ class FileWatcherGUI(QDialog):
         self.c64_tabs_editors_widget = QWidget()
         self.c64_tabs_designs_widget = QWidget()
         #
-        self.c64_tabs.addTab(self.c64_tabs_project_widget, _("C-64 Project"))
-        self.c64_tabs.addTab(self.c64_tabs_basic___widget, _("C-64 Editor"))
-        self.c64_tabs.addTab(self.c64_tabs_editors_widget, _("C-64 Editor (Sceen)"))
-        self.c64_tabs.addTab(self.c64_tabs_designs_widget, _("C-64 Designer"))
+        self.c64_tabs.addTab(self.c64_tabs_project_widget, _str("C-64 Project"))
+        self.c64_tabs.addTab(self.c64_tabs_basic___widget, _str("C-64 Editor"))
+        self.c64_tabs.addTab(self.c64_tabs_editors_widget, _str("C-64 Editor (Sceen)"))
+        self.c64_tabs.addTab(self.c64_tabs_designs_widget, _str("C-64 Designer"))
         ####
         self.c64_project = ApplicationProjectPage(self, self.c64_tabs_project_widget, "c64")
         self.c64_editors = ApplicationEditorsPage(self, self.c64_tabs_basic___widget, "c64")
@@ -23817,8 +25281,8 @@ class FileWatcherGUI(QDialog):
         
         hpLayout = QHBoxLayout()
         #
-        apps = QPushButton(_("Applications"))
-        game = QPushButton(_("Games"))
+        apps = QPushButton(_str("Applications"))
+        game = QPushButton(_str("Games"))
         #
         apps.setMinimumHeight(32)
         game.setMinimumHeight(32)
@@ -23876,14 +25340,14 @@ class FileWatcherGUI(QDialog):
     
     def closeEvent(self, event):
         msg = QMessageBox()
-        msg.setWindowTitle(_("Confirmation"))
-        msg.setText(_("Would you close the Application?"))
+        msg.setWindowTitle(_str("Confirmation"))
+        msg.setText(_str("Would you close the Application?"))
         msg.setIcon(QMessageBox.Question)
         
         btn_yes = msg.addButton(QMessageBox.Yes)
         btn_no  = msg.addButton(QMessageBox.No)
         
-        msg.setStyleSheet(_("msgbox_css"))
+        msg.setStyleSheet(_css("msgbox_css"))
         result = msg.exec_()
         
         if result == QMessageBox.Yes:
@@ -24124,8 +25588,8 @@ class licenseWindow(QDialog):
         
         layout = QVBoxLayout()
         
-        button1 = QPushButton(_("Accept"))
-        button2 = QPushButton(_("Decline"))
+        button1 = QPushButton(_str("Accept"))
+        button2 = QPushButton(_str("Decline"))
         
         button1.clicked.connect(self.button1_clicked)
         button2.clicked.connect(self.button2_clicked)
@@ -24142,7 +25606,7 @@ class licenseWindow(QDialog):
         # ---------------------------------------------------------
         # get license to front, before the start shot ...
         # ---------------------------------------------------------
-        textfield.setPlainText(_("LICENSE"))
+        textfield.setPlainText(_str("LICENSE"))
     
     def button1_clicked(self):
         #self.returnCode = 0
@@ -24195,7 +25659,7 @@ class HelpWindow(QMainWindow):
         self.hide()
         self.setContentsMargins(0,0,0,0)
         self.setStyleSheet("background-color:gray;")
-        self.setWindowTitle(_("Help Dialog"))
+        self.setWindowTitle(_str("Help Dialog"))
         self.setGeometry(100, 100, 700, 600)
         
         # Hauptlayout des Dialogs
@@ -24211,9 +25675,9 @@ class HelpWindow(QMainWindow):
         navigation_widget.setContentsMargins(1,1,1,1)
         
         # Buttons: Home, Prev, Next
-        self.home_button = QPushButton(_("Home"))
-        self.prev_button = QPushButton(_("Prev"))
-        self.next_button = QPushButton(_("Next"))
+        self.home_button = QPushButton(_str("Home"))
+        self.prev_button = QPushButton(_str("Prev"))
+        self.next_button = QPushButton(_str("Next"))
         
         self.home_button.setMinimumHeight(40)
         self.prev_button.setMinimumHeight(40)
@@ -24298,7 +25762,7 @@ class HelpWindow(QMainWindow):
         """)
         
         # Text "Made with Python"
-        text_label = QLabel(_("Made with Python\n(c) 2024 by paule32"))
+        text_label = QLabel(_str("Made with Python\n(c) 2024 by paule32"))
         text_label.setStyleSheet("""
         background-color: navy;
         border: 1px solid red;
@@ -24571,7 +26035,7 @@ class DraggableIconWidget(QWidget):
             self.icon_label.setScaledContents(True)
             self.icon_label.setFixedSize(100, 100)
         else:
-            showError(_("Error:\ncould not load desktop icon image."))
+            showError(_str("Error:\ncould not load desktop icon image."))
     
     def mouseDoubleClickEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -24745,7 +26209,7 @@ class WindowsXPdesktop(QWidget):
             self.desktop_bg.setScaledContents(True)
             self.addTextLayer()
         else:
-            showError(_("Error:\ncould not load desktop background image."))
+            showError(_str("Error:\ncould not load desktop background image."))
     
     # Ein Label als oberstes Layer
     def addTextLayer(self):
@@ -25145,7 +26609,7 @@ def EntryPoint(arg1=None):
                 win32api.MessageBox(0,(""
                 + "Error: no section: 'doxygen' or option: 'path'\n"
                 + "(missing) in observer.ini\n\n"
-                + "Application is shuting down..."),_("Error:"),
+                + "Application is shuting down..."),_str("Error:"),
                 win32con.MB_OK or
                 win32con.MB_ICONINFORMATION or
                 win32con.MB_TOPMOST)
@@ -25162,7 +26626,7 @@ def EntryPoint(arg1=None):
                 + "Error: "
                 + genv.doxy_env
                 + " is not set in your system settings."),
-                _("Error:"),
+                _str("Error:"),
                 win32con.MB_OK or
                 win32con.MB_ICONINFORMATION or
                 win32con.MB_TOPMOST)
@@ -25189,7 +26653,7 @@ def EntryPoint(arg1=None):
                 win32api.MessageBox(0,(""
                 + "Error: no section: 'doxygen' or option: 'hhc'\n"
                 + "(missing) in observer.ini\n\n"
-                + "Application is shuting down..."),_("Error:"),
+                + "Application is shuting down..."),_str("Error:"),
                 win32con.MB_OK or
                 win32con.MB_ICONINFORMATION or
                 win32con.MB_TOPMOST)
@@ -25206,7 +26670,7 @@ def EntryPoint(arg1=None):
                 + "Error: "
                 + genv.doxy_hhc
                 + " is not set in your system settings."),
-                _("Error:"),
+                _str("Error:"),
                 win32con.MB_OK or
                 win32con.MB_ICONINFORMATION or
                 win32con.MB_TOPMOST)
@@ -25236,7 +26700,7 @@ def EntryPoint(arg1=None):
     # ------------------------------------------------------------------------
     cdn_host = genv.v__app__cdn_host + "/observer/img/flags/"
     cdn_suff = ".gif"
-    genv.v__app__cdn_flags = _("moped_list")
+    genv.v__app__cdn_flags = _str("moped_list")
     #
     pattern_host = r"cdn_host"
     pattern_suff = r"cdn_suff"
@@ -25255,11 +26719,11 @@ def EntryPoint(arg1=None):
         DebugPrint("info: config: '" \
         + f"{genv.doxyfile}" + "' does not exists. I will fix this by create a default file.")
         
-        file_content      = json.loads(_("doxyfile_content"))
+        file_content      = json.loads(_str("doxyfile_content"))
         #DebugPrint(file_content)
         
         try:
-            file_content_warn = json.loads(_("doxyfile_content_warn"))
+            file_content_warn = json.loads(_str("doxyfile_content_warn"))
             #DebugPrint(file_content_warn)
         except Exception as e:
             DebugPrint(e)
@@ -25337,7 +26801,7 @@ def EntryPoint(arg1=None):
             
             btn_ok = msg.addButton(QMessageBox.Ok)
             
-            msg.setStyleSheet(_("msgbox_css"))
+            msg.setStyleSheet(_css("msgbox_css"))
             msg.exec_()
 
 # ---------------------------------------------------------------------------
@@ -25379,19 +26843,19 @@ class parserDBasePoint:
             showInfo("oooppppp")
             prg = dBaseDSL(script_name)
         except configparser.NoOptionError as e:
-            err = _("Exception: option 'language' not found.") + "\n" + _("abort")
+            err = _str("Exception: option 'language' not found.") + "\n" + _str("abort")
             showException(err)
         except configparser.NoSectionError as e:
-            err = _("Exception: section not found.") + "\n" + e + _("abort.")
+            err = _str("Exception: section not found.") + "\n" + e + _str("abort.")
             showException(err)
         except configparser.Error as e:
-            err = _("Exception: config error occur.") + "\n" + _("abort.")
+            err = _str("Exception: config error occur.") + "\n" + _str("abort.")
             showException(err)
         except SyntaxError as e:
             exc_type, exc_value, exc_traceback = traceback.sys.exc_info()
             tb = traceback.extract_tb(e.__traceback__)[-1]
             
-            err = (_("Exception occur at module import:") +
+            err = (_str("Exception occur at module import:") +
             f"type : {exc_type.__name__}" +
             f"value: {exc_value}"     +   ("-"*40)  +
             f"file : {tb.filename}\n" +
@@ -25409,7 +26873,7 @@ class parserDBasePoint:
                 pass
             else:
                 err = (
-                _("Exception occur at module import:") + "\n" +
+                _str("Exception occur at module import:") + "\n" +
                 f"type : {exc_type.__name__}\n" +
                 f"value: {exc_value}\n"         + ("-"*40) +
                 f"file : {tb.filename}\n"       +
