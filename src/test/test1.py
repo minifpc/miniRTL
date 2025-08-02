@@ -1,6 +1,7 @@
 class GridGraphicsViewFormDesigner(QGraphicsView):
     def __init__(self, scene, window_size):
         super().__init__(scene)
+        #
         self.setRenderHint(QPainter.Antialiasing)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)

@@ -8457,7 +8457,7 @@ class ConverterWorkerThread(QThread):
 #         1. transpile from original dsl to python
 #         2. compile   from python to bytecode
 #         3. bytecode  will be gzip to pack the bytecode
-#         4. after al the bytecode (depack) will execute
+#         4. after al the bytecode (depack) will execute.
 # ---------------------------------------------------------------------------
 class ConvertZipExecute(QDialog):
     def __init__(self, parser=None, parent=None):
