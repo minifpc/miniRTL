@@ -1,10 +1,30 @@
 # HelpNDocTools
-Some stuff for "HelpNDoc" (www.helpndoc.com) - the Help authoring Software for CHM, HTML, PDF, ... help projects.
+Working pre-alpha Release Code available under: [Playground](https://kallup.net/myapp/packed.zip). <br>
+Tested with Python 3.13 under Windows 11 64-Bit Pro. <br>
+**0.** - download and depack zip archive<br>
+**1.** - start -> setup.bat <br>
+**2.** - navigate to .\src (**cd src**)<br>
+**3-** - start -> start.bat <br>
+<hr>
+Some stuff for "HelpNDoc" the Help authoring Software for CHM, HTML, PDF, ... help projects.
 To download the Windows 10 64-Bit Professional based Application, you can visit:<br>
 [Application](https://kallup.net/woops/)
 
+Now, I working on a Setup Script to install the Python Application and the used Modules, used in this Reprository Applicationö.
+Only Windows 10/11 64 Bit is supported.
+
 Here are some out dated screen shoot on running the application:
 For the Commodore C-64 TrueType Font, visit: [C64Font](https://style64.org/release/c64-truetype-v1.2.1-style)
+
+Setup PowerShell Applet:
+![Preview](src/img/setup002.png)
+
+Setup PowerShell Applet:
+![Preview](src/img/setup003.png)
+
+
+Electronic Playground:
+![image](https://github.com/user-attachments/assets/dd35ad1c-886c-4683-9947-9993a38f0a95)
 
 Windows XO Dekstop in Action:
 ![Preview](src/img/windesk2.png)

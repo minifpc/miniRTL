@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charSet="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Lernen</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous"/><style>
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    color: #1a1a1a;
+    line-height: 1.25;
+  }
+
+  
+  .chat-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0;
+    position: relative;
+  }
+  
+  .chat-messages {
+    min-height: 100vh;
+    padding-top: 100px;
+    padding-bottom: 140px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin: 0 20px;
+  }
+
+  
+  .chat-header {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 45px;
+    margin: 20px 0 16px;
+    padding: 0 20px;
+  }
+
+  .chat-header-content {
+    border-bottom: 1px solid #72768b29;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+  }
+
+  .chat-header .left {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .chat-header .splitter {
+    width: 1px;
+    height: 16px;
+    background: #72768b29;
+  }
+
+  .chat-header .title {
+    color: #06081fe0;
+    font-size: 14px;
+  }
+
+  .chat-header .time {
+    color: #0a0d3373;
+    font-size: 14px;
+  }
+
+  
+  .chat-footer {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    height: 96px;
+    margin: 16px 0 0;
+    padding: 0 20px;
+  }
+
+  .chat-footer .warning {
+    color: #0a0d3373;
+    font-size: 12px;
+    display: flex;
+    padding: 7px 0px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    background: #72768b0f;
+  }
+
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    padding: 8px 0px;
+  }
+
+  .footer-content-item {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+
+    
+    justify-content: space-between;
+    align-items: center;
+    
+  }
+
+  .footer-content-item .item {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  .footer-content-item .item .num {
+    color: #06081fe0;
+    font-family: D-DIN;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .footer-content-item .item .desc {
+    color: #0a0d3399;
+    font-family: "DM Sans";
+    font-size: 12px;
+    font-weight: 400;
+    position: relative;
+    top: -1px;
+  }
+
+  .footer-content-btn {
+    display: flex;
+    min-height: 32px;
+    padding: 6px 16px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    border-radius: 999px;
+    background: #6128ff;
+    color: #ffffff;
+    text-align: center;
+    font-family: "DM Sans";
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  
+  .message-user {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-left: 18px;
+    max-width: 480px;
+    align-self: flex-end;
+  }
+  
+  .message-user-content {
+    background: rgba(25, 25, 26, 0.06);
+    color: #1a1a1a;
+    padding: 10px 12px;
+    border-radius: 12px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+    word-break: break-word;
+    white-space: pre-wrap;
+  }
+
+  
+  .message-ai {
+    max-width: 720px;
+    align-self: stretch;
+  }
+  
+  .message-ai-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 24px;
+    margin-bottom: 8px;
+  }
+  
+  .message-ai-header .model-logo {
+    width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  
+  .message-ai-header .model-logo svg {
+    width: 100%;
+  }
+  
+  .message-ai-header .model-name {
+    color: #9ca3af;
+    font-size: 16px;
+    line-height: 24px;
+  }
+  
+  .message-ai-content {
+    color: #374151;
+    font-size: 16px;
+    line-height: 24px;
+    word-break: break-word;
+  }
+
+  
+  .quote-block {
+    background: #f8f9fa;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    line-height: 20px;
+    color: #6b7280;
+  }
+  
+  .message-user .quote-block {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #1a1a1a;
+  }
+
+  
+  .markdown-content {
+    word-wrap: break-word;
+  }
+  
+  .markdown-content h1, .markdown-content h2, .markdown-content h3 {
+    margin-top: 24px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+  }
+  
+  .markdown-content h1:first-child, .markdown-content h2:first-child, .markdown-content h3:first-child {
+    margin-top: 0;
+  }
+  
+  .markdown-content h1 { font-size: 24px; }
+  .markdown-content h2 { font-size: 20px; }
+  .markdown-content h3 { font-size: 18px; }
+  
+  .markdown-content p {
+    margin: 16px 0;
+  }
+  
+  .markdown-content p:first-child {
+    margin-top: 0;
+  }
+  
+  .markdown-content p:last-child {
+    margin-bottom: 0;
+  }
+  
+  .markdown-content ul, .markdown-content ol {
+    margin: 16px 0;
+    padding-left: 24px;
+  }
+  
+  .markdown-content li {
+    margin: 4px 0;
+  }
+  
+  .markdown-content code {
+    background: #f3f4f6;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 14px;
+  }
+  
+  .markdown-content pre {
+    background: #f8f9fa;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+    overflow-x: auto;
+    margin: 16px 0;
+  }
+  
+  .markdown-content pre code {
+    background: none;
+    padding: 0;
+  }
+  
+  .markdown-content blockquote {
+    border-left: 4px solid #e5e7eb;
+    margin: 16px 0;
+    padding-left: 16px;
+    color: #6b7280;
+  }
+  
+  .markdown-content table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 16px 0;
+  }
+  
+  .markdown-content th, .markdown-content td {
+    border: 1px solid #e5e7eb;
+    padding: 8px 12px;
+    text-align: left;
+  }
+  
+  .markdown-content th {
+    background: #f8f9fa;
+    font-weight: 600;
+  }
+  
+  .markdown-content a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+  
+  .markdown-content a:hover {
+    text-decoration: underline;
+  }
+  
+  .markdown-content strong {
+    font-weight: 600;
+  }
+  
+  .markdown-content em {
+    font-style: italic;
+  }
+
+  .language-mermaid {
+      display: flex;
+      justify-content: center;
+  }
+
+  /* SVG 样式 */
+  .svg-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 32px 0;
+  }
+
+  .katex {
+    line-height: 2 !important;
+  }
+
+</style></head><body><div class="chat-container"><div class="chat-header"><div class="chat-header-content"><a class="left" href="https://sider.ai"><svg xmlns="http://www.w3.org/2000/svg" width="77" height="24" viewBox="0 0 77 24" fill="none"><path d="M7.97088 1.5625C9.74954 1.5625 11.2181 2.93504 11.4394 4.71142L11.4394 5.04179H8.17648C8.09819 5.04179 8.02234 5.06984 7.9619 5.12114L6.59864 6.27839C6.49701 6.2291 6.38349 6.20155 6.26373 6.20155C5.82875 6.20155 5.47612 6.56502 5.47612 7.01338C5.47612 7.46174 5.82875 7.82521 6.26373 7.82521C6.69871 7.82521 7.05133 7.46174 7.05133 7.01338C7.05133 6.94515 7.04317 6.87888 7.02778 6.81556L8.29744 5.73764H11.4394V11.6524L5.0628 11.6525C4.9364 11.3782 4.66517 11.1885 4.35097 11.1885C3.91599 11.1885 3.56337 11.552 3.56337 12.0004C3.56337 12.4487 3.91599 12.8122 4.35097 12.8122C4.66513 12.8122 4.93632 12.6226 5.06274 12.3484L11.4394 12.3483V18.2631H8.29744L7.02778 17.1852C7.04317 17.1218 7.05133 17.0556 7.05133 16.9873C7.05133 16.539 6.69871 16.1755 6.26373 16.1755C5.82875 16.1755 5.47612 16.539 5.47612 16.9873C5.47612 17.4357 5.82875 17.7992 6.26373 17.7992C6.38349 17.7992 6.49701 17.7716 6.59864 17.7223L7.9619 18.8796C8.02234 18.9309 8.09819 18.9589 8.17648 18.9589H11.4394L11.4394 19.2894C11.1931 21.0697 9.70479 22.4382 7.91447 22.4382C6.26426 22.4382 4.87675 21.2755 4.4767 19.6994C3.27963 19.1603 2.44277 17.9264 2.44277 16.4904C2.44277 16.1518 2.48929 15.8245 2.57614 15.5149C1.50586 14.9397 0.770307 13.7908 0.750882 12.4625L0.750488 12.3483C0.750488 10.8954 1.61439 9.65059 2.84157 9.12972C2.61574 8.70268 2.47647 8.21962 2.44814 7.70585L2.44504 7.63662C2.44051 7.56478 2.43821 7.49232 2.43821 7.4193C2.43821 5.97982 3.33093 4.75526 4.57683 4.30175C4.95569 2.7284 6.33157 1.5625 7.97088 1.5625Z" fill="url(#paint0_linear_77966_486263)"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M19.4366 4.34198C19.0717 2.74829 17.6863 1.5625 16.0331 1.5625C14.2545 1.5625 12.7859 2.93504 12.5646 4.71142V19.2894C12.8109 21.0697 14.2992 22.4382 16.0895 22.4382C17.7397 22.4382 19.1272 21.2755 19.5273 19.6994C20.7244 19.1603 21.5612 17.9264 21.5612 16.4904C21.5612 16.1518 21.5147 15.8245 21.4279 15.5149C22.5126 14.9319 23.2535 13.7597 23.2535 12.4085C23.2535 11.1928 22.6536 10.1218 21.7432 9.49501C21.7389 9.56257 21.7157 9.62958 21.6725 9.68703C20.9946 10.5868 20.2286 11.1531 19.3853 11.3848C19.3698 11.4269 19.3546 11.4726 19.3402 11.5219C19.2683 11.7669 19.2309 12.0399 19.2447 12.3327C19.2562 12.5768 19.3032 12.8246 19.3912 13.0748C19.4551 13.2564 19.3645 13.4571 19.1888 13.5231C19.0131 13.5892 18.8189 13.4955 18.7551 13.3139C18.6435 12.9967 18.5833 12.6797 18.5686 12.3667C18.5542 12.0602 18.5832 11.7705 18.6447 11.5022C17.7929 11.5419 16.8726 11.273 15.8934 10.6948C15.7311 10.599 15.6747 10.3853 15.7674 10.2175C15.8601 10.0497 16.0669 9.99136 16.2292 10.0872L16.2892 10.1222C18.2651 11.2631 19.8456 10.8887 21.1429 9.1663C21.4093 8.67684 21.5612 8.11193 21.5612 7.51033C21.5612 6.05964 20.6777 4.82227 19.4366 4.34198ZM14.2475 16.1307C14.1781 15.9512 14.2626 15.7476 14.4361 15.6759C14.6035 15.6067 14.7926 15.6854 14.8681 15.852L14.876 15.8708L14.8906 15.9021C14.9203 15.963 14.9644 16.0362 15.0237 16.113C15.1211 16.2394 15.2404 16.3495 15.3828 16.4336C15.7311 16.6393 16.1854 16.676 16.7842 16.4699C17.2752 16.1414 17.8861 15.9849 18.6103 16.0065C18.7972 16.0121 18.9443 16.1732 18.9389 16.3663C18.9335 16.5595 18.7776 16.7115 18.5908 16.706C17.2588 16.6662 16.4734 17.3204 16.1552 18.7468C16.1132 18.9351 15.9315 19.0525 15.7493 19.0091C15.5672 18.9657 15.4536 18.7778 15.4956 18.5896C15.6068 18.0909 15.7732 17.6622 15.9929 17.3055C15.6405 17.2966 15.3247 17.2052 15.047 17.0411C14.6574 16.811 14.4079 16.4875 14.2671 16.1767L14.2639 16.1696L14.2475 16.1307ZM15.7901 4.82784C15.6033 4.83238 15.4553 4.99265 15.4597 5.18583C15.4739 5.81319 15.6049 6.35188 15.8485 6.79788C15.2715 6.84005 14.7081 7.15448 14.1954 7.78625C14.0753 7.93429 14.094 8.15497 14.2372 8.27916C14.3804 8.40334 14.5939 8.384 14.714 8.23596C15.1323 7.72049 15.5477 7.50228 15.9562 7.49302C16.1202 7.4893 16.2773 7.52013 16.4238 7.57659C16.5129 7.61091 16.5872 7.65011 16.643 7.68647L16.671 7.70559L16.6884 7.71835C16.6961 7.72361 16.7038 7.7285 16.7118 7.73291C17.0954 7.98677 17.565 8.16537 18.118 8.26604C18.3021 8.29956 18.4777 8.17246 18.5101 7.98216C18.5425 7.79185 18.4195 7.61042 18.2354 7.5769C17.7666 7.49156 17.3794 7.34716 17.0707 7.14083L17.0406 7.11919L17.006 7.09588C16.4393 6.68611 16.1564 6.05078 16.1364 5.16941C16.132 4.97623 15.977 4.82331 15.7901 4.82784Z" fill="url(#paint1_linear_77966_486263)"></path><path d="M32.9558 18.916C32.0489 18.916 31.2289 18.7608 30.4959 18.4503C29.7753 18.1398 29.2038 17.6927 28.7814 17.109C28.359 16.5253 28.1416 15.8361 28.1292 15.0412H30.9245C30.9618 15.5752 31.1482 15.9975 31.4836 16.308C31.8315 16.6185 32.3036 16.7737 32.8999 16.7737C33.5087 16.7737 33.987 16.6309 34.3349 16.3452C34.6828 16.0472 34.8567 15.6622 34.8567 15.1902C34.8567 14.8053 34.7387 14.3811 34.5026 14.1327C34.2666 13.8843 33.9684 13.6919 33.6081 13.5552C33.2602 13.4062 32.7757 13.2448 32.1545 13.0709C31.3097 12.8225 30.6201 12.5803 30.0859 12.3444C29.5641 12.096 29.1106 11.7296 28.7255 11.2453C28.3528 10.7485 28.1664 9.98282 28.1664 9.16315C28.1664 8.39316 28.359 7.72251 28.7441 7.15123C29.1293 6.57994 29.6697 6.14527 30.3655 5.8472C31.0612 5.53672 31.8563 5.38148 32.7508 5.38148C34.0926 5.38148 35.1797 5.71059 36.0121 6.36881C36.8569 7.01462 37.3228 7.92122 37.4098 9.08863H34.5399C34.515 8.64154 34.3225 8.27517 33.9622 7.98953C33.6143 7.69147 33.1484 7.54244 32.5645 7.54244C32.0551 7.54244 31.6451 7.67284 31.3345 7.93364C31.0363 8.19445 30.8873 8.57323 30.8873 9.07001C30.8873 9.41775 30.9991 9.81704 31.2227 10.053C31.4588 10.2766 31.7445 10.4628 32.08 10.6119C32.4278 10.7485 32.9124 10.9099 33.5336 11.0962C34.3784 11.3446 35.0679 11.593 35.6021 11.8414C36.1364 12.0898 36.596 12.4623 36.9812 12.9591C37.3663 13.4559 37.5589 14.2153 37.5589 15.0226C37.5589 15.7181 37.3788 16.3639 37.0185 16.96C36.6582 17.5561 36.1301 18.0343 35.4344 18.3944C34.7387 18.7422 33.9125 18.916 32.9558 18.916Z" fill="black" fill-opacity="0.96"></path><path d="M41.144 7.93405C40.6843 7.93405 40.2991 7.79123 39.9885 7.50558C39.6904 7.20752 39.5413 6.84115 39.5413 6.40648C39.5413 5.9718 39.6904 5.61164 39.9885 5.326C40.2991 5.02794 40.6843 4.87891 41.144 4.87891C41.6037 4.87891 41.9826 5.02794 42.2808 5.326C42.5914 5.61164 42.7467 5.9718 42.7467 6.40648C42.7467 6.84115 42.5914 7.20752 42.2808 7.50558C41.9826 7.79123 41.6037 7.93405 41.144 7.93405ZM42.4298 9.16356V18.9468H39.8208V9.16356H42.4298Z" fill="black" fill-opacity="0.96"></path><path d="M44.3367 13.5882C44.3367 12.5449 44.5417 11.6197 44.9517 10.8125C45.3741 10.0052 45.9456 9.38424 46.6662 8.94956C47.3867 8.51489 48.1881 8.29755 49.0702 8.29755C49.7411 8.29755 50.3809 8.44658 50.9897 8.74464C51.5984 9.03029 52.083 9.41528 52.4433 9.89964V5.00023H55.0896V18.7856H52.4433V17.2581C52.1203 17.7672 51.6668 18.1771 51.0829 18.4876C50.4989 18.798 49.8218 18.9533 49.0515 18.9533C48.1819 18.9533 47.3867 18.7297 46.6662 18.2826C45.9456 17.8356 45.3741 17.2084 44.9517 16.4011C44.5417 15.5815 44.3367 14.6438 44.3367 13.5882ZM52.4619 13.6254C52.4619 12.992 52.3377 12.4518 52.0892 12.0047C51.8407 11.5452 51.5053 11.1975 51.0829 10.9615C50.6604 10.7131 50.207 10.5889 49.7224 10.5889C49.2379 10.5889 48.7906 10.7069 48.3807 10.9429C47.9707 11.1788 47.6352 11.5266 47.3743 11.9861C47.1258 12.4332 47.0016 12.9672 47.0016 13.5882C47.0016 14.2091 47.1258 14.7556 47.3743 15.2275C47.6352 15.687 47.9707 16.041 48.3807 16.2894C48.8031 16.5377 49.2503 16.6619 49.7224 16.6619C50.207 16.6619 50.6604 16.5439 51.0829 16.308C51.5053 16.0596 51.8407 15.7119 52.0892 15.2648C52.3377 14.8053 52.4619 14.2588 52.4619 13.6254Z" fill="black" fill-opacity="0.96"></path><path d="M71.7486 10.0673C72.084 9.52085 72.5189 9.09238 73.0531 8.7819C73.5997 8.47142 74.2209 8.31618 74.9167 8.31618V11.0546H74.2271C73.4072 11.0546 72.786 11.2471 72.3636 11.6321C71.9536 12.0171 71.7486 12.6878 71.7486 13.644V18.7856H69.1396V8.46521H71.7486V10.0673Z" fill="black" fill-opacity="0.96"></path><path d="M67.0749 12.3328C67.1528 12.6971 67.1986 13.0302 67.2124 13.3321L59.8318 14.911C60.0484 15.6266 60.4257 16.1429 60.9635 16.4596C61.5014 16.7764 62.0983 16.8646 62.7543 16.7242C63.9913 16.4596 64.4419 15.8644 64.6836 15.071H67.2124C67.1286 16.1049 66.7263 16.6664 66.0802 17.2955C65.3237 18.0321 64.4638 18.5684 63.261 18.8257C62.2891 19.0336 61.3689 19.0082 60.5005 18.7495C59.6415 18.476 58.909 17.9913 58.3028 17.2955C57.7087 16.5971 57.3012 15.7317 57.0804 14.6994C56.857 13.655 56.8735 12.6926 57.1299 11.8123C57.3862 10.9319 57.8516 10.1973 58.5261 9.60853C59.2006 9.01974 60.0359 8.61879 61.0321 8.40567C61.9919 8.20036 62.8926 8.22359 63.7341 8.47537C64.5879 8.72455 65.3031 9.18751 65.8798 9.86425C66.4661 10.5262 66.8644 11.3491 67.0749 12.3328ZM64.2766 12.1694C64.1241 11.5162 63.7755 11.0447 63.2307 10.7548C62.6833 10.4528 62.0756 10.3733 61.4074 10.5162C60.7756 10.6513 60.2826 10.96 59.9284 11.4422C59.5837 11.9096 59.4355 12.4938 59.4838 13.1947L64.2766 12.1694Z" fill="black" fill-opacity="0.96"></path><defs><linearGradient id="paint0_linear_77966_486263" x1="19.8986" y1="21.8765" x2="2.44935" y2="5.38796" gradientUnits="userSpaceOnUse"><stop stop-color="#32C5FF"></stop><stop offset="0.25" stop-color="#5666F5"></stop><stop offset="0.523727" stop-color="#8A57EA"></stop><stop offset="0.820607" stop-color="#EB35CE"></stop><stop offset="1" stop-color="#F7B500"></stop></linearGradient><linearGradient id="paint1_linear_77966_486263" x1="19.8986" y1="21.8765" x2="2.44935" y2="5.38796" gradientUnits="userSpaceOnUse"><stop stop-color="#32C5FF"></stop><stop offset="0.25" stop-color="#5666F5"></stop><stop offset="0.523727" stop-color="#8A57EA"></stop><stop offset="0.820607" stop-color="#EB35CE"></stop><stop offset="1" stop-color="#F7B500"></stop></linearGradient></defs></svg><div class="splitter"></div><div class="title">Ihr KI-Dateianalyst</div></a><div class="time">3.10.2025, 16:50:54</div></div></div><div class="chat-messages"><div class="message-user"><div class="message-user-content">ich möchte Prolog (SWIPL) programmieren lernen</div></div><div class="message-ai"><div class="message-ai-header"><span class="model-logo"><svg
+  width="18"
+  height="18"
+  viewBox="0 0 18 18"
+  fill="currentColor"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M3.54342 9.00081C1.54809 11.9068 0.882844 14.6724 2.10558 15.8951C3.32832 17.1179 6.09387 16.4526 8.9999 14.4573C11.9059 16.4526 14.6715 17.1179 15.8942 15.8951C17.117 14.6724 16.4517 11.9068 14.4564 9.00081C16.4517 6.0948 17.1169 3.32929 15.8942 2.10656C14.6714 0.88383 11.9059 1.54906 8.9999 3.54435C6.09389 1.54906 3.32837 0.88383 2.10564 2.10656C0.882912 3.32929 1.54814 6.0948 3.54342 9.00081ZM4.39863 10.1518C3.91787 10.8962 3.54202 11.6144 3.27925 12.2749C2.9646 13.0658 2.83699 13.7113 2.84132 14.185C2.84557 14.6503 2.9712 14.8516 3.06018 14.9405C3.14916 15.0295 3.35043 15.1552 3.81571 15.1594C4.28938 15.1637 4.93495 15.0361 5.72582 14.7215C6.38629 14.4587 7.10454 14.0829 7.84896 13.6021C7.23641 13.1119 6.6258 12.5664 6.03008 11.9707C5.43435 11.375 4.88882 10.7643 4.39863 10.1518ZM5.21172 9.00081C5.72658 9.67192 6.31943 10.3509 6.98468 11.0161C7.64991 11.6813 8.32882 12.2742 8.9999 12.789C9.67099 12.2742 10.3499 11.6813 11.0151 11.0161C11.6804 10.3509 12.2732 9.67192 12.7881 9.00081C12.2732 8.32973 11.6804 7.65083 11.0152 6.9856C10.3499 6.32035 9.671 5.72751 8.9999 5.21264C8.3288 5.72751 7.64987 6.32035 6.98462 6.9856C6.31939 7.65083 5.72657 8.32973 5.21172 9.00081ZM7.84895 4.39956C7.23638 4.88974 6.62576 5.43528 6.03003 6.031C5.43432 6.62671 4.8888 7.23732 4.39864 7.84986C3.9179 7.10547 3.54206 6.38725 3.2793 5.7268C2.96466 4.93593 2.83704 4.29035 2.84137 3.81669C2.84563 3.35141 2.97125 3.15014 3.06024 3.06116C3.14922 2.97217 3.35049 2.84655 3.81577 2.84229C4.28944 2.83796 4.93501 2.96558 5.72588 3.28022C6.38633 3.54298 7.10455 3.91882 7.84895 4.39956ZM10.1509 4.39956C10.7634 4.88974 11.3741 5.43528 11.9698 6.031C12.5655 6.62671 13.111 7.23732 13.6012 7.84986C14.0819 7.10547 14.4577 6.38725 14.7205 5.7268C15.0352 4.93593 15.1628 4.29035 15.1584 3.81669C15.1542 3.35141 15.0286 3.15014 14.9396 3.06116C14.8506 2.97217 14.6493 2.84655 14.184 2.84229C13.7104 2.83796 13.0648 2.96558 12.2739 3.28022C11.6135 3.54298 10.8953 3.91882 10.1509 4.39956ZM13.6012 10.1518C13.111 10.7643 12.5655 11.375 11.9697 11.9707C11.374 12.5664 10.7634 13.1119 10.1509 13.6021C10.8953 14.0829 11.6135 14.4587 12.274 14.7215C13.0649 15.0361 13.7104 15.1637 14.1841 15.1594C14.6494 15.1552 14.8506 15.0295 14.9396 14.9405C15.0286 14.8516 15.1542 14.6503 15.1585 14.185C15.1628 13.7113 15.0352 13.0658 14.7206 12.2749C14.4578 11.6144 14.0819 10.8962 13.6012 10.1518Z"
+  />
+  <path
+    d="M10.2358 9.03676C10.2358 9.6995 9.69853 10.2368 9.03579 10.2368C8.37305 10.2368 7.83579 9.6995 7.83579 9.03676C7.83579 8.37402 8.37305 7.83676 9.03579 7.83676C9.69853 7.83676 10.2358 8.37402 10.2358 9.03676Z"
+  />
+</svg>
+</span><span class="model-name">multi-model</span></div><div class="message-ai-content markdown-content"><p>Bevor ich antworte, habe ich noch ein paar Fragen, um besser auf deine Bedürfnisse einzugehen:</p><ol>
+<li>Hast du bereits Programmiererfahrung, und wenn ja, mit welchen Programmiersprachen oder Konzepten?</li>
+<li>Welche Lernmethoden bevorzugst du – zum Beispiel interaktive Tutorials, Videoanleitungen oder eher klassische Literatur und Dokumentationen?</li>
+<li>Möchtest du dich auf bestimmte Anwendungsbereiche von Prolog (z. B. logisches Schließen, Datenbanken, KI) konzentrieren oder eine allgemeine Einführung erhalten?</li>
+</ol><p>Bitte beantworte diese Fragen, damit ich dir bestmöglich weiterhelfen kann.</p></div></div><div class="message-user"><div class="message-user-content">1. ja ich habe Programmiererfahrung mit den Sprachen Assembler, C, C++, Python, HTML, CSS, BASH, Pascal mittels FPC und Delphi. für C++ nutze ich Microsoft Visual Studion 17 2022 sowie GNU C++
+2. ich bevorzuge klassische Literatur und Dokumentation.
+3. ich möchte eine Einführung, so dass ich dann Fakten und Wissen abfragen kann (zum Beispiel: ist 0.5 eine natürliche Zahl innerhalb von IN  oder:  was ist das kleinste Ordinal-Symbol + 1 )</div></div><div class="message-ai"><div class="message-ai-header"><span class="model-logo"><svg
+  width="18"
+  height="18"
+  viewBox="0 0 18 18"
+  fill="currentColor"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M3.54342 9.00081C1.54809 11.9068 0.882844 14.6724 2.10558 15.8951C3.32832 17.1179 6.09387 16.4526 8.9999 14.4573C11.9059 16.4526 14.6715 17.1179 15.8942 15.8951C17.117 14.6724 16.4517 11.9068 14.4564 9.00081C16.4517 6.0948 17.1169 3.32929 15.8942 2.10656C14.6714 0.88383 11.9059 1.54906 8.9999 3.54435C6.09389 1.54906 3.32837 0.88383 2.10564 2.10656C0.882912 3.32929 1.54814 6.0948 3.54342 9.00081ZM4.39863 10.1518C3.91787 10.8962 3.54202 11.6144 3.27925 12.2749C2.9646 13.0658 2.83699 13.7113 2.84132 14.185C2.84557 14.6503 2.9712 14.8516 3.06018 14.9405C3.14916 15.0295 3.35043 15.1552 3.81571 15.1594C4.28938 15.1637 4.93495 15.0361 5.72582 14.7215C6.38629 14.4587 7.10454 14.0829 7.84896 13.6021C7.23641 13.1119 6.6258 12.5664 6.03008 11.9707C5.43435 11.375 4.88882 10.7643 4.39863 10.1518ZM5.21172 9.00081C5.72658 9.67192 6.31943 10.3509 6.98468 11.0161C7.64991 11.6813 8.32882 12.2742 8.9999 12.789C9.67099 12.2742 10.3499 11.6813 11.0151 11.0161C11.6804 10.3509 12.2732 9.67192 12.7881 9.00081C12.2732 8.32973 11.6804 7.65083 11.0152 6.9856C10.3499 6.32035 9.671 5.72751 8.9999 5.21264C8.3288 5.72751 7.64987 6.32035 6.98462 6.9856C6.31939 7.65083 5.72657 8.32973 5.21172 9.00081ZM7.84895 4.39956C7.23638 4.88974 6.62576 5.43528 6.03003 6.031C5.43432 6.62671 4.8888 7.23732 4.39864 7.84986C3.9179 7.10547 3.54206 6.38725 3.2793 5.7268C2.96466 4.93593 2.83704 4.29035 2.84137 3.81669C2.84563 3.35141 2.97125 3.15014 3.06024 3.06116C3.14922 2.97217 3.35049 2.84655 3.81577 2.84229C4.28944 2.83796 4.93501 2.96558 5.72588 3.28022C6.38633 3.54298 7.10455 3.91882 7.84895 4.39956ZM10.1509 4.39956C10.7634 4.88974 11.3741 5.43528 11.9698 6.031C12.5655 6.62671 13.111 7.23732 13.6012 7.84986C14.0819 7.10547 14.4577 6.38725 14.7205 5.7268C15.0352 4.93593 15.1628 4.29035 15.1584 3.81669C15.1542 3.35141 15.0286 3.15014 14.9396 3.06116C14.8506 2.97217 14.6493 2.84655 14.184 2.84229C13.7104 2.83796 13.0648 2.96558 12.2739 3.28022C11.6135 3.54298 10.8953 3.91882 10.1509 4.39956ZM13.6012 10.1518C13.111 10.7643 12.5655 11.375 11.9697 11.9707C11.374 12.5664 10.7634 13.1119 10.1509 13.6021C10.8953 14.0829 11.6135 14.4587 12.274 14.7215C13.0649 15.0361 13.7104 15.1637 14.1841 15.1594C14.6494 15.1552 14.8506 15.0295 14.9396 14.9405C15.0286 14.8516 15.1542 14.6503 15.1585 14.185C15.1628 13.7113 15.0352 13.0658 14.7206 12.2749C14.4578 11.6144 14.0819 10.8962 13.6012 10.1518Z"
+  />
+  <path
+    d="M10.2358 9.03676C10.2358 9.6995 9.69853 10.2368 9.03579 10.2368C8.37305 10.2368 7.83579 9.6995 7.83579 9.03676C7.83579 8.37402 8.37305 7.83676 9.03579 7.83676C9.69853 7.83676 10.2358 8.37402 10.2358 9.03676Z"
+  />
+</svg>
+</span><span class="model-name">multi-model</span></div><div class="message-ai-content markdown-content"><h2>Inhaltsverzeichnis</h2><ol>
+<li>Einführung in Prolog</li>
+<li>Grundlagen der logischen Programmierung</li>
+<li>Fakten und Regeln in Prolog</li>
+<li>Mathematische Eigenschaften und arithmetische Operationen</li>
+<li>Logische Ausdrücke und Aussagenlogik</li>
+<li>Variablen, Unifikation und Abfragen</li>
+<li>Erweiterte Anwendungen in SWI-Prolog</li>
+<li>Webbasierte Plattformen und Kollaboration mit SWISH</li>
+<li>Integration von Prolog in KI-Anwendungen</li>
+<li>Vergleich traditioneller Ansätze und moderner Implementierungen</li>
+<li>Zusammenfassung und Ausblick</li>
+</ol><hr/><h2>1. Einführung in Prolog</h2><p>Prolog (Programmierung in Logik) ist eine deklarative Programmiersprache, die sich seit ihrer Entstehung in den 1970er Jahren durch ihre Eignung in der Wissensrepräsentation, bei Expertensystemen und in der Verarbeitung natürlicher Sprache etabliert hat . Anders als imperative Sprachen, in denen der Programmierer Schritt für Schritt den Algorithmus vorgibt, wird in Prolog das Problem als eine Sammlung von Fakten und Regeln formuliert, auf deren Basis mittels logischer Inferenz Lösungen gefunden werden. Besonders in der Anwendung zur Abfrage und Verarbeitung von Fakten – etwa bei der Modellierung mathematischer oder logischer Eigenschaften – zeigt Prolog seine besondere Stärke .</p><p>In diesem Artikel liegt der Schwerpunkt auf einer detaillierten Einführung in die grundlegenden Konzepte von Prolog, wobei insbesondere die Nutzung von SWI-Prolog (SWIPL) für logische Faktenabfragen im Vordergrund steht. Die behandelten Themen reichen von der Definition einfacher Fakten und Regeln bis hin zu komplexeren logischen Ausdrücken, arithmetischen Operationen und erweiterten Anwendungsmöglichkeiten in vernetzten und webbasierten Umgebungen.</p><hr/><h2>2. Grundlagen der logischen Programmierung</h2><p>Prolog basiert auf der Prädikatenlogik erster Stufe und erlaubt es, Wissen in Form von Aussagen darzustellen. Diese Aussagen können entweder als Fakten oder als Regeln formuliert sein. Im Gegensatz zu traditionellen Programmiersprachen ist das primäre Paradigma in Prolog nicht das exakte Festlegen von Abläufen, sondern das Beschreiben von Zusammenhängen und Relationen zwischen Entitäten .</p><h3>2.1 Prinzip der Deklarativität</h3><p>Bei der deklarativen Programmierung wird weniger der Ablauf als vielmehr das gewünschte Ergebnis spezifiziert. Prolog nutzt dazu die Konzepte von Fakten und Regeln, die in einer Wissensbasis (Datenbank) gespeichert sind. Die eigentliche Berechnung erfolgt durch die Inferenzmaschine, die die Sachverhalte logischerweise deduziert .</p><h3>2.2 Fakten, Regeln und Abfragen</h3><p>Ein Fakt stellt eine grundlegende Wahrheit dar, z. B.:</p><p>  <code>mensch(sokrates).</code></p><p>Dies bedeutet, dass Sokrates als Mensch deklariert wird. Regeln definieren anhand von Bedingungen weitere Beziehungen und erlauben logische Schlussfolgerungen. Zum Beispiel:</p><p>  <code>sterblich(X) :- mensch(X).</code></p><p>Diese Regel besagt, dass jede Entität, die als Mensch definiert ist, auch sterblich ist. Schließlich werden Abfragen (Queries) verwendet, um das Wissen aus der Datenbank zu extrahieren – etwa um festzustellen, ob Sokrates sterblich ist, oder um alle sterblichen Subjekte zu ermitteln .</p><hr/><h2>3. Fakten und Regeln in Prolog</h2><h3>3.1 Definition von Fakten</h3><p>Fakten sind die Grundeinheiten, durch die Wissen in Prolog repräsentiert wird. Jeder Fakt wird durch ein Prädikat mit einer festgelegten Anzahl an Argumenten definiert. Dabei endet jede Aussage mit einem Punkt. Beispiele für Fakten sind:</p><p>  <code>vater(hans, peter).</code><br/>
+<code>mutter(anna, peter).</code></p><p>Diese Fakten definieren eindeutige Beziehungen, beispielsweise dass Hans der Vater von Peter und Anna die Mutter von Peter ist .</p><h3>3.2 Regeln als Inferenzmechanismus</h3><p>Regeln ermöglichen es, neues Wissen aus bestehenden Fakten zu generieren. Eine Regel besteht aus einem Kopf und einem Rumpf, die durch den Operator „:-“ getrennt sind. Der Kopf der Regel gilt als wahr, wenn die Bedingungen im Rumpf erfüllt sind. Ein klassisches Beispiel lautet:</p><p>  <code>großvater(X, Y) :- vater(X, Z), vater(Z, Y).</code></p><p>Dies bedeutet, dass X der Großvater von Y ist, wenn X Vater von Z und Z wiederum Vater von Y ist .</p><h3>3.3 Unifikation in Prolog</h3><p>Ein zentrales Konzept in Prolog ist die Unifikation. Dies ist der Prozess, bei dem Variablen in Abfragen mit konkreten Werten aus Fakten und Regeln übereinstimmen. Wird eine Unifikation erfolgreich durchgeführt, so wird die gegebene Abfrage bejaht. Beispielweise:</p><p>  <code>?- mensch(X).</code></p><p>liefert, wenn in der Wissensbasis nur <code>mensch(sokrates)</code> definiert ist, als Lösung:</p><p>  <code>X = sokrates.</code></p><p>Die Fähigkeit zur Unifikation ist grundlegend für das Schließen logischer Zusammenhänge, da sie die Basis für die Inferenz bildet .</p><hr/><h2>4. Mathematische Eigenschaften und arithmetische Operationen</h2><p>Prolog ist nicht nur in der Darstellung logischer und relationaler Fakten stark, sondern auch in der Abbildung und Durchführung von arithmetischen Operationen. Dadurch lassen sich mathematische Probleme elegant modellieren und lösen.</p><h3>4.1 Arithmetische Berechnungen in Prolog</h3><p>Die Evaluation von arithmetischen Ausdrücken in Prolog erfolgt über den <code>is</code>-Operator. Dieser Operator wird verwendet, um Ausdrücke auszuwerten und Variablen entsprechende Werte zuzuweisen. Beispiel:</p><p>  <code>?- X is 2 + 3.</code><br/>
+<code>X = 5.</code></p><p>Darüber hinaus können auch komplexere Operationen definiert werden. Ein Beispiel, das das Quadrat einer Zahl berechnet, lautet:</p><p>  <code>prolog     quadrat(X, Q) :- Q is X * X.     </code></p><p>Durch die Abfrage</p><p>  <code>?- quadrat(4, Q).</code></p><p>erhält man das Ergebnis</p><p>  <code>Q = 16.</code></p><h3>4.2 Mathematische Fakten zur Modellierung realer Probleme</h3><p>Ein häufiges Anwendungsszenario in Prolog besteht darin, reale mathematische und logische Zusammenhänge zu modellieren. Ein Beispiel hierfür ist die Berechnung des Gesamteinkommens einer Person anhand des Stundenlohns und der Arbeitszeit. Dabei werden Fakten zur Definition des Stundenlohns und der überwiesenen Arbeitszeit verwendet, und Regeln zur Berechnung des Gesamteinkommens führen zu klaren, nachvollziehbaren Ergebnissen:</p><pre><code class="language-prolog">% Fakten  
+stundenlohn(weng, 12).  
+arbeitszeit(weng, 50).  
+
+% Regel zur Berechnung des Gesamteinkommens  
+einkommen(X) :-  
+    stundenlohn(X, Lohn),  
+    arbeitszeit(X, Zeit),  
+    {Einkommen = Lohn * Zeit / 60}.  
+</code></pre><p>Bei der Abfrage</p><p>  <code>?- einkommen(weng).</code></p><p>wird Prolog den Wert berechnen und zurückliefern. Diese Form der mathematischen Modellierung zeigt, wie Prolog rein deklarativ verwendet werden kann, um arithmetische Beziehungen darzustellen und zu verarbeiten .</p><h3>4.3 Tabelle: Arithmetische Operationen und Fakten</h3><table><thead><tr><th>Operation</th><th>Prolog-Ausdruck</th><th>Beschreibung</th></tr></thead><tbody><tr><td>Addition</td><td><code>2 + 3</code></td><td>Summiert zwei Zahlen</td></tr><tr><td>Multiplikation</td><td><code>4 * 5</code></td><td>Multipliziert zwei Zahlen</td></tr><tr><td>Modulo</td><td><code>X mod 2</code></td><td>Bestimmt den Rest bei Division durch 2</td></tr><tr><td>Quadratberechnung</td><td><code>X * X</code></td><td>Berechnet das Quadrat einer Zahl</td></tr><tr><td>Einkommensermittlung (Beispiel)</td><td><code>Lohn * Zeit / 60</code></td><td>Berechnet das Einkommen anhand Stundenlohn und Arbeitszeit</td></tr></tbody></table><p><em>Abbildung: Vergleich von arithmetischen Operationen in Prolog</em></p><hr/><h2>5. Logische Ausdrücke und Aussagenlogik</h2><p>Die Modellierung logischer Beziehungen und Aussagen ist ein weiterer zentraler Aspekt von Prolog. Durch die Definition eigener Operatoren und Prädikate können komplexe logische Ausdrücke dargestellt werden.</p><h3>5.1 Benutzerdefinierte Operatoren</h3><p>Prolog erlaubt es, mittels der Direktive <code>op/3</code> eigene Operatoren zu definieren. Dies ermöglicht es, logische Ausdrücke in einer lesbaren und natürlichen Form zu formulieren. Beispiel:</p><pre><code class="language-prolog">:- op(500, xfy, and).  
+:- op(600, xfy, or).  
+:- op(400, fy, not).  
+</code></pre><p>Mit diesen Definitionen können logische Ausdrücke wie folgt formuliert werden:</p><p>  <code>(true and not false) or false</code></p><p>wobei der <code>not</code>-Operator eine Negation darstellt und <code>and</code> sowie <code>or</code> für logische Konjunktionen bzw. Disjunktionen verwendet werden .</p><h3>5.2 Evaluation logischer Ausdrücke</h3><p>Um logische Ausdrücke auszuwerten, werden Regeln definiert, die den Wahrheitswert des Ausdrucks bestimmen. Ein einfaches Evaluierungssystem könnte so aussehen:</p><pre><code class="language-prolog">eval(true, true).  
+eval(false, false).  
+eval(X and Y, true) :- eval(X, true), eval(Y, true).  
+eval(X and Y, false) :- (eval(X, false); eval(Y, false)).  
+eval(X or Y, true) :- (eval(X, true); eval(Y, true)).  
+eval(X or Y, false) :- eval(X, false), eval(Y, false).  
+eval(not X, Result) :- eval(X, Val), (Val = true -&gt; Result = false ; Result = true).  
+</code></pre><p>Bei der Abfrage</p><p>  <code>?- eval((true and not false) or false, R).</code></p><p>wird als Ergebnis</p><p>  <code>R = true</code></p><p>zurückgegeben. Diese Fähigkeit, komplexe logische Aussagen auszuwerten, macht Prolog zu einem idealen Werkzeug für Anwendungen in der KI und Wissensrepräsentation .</p><h3>5.3 Mermaid-Diagramm: Ablauf der logischen Auswertung</h3><pre><code class="language-mermaid">flowchart TD  
+    A[&quot;Start: Logische Abfrage&quot;]  
+    B[&quot;Prüfung des Ausdrucks: and, or, not&quot;]  
+    C[&quot;Rekursive Auswertung der Subausdrücke&quot;]  
+    D[&quot;Bestimmung des Wahrheitswertes&quot;]  
+    E[&quot;Ergebnis: true oder false&quot;]  
+    A --&gt; B  
+    B --&gt; C  
+    C --&gt; D  
+    D --&gt; E  
+    E --&gt; END[&quot;END&quot;]  
+</code></pre><p><em>Abbildung: Ablauf der logischen Auswertung in Prolog</em></p><hr/><h2>6. Variablen, Unifikation und Abfragen</h2><p>Ein zentrales Prinzip in Prolog ist die Unifikation. Sie ermöglicht es, Variablen in Abfragen zu binden und Matching zwischen Fakten und Regeln zu vollziehen.</p><h3>6.1 Verwendung von Variablen</h3><p>Variablen in Prolog beginnen stets mit einem Großbuchstaben oder einem Unterstrich. Sie werden in Abfragen häufig eingesetzt, um allgemeine Fragen zu stellen. Beispiel:</p><p>  <code>?- mensch(X).</code></p><p>wobei Prolog nach allen Belegungen für X sucht, bei denen ein Fakt <code>mensch(...)</code> existiert. Wird der Fakt <code>mensch(sokrates).</code> in der Wissensbasis definiert, so lautet das Ergebnis:</p><p>  <code>X = sokrates.</code></p><h3>6.2 Unifikation als Basis der Inferenz</h3><p>Die Unifikation vergleicht Strukturen und sucht dabei passende Werte für die Variablen. Dabei wird nicht nur der rein syntaktische Aufbau, sondern auch die semantische Bedeutung berücksichtigt, etwa bei arithmetischen Ausdrücken. Ein Beispiel:</p><p>  <code>?- X is 2 + 3.</code><br/>
+liefert <code>X = 5.</code></p><p>Dies demonstriert, wie Variablen zu konkreten Werten gebunden werden können, wenn arithmetische Ausdrücke ausgewertet werden. Die Unifikation ist die Basis der Schlussfolgerungslogik in Prolog und ermöglicht es, ein System flexibler Regeln und Fakten zu erstellen .</p><h3>6.3 Abfragen mit zusammengesetzten Bedingungen</h3><p>Durch die Kombination von Fakten, Regeln und Variablen lassen sich auch komplexere Abfragen stellen. Ein Beispiel aus der Mathematik:</p><pre><code class="language-prolog">% Definition von Fakten  
+arbeitszeit(weng, 50).  
+stundenlohn(weng, 12).  
+
+% Regel zur Berechnung des Gesamteinkommens  
+einkommen(X, GesEinkommen) :-  
+    stundenlohn(X, Lohn),  
+    arbeitszeit(X, Zeit),  
+    GesEinkommen is Lohn * Zeit / 60.  
+</code></pre><p>Die Abfrage</p><p>  <code>?- einkommen(weng, E).</code></p><p>liefert das Gesamteinkommen, wobei Prolog die Unifikation nutzt, um die Werte zu extrahieren und die arithmetische Berechnung durchzuführen. Diese Herangehensweise demonstriert, wie flexibel Prolog bei der Modellierung realer Probleme sein kann .</p><hr/><h2>7. Erweiterte Anwendungen in SWI-Prolog</h2><p>Neben den grundlegenden Konzepten bietet SWI-Prolog zahlreiche Erweiterungsmöglichkeiten, die die Sprache in praxisrelevanten Szenarien besonders nützlich machen. Insbesondere die Möglichkeit, Constraint Logic Programming (CLP) zu nutzen, erweitert den Anwendungsspielraum von Prolog erheblich.</p><h3>7.1 Constraint Logic Programming (CLP)</h3><p>Constraint Logic Programming ermöglicht die Modellierung von Problemen unter Berücksichtigung von Einschränkungen (Constraints). Ein häufig eingesetztes Modul in SWI-Prolog ist CLP(R), das Berechnungen über reelle Zahlen unterstützt. Beispiel:</p><pre><code class="language-prolog">:- use_module(library(clpr)).  
+
+gleichung(X, Y) :-  
+    { X = 2*Y + 3, Y = 5 }.  
+</code></pre><p>Bei der Abfrage</p><p>  <code>?- gleichung(X, Y).</code></p><p>liefert Prolog die Lösung <code>X = 13.0, Y = 5.0</code>. Diese Methode ist besonders nützlich bei Optimierungsproblemen und solchen, bei denen es auf genaue Einschränkungen ankommt .</p><h3>7.2 Dynamische Wissensbasen</h3><p>Prolog ermöglicht auch das dynamische Hinzufügen und Entfernen von Fakten, was in Systemen mit sich ändernden Daten von großem Vorteil ist. Über die Befehle <code>assert</code> und <code>retract</code> können zur Laufzeit neue Fakten zur Wissensbasis hinzugefügt oder entfernt werden. Diese Funktionalität ist insbesondere in Expertensystemen und adaptiven Anwendungen wertvoll .</p><h3>7.3 Tabelle: Erweiterte Funktionen in SWI-Prolog</h3><table><thead><tr><th>Funktion</th><th>Befehl/Prädikat</th><th>Beschreibung</th></tr></thead><tbody><tr><td>Constraint-Programmierung</td><td><code>library(clpr)</code></td><td>Mathematische Constraints und Berechnungen</td></tr><tr><td>Dynamisches Hinzufügen</td><td><code>assert(Fakt)</code></td><td>Fügt einen neuen Fakt zur Wissensbasis hinzu</td></tr><tr><td>Dynamisches Entfernen</td><td><code>retract(Fakt)</code></td><td>Entfernt einen Fakt aus der Wissensbasis</td></tr><tr><td>Abfrage von Variablen</td><td><code>?- Query.</code></td><td>Ermittelt Belegungen für Variablen in der Wissensbasis</td></tr><tr><td>Pattern Matching / Unifikation</td><td>Automatisch im Abfrageprozess</td><td>Verbindet Variablen mit passenden Werten</td></tr></tbody></table><p><em>Abbildung: Erweiterte Funktionen in SWI-Prolog im Vergleich</em></p><hr/><h2>8. Webbasierte Plattformen und Kollaboration mit SWISH</h2><p>In den letzten Jahren hat sich die webbasierte Nutzung von Prolog erheblich weiterentwickelt. SWISH (SWI-Prolog for Sharing) ist eine solche webbasierte Oberfläche, die es ermöglicht, Prolog-Programme direkt im Browser auszuführen. Diese Plattform erleichtert die kollaborative Entwicklung und das Teilen von Prolog-Code, besonders in Bildungs- und Forschungssettings .</p><h3>8.1 Funktionen von SWISH</h3><p>SWISH bietet zahlreiche Features, die insbesondere für Lernende wichtig sind:</p><ul>
+<li><strong>Interaktive Code-Editoren</strong>: Mit Syntaxhervorhebung, Autovervollständigung und Fehleranzeigen unterstützt der Editor den Benutzer bei der Code-Entwicklung .</li>
+<li><strong>Versionierung</strong>: Jeder Quellcodedatei wird eine eigene Versionshistorie zugeordnet, die das Nachverfolgen von Änderungen ermöglicht .</li>
+<li><strong>Integration von Beispielabfragen</strong>: Eine Sammlung vorgefertigter Abfragen hilft beim schnellen Testen und Verstehen von Prolog-Konzepten .</li>
+</ul><h3>8.2 Anwendungsszenarien für SWISH</h3><p>SWISH wird nicht nur für die Lehre, sondern auch für den kollaborativen Austausch in Projekten verwendet. Beispielsweise können Forschungsteams komplexe Abfragen über große Datensätze in RDF-Stores ausführen, wie sie in ClioPatria – einem semantischen Web-Framework – verwendet werden . Diese Flexibilität macht SWISH zu einem wichtigen Werkzeug in modernen Forschungs- und Entwicklungsszenarien.</p><h3>8.3 Mermaid-Diagramm: Architektur eines SWISH-Systems</h3><pre><code class="language-mermaid">flowchart TD  
+    A[&quot;Benutzer: Webbrowser&quot;] --&gt; B[&quot;SWISH Client (JavaScript)&quot;]  
+    B --&gt; C[&quot;HTTP-Server in SWI-Prolog&quot;]  
+    C --&gt; D[&quot;Pengines (Prolog Engines)&quot;]  
+    D --&gt; E[&quot;Ausführung von Prolog-Code&quot;]  
+    E --&gt; F[&quot;Antworten und Ergebnisse&quot;]  
+    F --&gt; B  
+    B --&gt; G[&quot;Versionierung und Dokumentation&quot;]  
+    G --&gt; END[&quot;END&quot;]  
+</code></pre><p><em>Abbildung: Architektur und Datenfluss in einem SWISH-System</em></p><hr/><h2>9. Integration von Prolog in KI-Anwendungen</h2><p>Prolog findet in zahlreichen Bereichen der künstlichen Intelligenz Anwendung. Die deklarative Natur von Prolog ermöglicht es, das zugrunde liegende Wissen in einer Weise zu repräsentieren, die sowohl für maschinelles Lernen als auch für erklärbare KI-Systeme wertvoll ist.</p><h3>9.1 Expertensysteme und Wissensbasen</h3><p>Expertensysteme nutzen Prolog häufig, um komplexe Entscheidungsprozesse abzubilden. Die Fähigkeit, Regeln und Fakten zu kombinieren, erlaubt es, Wissenslagen so darzustellen, dass Schlussfolgerungen logisch und nachvollziehbar abgeleitet werden können. Durch den Einsatz von Backtracking und Unifikation kann Prolog eine große Bandbreite von Szenarien abdecken .</p><h3>9.2 Natürliche Sprachverarbeitung</h3><p>Bei der Verarbeitung natürlicher Sprache kommt Prolog aufgrund seiner Prädikatenlogik zum Einsatz, um grammatische Strukturen, semantische Zusammenhänge und syntaktische Regeln zu modellieren. Mit Definite Clause Grammars (DCGs) können natürliche Sprachmuster direkt im Prolog-Code abgebildet und verarbeitet werden. Dies erleichtert nicht nur die Analyse, sondern auch das Erstellen von Übersetzungssystemen und Dialogsystemen .</p><h3>9.3 Fallstudie: Mathematische Fakten in der KI</h3><p>Ein praktisches Beispiel für die Integration von Prolog in KI-Anwendungen ist die Verarbeitung mathematischer Fakten mit Hilfe der automatischen Extraktion von Prädikaten. Hierbei werden mathematische Probleme in eine Menge von Prolog-Prädikaten überführt, welche dann von einem deduktiven System abgearbeitet werden. Dadurch können komplexe Berechnungen effizient durchgeführt werden, wobei das System anhand der faktischen Grundlagen präzise Ergebnisse liefert. Ein Experiment hat gezeigt, dass die prologbasierte Umsetzung in bestimmten Benchmarks, wie GSM8K, signifikant bessere Ergebnisse erzielte als traditionelle Ansätze .</p><hr/><h2>10. Vergleich traditioneller Ansätze und moderner Implementierungen</h2><p>In traditionellen Programmiersprachen wie C, Java oder Python wird viel Wert auf sequentielle Berechnungen und imperatives Vorgehen gelegt. Prolog stellt im Vergleich dazu einen Paradigmenwechsel dar, bei dem der Schwerpunkt auf der Modellierung von Wissen und der logischen Inferenz liegt. Im Folgenden wird eine vergleichende Übersicht erstellt, um die Vorteile von Prolog in der Verarbeitung logischer Fakten darzustellen.</p><h3>10.1 Tabelle: Vergleich imperativer und deklarativer Programmierung</h3><table><thead><tr><th>Aspekt</th><th>Imperative Ansätze</th><th>Deklarative (Prolog) Ansätze</th></tr></thead><tbody><tr><td>Programmstruktur</td><td>Ablaufsteuerung (Schleifen, Bedingungen)</td><td>Faktensammlung und Regeln (Wissensbasis)</td></tr><tr><td>Lösungsfindung</td><td>Schrittweise Berechnung</td><td>Logische Inferenz (Unifikation und Backtracking)</td></tr><tr><td>Fehlerbehandlung und Debugging</td><td>Explizite Fehlerbehandlung</td><td>Integrierte Inferenzmechanismen, die gute Erklärungen liefern</td></tr><tr><td>Anwendungsszenario</td><td>Systemprogrammierung, Datenverarbeitung</td><td>Wissensrepräsentation, Expertensysteme, KI</td></tr></tbody></table><p><em>Abbildung: Vergleich von imperativen und deklarativen Programmieransätzen</em></p><h3>10.2 Analyse: Vorteile von Prolog</h3><p>Prolog bietet durch seine deklarative Natur zahlreiche Vorteile:</p><ul>
+<li><strong>Kürzere Codebasis</strong>: Da der Lösungsweg nicht explizit angegeben werden muss, führt dies zu kompakterem Code.</li>
+<li><strong>Erhöhte Lesbarkeit</strong>: Die Definition von Fakten und Regeln in natürlicher Sprache ähnlicher Form verbessert die Verständlichkeit des Programmcodes.</li>
+<li><strong>Einfache Erweiterbarkeit</strong>: Neue Fakten und Regeln können ohne großen Aufwand in bestehende Wissensbasen integriert werden.</li>
+<li><strong>Automatisches Backtracking</strong>: Das integrierte Backtracking ermöglicht es, alternative Lösungswege ohne zusätzlichen Programmieraufwand zu erkunden .</li>
+</ul><h3>10.3 Diskussion moderner Implementierungen</h3><p>Moderne Implementierungen von Prolog, wie SWI-Prolog, erweitern die klassische Logikprogrammierung durch zusätzliche Module, z. B. für Constraint Logic Programming, Multithreading oder die Integration in webbasierte Systeme wie SWISH. Diese Erweiterungen machen Prolog nicht nur zu einer theoretischen, sondern auch zu einer praktischen und skalierbaren Lösung für aktuelle Probleme in den Bereichen KI, Datenanalyse und kollaborative Softwareentwicklung .</p><hr/><h2>11. Zusammenfassung und Ausblick</h2><p>Die Einführung in Prolog (SWI-Prolog) zeigt, wie mächtig und vielseitig die deklarative Programmierung in der Verarbeitung logischer Fakten und mathematischer Eigenschaften sein kann. Im Verlauf dieses Artikels wurden folgende Schlüsselpunkte beleuchtet:</p><ul>
+<li>
+<p><strong>Grundkonzepte und Deklarativität</strong>:<br/>
+Prolog basiert auf der Prädikatenlogik erster Stufe, wobei Wissen als Fakten und Regeln dargestellt wird. Diese deklarative Herangehensweise ermöglicht eine klare und präzise Modellierung von Problemstellungen.</p>
+</li>
+<li>
+<p><strong>Mathematische Operationen und Faktenabfragen</strong>:<br/>
+Mithilfe von arithmetischen Operationen und der Unifikation werden mathematische Zusammenhänge elegant und ohne explizite Schritt-für-Schritt-Anweisungen verarbeitet. Dies erleichtert die automatische Berechnung und Auswertung.</p>
+</li>
+<li>
+<p><strong>Logische Ausdrücke und benutzerdefinierte Operatoren</strong>:<br/>
+Die Möglichkeit, eigene Operatoren zu definieren und logische Aussagen auszuwerten, erlaubt eine intuitive Abbildung komplexer logischer Systeme.</p>
+</li>
+<li>
+<p><strong>Erweiterte Anwendungen und Webintegration</strong>:<br/>
+Mit SWI-Prolog und der webbasierten Plattform SWISH wird die Zusammenarbeit an Prolog-Projekten erleichtert; dynamische Wissensbasen und interaktive Editoren fördern den Einsatz von Prolog in Bildung und Forschung.</p>
+</li>
+<li>
+<p><strong>Vergleich zu traditionellen Ansätzen</strong>:<br/>
+Der Paradigmenwechsel von imperativen zu deklarativen Ansätzen zeigt, dass Prolog mit seinen Inferenzmechanismen und dem automatischen Backtracking viele der klassischen Herausforderungen moderner Softwareentwicklung elegant löst.</p>
+</li>
+</ul><h3>Wichtige Erkenntnisse auf einen Blick</h3><ul>
+<li><strong>Logische Struktur</strong>: Prolog ermöglicht eine natürliche Darstellung von Wissen und Beziehungen durch Fakten und Regeln.</li>
+<li><strong>Unifikation und Backtracking</strong>: Diese Mechanismen bilden die Basis für die automatische Lösungsfindung und Inferenz.</li>
+<li><strong>Mathematische Modellierung</strong>: Arithmetische Berechnungen und Constraint-Programmierung erweitern den Einsatzbereich von Prolog erheblich.</li>
+<li><strong>Webbasierte Anwendungen</strong>: Plattformen wie SWISH erhöhen die Zugänglichkeit und Kollaborationsmöglichkeiten erheblich.</li>
+<li><strong>Anwendungsvielfalt</strong>: Von Expertensystemen über natürliche Sprachverarbeitung bis hin zu KI-Anwendungen bietet Prolog vielfältige Einsatzmöglichkeiten.</li>
+</ul><h3>Zusammenfassende Tabelle der wichtigsten Funktionen</h3><table><thead><tr><th>Funktion</th><th>Beschreibung</th><th>Nutzen in der Praxis</th></tr></thead><tbody><tr><td>Fakten und Regeln</td><td>Grundlegende logische Aussagen und Inferenzregeln</td><td>Modellierung von Wissen und logische Schlussfolgerungen</td></tr><tr><td>Unifikation und Variablenbindung</td><td>Automatische Zuordnung von Variablen mit Werten</td><td>Ermöglicht flexible und dynamische Abfragen</td></tr><tr><td>Arithmetische Auswertung</td><td>Verwendung von <code>is</code> zur Berechnung mathematischer Ausdrücke</td><td>Lösung von mathematischen Problemen ohne expliziten Algorithmus</td></tr><tr><td>Constraint Logic Programming</td><td>Erweiterung durch CLP(R)</td><td>Modellierung und Berechnung von Gleichungen und Ungleichungen</td></tr><tr><td>Webbasierte Oberflächen (SWISH)</td><td>Interaktive Plattform zur Ausführung und gemeinsamen Nutzung von Prolog-Code</td><td>Erleichterung des Lernens, der Zusammenarbeit und der Datenanalyse</td></tr></tbody></table><p><em>Abbildung: Zusammenfassung der zentralen Funktionen von Prolog für logische Faktenabfragen</em></p><hr/><h2>Ausblick</h2><p>Die Zukunft der Prolog-Programmierung ist vielversprechend. Mit dem kontinuierlichen Ausbau der Funktionalitäten in SWI-Prolog und der stetigen Verbesserung webbasierter Umgebungen wie SWISH wird der Einsatz von Prolog in Lern- und Forschungsbereichen weiter zunehmen. Insbesondere in der künstlichen Intelligenz, in der automatischen Wissensextraktion und in komplexen deduktiven Systemen bietet Prolog durch seine deklarative Natur und seine mächtigen Inferenzmechanismen ein enormes Potenzial.</p><p>Zukünftige Forschungen konzentrieren sich auf die vertiefte Integration von Constraint-basierten Ansätzen, die Optimierung von Inferenzalgorithmen und die Erweiterung der Schnittstellen zu anderen Systemen – sei es im Bereich der Datenanalyse, der natürlichen Sprachverarbeitung oder der interdisziplinären Forschung. Durch die enge Zusammenarbeit zwischen theoretischer Logik und praktischer Anwendung kann Prolog als Grundlage für neue, innovative Ansätze in der Softwareentwicklung dienen .</p><p>Besonders interessant ist die Kombination von Prolog mit großen Sprachmodellen (LLMs), um mathematische Probleme symbolisch zu lösen. Studien haben gezeigt, dass die Generierung von Prolog-Code zur Lösung arithmetischer Denkaufgaben deutlich bessere Ergebnisse liefern kann als traditionelle Kettenankündigungen (Chain-of-Thought) Ansätze . Diese Hybridansätze vereinen die Stärken symbolischer Transformation mit der Flexibilität moderner lernbasierter Systeme und eröffnen somit neue Perspektiven für die automatisierte Deduktion und Problemlösung.</p><hr/><h2>Fazit</h2><p>Die vorgestellten Konzepte und Anwendungen belegen, dass Prolog – insbesondere in der Umgebung von SWI-Prolog – eine äußerst mächtige Sprache zur Verarbeitung logischer Fakten und mathematischer Eigenschaften darstellt. Der deklarative Ansatz erlaubt es, Wissen homogen und elegant zu repräsentieren, während fortgeschrittene Mechanismen wie Unifikation, Backtracking und Constraint Logic Programming die automatische Lösung komplexer Probleme ermöglichen.</p><p>Zusammengefasst ergeben sich die folgenden zentralen Erkenntnisse:</p><ul>
+<li><strong>Deklarative Wissensrepräsentation:</strong> Prolog nutzt Fakten und Regeln, um Wissen zu deklarieren, wodurch der Programmierer den Lösungsweg nicht explizit angeben muss.</li>
+<li><strong>Automatische Inferenzmechanismen:</strong> Die Unifikation und das Backtracking ermöglichen eine effiziente und flexible Lösungsfindung.</li>
+<li><strong>Erweiterbarkeit und Integration:</strong> Mit Erweiterungen wie CLP(R) und webbasierten Interfaces wie SWISH kann Prolog in vielfältigen Anwendungsbereichen von KI über Datenanalyse bis zur natürlichen Sprachverarbeitung eingesetzt werden.</li>
+<li><strong>Mathematische Modellierung:</strong> Die Fähigkeit, mathematische Operationen deklarativ zu modellieren, unterscheidet Prolog von vielen traditionellen Programmiersprachen.</li>
+<li><strong>Zukunftspotenzial:</strong> Die Kombination von Prolog mit modernen Techniken, insbesondere bei der Integration in große Sprachmodelle, eröffnet neue Forschungsfelder und Anwendungsmöglichkeiten.</li>
+</ul><p>Prolog bleibt somit auch in der Zukunft ein unverzichtbares Werkzeug zur Modellierung komplexer logischer Systeme und zur Automatisierung von Entscheidungsprozessen.</p><hr/><h2>Literaturverzeichnis (Auszug)</h2><hr/><h2>Schlussbetrachtung</h2><p>Die umfassende Einführung in Prolog (SWI-Prolog) für logische Faktenabfragen zeigt, dass diese Sprache weit mehr als nur ein akademisches Experiment ist. Prolog bietet praktische und innovative Methoden für die Darstellung und Verarbeitung von Wissen, die sowohl in mathematischen als auch in logischen Kontexten von großem Nutzen sind. Mit der stetigen Weiterentwicklung moderner Implementierungen, insbesondere in Verbindung mit webbasierten Umgebungen wie SWISH, wird Prolog einen immer wichtigeren Platz in der Softwareentwicklung und in der Forschung einnehmen.</p><p>Die hier vorgestellten Konzepte bilden die Grundlage für weiterführende Projekte, in denen die Kombination von deklarativer Programmierung und modernen KI-Techniken zu noch effektiveren und flexibleren Lösungen führt. Forscher und Entwickler sind gut beraten, die Vorteile von Prolog zu nutzen und in ihre Systeme zu integrieren – sei es zur Modellierung komplexer Wissensbasen, zur Durchführung präziser mathematischer Berechnungen oder zur Entwicklung interaktiver, dynamischer Anwendungen.</p><p>Abschließend lässt sich festhalten, dass:</p><ul>
+<li>Prolog dank seiner deklarativen Natur eine klare und elegante Methode bietet, Regeln und Fakten darzustellen.</li>
+<li>Die automatische Inferenz und Unifikation die Lösung von Problemen vereinfachen und vielseitig anwendbar machen.</li>
+<li>Erweiterungen wie CLP(R) und SWISH erhebliches Potenzial für den Einsatz in komplexen, praxisrelevanten Szenarien besitzen.</li>
+<li>Zukünftige Forschungsansätze, die Prolog mit großen Sprachmodellen kombinieren, den Weg zu neuen, hybriden Ansätzen in der KI ebnen können.</li>
+</ul><p>Der hier vorgestellte Bericht unterstreicht somit nicht nur den aktuellen Wert von Prolog, sondern zeigt auch dessen langfristige Bedeutung für die Entwicklung intelligenter Systeme und wissensbasierter Anwendungen auf.</p><hr/><h2>Endgültige Zusammenfassung der wichtigsten Erkenntnisse (Stichpunkte)</h2><ul>
+<li><strong>Deklarative Programmierung:</strong> Prolog ermöglicht durch Fakten und Regeln eine natürliche Wissensrepräsentation.</li>
+<li><strong>Unifikation und Backtracking:</strong> Diese Mechanismen sind entscheidend für die automatische logische Schlussfolgerung.</li>
+<li><strong>Mathematische Modellierung:</strong> Arithmetische Operationen und Constraints erleichtern die Lösung komplexer Probleme.</li>
+<li><strong>Webintegration:</strong> SWISH als webbasierte Oberfläche verbessert den Zugang zu Prolog und fördert kollaborative Projekte.</li>
+<li><strong>Zukunftsperspektiven:</strong> Die Kombination von Prolog mit modernen KI-Technologien eröffnet neue Entwicklungen in der symbolischen Berechnung und Entscheidungsfindung.</li>
+</ul><hr/><p>Dies fasst den aktuellen Stand und die zukünftigen Perspektiven in der Anwendung von Prolog, insbesondere in der Umgebung von SWI-Prolog und SWISH, zusammen. Die vorgestellten Beispiele und Konzepte zeigen eindrücklich, wie Prolog genutzt werden kann, um logische Faktenabfragen effizient zu realisieren, während gleichzeitig die Basis für weiterführende Anwendungen und Forschungsarbeiten gelegt wird. Die deklarative Natur und die Erweiterungsmöglichkeiten machen Prolog zu einem unverzichtbaren Werkzeug für die Zukunft in der künstlichen Intelligenz, in Expertensystemen und in der mathematischen Modellierung.</p></div></div></div><div class="chat-footer"><div class="chat-footer-content"><div class="warning">KI-generierte Inhalte sind möglicherweise nicht immer authentisch.</div><div class="footer-content"><div class="footer-content-item"><div class="item"><div class="num">2025</div><div class="desc">Empfehlung der Redaktion</div></div><div class="item"><div class="num">10M+</div><div class="desc">Aktive Nutzer</div></div><div class="item"><div class="num">100K+</div><div class="desc">5-Sterne-Bewertungen</div></div></div><a class="footer-content-btn" href="https://sider.ai">Jetzt Sider ausprobieren <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 60 60"><path d="M23.633 12.9a2.25 2.25 0 0 0 0 4.5h15.783L13.558 43.26a2.25 2.25 0 1 0 3.182 3.182l25.856-25.857v15.78a2.25 2.25 0 1 0 4.5 0V17.15a4.25 4.25 0 0 0-4.25-4.25z"></path></svg></a></div></div></div></div><script type="module">
+              import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+              window.mermaid = mermaid;
+              mermaid.initialize({ startOnLoad: false });
+              await mermaid.run({
+                querySelector: '.language-mermaid'
+              });
+            </script></body></html>

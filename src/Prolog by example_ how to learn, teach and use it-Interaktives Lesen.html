@@ -1,0 +1,806 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prolog by Example: Executive Bericht</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #3b82f6;
+            --accent-color: #60a5fa;
+            --text-color: #1f2937;
+            --light-text: #6b7280;
+            --background-color: #f9fafb;
+            --card-background: #ffffff;
+            --border-color: #e5e7eb;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        /* Tab Navigation */
+        .tab-navigation {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: var(--card-background);
+            box-shadow: var(--shadow-lg);
+            padding: 0.75rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .tab-container {
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-color) var(--border-color);
+        }
+
+        .tab-container::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .tab-container::-webkit-scrollbar-track {
+            background: var(--border-color);
+        }
+
+        .tab-container::-webkit-scrollbar-thumb {
+            background-color: var(--accent-color);
+            border-radius: 3px;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background-color: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--light-text);
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .tab:hover {
+            color: var(--primary-color);
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .section-title {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-subtitle {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: var(--light-text);
+            font-weight: 400;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--card-background);
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text-color);
+        }
+
+        .card-content {
+            color: var(--light-text);
+            line-height: 1.7;
+        }
+
+        /* Expandable Sections */
+        .expandable {
+            margin-bottom: 1.5rem;
+        }
+
+        .expandable-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: var(--card-background);
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .expandable-header:hover {
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+
+        .expandable-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .expandable-icon {
+            transition: transform 0.3s ease;
+            font-size: 1.25rem;
+            color: var(--primary-color);
+        }
+
+        .expandable.active .expandable-icon {
+            transform: rotate(180deg);
+        }
+
+        .expandable-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background-color: var(--card-background);
+            border-radius: 0 0 0.5rem 0.5rem;
+            margin-top: -0.5rem;
+        }
+
+        .expandable.active .expandable-content {
+            max-height: 1000px;
+            padding: 1rem;
+            box-shadow: var(--shadow);
+        }
+
+        /* Charts */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 2rem 0;
+            max-width: 100%;
+        }
+
+        /* Lists */
+        .highlight-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .highlight-list li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.6;
+        }
+
+        .highlight-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.75rem;
+            }
+
+            .tab {
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
+            }
+
+            .card {
+                padding: 1rem;
+            }
+
+            .section-header {
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.5rem;
+            }
+
+            .tab {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.8rem;
+            }
+
+            .card {
+                padding: 0.75rem;
+            }
+
+            .section-header {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Tab Navigation -->
+        <nav class="tab-navigation">
+            <div class="tab-container">
+                <button class="tab active" data-tab="einfuehrung">Einführung</button>
+                <button class="tab" data-tab="grundlagen">Grundlagen</button>
+                <button class="tab" data-tab="anwendungen">Anwendungen</button>
+                <button class="tab" data-tab="beispiele">Beispiele</button>
+                <button class="tab" data-tab="referenzen">Referenzen</button>
+            </div>
+        </nav>
+
+        <!-- Content Sections -->
+        <main>
+            <!-- Einführung Section -->
+            <section id="einfuehrung" class="content-section active">
+                <div class="section-header">
+                    <h1 class="section-title">Prolog by Example</h1>
+                    <p class="section-subtitle">Eine executive Zusammenfassung des Buches von Helder Coelho und Jose C. Cotta</p>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">Über das Buch</h2>
+                    <div class="card-content">
+                        <p>"Prolog by Example: How to Learn, Teach and Use It" ist ein umfassendes Werk, das sich mit der Programmiersprache Prolog und ihren Anwendungen beschäftigt. Das Buch bietet eine praxisnahe Einführung in logische Programmierung und vermittelt die Konzepte durch anschauliche Beispiele.</p>
+                    </div>
+                </div>
+
+                <div class="expandable active">
+                    <div class="expandable-header">
+                        <h3 class="expandable-title">Zielgruppe und Nutzen</h3>
+                        <span class="expandable-icon">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <p>Das Buch richtet sich sowohl an Anfänger als auch an fortgeschrittene Programmierer, die logische Programmierung lernen oder vertiefen möchten. Es bietet:</p>
+                        <ul class="highlight-list">
+                            <li>Eine strukturierte Einführung in Prolog-Konzepte</li>
+                            <li>Praktische Beispiele für die Anwendung in der realen Welt</li>
+                            <li>Methoden zur Übersetzung natürlicher Sprache in logische Notation</li>
+                            <li>Ansätze zur Lösung komplexer Probleme durch logische Deduktion</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">Kernkonzepte</h2>
+                    <div class="card-content">
+                        <p>Das Buch konzentriert sich auf grundlegende Konzepte der logischen Programmierung, darunter die Verwendung von Variablen, Regeln und Listen sowie die Formulierung von Abfragen an eine Wissensbasis.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Grundlagen Section -->
+            <section id="grundlagen" class="content-section">
+                <div class="section-header">
+                    <h1 class="section-title">Grundlagen der logischen Programmierung</h1>
+                    <p class="section-subtitle">Kernkonzepte und Prinzipien von Prolog</p>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">Logische Programme und Abfragen</h2>
+                    <div class="card-content">
+                        <p>Logische Programme werden durch Ziele oder Abfragen ausgelöst, die als Anweisungen konventioneller Programmierung betrachtet werden können. Reine Prolog-Programme ohne Nebeneffekte und Kontrollmechanismen bilden die Grundlage für logische Deduktion.</p>
+                    </div>
+                </div>
+
+                <div class="expandable active">
+                    <div class="expandable-header">
+                        <h3 class="expandable-title">Fakten und Regeln</h3>
+                        <span class="expandable-icon">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <p>Prolog-Programme bestehen aus Fakten (Assertionen) und allgemeinen Regeln (Bedingungen), die überprüfen, ob eine Zielaussage wahr ist. Die Bedeutung einer mehrfachen Klausel liegt in den möglichen Methoden zur Lösung des Problems.</p>
+                        <ul class="highlight-list">
+                            <li>Fakten stellen grundlegende Aussagen über die Welt dar</li>
+                            <li>Regeln definieren Beziehungen zwischen Fakten</li>
+                            <li>Abfragen dienen dazu, Informationen aus der Wissensbasis zu extrahieren</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">Variablen und Listen</h2>
+                    <div class="card-content">
+                        <p>Die Verwendung von Variablen ermöglicht die Formulierung allgemeiner Abfragen, während Listen als Individuen behandelt werden können. Diese Konzepte interagieren miteinander und bilden die Grundlage für komplexe logische Operationen.</p>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="prologConceptsChart"></canvas>
+                </div>
+            </section>
+
+            <!-- Anwendungen Section -->
+            <section id="anwendungen" class="content-section">
+                <div class="section-header">
+                    <h1 class="section-title">Anwendungen von Prolog</h1>
+                    <p class="section-subtitle">Praktische Einsatzmöglichkeiten und Vorteile</p>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">Frage-Antwort-Systeme</h2>
+                    <div class="card-content">
+                        <p>Das Beantworten von Fragen ist eine der Aufgaben, die die Fähigkeit zur logischen Deduktion demonstrieren. In Frage-Antwort-Systemen werden Fakten genutzt, um logische Schlussfolgerungen zu ziehen und präzise Antworten zu generieren.</p>
+                    </div>
+                </div>
+
+                <div class="expandable active">
+                    <div class="expandable-header">
+                        <h3 class="expandable-title">Natürliche Sprachverarbeitung</h3>
+                        <span class="expandable-icon">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <p>Prolog eignet sich besonders für die Verarbeitung natürlicher Sprache, da es die Übersetzung von natürlicher Sprache in logische Notation ermöglicht. Dies bildet die Grundlage für:</p>
+                        <ul class="highlight-list">
+                            <li>Spracherkennung und -verständnis</li>
+                            <li>Automatische Übersetzungssysteme</li>
+                            <li>Intelligente Suchmaschinen</li>
+                            <li>Dialogsysteme und Chatbots</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">Wissensrepräsentation</h2>
+                    <div class="card-content">
+                        <p>Prolog bietet effektive Methoden zur Repräsentation und Manipulation von Wissen. Durch die Kombination von Fakten und Regeln können komplexe Wissensdomänen modelliert und durchsucht werden.</p>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="prologApplicationsChart"></canvas>
+                </div>
+            </section>
+
+            <!-- Beispiele Section -->
+            <section id="beispiele" class="content-section">
+                <div class="section-header">
+                    <h1 class="section-title">Praktische Beispiele</h1>
+                    <p class="section-subtitle">Anwendungsfälle und Implementierungen</p>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">Logische Programme in der Praxis</h2>
+                    <div class="card-content">
+                        <p>Das Buch presents numerous examples that demonstrate how logic programs can be used to solve real-world problems. These examples illustrate the power of logical deduction and the practical application of Prolog concepts.</p>
+                    </div>
+                </div>
+
+                <div class="expandable active">
+                    <div class="expandable-header">
+                        <h3 class="expandable-title">Beispiel: Objekteigenschaften</h3>
+                        <span class="expandable-icon">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <p>Ein praktisches Beispiel aus dem Buch zeigt, wie eine Liste von Objekten mit bestimmten Eigenschaften erstellt werden kann:</p>
+                        <p style="font-family: monospace; background-color: #f3f4f6; padding: 1rem; border-radius: 0.25rem; margin-top: 0.5rem;">
+                            build_up(Object, Property, _)
+                        </p>
+                        <p>Dieses Logikprogramm demonstriert, wie Prolog verwendet werden kann, um Objekte basierend auf ihren Eigenschaften zu identifizieren und zu kategorisieren.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">Alternative Implementierungen</h2>
+                    <div class="card-content">
+                        <p>Neben Standard-Prolog-Implementierungen explores das Buch auch alternative Ansätze wie LOGLISP, eine Alternative zu Prolog, die in Lisp implementiert ist. Diese Alternativen bieten unterschiedliche Perspektiven auf die logische Programmierung.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Referenzen Section -->
+            <section id="referenzen" class="content-section">
+                <div class="section-header">
+                    <h1 class="section-title">Referenzen und Weiterführende Literatur</h1>
+                    <p class="section-subtitle">Wichtige Quellen und verwandte Arbeiten</p>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">Primärquelle</h2>
+                    <div class="card-content">
+                        <p>Coelho, H., & Cotta, J. C. Prolog by Example: How to Learn, Teach and Use It. Springer Science & Business Media.</p>
+                    </div>
+                </div>
+
+                <div class="expandable active">
+                    <div class="expandable-header">
+                        <h3 class="expandable-title">Verwandte Arbeiten</h3>
+                        <span class="expandable-icon">▼</span>
+                    </div>
+                    <div class="expandable-content">
+                        <ul class="highlight-list">
+                            <li>Robinson, J. A.; Sibert, E. E. (1980a). Logic Programming in Lisp. Syracuse University.</li>
+                            <li>Robinson, J. A.; Sibert, E. E. (1980b). Logic Programming in Lisp. Syracuse University.</li>
+                            <li>Robinson, J. A.; Sibert, E. E. (1980c). LOGLISP an Alternative to Prolog. Syracuse University.</li>
+                            <li>Rogers, J. (1987). Weitere Forschung im Bereich der logischen Programmierung.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">Zusammenfassung</h2>
+                    <div class="card-content">
+                        <p>"Prolog by Example" bietet eine umfassende Einführung in die logische Programmierung mit Prolog. Durch die Kombination von theoretischen Konzepten und praktischen Beispielen ermöglicht das Buch ein tiefes Verständnis der logischen Programmierung und ihrer Anwendungen.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Initialize global chart instances object
+        if (!window.chartInstances) {
+            window.chartInstances = {};
+        }
+
+        // Tab functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing tabs');
+            
+            const tabs = document.querySelectorAll('.tab');
+            const sections = document.querySelectorAll('.content-section');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    try {
+                        const targetId = this.getAttribute('data-tab');
+                        console.log('Tab clicked:', targetId);
+                        
+                        // Remove active class from all tabs and sections
+                        tabs.forEach(t => t.classList.remove('active'));
+                        sections.forEach(s => s.classList.remove('active'));
+                        
+                        // Add active class to clicked tab and corresponding section
+                        this.classList.add('active');
+                        const targetSection = document.getElementById(targetId);
+                        if (targetSection) {
+                            targetSection.classList.add('active');
+                            console.log('Section activated:', targetId);
+                            
+                            // Initialize charts for the active section if not already done
+                            initializeChartsForSection(targetId);
+                        } else {
+                            console.error('Target section not found:', targetId);
+                        }
+                    } catch (error) {
+                        console.error('Error in tab click handler:', error);
+                    }
+                });
+            });
+            
+            // Initialize expandable sections
+            const expandables = document.querySelectorAll('.expandable');
+            expandables.forEach(expandable => {
+                const header = expandable.querySelector('.expandable-header');
+                if (header) {
+                    header.addEventListener('click', function() {
+                        try {
+                            expandable.classList.toggle('active');
+                            console.log('Expandable toggled');
+                        } catch (error) {
+                            console.error('Error in expandable click handler:', error);
+                        }
+                    });
+                }
+            });
+            
+            // Initialize charts for the default active section
+            initializeChartsForSection('einfuehrung');
+            
+            // Initialize MathJax
+            if (typeof MathJax !== 'undefined') {
+                MathJax.typesetPromise().then(() => {
+                    console.log('MathJax initialized');
+                }).catch((err) => console.log('MathJax initialization error:', err.message));
+            }
+        });
+
+        // Function to initialize charts for a specific section
+        function initializeChartsForSection(sectionId) {
+            console.log('Initializing charts for section:', sectionId);
+            
+            if (sectionId === 'grundlagen' && !window.chartInstances.prologConceptsChart) {
+                initializePrologConceptsChart();
+            }
+            
+            if (sectionId === 'anwendungen' && !window.chartInstances.prologApplicationsChart) {
+                initializePrologApplicationsChart();
+            }
+        }
+
+        // Initialize Prolog Concepts Chart
+        function initializePrologConceptsChart() {
+            try {
+                const ctx = document.getElementById('prologConceptsChart');
+                if (!ctx) {
+                    console.error('Chart container not found: prologConceptsChart');
+                    return;
+                }
+                
+                console.log('Initializing Prolog Concepts Chart');
+                
+                window.chartInstances.prologConceptsChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Fakten', 'Regeln', 'Variablen', 'Abfragen', 'Listen'],
+                        datasets: [{
+                            label: 'Wichtigkeit in Prolog',
+                            data: [90, 85, 80, 95, 75],
+                            backgroundColor: [
+                                'rgba(37, 99, 235, 0.8)',
+                                'rgba(59, 130, 246, 0.8)',
+                                'rgba(96, 165, 250, 0.8)',
+                                'rgba(37, 99, 235, 0.6)',
+                                'rgba(59, 130, 246, 0.6)'
+                            ],
+                            borderColor: [
+                                'rgba(37, 99, 235, 1)',
+                                'rgba(59, 130, 246, 1)',
+                                'rgba(96, 165, 250, 1)',
+                                'rgba(37, 99, 235, 1)',
+                                'rgba(59, 130, 246, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: {
+                                        size: 14
+                                    }
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Wichtigkeit der Prolog-Konzepte',
+                                font: {
+                                    size: 16
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: {
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                console.log('Prolog Concepts Chart initialized successfully');
+            } catch (error) {
+                console.error('Error initializing Prolog Concepts Chart:', error);
+            }
+        }
+
+        // Initialize Prolog Applications Chart
+        function initializePrologApplicationsChart() {
+            try {
+                const ctx = document.getElementById('prologApplicationsChart');
+                if (!ctx) {
+                    console.error('Chart container not found: prologApplicationsChart');
+                    return;
+                }
+                
+                console.log('Initializing Prolog Applications Chart');
+                
+                window.chartInstances.prologApplicationsChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['KI-Systeme', 'Datenbanken', 'Sprachverarbeitung', 'Expertensysteme', 'Planungssysteme'],
+                        datasets: [{
+                            label: 'Anwendungshäufigkeit',
+                            data: [85, 60, 90, 75, 70],
+                            backgroundColor: [
+                                'rgba(37, 99, 235, 0.8)',
+                                'rgba(59, 130, 246, 0.8)',
+                                'rgba(96, 165, 250, 0.8)',
+                                'rgba(37, 99, 235, 0.6)',
+                                'rgba(59, 130, 246, 0.6)'
+                            ],
+                            borderColor: [
+                                'rgba(37, 99, 235, 1)',
+                                'rgba(59, 130, 246, 1)',
+                                'rgba(96, 165, 250, 1)',
+                                'rgba(37, 99, 235, 1)',
+                                'rgba(59, 130, 246, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: {
+                                        size: 14
+                                    }
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Anwendungsbereiche von Prolog',
+                                font: {
+                                    size: 16
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: {
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            },
+                            y: {
+                                ticks: {
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                console.log('Prolog Applications Chart initialized successfully');
+            } catch (error) {
+                console.error('Error initializing Prolog Applications Chart:', error);
+            }
+        }
+
+        // Window resize handler for charts
+        window.addEventListener('resize', function() {
+            console.log('Window resized, updating charts');
+            
+            try {
+                // Update all chart instances
+                for (const chartId in window.chartInstances) {
+                    if (window.chartInstances.hasOwnProperty(chartId)) {
+                        const chart = window.chartInstances[chartId];
+                        if (chart && typeof chart.resize === 'function') {
+                            chart.resize();
+                            console.log('Chart resized:', chartId);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error resizing charts:', error);
+            }
+        });
+
+        // Window load handler
+        window.addEventListener('load', function() {
+            console.log('Window fully loaded');
+            
+            try {
+                // Ensure all charts are properly sized
+                for (const chartId in window.chartInstances) {
+                    if (window.chartInstances.hasOwnProperty(chartId)) {
+                        const chart = window.chartInstances[chartId];
+                        if (chart && typeof chart.update === 'function') {
+                            chart.update();
+                            console.log('Chart updated on load:', chartId);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating charts on load:', error);
+            }
+        });
+    </script>
+<script>window.parent.postMessage({ action: "ready" }, "*"); 
+ 
+window.console = new Proxy(console, {
+  get(target, prop) {
+    if (['log', 'warn', 'error'].includes(prop)) {
+      return new Proxy(target[prop], {
+        apply(fn, thisArg, args) {
+          fn.apply(thisArg, args);
+          window.parent.postMessage({ action: 'console', 
+            type: prop, 
+            args: args.map((arg) => {
+              try {
+                return JSON.stringify(arg).replace(/^["']|["']$/g, '');
+              } catch (e) {
+                return arg;
+              }
+            }) 
+          }, '*');
+        }
+      });
+    }
+    return target[prop];
+  }
+});
+</script></body>
+</html>

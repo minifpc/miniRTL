@@ -1,0 +1,119 @@
+#ifndef __DBASE_PRG__
+#define __DBASE_PRG__
+
+#include "test.prg"         // test file include
+#define name(x,y) #x + #y
+
+// This is a C++ like one line comment
+** This is a dBase comment line style A
+&& This is a dBase comment line style B
+
+/* This is a 
+   multiline C like comment block
+   /* you can nested it */
+*/
+
+WRITE name(Hello, World)
+X = 23
+X = X + 1
+IF X == 22
+    WRITE "X := " + X
+ENDIF
+
+IF 2 == (x + 1)
+    WRITE "falsch"
+ELSE
+    IF 3 < 3
+        WRITE "huch" + " hach" + 'xxxx'
+    ELSE
+        WRITE "sonst"
+    ENDIF
+    WRITE "naja"
+    IF x == 23
+        WRITE "2222"
+    ENDIF
+    X = X + 1
+    IF X == 24
+        WRITE "OKAY"
+    ENDIF
+ENDIF
+
+PARAMETER bmodal
+LOCAL B
+B = NEW ParentForm(51,4)
+B.Open()
+
+CLASS ParentForm OF FORM
+    PROPERTY width = 200.23
+    PROPERTY top   = 100.22221
+    
+    WITH (THIS)
+       Width = 100
+       Height = 100
+       Top = 123
+       Left = 100
+    ENDWITH
+    
+    THIS.PushButton1 = NEW PUSHBUTTON(THIS)
+    THIS.PushButton1.Top = 30
+    THIS.PushButton1.Left = 30
+    
+    WITH (THIS.PushButton1)
+        Top = 20
+        Width = 78
+    ENDWITH
+    
+    WRITE "===> " + THIS.width
+    METHOD Init(a,c)        
+        WRITE "ParentForm.Init()"
+        WRITE (a + 10)
+        WRITE (a + 2)
+        WRITE this.PushButton1
+        I = 1
+        E = 42
+        FOR I = 1 TO 3
+            WRITE "I = " + I
+            E = E + 1
+            WRITE E
+            WRITE "x= " + THIS.TestProc(THIS, "text 1")
+            WRITE "--> " + THIS.Width + " okay."
+            IF I == 3 RETURN ENDIF
+            BREAK
+        ENDFOR
+        WRITE "go along"
+    ENDMETHOD
+    
+    METHOD TestProc(Sender)
+        WRITE Sender
+        RETURN 324
+    ENDMETHOD
+ENDCLASS
+
+CLASS Form1 OF ParentForm
+    THIS.PushButton1 = NEW PUSHBUTTON(THIS)
+    
+    METHOD Init(a,b,c,d,e,F)
+        CALL SUPER::Init(B)
+        WRITE "Hallo " + F / 3
+        WRITE A
+        FOR I = 1 TO 3
+            WRITE "I = " + I
+            E = E + 1
+            WRITE E
+        ENDFOR
+    ENDMETHOD
+ENDCLASS
+
+CLASS Form2 OF FORM1
+ENDCLASS
+
+// CALL Form1.Init("Ooops",2,3,4,5,6)
+/*
+x = 5
+WRITE X
+DO WHILE x >= 2
+    WRITE x
+    x = x - 1
+ENDDO
+*/
+#endif  // __DBASE_PRG__

@@ -17,25 +17,25 @@ begin
     end;
   end;
 end;
-procedure test;
+procedure test ;
 begin
 end;
 procedure zuzu;
 begin
 end;
 procedure uizu;
-begin end;
-begin
-end.
-(*
-procedure testproc(arg1:String);
-begin
-end;
-procedure testprocB;
+  procedure innerA;
+    procedure innerB;
+    begin
+    end;
+  begin
+  end;
 begin
 end;
-begin
-end.
+
+//procedure testproc(arg1:String;oo,bb:Char;xx,vv:Integer=33);
+//begin
+//end;
 
 function func1(): String;
 begin
@@ -45,8 +45,5 @@ function funa(): Boolean;
 begin
 end;
 
-
 begin
-end.*)
-*)
-(**)
+end.

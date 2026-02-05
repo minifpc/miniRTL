@@ -8,7 +8,7 @@ kind = -1
 [project]
 type = 0
 doc_out = 0
-logo = T:\a\HelpNDocTools\HelpNDocTools\src\__pycache__\_internal\img\floppy-disk.png
+logo = :/images/_internal/img/floppy-disk.png
 name = 
 author = 
 number = 

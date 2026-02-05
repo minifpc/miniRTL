@@ -1,0 +1,8 @@
+<img src="and_down.png" usemap="#image-map">
+
+<map name="image-map">
+    <area target="" alt="A" title="A" href="" coords="11,86,32,100" shape="rect">
+    <area target="" alt="B" title="B" href="" coords="40,86,59,100" shape="rect">
+    <area target="" alt="C" title="C" href="" coords="23,-1,45,16" shape="rect">
+    <area target="" alt="BODY" title="BODY" href="" coords="2,18,67,84" shape="rect">
+</map>
