@@ -35,6 +35,24 @@ class dBaseParserListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by dBaseParser#createFileStmt.
+    def enterCreateFileStmt(self, ctx:dBaseParser.CreateFileStmtContext):
+        pass
+
+    # Exit a parse tree produced by dBaseParser#createFileStmt.
+    def exitCreateFileStmt(self, ctx:dBaseParser.CreateFileStmtContext):
+        pass
+
+
+    # Enter a parse tree produced by dBaseParser#handlerList.
+    def enterHandlerList(self, ctx:dBaseParser.HandlerListContext):
+        pass
+
+    # Exit a parse tree produced by dBaseParser#handlerList.
+    def exitHandlerList(self, ctx:dBaseParser.HandlerListContext):
+        pass
+
+
     # Enter a parse tree produced by dBaseParser#breakStmt.
     def enterBreakStmt(self, ctx:dBaseParser.BreakStmtContext):
         pass

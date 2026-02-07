@@ -28,12 +28,15 @@ import pprint
 # Qt Backend Factory + Property Mapping
 # ---------------------------------------------------------------------------
 from PyQt5.QtCore    import (
-    QObject, Qt, QSocketNotifier, pyqtSignal, QEvent
+    QObject, Qt, QSocketNotifier, pyqtSignal, QEvent, QRect, QSize
 )
-from PyQt5.QtGui     import ( QFont )
+from PyQt5.QtGui     import (
+    QFont, QPainter, QColor, QFontMetrics
+)
 from PyQt5.QtWidgets import (
-    QApplication, QWidget, QDialog, QPushButton, QVBoxLayout, QTextEdit,
-    QPushButton, QMessageBox
+    QApplication, QMainWindow, QWidget, QDialog, QPushButton, QVBoxLayout,
+    QTextEdit, QToolBar, QStatusBar, QMessageBox, QPlainTextEdit, QAction,
+    QFileDialog, QMenuBar, QMdiArea, QMdiSubWindow
 )
 
 NATIVE_BASES = {
@@ -244,24 +247,39 @@ def form_open(inst: Instance):
     modal = bool(inst.props.get("modal", False))
 
     # QDialog
-    if hasattr(inst.backend, "exec_") or hasattr(inst.backend, "exec"):
+    if hasattr(inst.backend, "show"):
         if modal:
-            if hasattr(inst.backend, "exec_"):
-                inst.backend.exec_()
+            if hasattr(inst.backend, "show"):
+                inst.backend.setModal(False)
+                inst.backend.setWindowModality(Qt.NonModal) 
+                sub = MAINAPP.mdi.addSubWindow(inst.backend)
+                sub.resize(360,400)
+                sub.show()
             else:
-                inst.backend.exec()
+                inst.backend.setModal(False)
+                inst.backend.setWindowModality(Qt.NonModal) 
+                sub = MAINAPP.mdi.addSubWindow(inst.backend)
+                sub.resize(360,400)
+                sub.show()
         else:
             # todo: remove 2 lines below
-            if hasattr(inst.backend, "exec_"):
-                inst.backend.exec_()
+            if hasattr(inst.backend, "show"):
+                inst.backend.setModal(False)
+                inst.backend.setWindowModality(Qt.NonModal) 
+                sub = MAINAPP.mdi.addSubWindow(inst.backend)
+                sub.resize(360,400)
+                sub.show()
                 
             #inst.backend.show()
         return
 
     # QWidget
     # todo: remove 2 lines below
-    if hasattr(inst.backend, "exec_"):
-        inst.backend.exec_()
+    if hasattr(inst.backend, "show"):
+        inst.backend.setModal(False)
+        sub = MAINAPP.mdi.addSubWindow(inst.backend)
+        sub.resize(360,400)
+        sub.show()
         
     #inst.backend.show()
 
@@ -634,6 +652,371 @@ class ScopeStack:
                 return True
         return False
 
+# ---------------------------------------------------------------------------
+# Ein EventFilter pro Widget-Instance.
+# Ruft Wrapper-Funktionen auf, die du in inst.props hinterlegst.
+# ---------------------------------------------------------------------------
+class _QtEventFilter(QObject):
+    def __init__(self, runner, inst):
+        super().__init__()
+        self.runner = runner
+        self.inst = inst
+
+    def eventFilter(self, obj, event):
+        t = event.type()
+
+        if t == QEvent.FocusIn:
+            cb = self.inst.props.get("_ONFOCUSIN_WRAPPER")
+            if cb:
+                cb(event)
+
+        elif t == QEvent.FocusOut:
+            cb = self.inst.props.get("_ONFOCUSOUT_WRAPPER")
+            if cb:
+                cb(event)
+
+        elif t == QEvent.MouseMove:
+            cb = self.inst.props.get("_ONMOUSEMOVE_WRAPPER")
+            if cb:
+                cb(event)
+
+        elif t == QEvent.MouseButtonPress:
+            cb = self.inst.props.get("_ONMOUSEDOWN_WRAPPER")
+            if cb:
+                cb(event)
+
+        elif t == QEvent.MouseButtonRelease:
+            cb = self.inst.props.get("_ONMOUSEUP_WRAPPER")
+            if cb:
+                cb(event)
+
+            # Rechts/Links-Button Events
+            try:
+                if event.button() == Qt.LeftButton:
+                    cb = self.inst.props.get("_ONMOUSELBUTTON_WRAPPER")
+                    if cb:
+                        cb(event)
+
+                    # Click-Fallback NUR links (und nur wenn nicht via Qt.clicked)
+                    if not self.inst.props.get("_ONCLICK_VIA_SIGNAL"):
+                        cb = self.inst.props.get("_ONCLICK_WRAPPER")
+                        if cb:
+                            cb(event)
+
+                elif event.button() == Qt.RightButton:
+                    # onClick darf hier NICHT laufen!
+                    cb = self.inst.props.get("_ONMOUSERBUTTON_WRAPPER")
+                    if cb:
+                        cb(event)
+
+            except Exception:
+                pass
+        
+        elif t == QEvent.KeyPress:
+            cb = self.inst.props.get("_ONKEYDOWN_WRAPPER")
+            if cb:
+                cb(event)
+
+        elif t == QEvent.KeyRelease:
+            cb = self.inst.props.get("_ONKEYUP_WRAPPER")
+            if cb:
+                cb(event)
+
+        elif t == QEvent.MouseButtonDblClick:
+            cb = self.inst.props.get("_ONDBLCLICK_WRAPPER")
+            if cb:
+                cb(event)
+
+        return False
+
+# ---------------------------------------------------------------------------
+# Qt application stuff: Editor ...
+# ---------------------------------------------------------------------------
+class LineNumberArea(QWidget):
+    def __init__(self, editor: "CodeEditor"):
+        super().__init__(editor)
+        self.code_editor = editor
+
+    def sizeHint(self):
+        return QSize(self.code_editor.line_number_area_width(), 0)
+
+    def paintEvent(self, event):
+        self.code_editor.line_number_area_paint_event(event)
+
+class CodeEditor(QPlainTextEdit):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._line_number_area = LineNumberArea(self)
+
+        self.blockCountChanged.connect(self._update_line_number_area_width)
+        self.updateRequest.connect(self._update_line_number_area)
+        self.cursorPositionChanged.connect(self._highlight_current_line)
+
+        self._update_line_number_area_width(0)
+        self._highlight_current_line()
+
+        # Optional: Monospace
+        # self.setFont(QFont("Consolas", 10))
+
+    def line_number_area_width(self) -> int:
+        digits = len(str(max(1, self.blockCount())))
+        fm = QFontMetrics(self.font())
+        space = 12 + fm.horizontalAdvance("9") * digits
+        return space
+
+    def _update_line_number_area_width(self, _):
+        self.setViewportMargins(self.line_number_area_width(), 0, 0, 0)
+
+    def _update_line_number_area(self, rect, dy):
+        if dy:
+            self._line_number_area.scroll(0, dy)
+        else:
+            self._line_number_area.update(0, rect.y(), self._line_number_area.width(), rect.height())
+
+        if rect.contains(self.viewport().rect()):
+            self._update_line_number_area_width(0)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        cr = self.contentsRect()
+        self._line_number_area.setGeometry(QRect(cr.left(), cr.top(), self.line_number_area_width(), cr.height()))
+
+    def line_number_area_paint_event(self, event):
+        painter = QPainter(self._line_number_area)
+        painter.fillRect(event.rect(), QColor(245, 245, 245))
+
+        block = self.firstVisibleBlock()
+        block_number = block.blockNumber()
+        top = int(self.blockBoundingGeometry(block).translated(self.contentOffset()).top())
+        bottom = top + int(self.blockBoundingRect(block).height())
+
+        fm = QFontMetrics(self.font())
+        while block.isValid() and top <= event.rect().bottom():
+            if block.isVisible() and bottom >= event.rect().top():
+                number = str(block_number + 1)
+                painter.setPen(QColor(120, 120, 120))
+                painter.drawText(0, top, self._line_number_area.width() - 4, fm.height(),
+                                 Qt.AlignRight, number)
+
+            block = block.next()
+            block_number += 1
+            top = bottom
+            bottom = top + int(self.blockBoundingRect(block).height())
+
+    def _highlight_current_line(self):
+        # Light highlight current line
+        extra = []
+        if not self.isReadOnly():
+            sel = QTextEdit.ExtraSelection()
+            line_color = QColor(235, 245, 255)
+            sel.format.setBackground(line_color)
+            sel.format.setProperty(sel.format.FullWidthSelection, True)
+            sel.cursor = self.textCursor()
+            sel.cursor.clearSelection()
+            extra.append(sel)
+        self.setExtraSelections(extra)
+
+    def line_number_area(self):
+        return self._line_number_area
+
+class FileEditorWindow(QDialog):
+    def __init__(self, parent, initial_path: str = "", initial_text: str = ""):
+        super().__init__(parent)
+        self.parent = parent
+        
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
+        
+        vlayout = QVBoxLayout(self)
+        self.ed = self._create_editor()
+        
+        self._path = initial_path or ""
+        self._set_text(initial_text or "")
+        self._update_title()
+        
+        self._create_actions()
+        
+        self.mb = self._create_menus()
+        self.tb = self._create_toolbar()
+        self.sb = self._create_statusbar()
+        
+        vlayout.addWidget(self.mb)
+        vlayout.addWidget(self.tb)
+        vlayout.addWidget(self.ed)
+        vlayout.addWidget(self.sb)
+        
+        self.setLayout(vlayout)
+        
+        self.ed.cursorPositionChanged.connect(self._update_cursor_status)
+        self.ed.document().modificationChanged.connect(lambda _: self._update_title())
+        self._update_cursor_status()
+
+    # ---------- UI building ----------
+    def _create_editor(self):
+        editor = CodeEditor(self)
+        return editor
+        
+    def _create_actions(self):
+        # File
+        self.act_new = QAction("Neu", self)
+        self.act_new.setShortcut("Ctrl+N")
+        self.act_new.triggered.connect(self.file_new)
+
+        self.act_save = QAction("Speichern", self)
+        self.act_save.setShortcut("Ctrl+S")
+        self.act_save.triggered.connect(self.file_save)
+
+        self.act_save_as = QAction("Speichern unter…", self)
+        self.act_save_as.setShortcut("Ctrl+Shift+S")
+        self.act_save_as.triggered.connect(self.file_save_as)
+
+        self.act_exit = QAction("Beenden", self)
+        self.act_exit.setShortcut("Alt+F4")
+        self.act_exit.triggered.connect(self.close)
+
+        # Edit
+        self.act_undo = QAction("Undo", self)
+        self.act_undo.setShortcut("Ctrl+Z")
+        self.act_undo.triggered.connect(self.ed.undo)
+
+        self.act_redo = QAction("Redo", self)
+        self.act_redo.setShortcut("Ctrl+Y")
+        self.act_redo.triggered.connect(self.ed.redo)
+
+        self.act_cut = QAction("Cut", self)
+        self.act_cut.setShortcut("Ctrl+X")
+        self.act_cut.triggered.connect(self.ed.cut)
+
+        self.act_copy = QAction("Copy", self)
+        self.act_copy.setShortcut("Ctrl+C")
+        self.act_copy.triggered.connect(self.ed.copy)
+
+        self.act_paste = QAction("Paste", self)
+        self.act_paste.setShortcut("Ctrl+V")
+        self.act_paste.triggered.connect(self.ed.paste)
+
+        self.act_select_all = QAction("Select All", self)
+        self.act_select_all.setShortcut("Ctrl+A")
+        self.act_select_all.triggered.connect(self.ed.selectAll)
+
+        # Help
+        self.act_about = QAction("Über", self)
+        self.act_about.triggered.connect(self.help_about)
+
+    def _create_menus(self):
+        mb = QMenuBar(self)
+
+        m_file = mb.addMenu("Datei")
+        m_file.addAction(self.act_new)
+        m_file.addSeparator()
+        m_file.addAction(self.act_save)
+        m_file.addAction(self.act_save_as)
+        m_file.addSeparator()
+        m_file.addAction(self.act_exit)
+
+        m_edit = mb.addMenu("Bearbeiten")
+        m_edit.addAction(self.act_undo)
+        m_edit.addAction(self.act_redo)
+        m_edit.addSeparator()
+        m_edit.addAction(self.act_cut)
+        m_edit.addAction(self.act_copy)
+        m_edit.addAction(self.act_paste)
+        m_edit.addSeparator()
+        m_edit.addAction(self.act_select_all)
+
+        m_help = mb.addMenu("Hilfe")
+        m_help.addAction(self.act_about)
+        
+        return mb
+
+    def _create_toolbar(self):
+        tb = QToolBar("Datei", self)
+        tb.setMovable(False)
+        tb.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        
+        tb.addAction(self.act_new)
+        tb.addAction(self.act_save)
+        tb.addAction(self.act_save_as)
+        
+        return tb
+
+    def _create_statusbar(self):
+        sb = QStatusBar(self)
+        sb.showMessage("Bereit")
+        return sb
+
+    # ---------- File operations ----------
+    def maybe_save(self) -> bool:
+        if not self.ed.document().isModified():
+            return True
+        res = QMessageBox.question(
+            self,
+            "Ungespeicherte Änderungen",
+            "Du hast ungespeicherte Änderungen. Speichern?",
+            QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel
+        )
+        if res == QMessageBox.Yes:
+            return self.file_save()
+        if res == QMessageBox.No:
+            return True
+        return False
+
+    def file_new(self):
+        if not self.maybe_save():
+            return
+        self._path = ""
+        self._set_text("")
+        self.ed.document().setModified(False)
+        self._update_title()
+
+    def file_save(self) -> bool:
+        if not self._path:
+            return self.file_save_as()
+        try:
+            with open(self._path, "w", encoding="utf-8") as f:
+                f.write(self.ed.toPlainText())
+            self.ed.document().setModified(False)
+            self.sb.showMessage(f"Gespeichert: {self._path}", 3000)
+            self._update_title()
+            return True
+        except Exception as e:
+            QMessageBox.critical(self, "Fehler", f"Konnte nicht speichern:\n{e}")
+            return False
+
+    def file_save_as(self) -> bool:
+        path, _ = QFileDialog.getSaveFileName(self, "Speichern unter", self._path or "", "Alle Dateien (*.*)")
+        if not path:
+            return False
+        self._path = path
+        return self.file_save()
+
+    def closeEvent(self, event):
+        if self.maybe_save():
+            event.accept()
+        else:
+            event.ignore()
+
+    # ---------- Helpers ----------
+    def _set_text(self, text: str):
+        self.ed.setPlainText(text)
+
+    def _update_title(self):
+        name = self._path if self._path else "Unbenannt"
+        star = " *" if self.ed.document().isModified() else ""
+        self.setWindowTitle(f"{name}{star} - Editor")
+
+    def _update_cursor_status(self):
+        tc = self.ed.textCursor()
+        line = tc.blockNumber() + 1
+        col = tc.positionInBlock() + 1
+        self.sb.showMessage(f"Zeile {line}, Spalte {col}")
+
+    def help_about(self):
+        QMessageBox.information(self, "Über", "Einfacher QPlainTextEdit-Editor mit Zeilennummern.\n(Generiert im dBaseRunner)")
+        
+# ---------------------------------------------------------------------------
+# ExecVisitor - Interpreter for dBase DSL ...
+# ---------------------------------------------------------------------------
 class ExecVisitor(dBaseParserVisitor):
     def __init__(self):
         super().__init__()
@@ -834,7 +1217,7 @@ class ExecVisitor(dBaseParserVisitor):
             # z.B. WITH(Font) bold = .T.
             self.set_member(target, name, value, ctx)
 
-            # ✅ wenn WITH(Font): neu anwenden
+            # wenn WITH(Font): neu anwenden
             if owner is not None and isinstance(target, FontValue):
                 self.set_prop(owner, "FONT", target, ctx)
 
@@ -923,6 +1306,11 @@ class ExecVisitor(dBaseParserVisitor):
         
     def eval_expr(self, ctx):
         text = ctx.getText()
+        
+        if getattr(ctx, "BRACKET_STRING", None) and ctx.BRACKET_STRING():
+            tok = ctx.BRACKET_STRING().getSymbol()
+            return self._unescape_bracket_string(tok.text)
+            
         if self.is_simple_reference(text):
             return self.eval_reference_text(text)
         # Fallback: normale Expr-Auswertung über Visitor
@@ -942,7 +1330,7 @@ class ExecVisitor(dBaseParserVisitor):
             obj = self.this_object
             idx = 1
         else:
-            obj = self.resolve_variable(parts[0])
+            obj = self._get_name(parts[0])
             idx = 1
 
         for name in parts[idx:]:
@@ -1044,6 +1432,101 @@ class ExecVisitor(dBaseParserVisitor):
         if ctx is not None and hasattr(ctx, "start") and ctx.start is not None:
             return f"{ctx.start.line}:{ctx.start.column}"
         return "<unknown>"
+
+    def _normalize_handlers(self, value, ctx, event_name: str):
+        # erlaubt: einzelner Delegate oder Liste/Tuple davon
+        if value is None:
+            return []
+        if isinstance(value, (list, tuple)):
+            handlers = list(value)
+        else:
+            handlers = [value]
+
+        out = []
+        for h in handlers:
+            if not isinstance(h, Delegate):
+                raise RuntimeError(
+                    f"{self.loc(ctx)}: {event_name} erwartet Methode(n) (Delegate), bekam {type(h).__name__}"
+                )
+            out.append(h)
+        return out
+
+    def _bind_event(self, inst, prop_key: str, value, ctx=None):
+        key = prop_key.upper()
+
+        # welche Events gibt's?
+        # (pass_event = ob Qt-event als 2s-Arg an Handler geht)
+        EVENT_MAP = {
+            "ONCLICK"       : ("_ONCLICK_WRAPPER",     "_ONCLICK_HANDLERS",     False),
+            "ONDBLCLICK"    : ("_ONDBLCLICK_WRAPPER",  "_ONDBLCLICK_HANDLERS",  False),
+            
+            "ONMOUSEDOWN"   : ("_ONMOUSEDOWN_WRAPPER", "_ONMOUSEDOWN_HANDLERS", True),
+            "ONMOUSEUP"     : ("_ONMOUSEUP_WRAPPER",   "_ONMOUSEUP_HANDLERS",   True),
+            "ONMOUSEMOVE"   : ("_ONMOUSEMOVE_WRAPPER", "_ONMOUSEMOVE_HANDLERS", True),
+            
+            "ONMOUSELBUTTON": ("_ONMOUSELBUTTON_WRAPPER", "_ONMOUSELBUTTON_HANDLERS", True),
+            "ONMOUSERBUTTON": ("_ONMOUSERBUTTON_WRAPPER", "_ONMOUSERBUTTON_HANDLERS", True),
+
+            "ONKEYDOWN"     : ("_ONKEYDOWN_WRAPPER", "_ONKEYDOWN_HANDLERS", True),
+            "ONKEYUP"       : ("_ONKEYUP_WRAPPER",   "_ONKEYUP_HANDLERS",   True),
+        }
+
+        if key not in EVENT_MAP:
+            return False
+
+        wrapper_prop, handlers_prop, pass_event = EVENT_MAP[key]
+        handlers = self._normalize_handlers(value, ctx, key)
+
+        # "löschen" erlauben: onX = NIL -> entfernt Handler
+        if not handlers:
+            inst.props.pop(wrapper_prop, None)
+            inst.props.pop(handlers_prop, None)
+
+            # bei Click auch Signal trennen
+            if key == "ONCLICK" and hasattr(inst.backend, "clicked"):
+                old = inst.props.get("_ONCLICK_WRAPPER")
+                if old is not None:
+                    try:
+                        inst.backend.clicked.disconnect(old)
+                    except Exception:
+                        pass
+            return True
+
+        wrapper = self._make_multi_wrapper(inst, handlers, pass_event)
+        inst.props[wrapper_prop] = wrapper
+        inst.props[handlers_prop] = handlers
+
+        # Click: lieber Qt-Signal (wie du’s schon hast)
+        if key == "ONCLICK" and hasattr(inst.backend, "clicked"):
+            old = inst.props.get("_ONCLICK_WRAPPER")
+            if old is not None:
+                try:
+                    inst.backend.clicked.disconnect(old)
+                except Exception:
+                    pass
+
+            inst.props["_ONCLICK_VIA_SIGNAL"] = True
+            inst.backend.clicked.connect(wrapper)
+            return True
+
+        # Rest: EventFilter sicherstellen
+        self._ensure_event_filter(inst, ctx)
+        return True
+
+    def _make_multi_wrapper(self, inst, handlers, pass_event: bool):
+        def wrapper(ev=None):
+            for h in handlers:
+                try:
+                    # dBase-Semantik: Sender ist inst
+                    args = [inst]
+                    if pass_event:
+                        args.append(ev)
+                    self.invoke_method(h.target, h.method_name, args, None)
+                except ReturnSignal:
+                    # RETURN in Handler -> nur diesen Handler beenden, nächste weiter
+                    continue
+            return None
+        return wrapper
     
     def get_member(self, obj, prop: str, ctx=None):
         key = prop.upper()
@@ -1051,15 +1534,15 @@ class ExecVisitor(dBaseParserVisitor):
         # --- QFont support ---
         if isinstance(obj, FontValue):
             if key == "BOLD":
-                return bool(obj.bold())
+                return bool(obj.bold)
             if key == "ITALIC":
-                return bool(obj.italic())
+                return bool(obj.italic)
             if key == "UNDERLINE":
-                return bool(obj.underline())
+                return bool(obj.underline)
             if key == "NAME":
-                return obj.family()
+                return str(obj.family)
             if key == "SIZE":
-                return obj.pointSize()
+                return int(obj.size)
             
         if isinstance(obj, Instance):
             # 1) Property?
@@ -1081,11 +1564,11 @@ class ExecVisitor(dBaseParserVisitor):
 
             cls_name = getattr(obj, "class_name", None)
 
-            # 2) DSL-Methode?
+            # 2) DSL-Methode? -> als Delegate zurückgeben
             if cls_name:
                 cls_def = self.classes.get(cls_name.upper())
                 if cls_def and key in cls_def.methods:
-                    return cls_def.methods[key]
+                    return Delegate(target=obj, method_name=key, runner=self)
 
             # ✅ 3) Native Methode: OPEN (für FORM und alles was davon erbt)
             if key == "OPEN" and cls_name and self.is_descendant_of(cls_name.upper(), "FORM"):
@@ -1108,7 +1591,7 @@ class ExecVisitor(dBaseParserVisitor):
                 return value
             if key == "UNDERLINE":
                 obj.underline = bool(value)
-                obj.obj.setUnderline(pbj.underline)
+                obj.obj.setUnderline(obj.underline)
                 return value
             if key == "NAME":
                 obj.family = str(value)
@@ -1364,20 +1847,12 @@ class ExecVisitor(dBaseParserVisitor):
         # 1) normal speichern
         inst.props[key] = value
         
-        # 2) Event hooks
-        if key == "ONCLICK":
-            self._bind_onclick(inst, value, ctx)
-            return
+        # 2) MouseMove/Focus (Events => EventFilter)
+        # MouseMove nur zuverlässig mit MouseTracking
+        if hasattr(inst.backend, "setMouseTracking"):
+            inst.backend.setMouseTracking(True)
             
-        if key == "ONMOUSEDOWN":
-            self._bind_onmousedown(inst, value, ctx)
-            return
-        if key == "ONMOUSEUP":
-            self._bind_onmouseup(inst, value, ctx)
-            return
-        if key == "ONMOUSEMOVE":
-            self._bind_onmousemove(inst, value, ctx)
-            return
+        # 2) Event hooks
         if key == "ONGOTFOCUS":
             self._bind_ongotfocus(inst, value, ctx)
             return
@@ -1385,46 +1860,135 @@ class ExecVisitor(dBaseParserVisitor):
             self._bind_onlostfocus(inst, value, ctx)
             return
         
-        # 2) MouseMove/Focus (Events => EventFilter)
-        # MouseMove nur zuverlässig mit MouseTracking
-        if hasattr(inst.backend, "setMouseTracking"):
-            inst.backend.setMouseTracking(True)
+        # Event-Properties?
+        if self._bind_event(inst, key, value, ctx):
+            return
             
         # 3) normale Qt properties
         apply_property_to_qt(inst, key, value)
     
+    def _ensure_event_filter(self, inst: Instance, ctx=None):
+        if inst.backend is None:
+            return
+
+        # Focus möglich machen
+        try:
+            inst.backend.setFocusPolicy(Qt.StrongFocus)
+        except Exception:
+            pass
+
+        # MouseMove auch ohne gedrückte Taste
+        try:
+            inst.backend.setMouseTracking(True)
+        except Exception:
+            pass
+
+        if not inst.props.get("_QT_EVENT_FILTER"):
+            f = _QtEventFilter(self, inst)
+            inst.props["_QT_EVENT_FILTER"] = f
+            inst.backend.installEventFilter(f)
+
+    def _bind_onkeydown(self, inst: Instance, handler: Any, ctx=None):
+        if inst.backend is None:
+            return
+        if not isinstance(handler, Delegate):
+            raise RuntimeError(f"{self.loc(ctx)}: onKeyDown erwartet eine Methode (Delegate), bekam {type(handler).__name__}")
+
+        self._ensure_event_filter(inst, ctx)
+
+        def wrapper(qt_event=None):
+            try:
+                return self.invoke_method(handler.target, handler.method_name, [inst], None)
+            except ReturnSignal:
+                return None
+
+        inst.props["_ONKEYDOWN_WRAPPER"] = wrapper
+
+    def _bind_onkeyup(self, inst: Instance, handler: Any, ctx=None):
+        if inst.backend is None:
+            return
+        if not isinstance(handler, Delegate):
+            raise RuntimeError(f"{self.loc(ctx)}: onKeyUp erwartet eine Methode (Delegate), bekam {type(handler).__name__}")
+
+        self._ensure_event_filter(inst, ctx)
+
+        def wrapper(qt_event=None):
+            try:
+                return self.invoke_method(handler.target, handler.method_name, [inst], None)
+            except ReturnSignal:
+                return None
+
+        inst.props["_ONKEYUP_WRAPPER"] = wrapper
+
+    def _bind_ondblclick(self, inst: Instance, handler: Any, ctx=None):
+        if inst.backend is None:
+            return
+        if not isinstance(handler, Delegate):
+            raise RuntimeError(f"{self.loc(ctx)}: onDblClick erwartet eine Methode (Delegate), bekam {type(handler).__name__}")
+
+        self._ensure_event_filter(inst, ctx)
+
+        def wrapper(qt_event=None):
+            try:
+                return self.invoke_method(handler.target, handler.method_name, [inst], None)
+            except ReturnSignal:
+                return None
+
+        inst.props["_ONDBLCLICK_WRAPPER"] = wrapper
+        
     def _bind_onclick(self, inst: Instance, handler: Any, ctx=None):
         if inst.backend is None:
             return
         
-        # nur für Buttons (erstmal)
-        if not hasattr(inst.backend, "clicked"):
-            raise RuntimeError(f"{self.loc(ctx)}: onClick nicht unterstützt für {inst.class_name}")
+        # NEU: Liste/Tuple erlauben
+        handlers = handler
+        if isinstance(handler, (list, tuple)):
+            handlers = list(handler)
+        else:
+            handlers = [handler]
         
-        # Handler muss Delegate sein (oder notfalls BoundMethod)
-        if not isinstance(handler, Delegate):
-            raise RuntimeError(f"{self.loc(ctx)}: onClick erwartet eine Methode (Delegate), bekam {type(handler).__name__}")
-        
-        # alten wrapper ggf. disconnecten
-        old = inst.props.get("_ONCLICK_WRAPPER")
-        try:
-            if old is not None:
-                inst.backend.clicked.disconnect(old)
-        except Exception:
-            pass
+        # Alle müssen Delegate sein
+        for h in handlers:
+            if not isinstance(h, Delegate):
+                raise RuntimeError(
+                    f"{self.loc(ctx)}: onClick erwartet Methode(n) (Delegate), bekam {type(h).__name__}"
+                )
         
         def wrapper(*qt_args):
-            # Sender: inst (dBase-Instance)
             try:
-                # Wenn dein Handler Sender erwartet:
-                return self.invoke_method(handler.target, handler.method_name, [inst], None)
+                # nacheinander ausführen
+                for h in handlers:
+                    try:
+                        self.invoke_method(h.target, h.method_name, [inst], None)
+                    except ReturnSignal:
+                        # Return aus Handler ignorieren -> weiter zum nächsten
+                        pass
             except ReturnSignal:
-                # click-handler ignoriert return meistens
                 return None
+                
+        # nur für Buttons (erstmal)
+        if hasattr(inst.backend, "clicked"):
+            old = inst.props.get("_ONCLICK_WRAPPER")
+            try:
+                if old is not None:
+                    inst.backend.clicked.disconnect(old)
+            except Exception:
+                pass
+            #raise RuntimeError(f"{self.loc(ctx)}: onClick nicht unterstützt für {inst.class_name}")
+            #return
+            
+            inst.props["_ONCLICK_WRAPPER"   ] = wrapper
+            inst.props["_ONCLICK_VIA_SIGNAL"] = True
+            
+            inst.backend.clicked.connect(wrapper)
+            return
+            
+        inst.props["_ONCLICK_VIA_SIGNAL"] = False
         
+        # Alles andere (z.B. FORM/QDialog): EventFilter via MouseRelease
+        self._ensure_event_filter(inst, ctx)
         inst.props["_ONCLICK_WRAPPER"] = wrapper
-        inst.backend.clicked.connect(wrapper)
-    
+        
     def _bind_onmousedown(self, inst: Instance, handler: Any, ctx=None):
         if inst.backend is None:
             return
@@ -1488,6 +2052,60 @@ class ExecVisitor(dBaseParserVisitor):
         
         inst.props["_ONMOUSEUP_WRAPPER"] = wrapper
         inst.backend.released.connect(wrapper)
+
+    def _bind_onmousemove(self, inst: Instance, handler: Any, ctx=None):
+        if inst.backend is None:
+            return
+
+        if not isinstance(handler, Delegate):
+            raise RuntimeError(
+                f"{self.loc(ctx)}: onMouseMove erwartet eine Methode (Delegate), bekam {type(handler).__name__}"
+            )
+
+        self._ensure_event_filter(inst, ctx)
+
+        def wrapper(qt_event=None):
+            try:
+                # Minimal: nur Sender
+                return self.invoke_method(handler.target, handler.method_name, [inst], None)
+            except ReturnSignal:
+                return None
+
+        inst.props["_ONMOUSEMOVE_WRAPPER"] = wrapper
+
+    def _bind_ongotfocus(self, inst: Instance, handler: Any, ctx=None):
+        if inst.backend is None:
+            return
+
+        if not isinstance(handler, Delegate):
+            raise RuntimeError(f"{self.loc(ctx)}: onGotFocus erwartet eine Methode (Delegate), bekam {type(handler).__name__}")
+
+        self._ensure_event_filter(inst, ctx)
+
+        def wrapper(qt_event=None):
+            try:
+                return self.invoke_method(handler.target, handler.method_name, [inst], None)
+            except ReturnSignal:
+                return None
+
+        inst.props["_ONFOCUSIN_WRAPPER"] = wrapper
+
+    def _bind_onlostfocus(self, inst: Instance, handler: Any, ctx=None):
+        if inst.backend is None:
+            return
+
+        if not isinstance(handler, Delegate):
+            raise RuntimeError(f"{self.loc(ctx)}: onLostFocus erwartet eine Methode (Delegate), bekam {type(handler).__name__}")
+
+        self._ensure_event_filter(inst, ctx)
+
+        def wrapper(qt_event=None):
+            try:
+                return self.invoke_method(handler.target, handler.method_name, [inst], None)
+            except ReturnSignal:
+                return None
+
+        inst.props["_ONFOCUSOUT_WRAPPER"] = wrapper
     
     def exec_class_body(self, cdef: ClassDef):
         """
@@ -1594,9 +2212,11 @@ class ExecVisitor(dBaseParserVisitor):
     # ---------- Statements ----------
     def visitInput(self, ctx):
         # Pass 1: Klassen registrieren
-        for it in ctx.item():
-            if it.classDecl():
-                self.visit(it.classDecl())
+        if self._mode == "collect":
+            for it in ctx.item():
+                if it.classDecl():
+                    self.visit(it.classDecl())
+            return None
 
         # Pass 2: Statements ausführen
         for it in ctx.item():
@@ -1629,13 +2249,16 @@ class ExecVisitor(dBaseParserVisitor):
         while True:
             cond = self.visit(ctx.condition())
             #print("DEBUG: condition =", cond)
-
+            
             if not cond:
                 #print("DEBUG: leave DO WHILE (cond false)")
                 break
-
-            self.visit(ctx.block())
-
+            
+            try:
+                self.visit(ctx.block())
+            except BreakSignal:
+                break   # beendet Schleife
+                
             guard += 1
             if guard > 1_000_000:
                 raise RuntimeError("DO WHILE: Endlosschleife?")
@@ -2089,7 +2712,7 @@ class ExecVisitor(dBaseParserVisitor):
 
             # nur X = ...
             if len(parts) == 1:
-                self._set_name(parts[0], value)   # WITH-aware: setzt Var oder Property
+                self._set_name(parts[0], value, ctx)   # WITH-aware: setzt Var oder Property
                 return
 
             # THIS.PushButton1 = ...
@@ -2100,7 +2723,7 @@ class ExecVisitor(dBaseParserVisitor):
         text = lctx.getText()  # z.B. THIS.PushButton1
         parts = text.split(".")
         if len(parts) == 1:
-            self._set_name(parts[0], value)
+            self._set_name(parts[0], value, ctx)
         else:
             self._set_chain_parts(parts, value, ctx)
             
@@ -2271,6 +2894,9 @@ class ExecVisitor(dBaseParserVisitor):
         raise Exception(f"{ctx.start.line}:{ctx.start.column}: Unbekanntes literal")
 
     def visitPrimary(self, ctx):
+        if hasattr(ctx, "handlerList") and ctx.handlerList():
+            return self.visit(ctx.handlerList())
+            
         if ctx.literal():
             return self.visit(ctx.literal())
             
@@ -2299,6 +2925,9 @@ class ExecVisitor(dBaseParserVisitor):
         if ctx.IDENT():
             name = ctx.IDENT().getSymbol().text  # Token-Text
             return self._get_name(name)       # <-- HIER ist der Lookup!
+        
+        if getattr(ctx, "BRACKET_STRING", None) and ctx.BRACKET_STRING():
+            return self._unescape_bracket_string(ctx.BRACKET_STRING().getText())
             
         # ( expr )
         if ctx.expr():
@@ -2355,6 +2984,7 @@ class ExecVisitor(dBaseParserVisitor):
             base = self.with_stack[-1]
             if isinstance(base, Instance):
                 base.props[key] = value
+                self.set_prop(base, key, value, ctx)
                 return
             if isinstance(base, dict):
                 # vorhandenen key (case-insensitiv) treffen oder neu anlegen
@@ -2462,6 +3092,12 @@ class ExecVisitor(dBaseParserVisitor):
                 out.append(s[i])
                 i += 1
         return ''.join(out)
+        
+    def _unescape_bracket_string(self, tok_text: str) -> str:
+        # tok_text enthält inklusive [ ... ]
+        s = tok_text[1:-1]           # äußere Klammern weg
+        s = s.replace("]]", "]")     # Escape wieder zurück
+        return s
         
     def visitClassBody(self, ctx):
         # NUR member besuchen
@@ -2595,6 +3231,13 @@ class ExecVisitor(dBaseParserVisitor):
         val = self.visit(ctx.expr()) if ctx.expr() else None
         raise ReturnSignal(val)
 
+    def visitHandlerList(self, ctx):
+        # ctx.expr() ist eine Liste: erstes expr + alle (SEMI expr)*
+        items = []
+        for e in ctx.expr():
+            items.append(self.eval_expr(e))
+        return items
+        
     def is_descendant_of(self, class_name: str, base_name: str) -> bool:
         cn = class_name.upper()
         base = base_name.upper()
@@ -2616,7 +3259,7 @@ class ExecVisitor(dBaseParserVisitor):
         if isinstance(v, (int, float)):
             return bool(v)
         if isinstance(v, str):
-            return v.strip().lower() in ("true", "t", ".t.", "1", "yes", "y")
+            return v.strip().upper() in ("TRUE", "T", ".T.", "1", "YES", "Y")
         return default
 
     def fire_event(self, inst, event_name: str, qt_event=None):
@@ -2688,6 +3331,50 @@ class ExecVisitor(dBaseParserVisitor):
         finally:
             self.pop_scope()
             self.pop_this()
+
+    def visitCreateFileStmt(self, ctx):
+        # Beispiel: CREATE FILE oder CREATE FILE <expr>
+        path = ""
+        if hasattr(ctx, "expr") and ctx.expr():
+            path = str(self.eval_expr(ctx.expr()))
+        
+        self.open_file_editor(path=path, text="")
+        return None
+        
+    def open_file_editor(self, path: str = "", text: str = ""):
+        text = ""
+        # wenn path gesetzt ist und text leer: Datei laden
+        if path and text == "":
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    text = f.read()
+            except FileNotFoundError:
+                print("file not found.")
+                pass
+        try:
+            win = FileEditorWindow(parent=MAINAPP, initial_path=path, initial_text=text)
+            sub = MAINAPP.mdi.addSubWindow(win)
+            win.resize(500, 450)
+            
+            # 1) immer sichtbar + Vordergrund
+            win.show()
+            win.raise_()
+            win.activateWindow()
+
+            # 2) falls minimiert: wieder herstellen
+            win.setWindowState(win.windowState() & ~Qt.WindowMinimized | Qt.WindowActive)
+
+            # 3) optional: "Always on top"
+            win.setWindowFlag(Qt.WindowStaysOnTopHint, True)
+            win.show()  # nach setWindowFlag nochmal show()!
+            win.raise_()
+            win.activateWindow()
+    
+            # Referenz halten (gegen GC)
+            self._open_windows = getattr(self, "_open_windows", [])
+            self._open_windows.append(win)
+        except Exception as e:
+            print(e)
 
 # ---------------------------------------------------------------------------
 # parser stuff ...
@@ -2781,8 +3468,8 @@ class WidgetEventFilter(QObject):
 
         return False  # False => Qt verarbeitet normal weiter
         
-class MainWindow(QWidget):
-    def __init__(self):
+class EditorWidget(QWidget):
+    def __init__(self, text="abcdef"):
         super().__init__()
         self.setWindowTitle("Demo: dBase 2026")
         self.resize(500, 300)
@@ -2790,7 +3477,7 @@ class MainWindow(QWidget):
         layout = QVBoxLayout(self)
 
         # Mehrzeiliges Eingabefeld
-        self.text = QTextEdit(self)
+        self.text = CodeEditor(self)
         self.text.setPlaceholderText("Schreib hier was rein…")
         self.text.setLineWrapMode(self.text.NoWrap)
         self.text.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
@@ -2808,8 +3495,17 @@ class MainWindow(QWidget):
             content = f.read()
             f.close()
             
-        self.text.setText(content)
+        self.text.setPlainText(content)
+        
+    def close_tracked_windows(self):
+        for w in getattr(self, "_open_windows", []):
+            if w:
+                w.close()
+        self._open_windows = []
     
+    def closeEvent(self, event):
+        self.close_tracked_windows()
+        
     def on_button_clicked(self):
         # Das ist die Funktion, die beim Klick ausgeführt wird
         content = self.text.toPlainText().strip()
@@ -2887,12 +3583,42 @@ class MainWindow(QWidget):
             dlg = showException(self,
             "Allgemeiner Fehler: " + type(e).__name__, tb_str)
             dlg.exec_()
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.mdi = QMdiArea(self)
+        self.setCentralWidget(self.mdi)
+
+        # Beispiel-Menü "Fenster"
+        m_win = self.menuBar().addMenu("Fenster")
+        act_cascade = QAction("Kaskadieren", self, triggered=self.mdi.cascadeSubWindows)
+        act_tile    = QAction("Nebeneinander", self, triggered=self.mdi.tileSubWindows)
+        m_win.addAction(act_cascade)
+        m_win.addAction(act_tile)
+        
+        self.mdi_open_editor()
+        
+    def mdi_open_editor(self, title="Unbenannt", text=""):
+        w = EditorWidget(text)
+        sub = self.mdi.addSubWindow(w)     # Qt erzeugt ein QMdiSubWindow
+        sub.setWindowTitle(title)
+        sub.resize(900, 650)
+        w.show()
+        sub.show()
+        
+        self.mdi.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.mdi.setVerticalScrollBarPolicy  (Qt.ScrollBarAsNeeded)
+        
+        self.mdi.setActiveSubWindow(sub)
+        return sub
         
 def main():
     app = ensure_qt_app()
     if app is not None:
-        win = MainWindow()
-        win.show()
+        global MAINAPP
+        MAINAPP = MainWindow()
+        MAINAPP.show()
         sys.exit(app.exec_())
     else:
         print("Qt5 kann nicht gestartet werden.")

@@ -24,6 +24,16 @@ class dBaseParserVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by dBaseParser#createFileStmt.
+    def visitCreateFileStmt(self, ctx:dBaseParser.CreateFileStmtContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by dBaseParser#handlerList.
+    def visitHandlerList(self, ctx:dBaseParser.HandlerListContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by dBaseParser#breakStmt.
     def visitBreakStmt(self, ctx:dBaseParser.BreakStmtContext):
         return self.visitChildren(ctx)

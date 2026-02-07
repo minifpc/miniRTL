@@ -23,6 +23,7 @@ statement
     |   parameterStmt
     |   writeStmt
     |   assignStmt
+    |   createFileStmt
     |   exprStmt
     |   localAssignStmt
     |   localDeclStmt
@@ -35,6 +36,14 @@ statement
     |   withStmt
     ;
 
+createFileStmt
+    : CREATE FILE (expr)?
+    ;
+
+handlerList
+    :   LBRACE expr (SEMI expr)* RBRACE
+    ;
+    
 breakStmt
     : BREAK
     ;
@@ -183,7 +192,7 @@ withTarget
     ;
 
 withBody
-    :   (withAssignStmt | withStmt)*
+    :   (withAssignStmt | withStmt | statement)*
     ;
 
 withAssignStmt
@@ -273,7 +282,8 @@ literal
     ;
     
 primary
-    :   newExpr
+    :   handlerList
+    |   newExpr
     |   memberExpr
     |   literal
     |   THIS
@@ -282,5 +292,6 @@ primary
     |   NUMBER
     |   IDENT
     |   STRING
+    |   BRACKET_STRING
     |   LPAREN expr RPAREN
     ;

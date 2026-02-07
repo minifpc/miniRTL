@@ -49,18 +49,32 @@ CLASS ParentForm OF FORM
     PROPERTY top   = 231
     
     WITH (THIS)
-       Width = 400
-       Height = 400
-       Top = 223
-       Left = 200
+        onClick = THIS.ParentForm_onClick   ** single handler
+        Width = 400
+        Height = 400
+        Top = 223
+        Left = 200
     ENDWITH
-    
+
+    // -----------------------------------------------------
+    // \brief you can create properties with THIS.path ...
+    // -----------------------------------------------------
     THIS.PushButton1 = NEW PUSHBUTTON(THIS)
     THIS.PushButton1.Top = 180
     THIS.PushButton1.Left = 30
     
+    // -----------------------------------------------------
+    // \brief or you can WITH to bundle properties from one
+    //        object.
+    // -----------------------------------------------------
     WITH (THIS.PushButton1)
-        onClick = THIS.PushButton1_onClick
+        onClick = { THIS.PushButton1_onClick_1 ;  ** multiple handler call: 1
+                    THIS.PushButton1_onClick_2 ;  ** multiple handler call: 2
+                    THIS.PushButton1_onClick_3 }  ** multiple handler call: 3
+                    
+        onMouseMove     = THIS.PushButton1_onMouseMove
+        onMouseRButton  = THIS.PushButton1_onMouseRButton
+        
         Top = 82
         Width = 128
         Text = "Click Me"
@@ -102,17 +116,44 @@ CLASS ParentForm OF FORM
         RETURN 324
     ENDMETHOD
     
-    METHOD PushButton1_onClick(Sender)
-        WRITE "clicked button 1"
+    // --------------------------------------------------------------
+    // \brief This is a onClick Event methode. It will be execute
+    //        when you mouse click in the child-area of window/form.
+    // --------------------------------------------------------------
+    METHOD ParentForm_onClick(Sender)
+        WRITE "on form clicked"
+        x = 5
+        WRITE X
+        DO WHILE x >= 2
+            WRITE x
+            x = x - 1
+            IF x == 3
+                BREAK
+            ENDIf
+        ENDDO
+        WRITE "----->"
+        CREATE FILE "33.txt"
+    ENDMETHOD
+    
+    // --------------------------------------------------------------
+    // \brief This is a onClick Event methode. It will be execute
+    //        when you mouse click the left button on the form.
+    // --------------------------------------------------------------
+    METHOD PushButton1_onClick_1(Sender)
+        WRITE "clicked button A: handler 1"
         WRITE Sender.Text
+        WITH (Sender)           ** you can have nested WITH
+            WRITE Text
+            WITH (Font)         ** ENDWITH blocks
+                bold = .T.
+                size = 14
+            ENDWITH
+        ENDWITH
         IF THIS.PushButton1.Text == "Click Me"
             THIS.PushButton2.Text = "Click Me"
+            WRITE "okk"
             WITH (Sender)
                 Text = "Click Me, too"
-                WITH (Font)
-                    bold = .T.
-                    size = 14
-                ENDWITH
             ENDWITH
         ELSE
             THIS.PushButton2.Text = "Click Me, too"
@@ -121,12 +162,25 @@ CLASS ParentForm OF FORM
             Sender.Font.Size = 11
         ENDIF
     ENDMETHOD
+    METHOD PushButton1_onClick_2(Sender)
+        WRITE "clicked button A: handler 2"
+    ENDMETHOD
+    METHOD PushButton1_onClick_3(Sender)
+        WRITE "clicked button A: handler 3"
+    ENDMETHOD
+    METHOD PushButton1_onMouseRButton(Sender)
+        WRITE "right click"
+    ENDMETHOD
+    
+    METHOD PushButton1_onMouseMove(Sender)
+        WRITE [over button: 1 " ]
+    ENDMETHOD
     
     METHOD PushButton2_onClick(Sender)
         WRITE "clicked button 2"
         WRITE Sender.Text
         IF THIS.PushButton2.Text == "Click Me, too"
-            THIS.PushButton1.Text = "Click Me, too"
+            THIS.PushButton1.Text = "Click Me"
             Sender.Text = "Click Me"
         ELSE
             THIS.PushButton1.Text = "Click Me"
@@ -155,12 +209,4 @@ CLASS Form2 OF FORM1
 ENDCLASS
 */
 // CALL Form1.Init("Ooops",2,3,4,5,6)
-/*
-x = 5
-WRITE X
-DO WHILE x >= 2
-    WRITE x
-    x = x - 1
-ENDDO
-*/
 #endif  // __DBASE_PRG__
