@@ -28,16 +28,34 @@ import pprint
 # Qt Backend Factory + Property Mapping
 # ---------------------------------------------------------------------------
 from PyQt5.QtCore    import (
-    QObject, Qt, QSocketNotifier, pyqtSignal, QEvent, QRect, QSize
+    QObject, Qt, QSocketNotifier, pyqtSignal, QEvent, QRect, QSize, QRegExp,
+    QFileInfo, QPoint
 )
 from PyQt5.QtGui     import (
-    QFont, QPainter, QColor, QFontMetrics
+    QFont, QPainter, QFontMetrics, QSyntaxHighlighter, QTextCharFormat,
+    QColor, QStandardItemModel, QStandardItem
 )
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QDialog, QPushButton, QVBoxLayout,
     QTextEdit, QToolBar, QStatusBar, QMessageBox, QPlainTextEdit, QAction,
-    QFileDialog, QMenuBar, QMdiArea, QMdiSubWindow
+    QFileDialog, QMenuBar, QMdiArea, QMdiSubWindow, QTreeView, QSplitter,
+    QHBoxLayout, QComboBox, QTabWidget, QListWidget, QListWidgetItem,
+    QMenu, QFileDialog, QFileIconProvider, QListWidget, QTableWidget,
+    QTableWidgetItem, QHeaderView, QStyledItemDelegate, QGroupBox, QLabel,
+    QLineEdit, QCheckBox, QRadioButton, QSpacerItem, QGridLayout, QSpinBox,
+    QSizePolicy
 )
+
+TYPE_VALUES = [
+    "Character",
+    "Numeric",
+    "Float",
+    "Integer",
+    "Date",
+    "DateTime",
+    "Logical",
+    "Memo",
+]
 
 NATIVE_BASES = {
     "FORM": QDialog,          # oder QDialog, wenn FORM per default Dialog sein soll
@@ -732,6 +750,74 @@ class _QtEventFilter(QObject):
 # ---------------------------------------------------------------------------
 # Qt application stuff: Editor ...
 # ---------------------------------------------------------------------------
+class DBaseHighlighter(QSyntaxHighlighter):
+    def __init__(self, document):
+        super().__init__(document)
+
+        # --- Formate ---
+        self.fmt_keyword = QTextCharFormat()
+        self.fmt_keyword.setFontWeight(QFont.Bold)
+        self.fmt_keyword.setForeground(QColor(0, 0, 0))  # schwarz
+
+        self.fmt_comment = QTextCharFormat()
+        self.fmt_comment.setForeground(QColor(0, 128, 0))  # grün
+
+        # --- Keywords (nach Bedarf erweitern) ---
+        keywords = [
+            "FOR", "ENDFOR", "CLASS", "ENDCLASS", "METHOD", "ENDMETHOD",
+            "IF", "ENDIF", "ELSE", "DO", "WHILE", "ENDDO",
+            "RETURN", "LOCAL", "PARAMETER", "WITH", "ENDWITH",
+            "NEW", "OF", "OBJECT", "THIS", "SUPER", "TRUE", "FALSE"
+        ]
+
+        self.rules = []
+        for kw in keywords:
+            # \bKW\b = ganzes Wort, case-insensitive
+            rx = QRegExp(rf"\b{kw}\b", Qt.CaseInsensitive)
+            self.rules.append((rx, self.fmt_keyword))
+
+        # --- Line comments: //, **, && bis Zeilenende ---
+        self.rules.append((QRegExp(r"//[^\n]*"), self.fmt_comment))
+        self.rules.append((QRegExp(r"\*\*[^\n]*"), self.fmt_comment))
+        self.rules.append((QRegExp(r"&&[^\n]*"), self.fmt_comment))
+
+        # --- Block comments: /* ... */ (mehrzeilig) ---
+        self.block_start = QRegExp(r"/\*")
+        self.block_end   = QRegExp(r"\*/")
+
+    def highlightBlock(self, text: str):
+        # 1) normale Regeln (Keywords + Single-line comments)
+        for rx, fmt in self.rules:
+            i = rx.indexIn(text, 0)
+            while i >= 0:
+                length = rx.matchedLength()
+                self.setFormat(i, length, fmt)
+                i = rx.indexIn(text, i + length)
+
+        # 2) Block comments mehrzeilig
+        self.setCurrentBlockState(0)
+
+        start = 0
+        if self.previousBlockState() != 1:
+            start = self.block_start.indexIn(text, 0)
+        else:
+            start = 0
+
+        while start >= 0:
+            end = self.block_end.indexIn(text, start)
+            if end == -1:
+                # Kommentar geht in nächste Zeile weiter
+                self.setCurrentBlockState(1)
+                length = len(text) - start
+            else:
+                length = (end - start) + self.block_end.matchedLength()
+
+            self.setFormat(start, length, self.fmt_comment)
+
+            if end == -1:
+                break
+            start = self.block_start.indexIn(text, start + length)
+
 class LineNumberArea(QWidget):
     def __init__(self, editor: "CodeEditor"):
         super().__init__(editor)
@@ -827,8 +913,43 @@ class FileEditorWindow(QDialog):
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
         
+        # Splitter: links Tree, rechts Editor
+        self.splitter = QSplitter(Qt.Horizontal, self)
+        
+        # --- TreeView links ---
+        self.tree = QTreeView(self.splitter)
+        
+        # Dummy Model (später kannst du hier Klassen/Methoden/etc. einfüllen)
+        model = QStandardItemModel()
+        model.setHorizontalHeaderLabels(["Struktur"])
+        
+        root = model.invisibleRootItem()
+        
+        root.appendRow(QStandardItem("CLASS ParentForm"))
+        root.appendRow(QStandardItem("METHOD Init"))
+        
+        self.tree.setModel(model)
+        self.tree.expandAll()
+        
         vlayout = QVBoxLayout(self)
+
         self.ed = self._create_editor()
+        self.ed.setFont(QFont("Consolas", 10))
+
+        if initial_path:
+            try:
+                with open(initial_path, "r", encoding="utf-8") as f:
+                    initial_text = f.read()
+                    f.close()
+            except Exception as e:
+                raise Exception(e)
+                
+        self.highlighter = DBaseHighlighter(self.ed.document())
+        
+        # Splitter-Verhältnisse
+        self.splitter.setStretchFactor(0, 0)  # Tree
+        self.splitter.setStretchFactor(1, 1)  # Editor
+        self.splitter.setSizes([220, 800])
         
         self._path = initial_path or ""
         self._set_text(initial_text or "")
@@ -842,9 +963,10 @@ class FileEditorWindow(QDialog):
         
         vlayout.addWidget(self.mb)
         vlayout.addWidget(self.tb)
-        vlayout.addWidget(self.ed)
+        vlayout.addWidget(self.splitter)
         vlayout.addWidget(self.sb)
-        
+
+        vlayout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(vlayout)
         
         self.ed.cursorPositionChanged.connect(self._update_cursor_status)
@@ -853,7 +975,7 @@ class FileEditorWindow(QDialog):
 
     # ---------- UI building ----------
     def _create_editor(self):
-        editor = CodeEditor(self)
+        editor = CodeEditor(self.splitter)
         return editor
         
     def _create_actions(self):
@@ -3446,45 +3568,390 @@ class showException(QDialog):
     def on_button_clicked(self):
         self.close()
 
-class WidgetEventFilter(QObject):
-    def __init__(self, runner, inst):
-        super().__init__()
-        self.runner = runner     # ExecVisitor/Runner
-        self.inst = inst         # Instance (z.B. PushButton-Instance)
+class SourceAliasesTab(QWidget):
+    """
+    Tab 'Quell-Aliases' wie Screenshot, inkl. Add/Remove/Edit + nicht-nativer Folder-Dialog.
+    model: dict[str, str]  (alias -> path)
+    """
+    def __init__(self, parent=None, initial=None):
+        super().__init__(parent)
 
-    def eventFilter(self, obj, event):
-        t = event.type()
+        self._model = dict(initial or {})
+        self._updating_ui = False
 
-        if t == QEvent.MouseButtonPress:
-            self.runner.fire_event(self.inst, "ONMOUSEDOWN", event)
-        elif t == QEvent.MouseButtonRelease:
-            self.runner.fire_event(self.inst, "ONMOUSEUP", event)
-        elif t == QEvent.MouseMove:
-            self.runner.fire_event(self.inst, "ONMOUSEMOVE", event)
-        elif t == QEvent.FocusIn:
-            self.runner.fire_event(self.inst, "ONGOTFOCUS", event)
-        elif t == QEvent.FocusOut:
-            self.runner.fire_event(self.inst, "ONLOSTFOCUS", event)
+        root = QVBoxLayout(self)
+        root.setContentsMargins(12, 12, 12, 12)
+        root.setSpacing(12)
 
-        return False  # False => Qt verarbeitet normal weiter
-        
-class EditorWidget(QWidget):
+        # ---- Oben: Liste ----
+        gb_list = QGroupBox("Definierte Quell-Aliases", self)
+        v_list = QVBoxLayout(gb_list)
+
+        self.lst = QListWidget()
+        self.lst.setMinimumHeight(210)
+        v_list.addWidget(self.lst)
+
+        # ---- Unten: Editor ----
+        gb_edit = QGroupBox("Quell-Alias bearbeiten", self)
+        e = QGridLayout(gb_edit)
+        e.setHorizontalSpacing(10)
+        e.setVerticalSpacing(8)
+
+        e.addWidget(QLabel("Alias:"), 0, 0)
+        self.ed_alias = QLineEdit()
+        self.ed_alias.setMinimumWidth(220)
+        e.addWidget(self.ed_alias, 0, 1)
+
+        self.btn_add = QPushButton("Hinzufügen")
+        self.btn_remove = QPushButton("Entfernen")
+        self.btn_add.setFixedWidth(95)
+        self.btn_remove.setFixedWidth(95)
+        e.addWidget(self.btn_add, 0, 2)
+        e.addWidget(self.btn_remove, 0, 3)
+
+        e.addWidget(QLabel("Pfad:"), 1, 0)
+        self.ed_path = QLineEdit()
+        e.addWidget(self.ed_path, 1, 1, 1, 2)
+
+        self.btn_browse = QPushButton("…")
+        self.btn_browse.setFixedWidth(30)
+        e.addWidget(self.btn_browse, 1, 3, alignment=Qt.AlignLeft)
+
+        root.addWidget(gb_list)
+        root.addWidget(gb_edit)
+        root.addStretch(1)
+
+        # Demo / initial
+        if not self._model:
+            self._model.update({
+                "CoreShared": r"T:\Programme\dBASE\dBASE2019\Bin\dBLCore\Shared",
+                "dBStartup": r"T:\Programme\dBASE\dBASE2019\Bin\dBStartup",
+                "Examples": r"T:\Programme\dBASE\dBASE2019\Examples",
+                "Forms": r"T:\Programme\dBASE\dBASE2019\Forms",
+                "Images": r"T:\Programme\dBASE\dBASE2019\Images",
+            })
+
+        self._reload_list(select_first=True)
+
+        # Signals
+        self.lst.currentItemChanged.connect(self._on_list_changed)
+        self.btn_add.clicked.connect(self._on_add)
+        self.btn_remove.clicked.connect(self._on_remove)
+        self.btn_browse.clicked.connect(self._on_browse)
+
+        # optional: Live-Update ins Modell, wenn man Felder verlässt
+        self.ed_alias.editingFinished.connect(self._on_edit_finished)
+        self.ed_path.editingFinished.connect(self._on_edit_finished)
+
+    # ---------- Public ----------
+    def model(self) -> dict:
+        """Gibt eine Kopie des Modells zurück."""
+        return dict(self._model)
+
+    # ---------- Intern ----------
+    def _reload_list(self, select_first=False, select_alias=None):
+        self._updating_ui = True
+        try:
+            self.lst.clear()
+            for alias in sorted(self._model.keys(), key=lambda s: s.lower()):
+                self.lst.addItem(QListWidgetItem(alias))
+
+            if select_alias:
+                items = self.lst.findItems(select_alias, Qt.MatchFixedString)
+                if items:
+                    self.lst.setCurrentItem(items[0])
+            elif select_first and self.lst.count() > 0:
+                self.lst.setCurrentRow(0)
+        finally:
+            self._updating_ui = False
+
+        # falls leer
+        self._sync_editor_enabled()
+
+    def _sync_editor_enabled(self):
+        has = self.lst.currentItem() is not None
+        self.btn_remove.setEnabled(has)
+
+    def _on_list_changed(self, cur, prev):
+        if self._updating_ui:
+            return
+        self._sync_editor_enabled()
+
+        if not cur:
+            self.ed_alias.setText("")
+            self.ed_path.setText("")
+            return
+
+        alias = cur.text()
+        path = self._model.get(alias, "")
+
+        self._updating_ui = True
+        try:
+            self.ed_alias.setText(alias)
+            self.ed_path.setText(path)
+        finally:
+            self._updating_ui = False
+
+    def _normalized_alias(self, s: str) -> str:
+        return (s or "").strip()
+
+    def _on_add(self):
+        alias = self._normalized_alias(self.ed_alias.text())
+        path = (self.ed_path.text() or "").strip()
+
+        if not alias:
+            QMessageBox.warning(self, "Fehler", "Bitte einen Alias-Namen eingeben.")
+            self.ed_alias.setFocus()
+            return
+
+        if not path:
+            QMessageBox.warning(self, "Fehler", "Bitte einen Pfad eingeben oder auswählen.")
+            self.ed_path.setFocus()
+            return
+
+        if alias in self._model:
+            r = QMessageBox.question(
+                self,
+                "Alias existiert bereits",
+                f"Der Alias '{alias}' existiert schon.\nSoll der Pfad überschrieben werden?",
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No
+            )
+            if r != QMessageBox.Yes:
+                return
+
+        self._model[alias] = path
+        self._reload_list(select_alias=alias)
+
+    def _on_remove(self):
+        cur = self.lst.currentItem()
+        if not cur:
+            return
+
+        alias = cur.text()
+        r = QMessageBox.question(
+            self,
+            "Entfernen",
+            f"Alias '{alias}' wirklich entfernen?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
+        if r != QMessageBox.Yes:
+            return
+
+        self._model.pop(alias, None)
+        self._reload_list(select_first=True)
+
+    def _on_browse(self):
+        start_dir = (self.ed_path.text() or "").strip() or ""
+        dlg = QFileDialog(self, "Pfad auswählen", start_dir)
+        dlg.setFileMode(QFileDialog.Directory)
+        dlg.setOption(QFileDialog.ShowDirsOnly, True)
+        dlg.setOption(QFileDialog.DontUseNativeDialog, True)  # <- NICHT NATIV
+
+        if dlg.exec_():
+            dirs = dlg.selectedFiles()
+            if dirs:
+                self.ed_path.setText(dirs[0])
+
+    def _on_edit_finished(self):
+        """
+        Optional: wenn ein bestehender Alias ausgewählt ist,
+        sollen Änderungen an Pfad/Alias (vorsichtig) ins Modell übernommen werden.
+        """
+        if self._updating_ui:
+            return
+
+        cur = self.lst.currentItem()
+        if not cur:
+            return
+
+        old_alias = cur.text()
+        new_alias = self._normalized_alias(self.ed_alias.text())
+        new_path = (self.ed_path.text() or "").strip()
+
+        # Nur Pfad geändert?
+        if new_alias == old_alias:
+            if new_path and self._model.get(old_alias) != new_path:
+                self._model[old_alias] = new_path
+            return
+
+        # Alias umbenennen (mit Kollisionscheck)
+        if not new_alias:
+            # revert
+            self._updating_ui = True
+            try:
+                self.ed_alias.setText(old_alias)
+            finally:
+                self._updating_ui = False
+            return
+
+        if new_alias in self._model:
+            QMessageBox.warning(self, "Fehler", f"Alias '{new_alias}' existiert bereits.")
+            self._updating_ui = True
+            try:
+                self.ed_alias.setText(old_alias)
+            finally:
+                self._updating_ui = False
+            return
+
+        # rename im model
+        old_path = self._model.pop(old_alias, "")
+        self._model[new_alias] = new_path or old_path
+        self._reload_list(select_alias=new_alias)
+
+class TypeComboDelegate(QStyledItemDelegate):
+    """ComboBox-Editor nur für die Type-Spalte."""
+
+    def __init__(self, type_column: int, parent=None):
+        super().__init__(parent)
+        self.type_column = type_column
+
+    def createEditor(self, parent, option, index):
+        if index.column() != self.type_column:
+            return super().createEditor(parent, option, index)
+
+        cb = QComboBox(parent)
+        cb.addItems(TYPE_VALUES)
+        cb.setEditable(False)
+        return cb
+
+    def setEditorData(self, editor, index):
+        if index.column() != self.type_column or not isinstance(editor, QComboBox):
+            return super().setEditorData(editor, index)
+
+        current = (index.data(Qt.DisplayRole) or "").strip()
+        i = editor.findText(current, Qt.MatchFixedString)
+        editor.setCurrentIndex(i if i >= 0 else 0)
+
+    def setModelData(self, editor, model, index):
+        if index.column() != self.type_column or not isinstance(editor, QComboBox):
+            return super().setModelData(editor, model, index)
+
+        model.setData(index, editor.currentText(), Qt.EditRole)
+
+    def updateEditorGeometry(self, editor, option, index):
+        editor.setGeometry(option.rect)
+
+class TableDesignerDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.setWindowTitle("Phonebook.dbf - Table Designer")
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
+
+        layout = QVBoxLayout(self)
+
+        self.table = QTableWidget(self)
+        self.table.setColumnCount(6)
+        self.table.setHorizontalHeaderLabels(["Field", "Name", "Type", "Width", "Decimal", "Index"])
+
+        self.table.setAlternatingRowColors(True)
+        self.table.setSelectionBehavior(QTableWidget.SelectRows)
+        self.table.setSelectionMode(QTableWidget.SingleSelection)
+        self.table.verticalHeader().setVisible(False)
+
+        header = self.table.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.Interactive)
+        header.setStretchLastSection(True)
+
+        self.table.setColumnWidth(0, 55)
+        self.table.setColumnWidth(1, 160)
+        self.table.setColumnWidth(2, 130)
+        self.table.setColumnWidth(3, 70)
+        self.table.setColumnWidth(4, 80)
+        self.table.setColumnWidth(5, 120)
+
+        layout.addWidget(self.table)
+        self.resize(520, 320)
+
+        self._fill_demo_data()
+
+        # Delegate: Type-Spalte (Index 2) als ComboBox editierbar
+        self.table.setItemDelegateForColumn(2, TypeComboDelegate(type_column=2, parent=self.table))
+
+        self.table.selectRow(0)
+
+    def _fill_demo_data(self):
+        rows = [
+            (1,  "First_Name",    "Character", 25, 0, "None"),
+            (2,  "Last_Name",     "Character", 35, 0, "None"),
+            (3,  "Sex",           "Character",  1, 0, "None"),
+            (4,  "Address",       "Character", 40, 0, "None"),
+            (5,  "City",          "Character", 25, 0, "None"),
+            (6,  "State_Prov",    "Character", 17, 0, "None"),
+            (7,  "Zip_Code",      "Character",  7, 0, "Ascend"),
+            (8,  "Long_Distance", "Logical",    1, 0, "None"),
+            (9,  "Phone",         "Character", 10, 0, "None"),
+            (10, "Fax",           "Character", 10, 0, "None"),
+            (11, "Email",         "Character", 40, 0, "None"),
+            (12, "Notes",         "Memo",      10, 0, ""),
+        ]
+
+        self.table.setRowCount(len(rows))
+        for r, row in enumerate(rows):
+            for c, val in enumerate(row):
+                item = QTableWidgetItem(str(val))
+
+                if c in (0, 3, 4):
+                    item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+                else:
+                    item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+
+                # Field-Spalte nicht editierbar (wie Index/Nummer)
+                if c == 0:
+                    item.setFlags(item.flags() & ~Qt.ItemIsEditable)
+
+                self.table.setItem(r, c, item)
+
+                
+class EditorWidget(QDialog):
     def __init__(self, text="abcdef"):
         super().__init__()
         self.setWindowTitle("Demo: dBase 2026")
         self.resize(500, 300)
 
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
+        
+        # Splitter: links Tree, rechts Editor
+        self.splitter = QSplitter(Qt.Horizontal, self)
+        
+        # --- TreeView links ---
+        self.tree = QTreeView(self.splitter)
+        
+        # Dummy Model (später kannst du hier Klassen/Methoden/etc. einfüllen)
+        model = QStandardItemModel()
+        model.setHorizontalHeaderLabels(["Struktur"])
+        
+        root = model.invisibleRootItem()
+        
+        root.appendRow(QStandardItem("CLASS ParentForm"))
+        root.appendRow(QStandardItem("METHOD Init"))
+        
+        self.tree.setModel(model)
+        self.tree.expandAll()
+        
         layout = QVBoxLayout(self)
 
         # Mehrzeiliges Eingabefeld
-        self.text = CodeEditor(self)
+        self.text = CodeEditor(self.splitter)
         self.text.setPlaceholderText("Schreib hier was rein…")
         self.text.setLineWrapMode(self.text.NoWrap)
         self.text.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.text.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.text.setLineWrapMode(self.text.NoWrap)
+        self.text.setFont(QFont("Consolas", 10))
         
-        layout.addWidget(self.text)
+        self.highlighter = DBaseHighlighter(self.text.document())
+        
+        # Splitter-Verhältnisse
+        self.splitter.setStretchFactor(0, 0)  # Tree
+        self.splitter.setStretchFactor(1, 1)  # Editor
+        self.splitter.setSizes([220, 800])
+        
+        layout.addWidget(self.splitter)
 
         # Button
         self.btn = QPushButton("Ausführen", self)
@@ -3584,20 +4051,1526 @@ class EditorWidget(QWidget):
             "Allgemeiner Fehler: " + type(e).__name__, tb_str)
             dlg.exec_()
 
+class IconTab(QListWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.setViewMode(QListWidget.IconMode)
+        self.setResizeMode(QListWidget.Adjust)
+        self.setMovement(QListWidget.Static)
+        self.setWrapping(True)
+        self.setWordWrap(True)
+        self.setTextElideMode(Qt.ElideRight)
+
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self._on_context_menu)
+
+    def _is_binary_file(self, path: str) -> bool:
+        # simple + schnell: NUL-Byte oder sehr viele "komische" bytes
+        try:
+            with open(path, "rb") as f:
+                data = f.read(2048)
+            if b"\x00" in data:
+                return True
+            # Heuristik: Anteil nicht-printbarer Bytes
+            # (tab/newline/CR zulassen)
+            allowed = set(b"\t\r\n") | set(range(32, 127))
+            non = sum(1 for b in data if b not in allowed)
+            return len(data) > 0 and (non / max(1, len(data))) > 0.30
+        except Exception:
+            # wenn wir nicht lesen können → lieber "binär/unknown"
+            return True
+
+    def _file_policy(self, path: str):
+        # gibt (full_menu: bool) zurück
+        ext = os.path.splitext(path)[1].lower()
+        if ext in (".txt", ".prg"):
+            return True
+        # unbekannt oder binär => nur Info
+        return False
+
+    def _on_context_menu(self, pos: QPoint):
+        item = self.itemAt(pos)
+        if not item:
+            return
+
+        path = item.data(Qt.UserRole) or ""
+        name = item.text()  # Name unter dem Icon
+
+        full_menu = self._file_policy(path)
+
+        menu = QMenu(self)
+
+        act_run   = menu.addAction("Starten / Ausführen")
+        act_edit  = menu.addAction("Editieren")
+        menu.addSeparator()
+        act_ren   = menu.addAction("Umbenennen")
+        act_copy  = menu.addAction("Kopieren")
+        act_del   = menu.addAction("Löschen")
+        menu.addSeparator()
+        act_info  = menu.addAction("Dateiinfo")
+
+        # Aktivierung je nach Policy
+        act_run.setEnabled(full_menu)
+        act_edit.setEnabled(full_menu)
+        act_ren.setEnabled(full_menu)
+        act_copy.setEnabled(full_menu)
+        act_del.setEnabled(full_menu)
+        act_info.setEnabled(True)
+
+        chosen = menu.exec_(self.mapToGlobal(pos))
+        if not chosen:
+            return
+
+        # Aktionen dispatchen:
+        if chosen is act_info:
+            self._show_file_info(path)
+        elif chosen is act_run:
+            self._run_file(path)
+        elif chosen is act_edit:
+            self._edit_file(name, path)
+        elif chosen is act_ren:
+            self._rename_item(item, path)
+        elif chosen is act_copy:
+            self._copy_file(path)
+        elif chosen is act_del:
+            self._delete_file(item, path)
+
+    def _show_file_info(self, path: str):
+        try:
+            st = os.stat(path)
+            QMessageBox.information(
+                self,
+                "Dateiinfo",
+                f"{path}\n\n"
+                f"Größe: {st.st_size} Bytes\n"
+                f"Ext: {os.path.splitext(path)[1]}\n"
+            )
+        except Exception as e:
+            QMessageBox.warning(self, "Dateiinfo", f"Konnte Info nicht lesen:\n{e}")
+
+    def _run_file(self, path: str):
+        # Windows: os.startfile, sonst xdg-open/open
+        try:
+            if os.name == "nt":
+                os.startfile(path)  # noqa
+            elif sys.platform == "darwin":
+                subprocess.Popen(["open", path])
+            else:
+                subprocess.Popen(["xdg-open", path])
+        except Exception as e:
+            QMessageBox.warning(self, "Ausführen", f"Konnte Datei nicht starten:\n{e}")
+
+    def _edit_file(self, name: str, path: str):
+        # hier: "name unter icon verwenden" -> name = item.text()
+        # real öffnest du aber natürlich über den Pfad.
+        # Übergabe an Parent (DirectoryIconDialog), der den CodeEditor öffnen kann:
+        
+        #dlg = self.window()  # Top-Level window (dein DirectoryIconDialog oder MDI Container)
+        #dlg.mdi_open_editor(name, path)
+        
+        win = FileEditorWindow(parent=MAINAPP, initial_path=path, initial_text="")
+        sub = MAINAPP.mdi.addSubWindow(win)
+        win.resize(500, 450)
+        
+        # 1) immer sichtbar + Vordergrund
+        win.show()
+        win.raise_()
+        win.activateWindow()
+
+        # 2) falls minimiert: wieder herstellen
+        win.setWindowState(win.windowState() & ~Qt.WindowMinimized | Qt.WindowActive)
+
+        # 3) optional: "Always on top"
+        win.setWindowFlag(Qt.WindowStaysOnTopHint, True)
+        win.show()  # nach setWindowFlag nochmal show()!
+        win.raise_()
+        win.activateWindow()
+
+        # Referenz halten (gegen GC)
+        self._open_windows = getattr(self, "_open_windows", [])
+        self._open_windows.append(win)
+        #if hasattr(dlg, "open_in_code_editor"):
+        #   dlg.open_in_code_editor(name, path)
+        #else:
+        #    QMessageBox.warning(self, "Editieren", "open_in_code_editor(...) ist nicht implementiert.")
+
+    def _rename_item(self, item, path: str):
+        # minimal: du kannst hier später eine Eingabebox bauen
+        QMessageBox.information(self, "Umbenennen", "TODO: Umbenennen implementieren")
+
+    def _copy_file(self, path: str):
+        QMessageBox.information(self, "Kopieren", "TODO: Kopieren implementieren")
+
+    def _delete_file(self, item, path: str):
+        res = QMessageBox.question(self, "Löschen?", f"Wirklich löschen?\n{path}")
+        if res != QMessageBox.Yes:
+            return
+        try:
+            os.remove(path)
+            row = self.row(item)
+            self.takeItem(row)
+        except Exception as e:
+            QMessageBox.warning(self, "Löschen", f"Konnte nicht löschen:\n{e}")
+            
+class DirectoryIconDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.setWindowTitle("Directory Icon Browser")
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
+
+        self.icon_provider = QFileIconProvider()
+
+        # --- Top controls ---
+        self.combo = QComboBox()
+        self.combo.setEditable(True)
+        self.combo.setInsertPolicy(QComboBox.NoInsert)
+        self.combo.currentTextChanged.connect(self._on_dir_changed)
+
+        self.btn_pick = QPushButton("Verzeichnis…")
+        self.btn_pick.clicked.connect(self.pick_directory_non_native)
+
+        top = QHBoxLayout()
+        top.addWidget(self.combo, 1)
+        top.addWidget(self.btn_pick, 0)
+
+        # --- Tabs ---
+        self.tabs = QTabWidget()
+        self.icon_lists = []
+
+        for i in range(7):
+            lw = IconTab()
+            self.icon_lists.append(lw)
+            self.tabs.addTab(lw, f"Tab {i+1}")
+
+        # --- Layout ---
+        root = QVBoxLayout(self)
+        root.addLayout(top)
+        root.addWidget(self.tabs, 1)
+
+        self.resize(980, 640)
+
+    def open_in_code_editor(self, display_name: str, path: str):
+        # display_name ist der Text unter dem Icon (z.B. "foo.prg")
+        # path ist der volle Pfad -> den solltest du wirklich öffnen
+        # Beispiel: MDI-Variante
+        if hasattr(self, "mdi_open_editor"):
+            self.mdi_open_editor(title=display_name, text=open(path, "r", encoding="utf-8", errors="replace").read())
+            return
+
+        # oder normale Fenster-Variante:
+        if hasattr(self, "open_file_editor"):
+            self.open_file_editor(path=path, text="")
+            return
+            
+    def pick_directory_non_native(self):
+        dlg = QFileDialog(self, "Verzeichnis auswählen")
+        dlg.setFileMode(QFileDialog.Directory)
+        dlg.setOption(QFileDialog.ShowDirsOnly, True)
+        dlg.setOption(QFileDialog.DontUseNativeDialog, True)
+
+        if dlg.exec_():
+            selected = dlg.selectedFiles()
+            if selected:
+                path = selected[0]
+                self._add_and_select_dir(path)
+
+    def _add_and_select_dir(self, path: str):
+        path = os.path.normpath(path)
+
+        # Wenn schon drin -> nur markieren
+        idx = self.combo.findText(path, Qt.MatchExactly)
+        if idx < 0:
+            self.combo.addItem(path)
+            idx = self.combo.findText(path, Qt.MatchExactly)
+
+        self.combo.setCurrentIndex(idx)  # markiert/selektiert
+        # _on_dir_changed() wird automatisch ausgelöst
+
+    def _on_dir_changed(self, path: str):
+        path = path.strip()
+        if not path or not os.path.isdir(path):
+            # Tabs ggf. leeren
+            for lw in self.icon_lists:
+                lw.clear()
+            return
+        
+        self._fill_all_tabs(path)
+
+    def _fill_all_tabs(self, directory: str):
+        # gleiche Anzeige in allen 7 Tabs (kannst du später tab-spezifisch filtern)
+        entries = []
+        try:
+            for name in os.listdir(directory):
+                full = os.path.join(directory, name)
+                entries.append((name, full))
+        except Exception:
+            entries = []
+        
+        for lw in self.icon_lists:
+            lw.setUpdatesEnabled(False)
+            lw.clear()
+            
+            for name, full in entries:
+                info = QFileInfo(full)
+                icon = self.icon_provider.icon(info)
+                item = QListWidgetItem(icon, name)
+                item.setToolTip(full)
+                item.setData(Qt.UserRole, full)
+                lw.addItem(item)
+            
+            lw.setUpdatesEnabled(True)
+            
+class UserBdeAliasesTab(QWidget):
+    """
+    Tab 'Benutzer BDE Aliases' wie Screenshot, inkl. Add/Remove/Edit + nicht-native Dialoge.
+    Model: dict[str, dict]  alias -> {"driver": str, "options": str}
+    """
+    def __init__(self, parent=None, initial=None):
+        super().__init__(parent)
+
+        self._model = dict(initial or {})
+        self._updating_ui = False
+
+        root = QVBoxLayout(self)
+        root.setContentsMargins(12, 12, 12, 12)
+        root.setSpacing(12)
+
+        # -------- Oben: Liste --------
+        gb_list = QGroupBox("Definiert ein BDE Anschluss aller", self)
+        v_list = QVBoxLayout(gb_list)
+
+        self.lst = QListWidget()
+        self.lst.setMinimumHeight(220)
+        v_list.addWidget(self.lst)
+
+        # -------- Unten: Editor --------
+        gb_edit = QGroupBox("Benutzer BDE Alias bearbeiten", self)
+        e = QGridLayout(gb_edit)
+        e.setHorizontalSpacing(10)
+        e.setVerticalSpacing(8)
+
+        e.addWidget(QLabel("Alias:"), 0, 0)
+        self.ed_alias = QLineEdit()
+        self.ed_alias.setMinimumWidth(230)
+        e.addWidget(self.ed_alias, 0, 1)
+
+        self.btn_add = QPushButton("Hinzufügen")
+        self.btn_remove = QPushButton("Entfernen")
+        self.btn_add.setFixedWidth(95)
+        self.btn_remove.setFixedWidth(95)
+        e.addWidget(self.btn_add, 0, 2)
+        e.addWidget(self.btn_remove, 0, 3)
+
+        e.addWidget(QLabel("Driver:"), 1, 0)
+        self.cb_driver = QComboBox()
+        self.cb_driver.setMinimumWidth(260)
+        self.cb_driver.addItems([
+            "dBASE", "PARADOX", "DB2", "ORACLE", "ODBC", "SQL", "FIREBIRD"
+        ])
+        e.addWidget(self.cb_driver, 1, 1, 1, 3)
+
+        e.addWidget(QLabel("Options:"), 2, 0)
+        self.ed_options = QLineEdit()
+        e.addWidget(self.ed_options, 2, 1, 1, 2)
+
+        self.btn_options = QPushButton("…")
+        self.btn_options.setFixedWidth(30)
+        e.addWidget(self.btn_options, 2, 3, alignment=Qt.AlignLeft)
+
+        root.addWidget(gb_list)
+        root.addWidget(gb_edit)
+        root.addStretch(1)
+
+        # Demo / initial
+        if not self._model:
+            self._model.update({
+                "dBASEContax": {
+                    "driver": "dBASE",
+                    "options": r"PATH:C:\Users\Jens Kallup\Documents\Programme\dBASE\dBA..."
+                },
+                "dBASESamples": {
+                    "driver": "dBASE",
+                    "options": r"PATH:C:\dBASE\Samples"
+                },
+                "dBASESignup": {
+                    "driver": "dBASE",
+                    "options": r"PATH:C:\dBASE\Signup"
+                },
+                "dBASETemp": {
+                    "driver": "dBASE",
+                    "options": r"PATH:C:\Temp"
+                },
+                "DmdDesnTemp": {
+                    "driver": "dBASE",
+                    "options": r"PATH:C:\Temp\Dmd"
+                },
+            })
+
+        self._reload_list(select_first=True)
+
+        # Signals
+        self.lst.currentItemChanged.connect(self._on_list_changed)
+        self.btn_add.clicked.connect(self._on_add)
+        self.btn_remove.clicked.connect(self._on_remove)
+        self.btn_options.clicked.connect(self._on_options_browse)
+
+        # optional: live update bei editingFinished
+        self.ed_alias.editingFinished.connect(self._on_edit_finished)
+        self.ed_options.editingFinished.connect(self._on_edit_finished)
+        self.cb_driver.currentIndexChanged.connect(lambda *_: self._on_edit_finished())
+
+    # ---------- Public ----------
+    def model(self) -> dict:
+        return {k: dict(v) for k, v in self._model.items()}
+
+    # ---------- Intern ----------
+    def _reload_list(self, select_first=False, select_alias=None):
+        self._updating_ui = True
+        try:
+            self.lst.clear()
+            for alias in sorted(self._model.keys(), key=lambda s: s.lower()):
+                self.lst.addItem(QListWidgetItem(alias))
+
+            if select_alias:
+                items = self.lst.findItems(select_alias, Qt.MatchFixedString)
+                if items:
+                    self.lst.setCurrentItem(items[0])
+            elif select_first and self.lst.count() > 0:
+                self.lst.setCurrentRow(0)
+        finally:
+            self._updating_ui = False
+
+        self._sync_editor_enabled()
+
+    def _sync_editor_enabled(self):
+        has = self.lst.currentItem() is not None
+        self.btn_remove.setEnabled(has)
+
+    def _on_list_changed(self, cur, prev):
+        if self._updating_ui:
+            return
+        self._sync_editor_enabled()
+
+        if not cur:
+            self._updating_ui = True
+            try:
+                self.ed_alias.setText("")
+                self.cb_driver.setCurrentIndex(0)
+                self.ed_options.setText("")
+            finally:
+                self._updating_ui = False
+            return
+
+        alias = cur.text()
+        rec = self._model.get(alias, {"driver": "dBASE", "options": ""})
+
+        self._updating_ui = True
+        try:
+            self.ed_alias.setText(alias)
+            # Driver setzen
+            i = self.cb_driver.findText(rec.get("driver", "dBASE"), Qt.MatchFixedString)
+            self.cb_driver.setCurrentIndex(i if i >= 0 else 0)
+            self.ed_options.setText(rec.get("options", ""))
+        finally:
+            self._updating_ui = False
+
+    def _norm(self, s: str) -> str:
+        return (s or "").strip()
+
+    def _on_add(self):
+        alias = self._norm(self.ed_alias.text())
+        driver = self.cb_driver.currentText()
+        options = self._norm(self.ed_options.text())
+
+        if not alias:
+            QMessageBox.warning(self, "Fehler", "Bitte einen Alias-Namen eingeben.")
+            self.ed_alias.setFocus()
+            return
+
+        if alias in self._model:
+            r = QMessageBox.question(
+                self,
+                "Alias existiert bereits",
+                f"Der Alias '{alias}' existiert schon.\nSoll er überschrieben werden?",
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No
+            )
+            if r != QMessageBox.Yes:
+                return
+
+        self._model[alias] = {"driver": driver, "options": options}
+        self._reload_list(select_alias=alias)
+
+    def _on_remove(self):
+        cur = self.lst.currentItem()
+        if not cur:
+            return
+        alias = cur.text()
+
+        r = QMessageBox.question(
+            self,
+            "Entfernen",
+            f"Alias '{alias}' wirklich entfernen?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
+        if r != QMessageBox.Yes:
+            return
+
+        self._model.pop(alias, None)
+        self._reload_list(select_first=True)
+
+    def _on_options_browse(self):
+        """
+        Im Screenshot ist 'Options' meist PATH:... -> sinnvoll ist ein Directory Picker.
+        Wir setzen dann automatisch 'PATH:<dir>'.
+        """
+        current = self._norm(self.ed_options.text())
+        start_dir = ""
+        if current.upper().startswith("PATH:"):
+            start_dir = current[5:].strip()
+
+        dlg = QFileDialog(self, "Verzeichnis auswählen", start_dir)
+        dlg.setFileMode(QFileDialog.Directory)
+        dlg.setOption(QFileDialog.ShowDirsOnly, True)
+        dlg.setOption(QFileDialog.DontUseNativeDialog, True)  # <- NICHT NATIV
+
+        if dlg.exec_():
+            dirs = dlg.selectedFiles()
+            if dirs:
+                self.ed_options.setText(f"PATH:{dirs[0]}")
+
+    def _on_edit_finished(self):
+        """
+        Änderungen am aktuell selektierten Alias ins Model übernehmen.
+        Alias-Umbenennung mit Kollisionscheck.
+        """
+        if self._updating_ui:
+            return
+        cur = self.lst.currentItem()
+        if not cur:
+            return
+
+        old_alias = cur.text()
+        new_alias = self._norm(self.ed_alias.text())
+        driver = self.cb_driver.currentText()
+        options = self._norm(self.ed_options.text())
+
+        # nur Werte aktualisieren
+        if new_alias == old_alias:
+            self._model[old_alias] = {"driver": driver, "options": options}
+            return
+
+        if not new_alias:
+            # revert
+            self._updating_ui = True
+            try:
+                self.ed_alias.setText(old_alias)
+            finally:
+                self._updating_ui = False
+            return
+
+        if new_alias in self._model:
+            QMessageBox.warning(self, "Fehler", f"Alias '{new_alias}' existiert bereits.")
+            self._updating_ui = True
+            try:
+                self.ed_alias.setText(old_alias)
+            finally:
+                self._updating_ui = False
+            return
+
+        # rename
+        self._model.pop(old_alias, None)
+        self._model[new_alias] = {"driver": driver, "options": options}
+        self._reload_list(select_alias=new_alias)
+
+class SourceAliasesTab(QWidget):
+    """
+    Tab 'Quell-Aliases' wie Screenshot, inkl. Add/Remove/Edit + nicht-nativer Folder-Dialog.
+    model: dict[str, str]  (alias -> path)
+    """
+    def __init__(self, parent=None, initial=None):
+        super().__init__(parent)
+
+        self._model = dict(initial or {})
+        self._updating_ui = False
+
+        root = QVBoxLayout(self)
+        root.setContentsMargins(12, 12, 12, 12)
+        root.setSpacing(12)
+
+        # ---- Oben: Liste ----
+        gb_list = QGroupBox("Definierte Quell-Aliases", self)
+        v_list = QVBoxLayout(gb_list)
+
+        self.lst = QListWidget()
+        self.lst.setMinimumHeight(210)
+        v_list.addWidget(self.lst)
+
+        # ---- Unten: Editor ----
+        gb_edit = QGroupBox("Quell-Alias bearbeiten", self)
+        e = QGridLayout(gb_edit)
+        e.setHorizontalSpacing(10)
+        e.setVerticalSpacing(8)
+
+        e.addWidget(QLabel("Alias:"), 0, 0)
+        self.ed_alias = QLineEdit()
+        self.ed_alias.setMinimumWidth(220)
+        e.addWidget(self.ed_alias, 0, 1)
+
+        self.btn_add = QPushButton("Hinzufügen")
+        self.btn_remove = QPushButton("Entfernen")
+        self.btn_add.setFixedWidth(95)
+        self.btn_remove.setFixedWidth(95)
+        e.addWidget(self.btn_add, 0, 2)
+        e.addWidget(self.btn_remove, 0, 3)
+
+        e.addWidget(QLabel("Pfad:"), 1, 0)
+        self.ed_path = QLineEdit()
+        e.addWidget(self.ed_path, 1, 1, 1, 2)
+
+        self.btn_browse = QPushButton("…")
+        self.btn_browse.setFixedWidth(30)
+        e.addWidget(self.btn_browse, 1, 3, alignment=Qt.AlignLeft)
+
+        root.addWidget(gb_list)
+        root.addWidget(gb_edit)
+        root.addStretch(1)
+
+        # Demo / initial
+        if not self._model:
+            self._model.update({
+                "CoreShared": r"T:\Programme\dBASE\dBASE2019\Bin\dBLCore\Shared",
+                "dBStartup": r"T:\Programme\dBASE\dBASE2019\Bin\dBStartup",
+                "Examples": r"T:\Programme\dBASE\dBASE2019\Examples",
+                "Forms": r"T:\Programme\dBASE\dBASE2019\Forms",
+                "Images": r"T:\Programme\dBASE\dBASE2019\Images",
+            })
+
+        self._reload_list(select_first=True)
+
+        # Signals
+        self.lst.currentItemChanged.connect(self._on_list_changed)
+        self.btn_add.clicked.connect(self._on_add)
+        self.btn_remove.clicked.connect(self._on_remove)
+        self.btn_browse.clicked.connect(self._on_browse)
+
+        # optional: Live-Update ins Modell, wenn man Felder verlässt
+        self.ed_alias.editingFinished.connect(self._on_edit_finished)
+        self.ed_path.editingFinished.connect(self._on_edit_finished)
+
+    # ---------- Public ----------
+    def model(self) -> dict:
+        """Gibt eine Kopie des Modells zurück."""
+        return dict(self._model)
+
+    # ---------- Intern ----------
+    def _reload_list(self, select_first=False, select_alias=None):
+        self._updating_ui = True
+        try:
+            self.lst.clear()
+            for alias in sorted(self._model.keys(), key=lambda s: s.lower()):
+                self.lst.addItem(QListWidgetItem(alias))
+
+            if select_alias:
+                items = self.lst.findItems(select_alias, Qt.MatchFixedString)
+                if items:
+                    self.lst.setCurrentItem(items[0])
+            elif select_first and self.lst.count() > 0:
+                self.lst.setCurrentRow(0)
+        finally:
+            self._updating_ui = False
+
+        # falls leer
+        self._sync_editor_enabled()
+
+    def _sync_editor_enabled(self):
+        has = self.lst.currentItem() is not None
+        self.btn_remove.setEnabled(has)
+
+    def _on_list_changed(self, cur, prev):
+        if self._updating_ui:
+            return
+        self._sync_editor_enabled()
+
+        if not cur:
+            self.ed_alias.setText("")
+            self.ed_path.setText("")
+            return
+
+        alias = cur.text()
+        path = self._model.get(alias, "")
+
+        self._updating_ui = True
+        try:
+            self.ed_alias.setText(alias)
+            self.ed_path.setText(path)
+        finally:
+            self._updating_ui = False
+
+    def _normalized_alias(self, s: str) -> str:
+        return (s or "").strip()
+
+    def _on_add(self):
+        alias = self._normalized_alias(self.ed_alias.text())
+        path = (self.ed_path.text() or "").strip()
+
+        if not alias:
+            QMessageBox.warning(self, "Fehler", "Bitte einen Alias-Namen eingeben.")
+            self.ed_alias.setFocus()
+            return
+
+        if not path:
+            QMessageBox.warning(self, "Fehler", "Bitte einen Pfad eingeben oder auswählen.")
+            self.ed_path.setFocus()
+            return
+
+        if alias in self._model:
+            r = QMessageBox.question(
+                self,
+                "Alias existiert bereits",
+                f"Der Alias '{alias}' existiert schon.\nSoll der Pfad überschrieben werden?",
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No
+            )
+            if r != QMessageBox.Yes:
+                return
+
+        self._model[alias] = path
+        self._reload_list(select_alias=alias)
+
+    def _on_remove(self):
+        cur = self.lst.currentItem()
+        if not cur:
+            return
+
+        alias = cur.text()
+        r = QMessageBox.question(
+            self,
+            "Entfernen",
+            f"Alias '{alias}' wirklich entfernen?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
+        if r != QMessageBox.Yes:
+            return
+
+        self._model.pop(alias, None)
+        self._reload_list(select_first=True)
+
+    def _on_browse(self):
+        start_dir = (self.ed_path.text() or "").strip() or ""
+        dlg = QFileDialog(self, "Pfad auswählen", start_dir)
+        dlg.setFileMode(QFileDialog.Directory)
+        dlg.setOption(QFileDialog.ShowDirsOnly, True)
+        dlg.setOption(QFileDialog.DontUseNativeDialog, True)  # <- NICHT NATIV
+
+        if dlg.exec_():
+            dirs = dlg.selectedFiles()
+            if dirs:
+                self.ed_path.setText(dirs[0])
+
+    def _on_edit_finished(self):
+        """
+        Optional: wenn ein bestehender Alias ausgewählt ist,
+        sollen Änderungen an Pfad/Alias (vorsichtig) ins Modell übernommen werden.
+        """
+        if self._updating_ui:
+            return
+
+        cur = self.lst.currentItem()
+        if not cur:
+            return
+
+        old_alias = cur.text()
+        new_alias = self._normalized_alias(self.ed_alias.text())
+        new_path = (self.ed_path.text() or "").strip()
+
+        # Nur Pfad geändert?
+        if new_alias == old_alias:
+            if new_path and self._model.get(old_alias) != new_path:
+                self._model[old_alias] = new_path
+            return
+
+        # Alias umbenennen (mit Kollisionscheck)
+        if not new_alias:
+            # revert
+            self._updating_ui = True
+            try:
+                self.ed_alias.setText(old_alias)
+            finally:
+                self._updating_ui = False
+            return
+
+        if new_alias in self._model:
+            QMessageBox.warning(self, "Fehler", f"Alias '{new_alias}' existiert bereits.")
+            self._updating_ui = True
+            try:
+                self.ed_alias.setText(old_alias)
+            finally:
+                self._updating_ui = False
+            return
+
+        # rename im model
+        old_path = self._model.pop(old_alias, "")
+        self._model[new_alias] = new_path or old_path
+        self._reload_list(select_alias=new_alias)
+        
+class DesktopPropertiesDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.parent = parent
+
+        self.setWindowTitle("Desktop Properties")
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
+
+        root = QVBoxLayout(self)
+
+        # Tabs
+        self.tabs = QTabWidget(self)
+        root.addWidget(self.tabs)
+
+        # Platzhalter-Tabs (wie im Bild)
+        self.tabs.addTab(self._build_tab_country (), "Country")
+        self.tabs.addTab(self._build_tab_table   (), "Table")
+        self.tabs.addTab(self._build_tab_data    (), "Data Entry")
+        self.tabs.addTab(self._build_tab_files   (), "Files")
+        self.tabs.addTab(self._build_tab_app     (), "Application")
+        self.tabs.addTab(self._build_tab_prog    (), "Programming")
+        self.tabs.addTab(self._build_tab_aliase  (), "Source Aliases")
+        self.tabs.addTab(self._build_tab_usrbde  (), "User-BDE-Aliases")
+        
+        # Bottom buttons: OK / Abbrechen / Hilfe / Übernehmen
+        btn_row = QHBoxLayout()
+        btn_row.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
+
+        self.btn_ok     = QPushButton("OK")
+        self.btn_cancel = QPushButton("Abbrechen")
+        self.btn_help   = QPushButton("Hilfe")
+        self.btn_apply  = QPushButton("Übernehmen")
+
+        for b in (self.btn_ok, self.btn_cancel, self.btn_help, self.btn_apply):
+            b.setFixedWidth(95)
+
+        self.btn_ok    .clicked.connect(self.onbtn_accept)
+        self.btn_cancel.clicked.connect(self.onbtn_cancel)
+        self.btn_help  .clicked.connect(lambda: None)   # später füllen
+        self.btn_apply .clicked.connect(lambda: None)  # später füllen
+
+        btn_row.addWidget(self.btn_ok)
+        btn_row.addWidget(self.btn_cancel)
+        btn_row.addWidget(self.btn_help)
+        btn_row.addWidget(self.btn_apply)
+
+        root.addLayout(btn_row)
+
+        self.resize(520, 360)
+    
+    def onbtn_accept(self):
+        self.accept()
+        self.mdi.close()
+        
+    def onbtn_cancel(self):
+        self.reject()
+        self.mdi.close()
+
+    def _build_tab_aliase(self) -> QWidget:
+        tab = QWidget()
+        SourceAliasesTab(tab)
+        return tab
+    
+    def _build_tab_usrbde(self) -> QWidget:
+        tab = QWidget()
+        UserBdeAliasesTab(tab)
+        return tab
+
+    def _build_tab_country(self) -> QWidget:
+        tab = QWidget()
+        g = QGridLayout(tab)
+        g.setContentsMargins(12, 12, 12, 12)
+        g.setHorizontalSpacing(18)
+        g.setVerticalSpacing(12)
+
+        # --- Zahlenwerte ---
+        gb_num = QGroupBox("Zahlenwerte", tab)
+        num = QGridLayout(gb_num)
+        num.setHorizontalSpacing(10)
+        num.setVerticalSpacing(8)
+
+        num.addWidget(QLabel("Trennzeichen:"), 0, 0)
+        self.ed_thousand = QLineEdit(".")
+        self.ed_thousand.setFixedWidth(34)
+        num.addWidget(self.ed_thousand, 0, 1, alignment=Qt.AlignLeft)
+
+        num.addWidget(QLabel("Dezimalzeichen:"), 1, 0)
+        self.ed_decimal = QLineEdit(",")
+        self.ed_decimal.setFixedWidth(34)
+        num.addWidget(self.ed_decimal, 1, 1, alignment=Qt.AlignLeft)
+
+        num.addWidget(QLabel("Muster:"), 2, 0)
+        num.addWidget(QLabel("1.000.000,00"), 2, 1, 1, 2)
+
+        # --- Währungssymbol ---
+        gb_cur = QGroupBox("Währungssymbol", tab)
+        cur = QGridLayout(gb_cur)
+        cur.setHorizontalSpacing(10)
+        cur.setVerticalSpacing(8)
+
+        cur.addWidget(QLabel("Position:"), 0, 0)
+        self.rb_left = QRadioButton("Links")
+        self.rb_right = QRadioButton("Rechts")
+        self.rb_right.setChecked(True)
+        cur.addWidget(self.rb_left, 0, 1)
+        cur.addWidget(self.rb_right, 1, 1)
+
+        cur.addWidget(QLabel("Symbol:"), 2, 0)
+        self.ed_currency = QLineEdit("€")
+        self.ed_currency.setFixedWidth(50)
+        cur.addWidget(self.ed_currency, 2, 1, alignment=Qt.AlignLeft)
+
+        cur.addWidget(QLabel("Muster:"), 3, 0)
+        cur.addWidget(QLabel("129,99 €"), 3, 1, 1, 2)
+
+        # --- Datum ---
+        gb_date = QGroupBox("Datum", tab)
+        date = QGridLayout(gb_date)
+        date.setHorizontalSpacing(10)
+        date.setVerticalSpacing(8)
+
+        date.addWidget(QLabel("Datumsformat:"), 0, 0)
+        self.cb_datefmt = QComboBox()
+        self.cb_datefmt.addItems(["DMY", "MDY", "YMD", "ISO"])
+        self.cb_datefmt.setCurrentText("DMY")
+        self.cb_datefmt.setFixedWidth(120)
+        date.addWidget(self.cb_datefmt, 0, 1, alignment=Qt.AlignLeft)
+
+        date.addWidget(QLabel("Datumszeichen:"), 1, 0)
+        self.ed_datesep = QLineEdit(".")
+        self.ed_datesep.setFixedWidth(34)
+        date.addWidget(self.ed_datesep, 1, 1, alignment=Qt.AlignLeft)
+
+        self.chk_century = QCheckBox("Jahrhundert")
+        self.chk_century.setChecked(True)
+        date.addWidget(self.chk_century, 2, 0, 1, 2)
+
+        date.addWidget(QLabel("Muster:"), 3, 0)
+        date.addWidget(QLabel("08.02.2026"), 3, 1, 1, 2)
+
+        # --- Umgebungssprache ---
+        gb_ui = QGroupBox("Umgebungssprache", tab)
+        ui = QGridLayout(gb_ui)
+        self.cb_lang = QComboBox()
+        self.cb_lang.addItems(["DE - Deutsch", "EN - English", "FR - Français"])
+        self.cb_lang.setCurrentText("DE - Deutsch")
+        self.cb_lang.setFixedWidth(160)
+        ui.addWidget(self.cb_lang, 0, 0)
+
+        # --- Sprachtreiber ---
+        gb_drv = QGroupBox("Sprachtreiber", tab)
+        drv = QGridLayout(gb_drv)
+        self.chk_mismatch = QCheckBox("Warnung bei Konflikten")
+        drv.addWidget(self.chk_mismatch, 0, 0)
+
+        # Positionierung wie Screenshot
+        g.addWidget(gb_num, 0, 0)
+        g.addWidget(gb_date, 0, 1)
+        g.addWidget(gb_cur, 1, 0)
+        g.addWidget(gb_ui, 1, 1)
+        g.addWidget(gb_drv, 2, 1)
+
+        g.setRowStretch(3, 1)
+        return tab
+    
+    def _build_tab_table(self) -> QWidget:
+        tab = QWidget()
+        g = QGridLayout(tab)
+        g.setContentsMargins(12, 12, 12, 12)
+        g.setHorizontalSpacing(18)
+        g.setVerticalSpacing(12)
+
+        # --- Mehrplatz (links oben) ---
+        gb_multi = QGroupBox("Mehrplatz", tab)
+        l_multi = QGridLayout(gb_multi)
+        l_multi.setHorizontalSpacing(10)
+        l_multi.setVerticalSpacing(8)
+
+        self.chk_lock = QCheckBox("Sperren")
+        self.chk_exclusive = QCheckBox("Exklusiv")
+
+        l_multi.addWidget(self.chk_lock, 0, 0, 1, 2)
+        l_multi.addWidget(self.chk_exclusive, 1, 0, 1, 2)
+
+        l_multi.addWidget(QLabel("Aktualisieren:"), 2, 0)
+        self.spin_refresh = QSpinBox()
+        self.spin_refresh.setRange(0, 9999)
+        self.spin_refresh.setFixedWidth(70)
+        l_multi.addWidget(self.spin_refresh, 2, 1, alignment=Qt.AlignLeft)
+
+        l_multi.addWidget(QLabel("Wiederholen:"), 3, 0)
+        self.spin_retry = QSpinBox()
+        self.spin_retry.setRange(0, 9999)
+        self.spin_retry.setFixedWidth(70)
+        l_multi.addWidget(self.spin_retry, 3, 1, alignment=Qt.AlignLeft)
+
+        # default wie Screenshot
+        self.chk_lock.setChecked(True)
+
+        # --- Standardtabellentyp (links mitte) ---
+        gb_default = QGroupBox("Standardtabellentyp", tab)
+        l_def = QVBoxLayout(gb_default)
+        
+        self.rb_dbase   = QRadioButton("dBASE")
+        self.rb_paradox = QRadioButton("Paradox")
+        self.rb_sqlite3 = QRadioButton("SQLite 3")
+        self.rb_mysql   = QRadioButton("MySQL")
+        
+        self.rb_dbase.setChecked(True)
+        
+        l_def.addWidget(self.rb_dbase)
+        l_def.addWidget(self.rb_paradox)
+        l_def.addWidget(self.rb_sqlite3)
+        l_def.addWidget(self.rb_mysql)
+
+        # --- Systemtabellen (links unten) ---
+        gb_system = QGroupBox("Systemtabellen", tab)
+        l_sys = QVBoxLayout(gb_system)
+        self.chk_system_show = QCheckBox("Anzeigen")
+        l_sys.addWidget(self.chk_system_show)
+
+        # --- Blockgrößen (rechts oben) ---
+        gb_blocks = QGroupBox("Blockgrößen", tab)
+        l_blocks = QGridLayout(gb_blocks)
+        l_blocks.setHorizontalSpacing(10)
+        l_blocks.setVerticalSpacing(8)
+
+        l_blocks.addWidget(QLabel("Indexblock:"), 0, 0)
+        self.spin_indexblock = QSpinBox()
+        self.spin_indexblock.setRange(1, 9999)
+        self.spin_indexblock.setFixedWidth(80)
+        self.spin_indexblock.setValue(1)
+        l_blocks.addWidget(self.spin_indexblock, 0, 1, alignment=Qt.AlignLeft)
+
+        l_blocks.addWidget(QLabel("Memoblock:"), 1, 0)
+        self.spin_memoblock = QSpinBox()
+        self.spin_memoblock.setRange(1, 9999)
+        self.spin_memoblock.setFixedWidth(80)
+        self.spin_memoblock.setValue(8)
+        l_blocks.addWidget(self.spin_memoblock, 1, 1, alignment=Qt.AlignLeft)
+
+        # --- Andere (rechts mitte) ---
+        gb_other = QGroupBox("Andere", tab)
+        l_other = QGridLayout(gb_other)
+        l_other.setHorizontalSpacing(10)
+        l_other.setVerticalSpacing(6)
+
+        self.chk_autosave = QCheckBox("Automatische Speicherung")
+        self.chk_deleted = QCheckBox("Löschmarken")
+        self.chk_encrypt = QCheckBox("Verschlüsselung")
+        self.chk_ident = QCheckBox("Identisch")
+        self.chk_approx = QCheckBox("Annähernd")
+        self.chk_autonull = QCheckBox("AutoNullFields")
+
+        # wie Screenshot: Löschmarken + Verschlüsselung + AutoNullFields aktiv
+        self.chk_deleted.setChecked(True)
+        self.chk_encrypt.setChecked(True)
+        self.chk_autonull.setChecked(True)
+
+        l_other.addWidget(self.chk_autosave, 0, 0, 1, 2)
+        l_other.addWidget(self.chk_deleted, 1, 0, 1, 2)
+        l_other.addWidget(self.chk_encrypt, 2, 0, 1, 2)
+        l_other.addWidget(self.chk_ident, 3, 0)
+        l_other.addWidget(self.chk_approx, 4, 0)
+        l_other.addWidget(self.chk_autonull, 3, 1)
+
+        self.btn_components = QPushButton("Komponententypen zuordnen...")
+        self.btn_components.setFixedWidth(220)
+        l_other.addWidget(self.btn_components, 5, 0, 1, 2, alignment=Qt.AlignLeft)
+
+        # Positionen im Grid wie im Bild
+        g.addWidget(gb_multi,   0, 0)
+        g.addWidget(gb_blocks,  0, 1)
+        g.addWidget(gb_default, 1, 0)
+        g.addWidget(gb_other,   1, 1)
+        g.addWidget(gb_system,  2, 0)
+
+        # etwas Luft nach unten/rechts
+        g.setRowStretch(3, 1)
+        g.setColumnStretch(2, 1)
+        
+        return tab
+    
+    def _build_tab_app(self) -> QWidget:
+        tab = QWidget()
+        g = QGridLayout(tab)
+        g.setContentsMargins(12, 12, 12, 12)
+        g.setHorizontalSpacing(18)
+        g.setVerticalSpacing(12)
+
+        # --- Experten anzeigen (links oben) ---
+        gb_exp = QGroupBox("Experten anzeigen", tab)
+        exp = QVBoxLayout(gb_exp)
+        exp.setSpacing(6)
+
+        chk_form = QCheckBox("Formular")
+        chk_report = QCheckBox("Report")
+        chk_labels = QCheckBox("Etiketten")
+        chk_datamodule = QCheckBox("Datenmodul")
+        chk_table = QCheckBox("Tabelle")
+
+        # wie Screenshot: alle an
+        for c in (chk_form, chk_report, chk_labels, chk_datamodule, chk_table):
+            c.setChecked(True)
+            exp.addWidget(c)
+
+        # --- Dateimenü (links unten) ---
+        gb_file = QGroupBox("Dateimenü", tab)
+        fm = QGridLayout(gb_file)
+        fm.setHorizontalSpacing(10)
+        fm.setVerticalSpacing(8)
+
+        fm.addWidget(QLabel("Anzahl Dateien:"), 0, 0)
+        sp_files = QSpinBox()
+        sp_files.setRange(0, 99)
+        sp_files.setValue(5)
+        sp_files.setFixedWidth(80)
+        fm.addWidget(sp_files, 0, 1, alignment=Qt.AlignLeft)
+
+        fm.addWidget(QLabel("Anzahl Projekte:"), 1, 0)
+        sp_projects = QSpinBox()
+        sp_projects.setRange(0, 99)
+        sp_projects.setValue(5)
+        sp_projects.setFixedWidth(80)
+        fm.addWidget(sp_projects, 1, 1, alignment=Qt.AlignLeft)
+
+        # --- Datenbank (rechts oben) ---
+        gb_db = QGroupBox("Datenbank", tab)
+        db = QVBoxLayout(gb_db)
+        db.setSpacing(6)
+
+        chk_login = QCheckBox("Anmeldungen sichern")
+        chk_sqltrace = QCheckBox("SQL-Ablaufverfolgung")
+        chk_login.setChecked(True)
+        db.addWidget(chk_login)
+        db.addWidget(chk_sqltrace)
+
+        # --- Fenster (rechts mitte) ---
+        gb_win = QGroupBox("Fenster", tab)
+        win = QVBoxLayout(gb_win)
+        win.setSpacing(6)
+
+        chk_fit = QCheckBox("Fenstergröße an Inhalt anpassen")
+        chk_anim = QCheckBox("Animationen endlos abspielen")
+        chk_ole = QCheckBox("Objekte als OLE 2.0 speichern")
+
+        # wie Screenshot: alle 3 an
+        chk_fit.setChecked(True)
+        chk_anim.setChecked(True)
+        chk_ole.setChecked(True)
+
+        win.addWidget(chk_fit)
+        win.addWidget(chk_anim)
+        win.addWidget(chk_ole)
+
+        # --- Andere (rechts unten) ---
+        gb_other = QGroupBox("Andere", tab)
+        other = QVBoxLayout(gb_other)
+        other.setSpacing(6)
+
+        chk_splash = QCheckBox("Startbildschirm")
+        chk_splash.setChecked(True)
+        other.addWidget(chk_splash)
+
+        # Layout wie im Screenshot:
+        # links: Experten anzeigen + Dateimenü
+        # rechts: Datenbank + Fenster + Andere
+        g.addWidget(gb_exp,   0, 0)
+        g.addWidget(gb_db,    0, 1)
+        g.addWidget(gb_file,  1, 0)
+        g.addWidget(gb_win,   1, 1)
+        g.addWidget(gb_other, 2, 1)
+
+        g.setRowStretch(3, 1)
+        return tab
+    
+    def _build_tab_files(self) -> QWidget:
+        tab = QWidget()
+        g = QGridLayout(tab)
+        g.setContentsMargins(12, 12, 12, 12)
+        g.setHorizontalSpacing(18)
+        g.setVerticalSpacing(12)
+
+        # ---------- Pfad (links oben) ----------
+        gb_path = QGroupBox("Pfad", tab)
+        path = QGridLayout(gb_path)
+        path.setHorizontalSpacing(10)
+        path.setVerticalSpacing(8)
+
+        path.addWidget(QLabel("Aktuelles Verzeichnis:"), 0, 0, 1, 2)
+
+        # Zeile: Combo/Text + Folder Button
+        self_cur_dir = QLineEdit(r"F:\Heinz\ext\irgl\...")
+        self_cur_dir.setMinimumWidth(240)
+        btn_cur_browse = QPushButton("📁")
+        btn_cur_browse.setFixedWidth(30)
+
+        path.addWidget(self_cur_dir, 1, 0)
+        path.addWidget(btn_cur_browse, 1, 1, alignment=Qt.AlignLeft)
+
+        path.addWidget(QLabel("Suchpfad:"), 2, 0, 1, 2)
+
+        self_search_path = QLineEdit("")
+        btn_search_browse = QPushButton("📁")
+        btn_search_browse.setFixedWidth(30)
+
+        path.addWidget(self_search_path, 3, 0)
+        path.addWidget(btn_search_browse, 3, 1, alignment=Qt.AlignLeft)
+
+        # ---------- Ausgabeprotokoll (links unten) ----------
+        gb_log = QGroupBox("Ausgabeprotokoll", tab)
+        log = QGridLayout(gb_log)
+        log.setHorizontalSpacing(10)
+        log.setVerticalSpacing(8)
+
+        chk_enable_log = QCheckBox("Protokoll anlegen")
+        log.addWidget(chk_enable_log, 0, 0, 1, 2)
+
+        log.addWidget(QLabel("Name der Protokolldatei:"), 1, 0, 1, 2)
+
+        ed_logfile = QLineEdit("")
+        ed_logfile.setEnabled(False)
+        btn_logfile = QPushButton("✎")
+        btn_logfile.setFixedWidth(30)
+        btn_logfile.setEnabled(False)
+
+        log.addWidget(ed_logfile, 2, 0)
+        log.addWidget(btn_logfile, 2, 1, alignment=Qt.AlignLeft)
+
+        rb_overwrite = QRadioButton("Überschreiben")
+        rb_append = QRadioButton("Anhängen")
+        rb_overwrite.setEnabled(False)
+        rb_append.setEnabled(False)
+        rb_overwrite.setChecked(True)
+
+        log.addWidget(rb_overwrite, 3, 0, 1, 2)
+        log.addWidget(rb_append, 4, 0, 1, 2)
+
+        # Enable/Disable abhängig von Checkbox
+        def _toggle_log(on: bool):
+            ed_logfile.setEnabled(on)
+            btn_logfile.setEnabled(on)
+            rb_overwrite.setEnabled(on)
+            rb_append.setEnabled(on)
+
+        chk_enable_log.toggled.connect(_toggle_log)
+
+        # ---------- Editor (rechts oben) ----------
+        gb_editor = QGroupBox("Editor", tab)
+        ed = QGridLayout(gb_editor)
+        ed.setHorizontalSpacing(10)
+        ed.setVerticalSpacing(8)
+
+        ed.addWidget(QLabel("Externer Quelltext-Editor:"), 0, 0, 1, 2)
+
+        ed_editor = QLineEdit("")
+        btn_editor = QPushButton("✎")
+        btn_editor.setFixedWidth(30)
+
+        ed.addWidget(ed_editor, 1, 0)
+        ed.addWidget(btn_editor, 1, 1, alignment=Qt.AlignLeft)
+
+        # ---------- Andere (rechts mitte) ----------
+        gb_other = QGroupBox("Andere", tab)
+        other = QVBoxLayout(gb_other)
+        other.setSpacing(6)
+
+        chk_backup = QCheckBox("Sicherungsdateien")
+        chk_sessions = QCheckBox("Arbeitssitzungen")
+        other.addWidget(chk_backup)
+        other.addWidget(chk_sessions)
+
+        # Layout wie Screenshot
+        g.addWidget(gb_path,   0, 0)
+        g.addWidget(gb_editor, 0, 1)
+        g.addWidget(gb_log,    1, 0)
+        g.addWidget(gb_other,  1, 1)
+
+        g.setRowStretch(2, 1)
+        return tab
+    
+    def _build_tab_data(self) -> QWidget:
+        tab = QWidget()
+        g = QGridLayout(tab)
+        g.setContentsMargins(12, 12, 12, 12)
+        g.setHorizontalSpacing(18)
+        g.setVerticalSpacing(12)
+
+        # ---------- Tastatur (links oben) ----------
+        gb_kbd = QGroupBox("Tastatur", tab)
+        kbd = QGridLayout(gb_kbd)
+        kbd.setHorizontalSpacing(10)
+        kbd.setVerticalSpacing(8)
+
+        chk_confirm = QCheckBox("Bestätigung")
+        chk_cua = QCheckBox("CUA-Eingabe")
+        chk_esc = QCheckBox("Escape")
+
+        # wie Screenshot: alle 3 an
+        chk_confirm.setChecked(True)
+        chk_cua.setChecked(True)
+        chk_esc.setChecked(True)
+
+        kbd.addWidget(chk_confirm, 0, 0, 1, 2)
+        kbd.addWidget(chk_cua,     1, 0, 1, 2)
+        kbd.addWidget(chk_esc,     2, 0, 1, 2)
+
+        kbd.addWidget(QLabel("Tastaturpuffer:"), 3, 0)
+        sp_buf = QSpinBox()
+        sp_buf.setRange(0, 9999)
+        sp_buf.setValue(49)
+        sp_buf.setFixedWidth(90)
+        kbd.addWidget(sp_buf, 3, 1, alignment=Qt.AlignLeft)
+
+        # ---------- Andere (links unten) ----------
+        gb_other = QGroupBox("Andere", tab)
+        other = QGridLayout(gb_other)
+        other.setHorizontalSpacing(10)
+        other.setVerticalSpacing(8)
+
+        other.addWidget(QLabel("Epoche:"), 0, 0)
+        sp_epoch = QSpinBox()
+        sp_epoch.setRange(0, 9999)
+        sp_epoch.setValue(1950)
+        sp_epoch.setFixedWidth(90)
+        other.addWidget(sp_epoch, 0, 1, alignment=Qt.AlignLeft)
+
+        # ---------- Signalton (rechts) ----------
+        gb_beep = QGroupBox("Signalton", tab)
+        beep = QGridLayout(gb_beep)
+        beep.setHorizontalSpacing(10)
+        beep.setVerticalSpacing(8)
+
+        chk_beep = QCheckBox("Einschalten")
+        chk_beep.setChecked(True)
+        beep.addWidget(chk_beep, 0, 0, 1, 2)
+
+        beep.addWidget(QLabel("Frequenz:"), 1, 0)
+        sp_freq = QSpinBox()
+        sp_freq.setRange(0, 20000)
+        sp_freq.setValue(512)
+        sp_freq.setFixedWidth(90)
+        beep.addWidget(sp_freq, 1, 1, alignment=Qt.AlignLeft)
+
+        beep.addWidget(QLabel("Dauer:"), 2, 0)
+        sp_dur = QSpinBox()
+        sp_dur.setRange(0, 10000)
+        sp_dur.setValue(50)
+        sp_dur.setFixedWidth(90)
+        beep.addWidget(sp_dur, 2, 1, alignment=Qt.AlignLeft)
+
+        btn_test = QPushButton("Prüfen")
+        btn_test.setFixedWidth(95)
+        beep.addWidget(btn_test, 3, 0, 1, 2, alignment=Qt.AlignLeft)
+
+        # Aktivieren/Deaktivieren je nach Einschalten
+        def _toggle_beep(on: bool):
+            sp_freq.setEnabled(on)
+            sp_dur.setEnabled(on)
+            btn_test.setEnabled(on)
+
+        chk_beep.toggled.connect(_toggle_beep)
+        _toggle_beep(True)
+
+        # Optional: wirklich piepen
+        def _do_beep():
+            # QApplication.beep() ist plattformabhängig, reicht aber als "Test"
+            from PyQt5.QtWidgets import QApplication
+            QApplication.beep()
+
+        btn_test.clicked.connect(_do_beep)
+
+        # Layout wie Screenshot
+        g.addWidget(gb_kbd,   0, 0)
+        g.addWidget(gb_beep,  0, 1, 2, 1)
+        g.addWidget(gb_other, 1, 0)
+
+        g.setRowStretch(2, 1)
+        return tab
+    
+    def _build_tab_prog(self) -> QWidget:
+        tab = QWidget()
+        g = QGridLayout(tab)
+        g.setContentsMargins(12, 12, 12, 12)
+        g.setHorizontalSpacing(18)
+        g.setVerticalSpacing(12)
+
+        # --- Befehlsausgabe (links oben) ---
+        gb_out = QGroupBox("Befehlsausgabe", tab)
+        out = QGridLayout(gb_out)
+        out.setHorizontalSpacing(10)
+        out.setVerticalSpacing(8)
+
+        out.addWidget(QLabel("Dezimalstellen:"), 0, 0)
+        sp_dec = QSpinBox()
+        sp_dec.setRange(0, 20)
+        sp_dec.setValue(2)
+        sp_dec.setFixedWidth(80)
+        out.addWidget(sp_dec, 0, 1, alignment=Qt.AlignLeft)
+
+        out.addWidget(QLabel("Genauigkeit:"), 1, 0)
+        sp_prec = QSpinBox()
+        sp_prec.setRange(0, 20)
+        sp_prec.setValue(10)
+        sp_prec.setFixedWidth(80)
+        out.addWidget(sp_prec, 1, 1, alignment=Qt.AlignLeft)
+
+        out.addWidget(QLabel("Rand:"), 2, 0)
+        sp_margin = QSpinBox()
+        sp_margin.setRange(0, 999)
+        sp_margin.setValue(0)
+        sp_margin.setFixedWidth(80)
+        out.addWidget(sp_margin, 2, 1, alignment=Qt.AlignLeft)
+
+        chk_blank = QCheckBox("Leerzeichen")
+        chk_trace = QCheckBox("Ablaufverfolgung")
+        chk_fieldnames = QCheckBox("Feldnamen")
+
+        # wie Screenshot: Leerzeichen + Feldnamen an
+        chk_blank.setChecked(True)
+        chk_fieldnames.setChecked(True)
+
+        out.addWidget(chk_blank, 3, 0, 1, 2)
+        out.addWidget(chk_trace, 4, 0, 1, 2)
+        out.addWidget(chk_fieldnames, 5, 0, 1, 2)
+
+        # --- Programmentwicklung (rechts oben) ---
+        gb_dev = QGroupBox("Programmentwicklung", tab)
+        dev = QGridLayout(gb_dev)
+        dev.setHorizontalSpacing(10)
+        dev.setVerticalSpacing(8)
+
+        chk_fulltest = QCheckBox("Volltest")
+        chk_buildtime = QCheckBox("Erstellungszeit")
+        chk_buildtime.setChecked(True)
+
+        dev.addWidget(chk_fulltest, 0, 0, 1, 2)
+        dev.addWidget(chk_buildtime, 1, 0, 1, 2)
+
+        # --- Andere (rechts mitte) ---
+        gb_other = QGroupBox("Andere", tab)
+        other = QGridLayout(gb_other)
+        other.setHorizontalSpacing(10)
+        other.setVerticalSpacing(8)
+
+        chk_design = QCheckBox("Design")
+        chk_hiprec = QCheckBox("High Precision")
+        chk_protect = QCheckBox("Änderungsschutz")
+        chk_fullpath = QCheckBox("Vollständige Pfadangabe")
+
+        # wie Screenshot: Design + Änderungsschutz an
+        chk_design.setChecked(True)
+        chk_protect.setChecked(True)
+
+        other.addWidget(chk_design, 0, 0)
+        other.addWidget(chk_hiprec, 0, 1)
+        other.addWidget(chk_protect, 1, 0, 1, 2)
+        other.addWidget(chk_fullpath, 2, 0, 1, 2)
+
+        # --- Error Handling (unten, über beide Spalten) ---
+        gb_err = QGroupBox("Error Handling", tab)
+        err = QGridLayout(gb_err)
+        err.setHorizontalSpacing(10)
+        err.setVerticalSpacing(8)
+
+        err.addWidget(QLabel("Error Action:"), 0, 0)
+        cb_action = QComboBox()
+        cb_action.addItems([
+            "0 - Ignore",
+            "1 - Message",
+            "2 - Log",
+            "3 - Abort",
+            "4 - Show Error Dialog",
+        ])
+        cb_action.setCurrentText("4 - Show Error Dialog")
+        cb_action.setMinimumWidth(260)
+        err.addWidget(cb_action, 0, 1, 1, 2)
+
+        # Error Log File + browse button
+        err.addWidget(QLabel("Error Log File:"), 1, 0)
+        ed_log = QLineEdit("PLUSerr.log")
+        err.addWidget(ed_log, 1, 1)
+        btn_log = QPushButton("...")
+        btn_log.setFixedWidth(28)
+        err.addWidget(btn_log, 1, 2, alignment=Qt.AlignLeft)
+
+        # Maximum Size + unit label
+        err.addWidget(QLabel("Maximum Size:"), 2, 0)
+        sp_max = QSpinBox()
+        sp_max.setRange(0, 999999)
+        sp_max.setValue(100)
+        sp_max.setFixedWidth(90)
+        err.addWidget(sp_max, 2, 1, alignment=Qt.AlignLeft)
+        err.addWidget(QLabel("Kilobytes"), 2, 2, alignment=Qt.AlignLeft)
+
+        # HTML Error Template + browse button
+        err.addWidget(QLabel("HTML Error Template:"), 3, 0)
+        ed_tpl = QLineEdit("error.htm")
+        err.addWidget(ed_tpl, 3, 1)
+        btn_tpl = QPushButton("...")
+        btn_tpl.setFixedWidth(28)
+        err.addWidget(btn_tpl, 3, 2, alignment=Qt.AlignLeft)
+
+        # Layout wie Screenshot
+        g.addWidget(gb_out,   0, 0)
+        g.addWidget(gb_dev,   0, 1)
+        g.addWidget(gb_other, 1, 1)
+        g.addWidget(gb_err,   2, 0, 1, 2)
+
+        g.setRowStretch(3, 1)
+        return tab
+
+    def _help(self):
+        QMessageBox.information(self, "Help", "Hier könnte deine Hilfe stehen :)")
+
+    # Damit Esc auch sauber schließt
+    def reject(self):
+        super().reject()
+        
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        
         self.mdi = QMdiArea(self)
         self.setCentralWidget(self.mdi)
 
         # Beispiel-Menü "Fenster"
-        m_win = self.menuBar().addMenu("Fenster")
-        act_cascade = QAction("Kaskadieren", self, triggered=self.mdi.cascadeSubWindows)
-        act_tile    = QAction("Nebeneinander", self, triggered=self.mdi.tileSubWindows)
-        m_win.addAction(act_cascade)
-        m_win.addAction(act_tile)
+        # Menü: Eigenschaften -> Arbeitsplatz
+        menubar = self.menuBar()
+        menu_properties = menubar.addMenu("Eigenschaften")
+        menu_windows    = menubar.addMenu("Fenster")
+        
+        action_workplace = QAction("Arbeitsplatz", self)
+        action_workplace.triggered.connect(self.open_workplace_properties)
+        
+        menu_properties.addAction(action_workplace)
+        
+        action_cascade = QAction("Kaskadieren",   self, triggered = self.mdi.cascadeSubWindows)
+        action_tile    = QAction("Nebeneinander", self, triggered = self.mdi.tileSubWindows)
+        
+        menu_windows.addAction(action_cascade)
+        menu_windows.addAction(action_tile)
+
+        self._dlg_workplace = None  # Dialog-Instanz merken (nicht jedes Mal neu)
+        
+        dlg = DirectoryIconDialog()
+        sub = self.mdi.addSubWindow(dlg)
+        sub.show()
         
         self.mdi_open_editor()
+        self.mdi_open_table_designer()
         
     def mdi_open_editor(self, title="Unbenannt", text=""):
         w = EditorWidget(text)
@@ -3612,6 +5585,23 @@ class MainWindow(QMainWindow):
         
         self.mdi.setActiveSubWindow(sub)
         return sub
+
+    def mdi_open_table_designer(self):
+        dlg = TableDesignerDialog()
+        sub = self.mdi.addSubWindow(dlg)
+        sub.show()
+    
+    def open_workplace_properties(self):
+        if self._dlg_workplace is None:
+            self._dlg_workplace = DesktopPropertiesDialog(self)
+            sub = MAINAPP.mdi.addSubWindow(self._dlg_workplace)
+            # Wenn Benutzer das Fenster schließt, Instanz wieder freigeben
+            self._dlg_workplace.mdi = sub
+            self._dlg_workplace.finished.connect(lambda _=0: setattr(self, "_dlg_workplace", None))
+
+        self._dlg_workplace.show()
+        self._dlg_workplace.raise_()
+        self._dlg_workplace.activateWindow()
         
 def main():
     app = ensure_qt_app()
